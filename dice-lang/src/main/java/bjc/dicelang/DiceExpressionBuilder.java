@@ -1,6 +1,6 @@
-package bjc.utils.dice;
+package bjc.dicelang;
 
-import static bjc.utils.dice.DiceExpressionType.*;
+import static bjc.dicelang.DiceExpressionType.*;
 
 /**
  * Build a dice expression piece by piece

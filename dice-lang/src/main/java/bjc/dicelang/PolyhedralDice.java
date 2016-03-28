@@ -1,4 +1,4 @@
-package bjc.utils.dice;
+package bjc.dicelang;
 
 /**
  * Utility class that produces common polyhedral dice

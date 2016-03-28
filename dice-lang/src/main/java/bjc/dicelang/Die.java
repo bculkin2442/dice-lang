@@ -1,4 +1,4 @@
-package bjc.utils.dice;
+package bjc.dicelang;
 
 import java.util.Random;
 

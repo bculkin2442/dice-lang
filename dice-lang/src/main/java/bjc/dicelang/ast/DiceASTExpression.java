@@ -1,4 +1,4 @@
-package bjc.utils.dice.ast;
+package bjc.dicelang.ast;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,10 +6,10 @@ import java.util.function.BinaryOperator;
 
 import org.apache.commons.lang3.StringUtils;
 
+import bjc.dicelang.ComplexDice;
+import bjc.dicelang.CompoundDice;
+import bjc.dicelang.IDiceExpression;
 import bjc.utils.data.Pair;
-import bjc.utils.dice.ComplexDice;
-import bjc.utils.dice.CompoundDice;
-import bjc.utils.dice.IDiceExpression;
 import bjc.utils.parserutils.AST;
 
 /**

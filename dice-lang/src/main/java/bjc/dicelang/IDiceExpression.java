@@ -1,4 +1,4 @@
-package bjc.utils.dice;
+package bjc.dicelang;
 
 /**
  * An expression for something that can be rolled like a polyhedral die

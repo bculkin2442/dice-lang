@@ -1,4 +1,4 @@
-package bjc.utils.dice;
+package bjc.dicelang;
 
 /**
  * A die that represents a static number

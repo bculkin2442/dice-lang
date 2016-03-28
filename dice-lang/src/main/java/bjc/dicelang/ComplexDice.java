@@ -1,4 +1,4 @@
-package bjc.utils.dice;
+package bjc.dicelang;
 
 /**
  * Implements a collection of one or more of a particular die, where the

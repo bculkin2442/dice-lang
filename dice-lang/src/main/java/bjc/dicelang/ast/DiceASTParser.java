@@ -1,4 +1,4 @@
-package bjc.utils.dice.ast;
+package bjc.dicelang.ast;
 
 import org.apache.commons.lang3.StringUtils;
 

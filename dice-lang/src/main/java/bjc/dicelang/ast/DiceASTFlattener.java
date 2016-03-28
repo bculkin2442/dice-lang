@@ -1,4 +1,4 @@
-package bjc.utils.dice.ast;
+package bjc.dicelang.ast;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,14 +6,14 @@ import java.util.function.BinaryOperator;
 
 import org.apache.commons.lang3.StringUtils;
 
-import bjc.utils.dice.BindingDiceExpression;
-import bjc.utils.dice.ComplexDice;
-import bjc.utils.dice.CompoundDice;
-import bjc.utils.dice.CompoundDiceExpression;
-import bjc.utils.dice.DiceExpressionType;
-import bjc.utils.dice.IDiceExpression;
-import bjc.utils.dice.ReferenceDiceExpression;
-import bjc.utils.dice.ScalarDie;
+import bjc.dicelang.BindingDiceExpression;
+import bjc.dicelang.ComplexDice;
+import bjc.dicelang.CompoundDice;
+import bjc.dicelang.CompoundDiceExpression;
+import bjc.dicelang.DiceExpressionType;
+import bjc.dicelang.IDiceExpression;
+import bjc.dicelang.ReferenceDiceExpression;
+import bjc.dicelang.ScalarDie;
 import bjc.utils.parserutils.AST;
 
 /**

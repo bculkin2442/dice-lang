@@ -1,4 +1,4 @@
-package bjc.utils.dice;
+package bjc.dicelang;
 
 /**
  * Enumeration for basic dice expression operators
