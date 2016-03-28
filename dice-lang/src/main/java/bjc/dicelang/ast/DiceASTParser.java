@@ -1,9 +1,14 @@
 package bjc.dicelang.ast;
 
+import java.util.Deque;
+import java.util.LinkedList;
+
 import org.apache.commons.lang3.StringUtils;
 
+import bjc.utils.data.Pair;
 import bjc.utils.funcdata.FunctionalList;
 import bjc.utils.funcdata.FunctionalStringTokenizer;
+import bjc.utils.funcutils.ListUtils;
 import bjc.utils.parserutils.AST;
 import bjc.utils.parserutils.ShuntingYard;
 import bjc.utils.parserutils.TreeConstructor;
@@ -39,10 +44,30 @@ public class DiceASTParser {
 	 * @return An AST built from the passed in string
 	 */
 	public AST<IDiceASTNode> buildAST(String exp) {
-		FunctionalList<String> tokens = FunctionalStringTokenizer
-				.fromString(exp).toList((s) -> s);
+		FunctionalList<String> tokens =
+				FunctionalStringTokenizer.fromString(exp).toList((s) -> s);
 
-		FunctionalList<String> shunted = yard.postfix(tokens, (s) -> s);
+		Deque<Pair<String, String>> ops = new LinkedList<>();
+
+		ops.add(new Pair<>("+", "\\+"));
+		ops.add(new Pair<>("-", "-"));
+		ops.add(new Pair<>("*", "\\*"));
+		ops.add(new Pair<>("/", "/"));
+		ops.add(new Pair<>(":=", ":="));
+
+		FunctionalList<String> semiExpandedTokens =
+				ListUtils.splitTokens(tokens, ops);
+
+		ops = new LinkedList<>();
+
+		ops.add(new Pair<>("(", "\\("));
+		ops.add(new Pair<>(")", "\\)"));
+
+		FunctionalList<String> fullyExpandedTokens =
+				ListUtils.deAffixTokens(semiExpandedTokens, ops);
+
+		FunctionalList<String> shunted =
+				yard.postfix(fullyExpandedTokens, (s) -> s);
 
 		AST<String> rawAST = TreeConstructor.constructTree(shunted,
 				this::isOperator, (op) -> false, null);
