@@ -54,7 +54,7 @@ public class ScalarDiceExpression implements IDiceExpression {
 			case MULTIPLY:
 				return exp.roll() * scalar;
 			case DIVIDE:
-				return Math.round(exp.roll() / scalar);
+				return exp.roll() / scalar;
 			default:
 				throw new IllegalStateException(
 						"Got passed  a invalid ScalarExpressionType "

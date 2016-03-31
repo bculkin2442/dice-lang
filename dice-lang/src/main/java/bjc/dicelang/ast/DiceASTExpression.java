@@ -66,7 +66,7 @@ public class DiceASTExpression implements IDiceExpression {
 			return left.merge((lval, last) -> right.merge((rval, rast) -> {
 				String nam = last.collapse((nod) -> {
 					return ((VariableDiceNode) nod).getVariable();
-				} , (v) -> (lv, rv) -> null, (r) -> r);
+				}, (v) -> (lv, rv) -> null, (r) -> r);
 
 				env.put(nam, new DiceASTExpression(rast, env));
 

@@ -14,7 +14,7 @@ import bjc.dicelang.ast.DiceASTParser;
 import bjc.dicelang.ast.IDiceASTNode;
 import bjc.dicelang.ast.VariableDiceNode;
 import bjc.utils.data.GenHolder;
-import bjc.utils.funcdata.ITreePart.TreeLinearizationMethod;
+import bjc.utils.funcdata.bst.ITreePart.TreeLinearizationMethod;
 import bjc.utils.parserutils.AST;
 
 /**

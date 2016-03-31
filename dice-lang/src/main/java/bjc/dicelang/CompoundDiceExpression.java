@@ -61,7 +61,7 @@ public class CompoundDiceExpression implements IDiceExpression {
 				 * Round to keep results as integers. We don't really have
 				 * any need for floating-point dice
 				 */
-				return Math.round(right.roll() / left.roll());
+				return right.roll() / left.roll();
 			default:
 				throw new IllegalArgumentException(
 						"Got passed  a invalid ScalarExpressionType " + det
