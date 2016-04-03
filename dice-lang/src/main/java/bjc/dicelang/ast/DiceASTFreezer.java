@@ -1,7 +1,9 @@
 package bjc.dicelang.ast;
 
-import java.util.Map;
+import java.util.function.Function;
 
+import bjc.utils.funcdata.FunctionalList;
+import bjc.utils.funcdata.FunctionalMap;
 import bjc.utils.parserutils.AST;
 
 /**
@@ -12,32 +14,57 @@ import bjc.utils.parserutils.AST;
  *
  */
 public class DiceASTFreezer {
-	/**
-	 * Expand a reference
-	 * 
-	 * @param vnode
-	 *            The node containing the reference to expand
-	 * @param env
-	 *            The enviroment to expand against
-	 * @return The expanded reference
-	 */
-	private static AST<IDiceASTNode> expandNode(VariableDiceNode vnode,
-			Map<String, AST<IDiceASTNode>> env) {
-		return env.get(vnode.getVariable());
+	private static class NodeFreezer
+			implements Function<IDiceASTNode, AST<IDiceASTNode>> {
+		private FunctionalMap<String, AST<IDiceASTNode>> enviroment;
+
+		public NodeFreezer(FunctionalMap<String, AST<IDiceASTNode>> env) {
+			enviroment = env;
+		}
+
+		@Override
+		public AST<IDiceASTNode> apply(IDiceASTNode nod) {
+			if (nod.getType() == DiceASTType.VARIABLE) {
+				return expandNode((VariableDiceNode) nod);
+			} else {
+				return new AST<>(nod);
+			}
+		}
+
+		protected AST<IDiceASTNode>
+				expandNode(VariableDiceNode variableNode) {
+			String varName = variableNode.getVariable();
+
+			if (!enviroment.containsKey(varName)) {
+				throw new IllegalArgumentException(
+						"Attempted to freeze reference"
+								+ " to an undefined variable " + varName);
+			}
+
+			return enviroment.get(varName);
+		}
 	}
 
-	/**
-	 * Expand a reference
-	 * 
-	 * @param vnode
-	 *            The node containing the reference to expand
-	 * @param env
-	 *            The enviroment to expand against
-	 * @return The expanded reference
-	 */
-	private static AST<IDiceASTNode> expandNode2(VariableDiceNode vnode,
-			Map<String, DiceASTExpression> env) {
-		return env.get(vnode.getVariable()).getAst();
+	private static final class SelectiveFreezer extends NodeFreezer {
+
+		private FunctionalList<String> variableNames;
+
+		public SelectiveFreezer(
+				FunctionalMap<String, AST<IDiceASTNode>> env,
+				FunctionalList<String> varNames) {
+			super(env);
+			variableNames = varNames;
+		}
+
+		@Override
+		protected AST<IDiceASTNode>
+				expandNode(VariableDiceNode variableNode) {
+			if (variableNames.contains(variableNode.getVariable())) {
+				return super.expandNode(variableNode);
+			} else {
+				return new AST<>(variableNode);
+			}
+		}
 	}
 
 	/**
@@ -49,20 +76,9 @@ public class DiceASTFreezer {
 	 *            The enviroment to get reference values from
 	 * @return The tree with references frozen
 	 */
-	@SuppressWarnings("unused")
 	public static AST<IDiceASTNode> freezeAST(AST<IDiceASTNode> tree,
-			Map<String, AST<IDiceASTNode>> env) {
-		return tree.collapse((nod) -> {
-			if (nod instanceof VariableDiceNode) {
-				return expandNode((VariableDiceNode) nod, env);
-			} else {
-				// Type is specified here so compiler can know the type
-				// we're using
-				return new AST<IDiceASTNode>(nod);
-			}
-		} , (op) -> (left, right) -> {
-			return new AST<IDiceASTNode>(op, left, right);
-		} , (r) -> r);
+			FunctionalMap<String, AST<IDiceASTNode>> env) {
+		return selectiveFreeze(tree, env);
 	}
 
 	/**
@@ -74,19 +90,43 @@ public class DiceASTFreezer {
 	 *            The enviroment to get reference values from
 	 * @return The tree with references frozen
 	 */
-	@SuppressWarnings("unused")
 	public static AST<IDiceASTNode> freezeAST(DiceASTExpression tree,
-			Map<String, DiceASTExpression> env) {
-		return tree.getAst().collapse((nod) -> {
-			if (nod instanceof VariableDiceNode) {
-				return expandNode2((VariableDiceNode) nod, env);
-			} else {
-				// Type is specified here so compiler can know the type
-				// we're using
-				return new AST<IDiceASTNode>(nod);
-			}
-		} , (op) -> (left, right) -> {
-			return new AST<IDiceASTNode>(op, left, right);
-		} , (r) -> r);
+			FunctionalMap<String, DiceASTExpression> env) {
+		return freezeAST(tree.getAst(),
+				env.mapValues(expression -> expression.getAst()));
+	}
+
+	/**
+	 * Freeze references to specified variables
+	 * 
+	 * @param tree
+	 *            The tree-backed expression to freeze references in
+	 * @param env
+	 *            The enviroment to resolve variables against
+	 * @param varNames
+	 *            The names of the variables to freeze
+	 * @return An AST with the specified variables frozen
+	 */
+	public static AST<IDiceASTNode> selectiveFreeze(AST<IDiceASTNode> tree,
+			FunctionalMap<String, AST<IDiceASTNode>> env,
+			String... varNames) {
+		return selectiveFreeze(tree, env, new FunctionalList<>(varNames));
+	}
+
+	/**
+	 * Freeze references to specified variables
+	 * 
+	 * @param tree
+	 *            The tree-backed expression to freeze references in
+	 * @param env
+	 *            The enviroment to resolve variables against
+	 * @param varNames
+	 *            The names of the variables to freeze
+	 * @return An AST with the specified variables frozen
+	 */
+	public static AST<IDiceASTNode> selectiveFreeze(AST<IDiceASTNode> tree,
+			FunctionalMap<String, AST<IDiceASTNode>> env,
+			FunctionalList<String> varNames) {
+		return tree.expand(new SelectiveFreezer(env, varNames));
 	}
 }

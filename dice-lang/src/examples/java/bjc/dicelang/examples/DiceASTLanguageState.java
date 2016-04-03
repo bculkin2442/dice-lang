@@ -2,8 +2,8 @@ package bjc.dicelang.examples;
 
 import java.util.Map;
 
-import bjc.dicelang.DiceExpressionParser;
 import bjc.dicelang.ast.DiceASTExpression;
+import bjc.dicelang.ast.DiceASTParser;
 import bjc.utils.data.Pair;
 
 /**
@@ -12,8 +12,8 @@ import bjc.utils.data.Pair;
  * @author ben
  *
  */
-public class DiceASTLanguageState extends
-		Pair<DiceExpressionParser, Map<String, DiceASTExpression>> {
+public class DiceASTLanguageState
+		extends Pair<DiceASTParser, Map<String, DiceASTExpression>> {
 
 	/**
 	 * Create a new state
@@ -29,7 +29,7 @@ public class DiceASTLanguageState extends
 	 * @param right
 	 *            The enviroment to use
 	 */
-	public DiceASTLanguageState(DiceExpressionParser left,
+	public DiceASTLanguageState(DiceASTParser left,
 			Map<String, DiceASTExpression> right) {
 		super(left, right);
 	}

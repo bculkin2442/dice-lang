@@ -69,6 +69,11 @@ public enum OperatorDiceNode implements IDiceASTNode {
 		}
 	}
 
+	@Override
+	public DiceASTType getType() {
+		return DiceASTType.OPERATOR;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 

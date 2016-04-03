@@ -2,13 +2,12 @@ package bjc.dicelang.ast;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.BinaryOperator;
-
 import org.apache.commons.lang3.StringUtils;
 
 import bjc.dicelang.ComplexDice;
 import bjc.dicelang.CompoundDice;
 import bjc.dicelang.IDiceExpression;
+
 import bjc.utils.data.Pair;
 import bjc.utils.parserutils.AST;
 
@@ -24,67 +23,84 @@ public class DiceASTExpression implements IDiceExpression {
 	/**
 	 * Build the map of operations to use when collapsing the AST
 	 * 
-	 * @param env
+	 * @param enviroment
 	 *            The enviroment to evaluate bindings and such against
 	 * @return The operations to use when collapsing the AST
 	 */
-	private static
-			Map<IDiceASTNode, BinaryOperator<Pair<Integer, AST<IDiceASTNode>>>>
-			buildOperations(Map<String, DiceASTExpression> env) {
-		Map<IDiceASTNode, BinaryOperator<Pair<Integer, AST<IDiceASTNode>>>> opCollapsers =
+	private static Map<IDiceASTNode, IOperatorCollapser>
+			buildOperations(Map<String, DiceASTExpression> enviroment) {
+		Map<IDiceASTNode, IOperatorCollapser> operatorCollapsers =
 				new HashMap<>();
 
-		opCollapsers.put(OperatorDiceNode.ADD, (left, right) -> {
-			return left.merge((lval, last) -> right.merge((rval, rast) -> {
-				return new Pair<>(lval + rval,
-						new AST<>(OperatorDiceNode.ADD, last, rast));
-			}));
+		operatorCollapsers.put(OperatorDiceNode.ADD,
+				(leftNode, rightNode) -> {
+					return leftNode.merge((leftValue, leftAST) -> {
+						return rightNode.merge((rightValue, rightAST) -> {
+							return new Pair<>(leftValue + rightValue,
+									new AST<>(OperatorDiceNode.ADD,
+											leftAST, rightAST));
+						});
+					});
 
-		});
-		opCollapsers.put(OperatorDiceNode.SUBTRACT, (left, right) -> {
-			return left.merge((lval, last) -> right.merge((rval, rast) -> {
-				return new Pair<>(lval - rval,
-						new AST<>(OperatorDiceNode.SUBTRACT, last, rast));
-			}));
+				});
+		operatorCollapsers.put(OperatorDiceNode.SUBTRACT,
+				(left, right) -> {
+					return left.merge(
+							(lval, last) -> right.merge((rval, rast) -> {
+								return new Pair<>(lval - rval,
+										new AST<>(
+												OperatorDiceNode.SUBTRACT,
+												last, rast));
+							}));
 
-		});
-		opCollapsers.put(OperatorDiceNode.MULTIPLY, (left, right) -> {
-			return left.merge((lval, last) -> right.merge((rval, rast) -> {
-				return new Pair<>(lval * rval,
-						new AST<>(OperatorDiceNode.MULTIPLY, last, rast));
-			}));
+				});
+		operatorCollapsers.put(OperatorDiceNode.MULTIPLY,
+				(left, right) -> {
+					return left.merge(
+							(lval, last) -> right.merge((rval, rast) -> {
+								return new Pair<>(lval * rval,
+										new AST<>(
+												OperatorDiceNode.MULTIPLY,
+												last, rast));
+							}));
 
-		});
-		opCollapsers.put(OperatorDiceNode.DIVIDE, (left, right) -> {
+				});
+		operatorCollapsers.put(OperatorDiceNode.DIVIDE, (left, right) -> {
 			return left.merge((lval, last) -> right.merge((rval, rast) -> {
 				return new Pair<>(lval / rval,
 						new AST<>(OperatorDiceNode.DIVIDE, last, rast));
 			}));
 		});
 
-		opCollapsers.put(OperatorDiceNode.ASSIGN, (left, right) -> {
+		operatorCollapsers.put(OperatorDiceNode.ASSIGN, (left, right) -> {
 			return left.merge((lval, last) -> right.merge((rval, rast) -> {
 				String nam = last.collapse((nod) -> {
 					return ((VariableDiceNode) nod).getVariable();
 				}, (v) -> (lv, rv) -> null, (r) -> r);
 
-				env.put(nam, new DiceASTExpression(rast, env));
+				enviroment.put(nam,
+						new DiceASTExpression(rast, enviroment));
 
 				return new Pair<>(rval,
 						new AST<>(OperatorDiceNode.ASSIGN, last, rast));
 			}));
 		});
 
-		opCollapsers.put(OperatorDiceNode.COMPOUND, (left, right) -> {
-			return left.merge((lval, last) -> right.merge((rval, rast) -> {
-				int ival = Integer.parseInt(
-						Integer.toString(lval) + Integer.toString(rval));
+		operatorCollapsers.put(OperatorDiceNode.COMPOUND,
+				(left, right) -> {
+					return left.merge(
+							(lval, last) -> right.merge((rval, rast) -> {
+								int ival = Integer
+										.parseInt(Integer.toString(lval)
+												+ Integer.toString(rval));
 
-				return new Pair<>(ival,
-						new AST<>(OperatorDiceNode.COMPOUND, last, rast));
-			}));
-		});
-		opCollapsers.put(OperatorDiceNode.GROUP, (left, right) -> {
+								return new Pair<>(ival,
+										new AST<>(
+												OperatorDiceNode.COMPOUND,
+												last, rast));
+							}));
+				});
+		operatorCollapsers.put(OperatorDiceNode.GROUP, (left, right) -> {
 			return left.merge((lval, last) -> right.merge((rval, rast) -> {
 
 				return new Pair<>(new ComplexDice(lval, rval).roll(),
@@ -92,7 +108,7 @@ public class DiceASTExpression implements IDiceExpression {
 			}));
 		});
 
-		return opCollapsers;
+		return operatorCollapsers;
 	}
 
 	/**
@@ -176,7 +192,7 @@ public class DiceASTExpression implements IDiceExpression {
 	 */
 	@Override
 	public int roll() {
-		Map<IDiceASTNode, BinaryOperator<Pair<Integer, AST<IDiceASTNode>>>> operations =
+		Map<IDiceASTNode, IOperatorCollapser> operations =
 				buildOperations(env);
 
 		return ast.collapse(this::evalLeaf, operations::get,
