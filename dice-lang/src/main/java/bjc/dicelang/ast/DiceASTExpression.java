@@ -2,6 +2,8 @@ package bjc.dicelang.ast;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
+
 import org.apache.commons.lang3.StringUtils;
 
 import bjc.dicelang.ComplexDice;
@@ -19,6 +21,21 @@ import bjc.utils.parserutils.AST;
  *
  */
 public class DiceASTExpression implements IDiceExpression {
+
+	private static final class VariableRetriever
+			implements Function<IDiceASTNode, String> {
+		@Override
+		public String apply(IDiceASTNode node) {
+			if (node.getType() != DiceASTType.VARIABLE) {
+				throw new UnsupportedOperationException(
+						"Attempted to assign to something that isn't a variable."
+								+ " This isn't supported yet. The problem node is "
+								+ node);
+			}
+
+			return ((VariableDiceNode) node).getVariable();
+		}
+	}
 
 	/**
 	 * Build the map of operations to use when collapsing the AST
@@ -44,69 +61,104 @@ public class DiceASTExpression implements IDiceExpression {
 
 				});
 		operatorCollapsers.put(OperatorDiceNode.SUBTRACT,
-				(left, right) -> {
-					return left.merge(
-							(lval, last) -> right.merge((rval, rast) -> {
-								return new Pair<>(lval - rval,
-										new AST<>(
-												OperatorDiceNode.SUBTRACT,
-												last, rast));
-							}));
-
+				(leftNode, rightNode) -> {
+					return leftNode.merge((leftValue, leftAST) -> {
+						return rightNode.merge((rightValue, rightAST) -> {
+							return new Pair<>(leftValue - rightValue,
+									new AST<>(OperatorDiceNode.SUBTRACT,
+											leftAST, rightAST));
+						});
+					});
 				});
+
 		operatorCollapsers.put(OperatorDiceNode.MULTIPLY,
-				(left, right) -> {
-					return left.merge(
-							(lval, last) -> right.merge((rval, rast) -> {
-								return new Pair<>(lval * rval,
-										new AST<>(
-												OperatorDiceNode.MULTIPLY,
-												last, rast));
-							}));
+				(leftNode, rightNode) -> {
+					return leftNode.merge((leftValue, leftAST) -> {
+						return rightNode.merge((rightValue, rightAST) -> {
+							return new Pair<>(leftValue * rightValue,
+									new AST<>(OperatorDiceNode.MULTIPLY,
+											leftAST, rightAST));
+						});
+					});
 
 				});
-		operatorCollapsers.put(OperatorDiceNode.DIVIDE, (left, right) -> {
-			return left.merge((lval, last) -> right.merge((rval, rast) -> {
-				return new Pair<>(lval / rval,
-						new AST<>(OperatorDiceNode.DIVIDE, last, rast));
-			}));
-		});
+		operatorCollapsers.put(OperatorDiceNode.DIVIDE,
+				(leftNode, rightNode) -> {
+					return leftNode.merge((leftValue, leftAST) -> {
+						return rightNode.merge((rightValue, rightAST) -> {
+							if (rightValue == 0) {
+								throw new ArithmeticException(
+										"Attempted to divide by zero. The AST of the problem expression is "
+												+ rightAST);
+							}
+
+							return new Pair<>(leftValue / rightValue,
+									new AST<>(OperatorDiceNode.DIVIDE,
+											leftAST, rightAST));
+						});
+					});
+				});
 
 		operatorCollapsers.put(OperatorDiceNode.ASSIGN, (left, right) -> {
-			return left.merge((lval, last) -> right.merge((rval, rast) -> {
-				String nam = last.collapse((nod) -> {
-					return ((VariableDiceNode) nod).getVariable();
-				}, (v) -> (lv, rv) -> null, (r) -> r);
+			return left.merge((leftValue, leftAST) -> {
+				return right.merge((rightValue, rightAST) -> {
+					String variableName = leftAST.collapse(
+							new VariableRetriever(), (operator) -> {
+								throw new UnsupportedOperationException(
+										"Can only assign to plain variable names. The problem operator is "
+												+ operator);
+							}, (returnedAST) -> returnedAST);
 
-				enviroment.put(nam,
-						new DiceASTExpression(rast, enviroment));
+					enviroment.put(variableName,
+							new DiceASTExpression(rightAST, enviroment));
 
-				return new Pair<>(rval,
-						new AST<>(OperatorDiceNode.ASSIGN, last, rast));
-			}));
+					return new Pair<>(rightValue, new AST<>(
+							OperatorDiceNode.ASSIGN, leftAST, rightAST));
+				});
+			});
 		});
 
 		operatorCollapsers.put(OperatorDiceNode.COMPOUND,
-				(left, right) -> {
-					return left.merge(
-							(lval, last) -> right.merge((rval, rast) -> {
-								int ival = Integer
-										.parseInt(Integer.toString(lval)
-												+ Integer.toString(rval));
+				(leftNode, rightNode) -> {
+					return leftNode.merge((leftValue, leftAST) -> {
+						return rightNode.merge((rightValue, rightAST) -> {
+							int compoundValue = Integer.parseInt(
+									Integer.toString(leftValue) + Integer
+											.toString(rightValue));
 
-								return new Pair<>(ival,
-										new AST<>(
-												OperatorDiceNode.COMPOUND,
-												last, rast));
-							}));
+							return new Pair<>(compoundValue,
+									new AST<>(OperatorDiceNode.COMPOUND,
+											leftAST, rightAST));
+						});
+					});
 				});
-		operatorCollapsers.put(OperatorDiceNode.GROUP, (left, right) -> {
-			return left.merge((lval, last) -> right.merge((rval, rast) -> {
 
-				return new Pair<>(new ComplexDice(lval, rval).roll(),
-						new AST<>(OperatorDiceNode.GROUP, last, rast));
-			}));
-		});
+		operatorCollapsers.put(OperatorDiceNode.GROUP,
+				(leftNode, rightNode) -> {
+					return leftNode.merge((leftValue, leftAST) -> {
+						return rightNode.merge((rightValue, rightAST) -> {
+							if (leftValue < 0) {
+								throw new UnsupportedOperationException(
+										"Can't attempt to roll a negative number of dice."
+												+ " The problematic AST is "
+												+ leftAST);
+							} else if (rightValue < 1) {
+								throw new UnsupportedOperationException(
+										"Can't roll dice with less than one side."
+												+ " The problematic AST is "
+												+ rightAST);
+							}
+
+							int rolledValue =
+									new ComplexDice(leftValue, rightValue)
+											.roll();
+
+							return new Pair<>(rolledValue,
+									new AST<>(OperatorDiceNode.GROUP,
+											leftAST, rightAST));
+						});
+					});
+				});
 
 		return operatorCollapsers;
 	}
@@ -144,7 +196,7 @@ public class DiceASTExpression implements IDiceExpression {
 	 *         represents
 	 */
 	private Pair<Integer, AST<IDiceASTNode>> evalLeaf(IDiceASTNode tokn) {
-		if (tokn instanceof VariableDiceNode) {
+		if (tokn.getType() == DiceASTType.VARIABLE) {
 			String varName = ((VariableDiceNode) tokn).getVariable();
 
 			if (env.containsKey(varName)) {
@@ -154,25 +206,37 @@ public class DiceASTExpression implements IDiceExpression {
 				// Handle special case for defining variables
 				return new Pair<>(0, new AST<>(tokn));
 			}
-		} else {
-			LiteralDiceNode lnod = (LiteralDiceNode) tokn;
-			String dat = lnod.getData();
+		} else if (tokn.getType() == DiceASTType.LITERAL) {
+			LiteralDiceNode literalNode = (LiteralDiceNode) tokn;
+			String dat = literalNode.getData();
 
 			if (StringUtils.countMatches(dat, 'c') == 1
-					&& !dat.equalsIgnoreCase("c")) {
+					&& !dat.equalsIgnoreCase("c")
+					&& !dat.startsWith("c")) {
 				String[] strangs = dat.split("c");
+
 				return new Pair<>(new CompoundDice(strangs).roll(),
 						new AST<>(tokn));
 			} else if (StringUtils.countMatches(dat, 'd') == 1
-					&& !dat.equalsIgnoreCase("d")) {
+					&& !dat.equalsIgnoreCase("d")
+					&& !dat.startsWith("d")) {
 				/*
 				 * Handle dice groups
 				 */
 				return new Pair<>(ComplexDice.fromString(dat).roll(),
 						new AST<>(tokn));
 			} else {
-				return new Pair<>(Integer.parseInt(dat), new AST<>(tokn));
+				try {
+					return new Pair<>(Integer.parseInt(dat),
+							new AST<>(tokn));
+				} catch (NumberFormatException nfex) {
+					throw new UnsupportedOperationException(
+							"Found malformed leaf token " + tokn);
+				}
 			}
+		} else {
+			throw new UnsupportedOperationException("Found leaf operator "
+					+ tokn + ". These aren't supported.");
 		}
 	}
 
@@ -196,7 +260,8 @@ public class DiceASTExpression implements IDiceExpression {
 				buildOperations(env);
 
 		return ast.collapse(this::evalLeaf, operations::get,
-				(r) -> r.merge((left, right) -> left));
+				(returnedValue) -> returnedValue
+						.merge((left, right) -> left));
 	}
 
 	/*

@@ -2,6 +2,7 @@ package bjc.dicelang.ast;
 
 import java.util.Deque;
 import java.util.LinkedList;
+import java.util.function.Function;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -20,6 +21,44 @@ import bjc.utils.parserutils.TreeConstructor;
  *
  */
 public class DiceASTParser {
+	private static final class NodeBaker
+			implements Function<String, IDiceASTNode> {
+		@Override
+		public IDiceASTNode apply(String tok) {
+			if (isOperator(tok)) {
+				return OperatorDiceNode.fromString(tok);
+			} else if (NodeBaker.isLiteral(tok)) {
+				return new LiteralDiceNode(tok);
+			} else {
+				return new VariableDiceNode(tok);
+			}
+		}
+
+		/**
+		 * Check if a token represents a literal
+		 * 
+		 * @param tok
+		 *            The token to check
+		 * @return Whether or not the token represents a literal
+		 */
+		private static boolean isLiteral(String tok) {
+			if (StringUtils.countMatches(tok, 'c') == 1
+					&& !tok.equalsIgnoreCase("c")) {
+				return true;
+			} else if (StringUtils.countMatches(tok, 'd') == 1
+					&& !tok.equalsIgnoreCase("d")) {
+				return true;
+			} else {
+				try {
+					Integer.parseInt(tok);
+					return true;
+				} catch (NumberFormatException nfx) {
+					return false;
+				}
+			}
+		}
+	}
+
 	/**
 	 * The yard to use for shunting expressions
 	 */
@@ -45,7 +84,7 @@ public class DiceASTParser {
 	 */
 	public AST<IDiceASTNode> buildAST(String exp) {
 		FunctionalList<String> tokens =
-				FunctionalStringTokenizer.fromString(exp).toList((s) -> s);
+				FunctionalStringTokenizer.fromString(exp).toList();
 
 		Deque<Pair<String, String>> ops = new LinkedList<>();
 
@@ -70,43 +109,11 @@ public class DiceASTParser {
 				yard.postfix(fullyExpandedTokens, (s) -> s);
 
 		AST<String> rawAST = TreeConstructor.constructTree(shunted,
-				this::isOperator, (op) -> false, null);
+				DiceASTParser::isOperator);
 
-		AST<IDiceASTNode> bakedAST = rawAST.transmuteAST((tok) -> {
-			if (isOperator(tok)) {
-				return OperatorDiceNode.fromString(tok);
-			} else if (isLiteral(tok)) {
-				return new LiteralDiceNode(tok);
-			} else {
-				return new VariableDiceNode(tok);
-			}
-		});
+		AST<IDiceASTNode> bakedAST = rawAST.transmuteAST(new NodeBaker());
 
 		return bakedAST;
-	}
-
-	/**
-	 * Check if a token represents a literal
-	 * 
-	 * @param tok
-	 *            The token to check
-	 * @return Whether or not the token represents a literal
-	 */
-	private static boolean isLiteral(String tok) {
-		if (StringUtils.countMatches(tok, 'c') == 1
-				&& !tok.equalsIgnoreCase("c")) {
-			return true;
-		} else if (StringUtils.countMatches(tok, 'd') == 1
-				&& !tok.equalsIgnoreCase("d")) {
-			return true;
-		} else {
-			try {
-				Integer.parseInt(tok);
-				return true;
-			} catch (NumberFormatException nfx) {
-				return false;
-			}
-		}
 	}
 
 	/**
@@ -116,7 +123,7 @@ public class DiceASTParser {
 	 *            The token to check if it represents an operator
 	 * @return Whether or not the token represents an operator
 	 */
-	private boolean isOperator(String tok) {
+	private static boolean isOperator(String tok) {
 		switch (tok) {
 			case ":=":
 			case "+":

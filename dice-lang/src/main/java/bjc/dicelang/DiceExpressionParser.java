@@ -96,19 +96,19 @@ public class DiceExpressionParser {
 										env));
 								break;
 							case "+":
-								dexps.push(new CompoundDiceExpression(r, l,
+								dexps.push(new OperatorDiceExpression(r, l,
 										DiceExpressionType.ADD));
 								break;
 							case "-":
-								dexps.push(new CompoundDiceExpression(r, l,
+								dexps.push(new OperatorDiceExpression(r, l,
 										DiceExpressionType.SUBTRACT));
 								break;
 							case "*":
-								dexps.push(new CompoundDiceExpression(r, l,
+								dexps.push(new OperatorDiceExpression(r, l,
 										DiceExpressionType.MULTIPLY));
 								break;
 							case "/":
-								dexps.push(new CompoundDiceExpression(r, l,
+								dexps.push(new OperatorDiceExpression(r, l,
 										DiceExpressionType.DIVIDE));
 								break;
 							case "c":

@@ -54,7 +54,7 @@ public class DiceExpressionBuilder {
 	 * @return A new expression adding the two dice
 	 */
 	public DiceExpressionBuilder add(IDiceExpression exp) {
-		baking = new CompoundDiceExpression(baking, exp, ADD);
+		baking = new OperatorDiceExpression(baking, exp, ADD);
 		return this;
 	}
 
@@ -87,7 +87,7 @@ public class DiceExpressionBuilder {
 	 * @return A new expression dividing the two dice
 	 */
 	public DiceExpressionBuilder divide(IDiceExpression exp) {
-		baking = new CompoundDiceExpression(baking, exp, DIVIDE);
+		baking = new OperatorDiceExpression(baking, exp, DIVIDE);
 		return this;
 	}
 
@@ -111,7 +111,7 @@ public class DiceExpressionBuilder {
 	 * @return A new expression multiplying the two dice
 	 */
 	public DiceExpressionBuilder multiply(IDiceExpression exp) {
-		baking = new CompoundDiceExpression(baking, exp, MULTIPLY);
+		baking = new OperatorDiceExpression(baking, exp, MULTIPLY);
 		return this;
 	}
 
@@ -135,7 +135,7 @@ public class DiceExpressionBuilder {
 	 * @return A new expression adding the two dice
 	 */
 	public DiceExpressionBuilder subtract(IDiceExpression exp) {
-		baking = new CompoundDiceExpression(baking, exp, SUBTRACT);
+		baking = new OperatorDiceExpression(baking, exp, SUBTRACT);
 		return this;
 	}
 

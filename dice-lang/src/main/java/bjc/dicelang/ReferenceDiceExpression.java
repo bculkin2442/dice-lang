@@ -51,6 +51,11 @@ public class ReferenceDiceExpression implements IDiceExpression {
 	 */
 	@Override
 	public int roll() {
+		if (!env.containsKey(name)) {
+			throw new UnsupportedOperationException(
+					"Attempted to reference undefined variable " + name);
+		}
+		
 		return env.get(name).roll();
 	}
 

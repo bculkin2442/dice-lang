@@ -54,7 +54,12 @@ public class ScalarDiceExpression implements IDiceExpression {
 			case MULTIPLY:
 				return exp.roll() * scalar;
 			case DIVIDE:
-				return exp.roll() / scalar;
+				try {
+					return exp.roll() / scalar;
+				} catch (ArithmeticException aex) {
+					throw new UnsupportedOperationException(
+							"Attempted to divide by zero.");
+				}
 			default:
 				throw new IllegalStateException(
 						"Got passed  a invalid ScalarExpressionType "

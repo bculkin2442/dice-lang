@@ -13,12 +13,12 @@ public class BindingDiceExpression implements IDiceExpression {
 	/**
 	 * The expression being bound to a name
 	 */
-	private IDiceExpression	exp;
+	private IDiceExpression	expression;
 
 	/**
 	 * The name to bind the expression to
 	 */
-	private String			name;
+	private String			variableName;
 
 	/**
 	 * Create a new dice expression binder from two expressions and an
@@ -34,7 +34,15 @@ public class BindingDiceExpression implements IDiceExpression {
 	 */
 	public BindingDiceExpression(IDiceExpression left,
 			IDiceExpression right, Map<String, IDiceExpression> env) {
-		this(((ReferenceDiceExpression) left).getName(), right, env);
+		if (!(left instanceof ReferenceDiceExpression)) {
+			throw new UnsupportedOperationException(
+					"Binding to non-references is unsupported."
+							+ " Problematic expression is " + left);
+		} else {
+			String varName = ((ReferenceDiceExpression) left).getName();
+
+			initialize(varName, right, env);
+		}
 	}
 
 	/**
@@ -49,8 +57,13 @@ public class BindingDiceExpression implements IDiceExpression {
 	 */
 	public BindingDiceExpression(String name, IDiceExpression exp,
 			Map<String, IDiceExpression> env) {
-		this.name = name;
-		this.exp = exp;
+		initialize(name, exp, env);
+	}
+
+	private void initialize(String name, IDiceExpression exp,
+			Map<String, IDiceExpression> env) {
+		this.variableName = name;
+		this.expression = exp;
 
 		env.put(name, exp);
 	}
@@ -62,7 +75,7 @@ public class BindingDiceExpression implements IDiceExpression {
 	 */
 	@Override
 	public int roll() {
-		return exp.roll();
+		return expression.roll();
 	}
 
 	/*
@@ -72,6 +85,7 @@ public class BindingDiceExpression implements IDiceExpression {
 	 */
 	@Override
 	public String toString() {
-		return "assign[n=" + name + ", exp=" + exp.toString() + "]";
+		return "assign[n=" + variableName + ", exp="
+				+ expression.toString() + "]";
 	}
 }

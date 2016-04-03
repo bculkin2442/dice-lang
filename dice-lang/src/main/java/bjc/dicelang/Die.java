@@ -26,6 +26,11 @@ public class Die implements IDiceExpression {
 	 *            The number of sides this dice has
 	 */
 	public Die(int nSides) {
+		if (nSides < 1) {
+			throw new UnsupportedOperationException(
+					"Dice with less than 1 side are not supported");
+		}
+		
 		this.nSides = nSides;
 	}
 

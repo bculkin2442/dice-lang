@@ -89,6 +89,12 @@ public class ComplexDice implements IDiceExpression {
 		 */
 		int nRoll = nDice.roll();
 
+		if (nRoll < 0) {
+			throw new UnsupportedOperationException(
+					"Attempted to roll a negative number of dice. "
+							+ "The problematic expression is " + nDice);
+		}
+
 		for (int i = 0; i < nRoll; i++) {
 			res += die.roll();
 		}

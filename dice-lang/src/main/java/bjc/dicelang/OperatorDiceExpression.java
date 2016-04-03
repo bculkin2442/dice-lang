@@ -6,7 +6,7 @@ package bjc.dicelang;
  * @author ben
  *
  */
-public class CompoundDiceExpression implements IDiceExpression {
+public class OperatorDiceExpression implements IDiceExpression {
 	/**
 	 * The operator to use for combining the dice
 	 */
@@ -32,7 +32,7 @@ public class CompoundDiceExpression implements IDiceExpression {
 	 * @param det
 	 *            The operator to use for combining the dices
 	 */
-	public CompoundDiceExpression(IDiceExpression right,
+	public OperatorDiceExpression(IDiceExpression right,
 			IDiceExpression left, DiceExpressionType det) {
 		this.right = right;
 		this.left = left;
@@ -61,7 +61,14 @@ public class CompoundDiceExpression implements IDiceExpression {
 				 * Round to keep results as integers. We don't really have
 				 * any need for floating-point dice
 				 */
-				return right.roll() / left.roll();
+				try {
+					return right.roll() / left.roll();
+				} catch (ArithmeticException aex) {
+					throw new UnsupportedOperationException(
+							"Attempted to divide by zero."
+									+ " Problematic expression is "
+									+ left);
+				}
 			default:
 				throw new IllegalArgumentException(
 						"Got passed  a invalid ScalarExpressionType " + det

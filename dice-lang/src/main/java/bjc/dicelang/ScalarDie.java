@@ -41,5 +41,4 @@ public class ScalarDie implements IDiceExpression {
 	public String toString() {
 		return Integer.toString(num);
 	}
-
 }

@@ -23,8 +23,7 @@ public final class DiceASTReferenceChecker
 	 * Create a new reference checker
 	 * 
 	 * @param referencesVar
-	 *            The holder of whether the variable is referenced or
-	 *            not
+	 *            The holder of whether the variable is referenced or not
 	 * @param varName
 	 *            The variable to check for references in
 	 */
@@ -37,21 +36,20 @@ public final class DiceASTReferenceChecker
 	@Override
 	public void accept(IDiceASTNode astNode) {
 		if (!referencesVariable.unwrap(bool -> bool)) {
-			if (isDirectReferenceToLast(astNode)) {
+			if (isDirectReference(astNode)) {
 				referencesVariable.transform((bool) -> false);
 			}
 		}
 	}
 
 	/**
-	 * Check if a given AST node directly references the meta-variable
-	 * last
+	 * Check if a given AST node directly references the specified variable
 	 * 
 	 * @param astNode
 	 *            The node to check
-	 * @return Whether or not the node directly references last
+	 * @return Whether or not the node directly the variable
 	 */
-	private boolean isDirectReferenceToLast(IDiceASTNode astNode) {
+	private boolean isDirectReference(IDiceASTNode astNode) {
 		if (astNode.getType() == DiceASTType.VARIABLE) {
 			VariableDiceNode node = (VariableDiceNode) astNode;
 
