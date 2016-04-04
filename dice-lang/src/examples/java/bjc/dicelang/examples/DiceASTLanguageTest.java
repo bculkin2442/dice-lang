@@ -8,7 +8,7 @@ import java.util.function.BiConsumer;
 import bjc.dicelang.IDiceExpression;
 import bjc.dicelang.ast.DiceASTDefinedChecker;
 import bjc.dicelang.ast.DiceASTExpression;
-import bjc.dicelang.ast.DiceASTFreezer;
+import bjc.dicelang.ast.DiceASTInliner;
 import bjc.dicelang.ast.DiceASTParser;
 import bjc.dicelang.ast.DiceASTReferenceChecker;
 import bjc.dicelang.ast.nodes.IDiceASTNode;
@@ -40,11 +40,11 @@ public class DiceASTLanguageTest {
 		// Put all the defined special commands in place
 		specialCommands.put("roll", DiceASTLanguageTest::rollReference);
 		specialCommands.put("env", DiceASTLanguageTest::printEnv);
-		specialCommands.put("freeze", DiceASTLanguageTest::freezeVar);
+		specialCommands.put("inline", DiceASTLanguageTest::inlineVariable);
 	}
 
 	/**
-	 * Freeze the references in an expression.
+	 * Inline the references in an expression.
 	 * 
 	 * This means replace variable references with the current contents of
 	 * the variables they refer to
@@ -54,7 +54,7 @@ public class DiceASTLanguageTest {
 	 * @param languageState
 	 *            The state of the language at the moment
 	 */
-	private static void freezeVar(String command,
+	private static void inlineVariable(String command,
 			DiceASTLanguageState languageState) {
 		// Split the string into components
 		String[] args = command.split(" ");
@@ -62,21 +62,21 @@ public class DiceASTLanguageTest {
 		// Make sure we have the correct amount of arguments
 		if (args.length != 3) {
 			System.err.println(
-					"ERROR: Freeze requires you provide the name of expression"
-							+ " to freeze, as well as the name of the variable to bind"
+					"ERROR: Inline requires you provide the name of expression"
+							+ " to inline, as well as the name of the variable to bind"
 							+ " the result to.");
 			return;
 		}
 
-		String expressionToFreeze = args[1];
+		String expressionToInline = args[1];
 
 		String resultingVariable = args[2];
 
-		System.out.println("Freezing references in " + args[1]
+		System.out.println("Inlining references in " + args[1]
 				+ " and binding to " + resultingVariable);
 
 		languageState.doWith(
-				new FreezeHandler(expressionToFreeze, resultingVariable));
+				new InlineHandler(expressionToInline, resultingVariable));
 	}
 
 	/**
@@ -143,6 +143,7 @@ public class DiceASTLanguageTest {
 			System.err.println(
 					"ERROR: There is no expression bound to the variable "
 							+ expressionName + ".");
+			return;
 		}
 
 		for (int i = 1; i <= numberOfRolls; i++) {
@@ -297,8 +298,8 @@ public class DiceASTLanguageTest {
 				new FunctionalMap<>(enviroment)
 						.mapValues((expr) -> expr.getAst());
 
-		AST<IDiceASTNode> expressionSansLast = DiceASTFreezer
-				.selectiveFreeze(builtAST, transformedEnviroment, "last");
+		AST<IDiceASTNode> expressionSansLast = DiceASTInliner
+				.selectiveInline(builtAST, transformedEnviroment, "last");
 
 		return new DiceASTExpression(expressionSansLast, enviroment);
 	}

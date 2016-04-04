@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 
 import bjc.dicelang.ast.DiceASTExpression;
-import bjc.dicelang.ast.DiceASTFreezer;
+import bjc.dicelang.ast.DiceASTInliner;
 import bjc.dicelang.ast.DiceASTParser;
 import bjc.dicelang.ast.nodes.IDiceASTNode;
 import bjc.utils.funcdata.FunctionalMap;
@@ -18,45 +18,45 @@ import bjc.utils.parserutils.AST;
  */
 public class DiceASTLanguagePragmaHandlers {
 	/**
-	 * Handles freezing a specified expression to a new name
+	 * Handles inlining a specified expression to a new name
 	 * 
 	 * @author ben
 	 *
 	 */
-	public static final class FreezeHandler implements
+	public static final class InlineHandler implements
 			BiConsumer<DiceASTParser, Map<String, DiceASTExpression>> {
-		private String	expressionToFreeze;
+		private String	expressionToInline;
 		private String	resultingVariable;
 
 		/**
-		 * Create a new freeze handler
+		 * Create a new inlining handler
 		 * 
-		 * @param expressionToFreeze
-		 *            The name of the expression to freeze
+		 * @param expressionToInline
+		 *            The name of the expression to inline
 		 * @param resultingVariable
-		 *            The name of the variable to bind the frozen
+		 *            The name of the variable to bind the inline
 		 *            expression to
 		 */
-		public FreezeHandler(String expressionToFreeze,
+		public InlineHandler(String expressionToInline,
 				String resultingVariable) {
-			this.expressionToFreeze = expressionToFreeze;
+			this.expressionToInline = expressionToInline;
 			this.resultingVariable = resultingVariable;
 		}
 
 		@Override
 		public void accept(DiceASTParser astParser,
 				Map<String, DiceASTExpression> enviroment) {
-			if (enviroment.containsKey(expressionToFreeze)) {
+			if (enviroment.containsKey(expressionToInline)) {
 				System.err.println(
 						"ERROR: There is no expression bound to the variable "
-								+ expressionToFreeze + ".");
+								+ expressionToInline + ".");
 			} else {
-				AST<IDiceASTNode> frozenAST = DiceASTFreezer.freezeAST(
-						enviroment.get(expressionToFreeze),
+				AST<IDiceASTNode> inlinedAST = DiceASTInliner.inlineAST(
+						enviroment.get(expressionToInline),
 						new FunctionalMap<>(enviroment));
 
 				enviroment.put(resultingVariable,
-						new DiceASTExpression(frozenAST, enviroment));
+						new DiceASTExpression(inlinedAST, enviroment));
 			}
 		}
 	}
