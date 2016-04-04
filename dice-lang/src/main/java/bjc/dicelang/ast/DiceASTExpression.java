@@ -9,8 +9,9 @@ import org.apache.commons.lang3.StringUtils;
 import bjc.dicelang.ComplexDice;
 import bjc.dicelang.CompoundDice;
 import bjc.dicelang.IDiceExpression;
-
+import bjc.utils.data.GenHolder;
 import bjc.utils.data.Pair;
+import bjc.utils.funcdata.bst.ITreePart.TreeLinearizationMethod;
 import bjc.utils.parserutils.AST;
 
 /**
@@ -100,67 +101,102 @@ public class DiceASTExpression implements IDiceExpression {
 				});
 
 		operatorCollapsers.put(OperatorDiceNode.ASSIGN, (left, right) -> {
-			return left.merge((leftValue, leftAST) -> {
-				return right.merge((rightValue, rightAST) -> {
-					String variableName = leftAST.collapse(
-							new VariableRetriever(), (operator) -> {
-								throw new UnsupportedOperationException(
-										"Can only assign to plain variable names. The problem operator is "
-												+ operator);
-							}, (returnedAST) -> returnedAST);
-
-					enviroment.put(variableName,
-							new DiceASTExpression(rightAST, enviroment));
-
-					return new Pair<>(rightValue, new AST<>(
-							OperatorDiceNode.ASSIGN, leftAST, rightAST));
-				});
-			});
+			return parseBinding(enviroment, left, right);
 		});
 
 		operatorCollapsers.put(OperatorDiceNode.COMPOUND,
-				(leftNode, rightNode) -> {
-					return leftNode.merge((leftValue, leftAST) -> {
-						return rightNode.merge((rightValue, rightAST) -> {
-							int compoundValue = Integer.parseInt(
-									Integer.toString(leftValue) + Integer
-											.toString(rightValue));
-
-							return new Pair<>(compoundValue,
-									new AST<>(OperatorDiceNode.COMPOUND,
-											leftAST, rightAST));
-						});
-					});
-				});
+				DiceASTExpression::parseCompound);
 
 		operatorCollapsers.put(OperatorDiceNode.GROUP,
-				(leftNode, rightNode) -> {
-					return leftNode.merge((leftValue, leftAST) -> {
-						return rightNode.merge((rightValue, rightAST) -> {
-							if (leftValue < 0) {
-								throw new UnsupportedOperationException(
-										"Can't attempt to roll a negative number of dice."
-												+ " The problematic AST is "
-												+ leftAST);
-							} else if (rightValue < 1) {
-								throw new UnsupportedOperationException(
-										"Can't roll dice with less than one side."
-												+ " The problematic AST is "
-												+ rightAST);
-							}
-
-							int rolledValue =
-									new ComplexDice(leftValue, rightValue)
-											.roll();
-
-							return new Pair<>(rolledValue,
-									new AST<>(OperatorDiceNode.GROUP,
-											leftAST, rightAST));
-						});
-					});
-				});
+				DiceASTExpression::parseGroup);
 
 		return operatorCollapsers;
+	}
+
+	private static Pair<Integer, AST<IDiceASTNode>> parseBinding(
+			Map<String, DiceASTExpression> enviroment,
+			Pair<Integer, AST<IDiceASTNode>> left,
+			Pair<Integer, AST<IDiceASTNode>> right) {
+		return left.merge((leftValue, leftAST) -> {
+			return right.merge((rightValue, rightAST) -> {
+				String variableName = leftAST
+						.collapse(new VariableRetriever(), (operator) -> {
+							throw new UnsupportedOperationException(
+									"Can only assign to plain variable names. The problem operator is "
+											+ operator);
+						}, (returnedAST) -> returnedAST);
+
+				GenHolder<Boolean> selfReference = new GenHolder<>(false);
+
+				DiceASTReferenceChecker refChecker =
+						new DiceASTReferenceChecker(selfReference,
+								variableName);
+
+				rightAST.traverse(TreeLinearizationMethod.PREORDER,
+						refChecker);
+
+				// Ignore meta-variable that'll be auto-frozen to restore
+				// definition sanity
+				if (selfReference.unwrap((bool) -> bool)
+						&& !variableName.equals("last")) {
+					throw new UnsupportedOperationException(
+							"Variable '" + variableName
+									+ "' references itself. Problematic definition: \n\t"
+									+ rightAST);
+				}
+
+				if (!variableName.equals("last")) {
+					enviroment.put(variableName,
+							new DiceASTExpression(rightAST, enviroment));
+				} else {
+					// Do nothing, last is a auto-handled meta-variable
+				}
+
+				return new Pair<>(rightValue, new AST<>(
+						OperatorDiceNode.ASSIGN, leftAST, rightAST));
+			});
+		});
+	}
+
+	private static Pair<Integer, AST<IDiceASTNode>> parseCompound(
+			Pair<Integer, AST<IDiceASTNode>> leftNode,
+			Pair<Integer, AST<IDiceASTNode>> rightNode) {
+		return leftNode.merge((leftValue, leftAST) -> {
+			return rightNode.merge((rightValue, rightAST) -> {
+				int compoundValue =
+						Integer.parseInt(Integer.toString(leftValue)
+								+ Integer.toString(rightValue));
+
+				return new Pair<>(compoundValue, new AST<>(
+						OperatorDiceNode.COMPOUND, leftAST, rightAST));
+			});
+		});
+	}
+
+	private static Pair<Integer, AST<IDiceASTNode>> parseGroup(
+			Pair<Integer, AST<IDiceASTNode>> leftNode,
+			Pair<Integer, AST<IDiceASTNode>> rightNode) {
+		return leftNode.merge((leftValue, leftAST) -> {
+			return rightNode.merge((rightValue, rightAST) -> {
+				if (leftValue < 0) {
+					throw new UnsupportedOperationException(
+							"Can't attempt to roll a negative number of dice."
+									+ " The problematic AST is "
+									+ leftAST);
+				} else if (rightValue < 1) {
+					throw new UnsupportedOperationException(
+							"Can't roll dice with less than one side."
+									+ " The problematic AST is "
+									+ rightAST);
+				}
+
+				int rolledValue =
+						new ComplexDice(leftValue, rightValue).roll();
+
+				return new Pair<>(rolledValue, new AST<>(
+						OperatorDiceNode.GROUP, leftAST, rightAST));
+			});
+		});
 	}
 
 	/**
@@ -197,46 +233,55 @@ public class DiceASTExpression implements IDiceExpression {
 	 */
 	private Pair<Integer, AST<IDiceASTNode>> evalLeaf(IDiceASTNode tokn) {
 		if (tokn.getType() == DiceASTType.VARIABLE) {
-			String varName = ((VariableDiceNode) tokn).getVariable();
-
-			if (env.containsKey(varName)) {
-				return new Pair<>(env.get(varName).roll(),
-						new AST<>(tokn));
-			} else {
-				// Handle special case for defining variables
-				return new Pair<>(0, new AST<>(tokn));
-			}
+			return parseVariable(tokn);
 		} else if (tokn.getType() == DiceASTType.LITERAL) {
-			LiteralDiceNode literalNode = (LiteralDiceNode) tokn;
-			String dat = literalNode.getData();
-
-			if (StringUtils.countMatches(dat, 'c') == 1
-					&& !dat.equalsIgnoreCase("c")
-					&& !dat.startsWith("c")) {
-				String[] strangs = dat.split("c");
-
-				return new Pair<>(new CompoundDice(strangs).roll(),
-						new AST<>(tokn));
-			} else if (StringUtils.countMatches(dat, 'd') == 1
-					&& !dat.equalsIgnoreCase("d")
-					&& !dat.startsWith("d")) {
-				/*
-				 * Handle dice groups
-				 */
-				return new Pair<>(ComplexDice.fromString(dat).roll(),
-						new AST<>(tokn));
-			} else {
-				try {
-					return new Pair<>(Integer.parseInt(dat),
-							new AST<>(tokn));
-				} catch (NumberFormatException nfex) {
-					throw new UnsupportedOperationException(
-							"Found malformed leaf token " + tokn);
-				}
-			}
+			return parseLiteral(tokn);
 		} else {
 			throw new UnsupportedOperationException("Found leaf operator "
 					+ tokn + ". These aren't supported.");
+		}
+	}
+
+	private static Pair<Integer, AST<IDiceASTNode>>
+			parseLiteral(IDiceASTNode tokn) {
+		LiteralDiceNode literalNode = (LiteralDiceNode) tokn;
+		String dat = literalNode.getData();
+
+		if (isValidInfixOperator(dat, "c")) {
+			String[] strangs = dat.split("c");
+
+			return new Pair<>(new CompoundDice(strangs).roll(),
+					new AST<>(tokn));
+		} else if (isValidInfixOperator(dat, "d")) {
+			/*
+			 * Handle dice groups
+			 */
+			return new Pair<>(ComplexDice.fromString(dat).roll(),
+					new AST<>(tokn));
+		} else {
+			try {
+				return new Pair<>(Integer.parseInt(dat), new AST<>(tokn));
+			} catch (NumberFormatException nfex) {
+				throw new UnsupportedOperationException(
+						"Found malformed leaf token " + tokn);
+			}
+		}
+	}
+
+	private static boolean isValidInfixOperator(String dat, String op) {
+		return StringUtils.countMatches(dat, op) == 1
+				&& !dat.equalsIgnoreCase(op) && !dat.startsWith(op);
+	}
+
+	private Pair<Integer, AST<IDiceASTNode>>
+			parseVariable(IDiceASTNode tokn) {
+		String varName = ((VariableDiceNode) tokn).getVariable();
+
+		if (env.containsKey(varName)) {
+			return new Pair<>(env.get(varName).roll(), new AST<>(tokn));
+		} else {
+			// Handle special case for defining variables
+			return new Pair<>(0, new AST<>(tokn));
 		}
 	}
 

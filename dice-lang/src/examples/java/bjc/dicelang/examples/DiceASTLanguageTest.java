@@ -6,6 +6,7 @@ import java.util.Scanner;
 import java.util.function.BiConsumer;
 
 import bjc.dicelang.IDiceExpression;
+import bjc.dicelang.ast.DiceASTDefinedChecker;
 import bjc.dicelang.ast.DiceASTExpression;
 import bjc.dicelang.ast.DiceASTFreezer;
 import bjc.dicelang.ast.DiceASTParser;
@@ -15,6 +16,7 @@ import bjc.dicelang.ast.IDiceASTNode;
 import static bjc.dicelang.examples.DiceASTLanguagePragmaHandlers.*;
 
 import bjc.utils.data.GenHolder;
+import bjc.utils.data.IHolder;
 import bjc.utils.funcdata.FunctionalMap;
 import bjc.utils.funcdata.bst.ITreePart.TreeLinearizationMethod;
 import bjc.utils.parserutils.AST;
@@ -182,49 +184,110 @@ public class DiceASTLanguageTest {
 			} else {
 
 				// Build an AST from the string expression
-				AST<IDiceASTNode> builtAST =
-						astParser.buildAST(currentLine);
+				AST<IDiceASTNode> builtAST;
+
+				try {
+					builtAST = astParser.buildAST(currentLine);
+				} catch (IllegalStateException isex) {
+					System.out.println(
+							"ERROR: " + isex.getLocalizedMessage());
+
+					currentLine =
+							getNextCommand(inputSource, commandNumber);
+
+					continue;
+				}
 
 				// Build a rollable expression from the AST
 				DiceASTExpression expression =
 						new DiceASTExpression(builtAST, enviroment);
 
+				int sampleRoll;
+
+				try {
+					sampleRoll = expression.roll();
+				} catch (UnsupportedOperationException usex) {
+					System.out.println(
+							"ERROR: " + usex.getLocalizedMessage());
+
+					currentLine =
+							getNextCommand(inputSource, commandNumber);
+
+					continue;
+				}
+
+				if (checkUndefined(enviroment, expression)) {
+					System.out.println(
+							"ERROR: Expression contains undefined variables."
+									+ " Problematic expression: \n\t"
+									+ expression);
+
+					currentLine =
+							getNextCommand(inputSource, commandNumber);
+
+					continue;
+				}
+
+				expression = handleUpdateLast(enviroment, expression);
+
 				// Print out results
 				System.out.println("\tParsed: " + expression.toString());
-				System.out
-						.println("\t\tSample Roll: " + expression.roll());
-
-				// Assume we can update last by default
-				GenHolder<Boolean> canUpdateLast = new GenHolder<>(true);
-
-				// Check that no node references last
-				expression.getAst().traverse(
-						TreeLinearizationMethod.PREORDER,
-						new DiceASTReferenceChecker(canUpdateLast,
-								"last"));
-
-				// Update last if we can
-				if (canUpdateLast.unwrap((flag) -> flag)) {
-					enviroment.put("last", expression);
-				} else {
-					// We need to freeze out references to last
-					enviroment.put("last",
-							freezeOutLast(enviroment, builtAST));
-				}
+				System.out.println("\t\tSample Roll: " + sampleRoll);
 			}
 
 			// Increase the number of commands
 			commandNumber++;
 
-			// Read a new command
-			System.out.print("dice-lang-" + commandNumber + "> ");
-			currentLine = inputSource.nextLine();
+			currentLine = getNextCommand(inputSource, commandNumber);
 		}
 
 		System.out.println("Bye.");
 
 		// Cleanup after ourselves
 		inputSource.close();
+	}
+
+	private static DiceASTExpression handleUpdateLast(
+			Map<String, DiceASTExpression> enviroment,
+			DiceASTExpression expression) {
+		IHolder<Boolean> canUpdateLast = new GenHolder<>(true);
+
+		// Check that no node references last
+		expression.getAst().traverse(TreeLinearizationMethod.PREORDER,
+				new DiceASTReferenceChecker(canUpdateLast, "last"));
+
+		// Update last if we can
+		if (canUpdateLast.unwrap((flag) -> flag)) {
+			enviroment.put("last", expression);
+		} else {
+			// We need to freeze out references to last
+			expression = freezeOutLast(enviroment, expression.getAst());
+
+			enviroment.put("last", expression);
+		}
+
+		return expression;
+	}
+
+	private static boolean checkUndefined(
+			Map<String, DiceASTExpression> enviroment,
+			DiceASTExpression expression) {
+		IHolder<Boolean> containsUndefined = new GenHolder<>(false);
+
+		// Check that no node references last
+		expression.getAst().traverse(TreeLinearizationMethod.PREORDER,
+				new DiceASTDefinedChecker(containsUndefined, enviroment));
+
+		return containsUndefined.unwrap((bool) -> bool);
+	}
+
+	private static String getNextCommand(Scanner inputSource,
+			int commandNumber) {
+		String currentLine;
+		// Read a new command
+		System.out.print("dice-lang-" + commandNumber + "> ");
+		currentLine = inputSource.nextLine();
+		return currentLine;
 	}
 
 	private static DiceASTExpression freezeOutLast(

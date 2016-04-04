@@ -53,6 +53,7 @@ public class DiceASTFreezer {
 				FunctionalMap<String, AST<IDiceASTNode>> env,
 				FunctionalList<String> varNames) {
 			super(env);
+			
 			variableNames = varNames;
 		}
 
