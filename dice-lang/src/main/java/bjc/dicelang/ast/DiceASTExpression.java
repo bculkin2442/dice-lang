@@ -4,10 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-import org.apache.commons.lang3.StringUtils;
-
 import bjc.dicelang.ComplexDice;
-import bjc.dicelang.CompoundDice;
 import bjc.dicelang.IDiceExpression;
 import bjc.dicelang.ast.nodes.DiceASTType;
 import bjc.dicelang.ast.nodes.IDiceASTNode;
@@ -50,10 +47,9 @@ public class DiceASTExpression implements IDiceExpression {
 	 *            The enviroment to evaluate bindings and such against
 	 * @return The operations to use when collapsing the AST
 	 */
-	private static Map<IDiceASTNode, IOperatorCollapser>
-			buildOperations(Map<String, DiceASTExpression> enviroment) {
-		Map<IDiceASTNode, IOperatorCollapser> operatorCollapsers =
-				new HashMap<>();
+	private static Map<IDiceASTNode, IOperatorCollapser> buildOperations(
+			Map<String, DiceASTExpression> enviroment) {
+		Map<IDiceASTNode, IOperatorCollapser> operatorCollapsers = new HashMap<>();
 
 		operatorCollapsers.put(OperatorDiceNode.ADD,
 				(leftNode, rightNode) -> {
@@ -133,9 +129,8 @@ public class DiceASTExpression implements IDiceExpression {
 
 				GenHolder<Boolean> selfReference = new GenHolder<>(false);
 
-				DiceASTReferenceChecker refChecker =
-						new DiceASTReferenceChecker(selfReference,
-								variableName);
+				DiceASTReferenceChecker refChecker = new DiceASTReferenceChecker(
+						selfReference, variableName);
 
 				rightAST.traverse(TreeLinearizationMethod.PREORDER,
 						refChecker);
@@ -168,8 +163,8 @@ public class DiceASTExpression implements IDiceExpression {
 			Pair<Integer, AST<IDiceASTNode>> rightNode) {
 		return leftNode.merge((leftValue, leftAST) -> {
 			return rightNode.merge((rightValue, rightAST) -> {
-				int compoundValue =
-						Integer.parseInt(Integer.toString(leftValue)
+				int compoundValue = Integer
+						.parseInt(Integer.toString(leftValue)
 								+ Integer.toString(rightValue));
 
 				return new Pair<>(compoundValue, new AST<>(
@@ -195,8 +190,8 @@ public class DiceASTExpression implements IDiceExpression {
 									+ rightAST);
 				}
 
-				int rolledValue =
-						new ComplexDice(leftValue, rightValue).roll();
+				int rolledValue = new ComplexDice(leftValue, rightValue)
+						.roll();
 
 				return new Pair<>(rolledValue, new AST<>(
 						OperatorDiceNode.GROUP, leftAST, rightAST));
@@ -231,62 +226,37 @@ public class DiceASTExpression implements IDiceExpression {
 	/**
 	 * Expand a leaf AST token into a pair for evaluation
 	 * 
-	 * @param tokn
+	 * @param leafNode
 	 *            The token to evaluate
 	 * @return A pair consisting of the token's value and the AST it
 	 *         represents
 	 */
-	private Pair<Integer, AST<IDiceASTNode>> evalLeaf(IDiceASTNode tokn) {
-		if (tokn.getType() == DiceASTType.VARIABLE) {
-			return parseVariable(tokn);
-		} else if (tokn.getType() == DiceASTType.LITERAL) {
-			return parseLiteral(tokn);
+	private Pair<Integer, AST<IDiceASTNode>> evaluateLeaf(
+			IDiceASTNode leafNode) {
+		if (leafNode.getType() == DiceASTType.VARIABLE) {
+			VariableDiceNode node = (VariableDiceNode) leafNode;
+
+			return parseVariable(node);
+		} else if (leafNode.getType() == DiceASTType.LITERAL) {
+			LiteralDiceNode node = (LiteralDiceNode) leafNode;
+
+			return node.toParseValue();
 		} else {
 			throw new UnsupportedOperationException("Found leaf operator "
-					+ tokn + ". These aren't supported.");
+					+ leafNode + ". These aren't supported.");
 		}
 	}
 
-	private static Pair<Integer, AST<IDiceASTNode>>
-			parseLiteral(IDiceASTNode tokn) {
-		LiteralDiceNode literalNode = (LiteralDiceNode) tokn;
-		String dat = literalNode.getData();
-
-		if (isValidInfixOperator(dat, "c")) {
-			String[] strangs = dat.split("c");
-
-			return new Pair<>(new CompoundDice(strangs).roll(),
-					new AST<>(tokn));
-		} else if (isValidInfixOperator(dat, "d")) {
-			/*
-			 * Handle dice groups
-			 */
-			return new Pair<>(ComplexDice.fromString(dat).roll(),
-					new AST<>(tokn));
-		} else {
-			try {
-				return new Pair<>(Integer.parseInt(dat), new AST<>(tokn));
-			} catch (NumberFormatException nfex) {
-				throw new UnsupportedOperationException(
-						"Found malformed leaf token " + tokn);
-			}
-		}
-	}
-
-	private static boolean isValidInfixOperator(String dat, String op) {
-		return StringUtils.countMatches(dat, op) == 1
-				&& !dat.equalsIgnoreCase(op) && !dat.startsWith(op);
-	}
-
-	private Pair<Integer, AST<IDiceASTNode>>
-			parseVariable(IDiceASTNode tokn) {
-		String varName = ((VariableDiceNode) tokn).getVariable();
+	private Pair<Integer, AST<IDiceASTNode>> parseVariable(
+			VariableDiceNode leafNode) {
+		String varName = leafNode.getVariable();
 
 		if (env.containsKey(varName)) {
-			return new Pair<>(env.get(varName).roll(), new AST<>(tokn));
+			return new Pair<>(env.get(varName).roll(),
+					new AST<>(leafNode));
 		} else {
 			// Handle special case for defining variables
-			return new Pair<>(0, new AST<>(tokn));
+			return new Pair<>(0, new AST<>(leafNode));
 		}
 	}
 
@@ -306,10 +276,10 @@ public class DiceASTExpression implements IDiceExpression {
 	 */
 	@Override
 	public int roll() {
-		Map<IDiceASTNode, IOperatorCollapser> operations =
-				buildOperations(env);
+		Map<IDiceASTNode, IOperatorCollapser> operations = buildOperations(
+				env);
 
-		return ast.collapse(this::evalLeaf, operations::get,
+		return ast.collapse(this::evaluateLeaf, operations::get,
 				(returnedValue) -> returnedValue
 						.merge((left, right) -> left));
 	}
@@ -322,5 +292,16 @@ public class DiceASTExpression implements IDiceExpression {
 	@Override
 	public String toString() {
 		return ast.toString();
+	}
+
+	@Override
+	public int optimize() {
+		throw new UnsupportedOperationException(
+				"Use DiceASTOptimizer for optimizing these");
+	}
+
+	@Override
+	public boolean canOptimize() {
+		return false;
 	}
 }

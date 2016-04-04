@@ -41,4 +41,14 @@ public class ScalarDie implements IDiceExpression {
 	public String toString() {
 		return Integer.toString(num);
 	}
+
+	@Override
+	public int optimize() {
+		return num;
+	}
+
+	@Override
+	public boolean canOptimize() {
+		return true;
+	}
 }

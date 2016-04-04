@@ -30,7 +30,7 @@ public class Die implements IDiceExpression {
 			throw new UnsupportedOperationException(
 					"Dice with less than 1 side are not supported");
 		}
-		
+
 		this.nSides = nSides;
 	}
 
@@ -52,5 +52,15 @@ public class Die implements IDiceExpression {
 	@Override
 	public String toString() {
 		return "d" + nSides;
+	}
+
+	@Override
+	public int optimize() {
+		return 1;
+	}
+
+	@Override
+	public boolean canOptimize() {
+		return nSides == 1;
 	}
 }

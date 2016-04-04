@@ -15,7 +15,7 @@ public class ComplexDice implements IDiceExpression {
 	 *            The string to parse the dice from
 	 * @return A dice group parsed from the string
 	 */
-	public static ComplexDice fromString(String dice) {
+	public static IDiceExpression fromString(String dice) {
 		/*
 		 * Split it on the dice type marker
 		 */
@@ -115,5 +115,19 @@ public class ComplexDice implements IDiceExpression {
 			return "complex[n=" + nDice.toString() + ", d="
 					+ die.toString() + "]";
 		}
+	}
+
+	@Override
+	public boolean canOptimize() {
+		if (nDice.canOptimize() && die.canOptimize()) {
+			return die.optimize() == 1;
+		}
+
+		return false;
+	}
+
+	@Override
+	public int optimize() {
+		return nDice.optimize();
 	}
 }

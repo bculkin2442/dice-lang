@@ -15,16 +15,6 @@ public class DiceExpressionBuilder {
 	private IDiceExpression baking;
 
 	/**
-	 * Build a dice expresssion from a seed dice
-	 * 
-	 * @param firstDice
-	 *            The dice to use as a seed
-	 */
-	public DiceExpressionBuilder(ComplexDice firstDice) {
-		baking = firstDice;
-	}
-
-	/**
 	 * Build a dice expression from a seed dice expression
 	 * 
 	 * @param seed

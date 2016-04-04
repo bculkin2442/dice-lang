@@ -77,4 +77,14 @@ public class CompoundDice implements IDiceExpression {
 	public String toString() {
 		return "compound[l=" + l.toString() + ", r=" + r.toString() + "]";
 	}
+
+	@Override
+	public int optimize() {
+		return Integer.parseInt(l.optimize() + "" + r.optimize());
+	}
+
+	@Override
+	public boolean canOptimize() {
+		return l.canOptimize() && r.canOptimize();
+	}
 }
