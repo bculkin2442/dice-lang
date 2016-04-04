@@ -12,6 +12,7 @@ import bjc.dicelang.ast.DiceASTInliner;
 import bjc.dicelang.ast.DiceASTParser;
 import bjc.dicelang.ast.DiceASTReferenceChecker;
 import bjc.dicelang.ast.nodes.IDiceASTNode;
+import bjc.dicelang.ast.optimization.DiceASTOptimizer;
 
 import static bjc.dicelang.examples.DiceASTLanguagePragmaHandlers.*;
 
@@ -41,6 +42,31 @@ public class DiceASTLanguageTest {
 		specialCommands.put("roll", DiceASTLanguageTest::rollReference);
 		specialCommands.put("env", DiceASTLanguageTest::printEnv);
 		specialCommands.put("inline", DiceASTLanguageTest::inlineVariable);
+		specialCommands.put("optimize",
+				DiceASTLanguageTest::optimizeReference);
+	}
+
+	private static void optimizeReference(String command,
+			DiceASTLanguageState languageState) {
+		String[] args = command.split(" ");
+
+		if (args.length != 2) {
+			System.err.println(
+					"ERROR: Optimize requires the name of the expression to optimize");
+		}
+
+		languageState.doWith((astParser, enviroment) -> {
+			if (!enviroment.containsKey(args[1])) {
+				System.err.println(
+						"ERROR: Attempted to optimize undefined variable "
+								+ args[1]);
+			}
+
+			AST<IDiceASTNode> optimizedTree = DiceASTOptimizer
+					.optimizeTree(enviroment.get(args[1]).getAst());
+
+			System.out.println("Optimized:  " + optimizedTree);
+		});
 	}
 
 	/**
