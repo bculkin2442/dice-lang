@@ -2,6 +2,9 @@ package bjc.dicelang.ast;
 
 import java.util.function.Function;
 
+import bjc.dicelang.ast.nodes.DiceASTType;
+import bjc.dicelang.ast.nodes.IDiceASTNode;
+import bjc.dicelang.ast.nodes.VariableDiceNode;
 import bjc.utils.funcdata.FunctionalList;
 import bjc.utils.funcdata.FunctionalMap;
 import bjc.utils.parserutils.AST;

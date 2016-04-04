@@ -1,4 +1,4 @@
-package bjc.dicelang.ast;
+package bjc.dicelang.ast.nodes;
 
 /**
  * An enum to represent the type of node an AST node is

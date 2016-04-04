@@ -15,7 +15,11 @@ import bjc.dicelang.DiceExpressionType;
 import bjc.dicelang.IDiceExpression;
 import bjc.dicelang.ReferenceDiceExpression;
 import bjc.dicelang.ScalarDie;
-
+import bjc.dicelang.ast.nodes.DiceASTType;
+import bjc.dicelang.ast.nodes.IDiceASTNode;
+import bjc.dicelang.ast.nodes.LiteralDiceNode;
+import bjc.dicelang.ast.nodes.OperatorDiceNode;
+import bjc.dicelang.ast.nodes.VariableDiceNode;
 import bjc.utils.parserutils.AST;
 
 /**

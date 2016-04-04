@@ -1,4 +1,4 @@
-package bjc.dicelang.ast;
+package bjc.dicelang.ast.nodes;
 
 /**
  * A AST node that represents a literal value

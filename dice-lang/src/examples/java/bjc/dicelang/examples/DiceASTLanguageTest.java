@@ -11,7 +11,7 @@ import bjc.dicelang.ast.DiceASTExpression;
 import bjc.dicelang.ast.DiceASTFreezer;
 import bjc.dicelang.ast.DiceASTParser;
 import bjc.dicelang.ast.DiceASTReferenceChecker;
-import bjc.dicelang.ast.IDiceASTNode;
+import bjc.dicelang.ast.nodes.IDiceASTNode;
 
 import static bjc.dicelang.examples.DiceASTLanguagePragmaHandlers.*;
 

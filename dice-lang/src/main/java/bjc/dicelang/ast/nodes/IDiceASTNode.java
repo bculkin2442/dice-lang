@@ -1,4 +1,4 @@
-package bjc.dicelang.ast;
+package bjc.dicelang.ast.nodes;
 
 /**
  * The interface for a node in a dice AST

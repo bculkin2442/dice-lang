@@ -2,6 +2,7 @@ package bjc.dicelang.ast;
 
 import java.util.function.BinaryOperator;
 
+import bjc.dicelang.ast.nodes.IDiceASTNode;
 import bjc.utils.data.Pair;
 import bjc.utils.parserutils.AST;
 
