@@ -38,7 +38,9 @@ public class LiteralDiceNode implements IDiceASTNode {
 
 	/**
 	 * Create a new node with the given value
-	 * @param val The value for this node
+	 * 
+	 * @param val
+	 *            The value for this node
 	 */
 	public LiteralDiceNode(int val) {
 		this(Integer.toString(val));
@@ -126,8 +128,12 @@ public class LiteralDiceNode implements IDiceASTNode {
 			try {
 				return new ScalarDie(Integer.parseInt(literalData));
 			} catch (NumberFormatException nfex) {
-				throw new UnsupportedOperationException(
+				UnsupportedOperationException usex = new UnsupportedOperationException(
 						"Found malformed leaf token " + this);
+
+				usex.initCause(nfex);
+
+				throw usex;
 			}
 		}
 	}
@@ -165,7 +171,8 @@ public class LiteralDiceNode implements IDiceASTNode {
 		try {
 			Integer.parseInt(value);
 			return true;
-		} catch (NumberFormatException nfex) {
+		} catch (@SuppressWarnings("unused") NumberFormatException nfex) {
+			// We don't care about details
 			return false;
 		}
 	}

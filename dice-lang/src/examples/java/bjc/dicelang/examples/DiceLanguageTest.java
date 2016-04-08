@@ -76,7 +76,7 @@ public class DiceLanguageTest {
 			if (acts.containsKey(header)) {
 				acts.get(header).accept(ln, state);
 			} else {
-				IDiceExpression exp = dep.parse(ln, env);
+				IDiceExpression exp = DiceExpressionParser.parse(ln, env);
 
 				System.out.println("\tParsed: " + exp.toString());
 				System.out.println("\tSample Roll: " + exp.roll());

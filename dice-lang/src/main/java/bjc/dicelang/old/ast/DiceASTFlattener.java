@@ -1,4 +1,4 @@
-package bjc.dicelang.ast;
+package bjc.dicelang.old.ast;
 
 import java.util.HashMap;
 import java.util.Map;

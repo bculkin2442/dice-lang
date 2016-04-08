@@ -3,10 +3,10 @@ package bjc.dicelang.examples;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
-import bjc.dicelang.ast.DiceASTExpression;
-import bjc.dicelang.ast.DiceASTInliner;
-import bjc.dicelang.ast.DiceASTParser;
 import bjc.dicelang.ast.nodes.IDiceASTNode;
+import bjc.dicelang.old.ast.DiceASTExpression;
+import bjc.dicelang.old.ast.DiceASTInliner;
+import bjc.dicelang.old.ast.DiceASTParser;
 import bjc.utils.funcdata.FunctionalMap;
 import bjc.utils.parserutils.AST;
 

@@ -38,7 +38,11 @@ public enum OperatorDiceNode implements IDiceASTNode {
 	/**
 	 * Represents subtracting two nodes
 	 */
-	SUBTRACT;
+	SUBTRACT,
+	/**
+	 * Represents executing one statement in the context of the other
+	 */
+	LET;
 
 	/**
 	 * Create a operator node from a string
@@ -63,6 +67,8 @@ public enum OperatorDiceNode implements IDiceASTNode {
 				return GROUP;
 			case "c":
 				return COMPOUND;
+			case "->":
+				return LET;
 			default:
 				throw new IllegalArgumentException(
 						s + " is not a valid operator node");

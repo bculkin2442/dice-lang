@@ -6,19 +6,20 @@ import java.util.Scanner;
 import java.util.function.BiConsumer;
 
 import bjc.dicelang.IDiceExpression;
-import bjc.dicelang.ast.DiceASTDefinedChecker;
-import bjc.dicelang.ast.DiceASTExpression;
-import bjc.dicelang.ast.DiceASTInliner;
-import bjc.dicelang.ast.DiceASTParser;
-import bjc.dicelang.ast.DiceASTReferenceChecker;
 import bjc.dicelang.ast.nodes.IDiceASTNode;
 import bjc.dicelang.ast.optimization.DiceASTOptimizer;
+import bjc.dicelang.old.ast.DiceASTDefinedChecker;
+import bjc.dicelang.old.ast.DiceASTExpression;
+import bjc.dicelang.old.ast.DiceASTInliner;
+import bjc.dicelang.old.ast.DiceASTParser;
+import bjc.dicelang.old.ast.DiceASTReferenceChecker;
 
 import static bjc.dicelang.examples.DiceASTLanguagePragmaHandlers.*;
 
 import bjc.utils.data.GenHolder;
 import bjc.utils.data.IHolder;
 import bjc.utils.funcdata.FunctionalMap;
+import bjc.utils.funcdata.IFunctionalMap;
 import bjc.utils.funcdata.bst.ITreePart.TreeLinearizationMethod;
 import bjc.utils.parserutils.AST;
 
@@ -149,20 +150,21 @@ public class DiceASTLanguageTest {
 
 		try {
 			numberOfRolls = Integer.parseInt(args[2]);
-		} catch (NumberFormatException nfex) {
+		} catch (@SuppressWarnings("unused") NumberFormatException nfex) {
+			// Don't care about details
 			System.err.println(
 					"ERROR: The second argument must be a valid number, and "
 							+ args[2] + " is not one.");
 			return;
 		}
 
-		IDiceExpression expressionToRoll =
-				languageState.merge((astParser, enviroment) -> {
+		IDiceExpression expressionToRoll = languageState
+				.merge((astParser, enviroment) -> {
 					if (!enviroment.containsKey(expressionName)) {
 						return null;
-					} else {
-						return enviroment.get(expressionName);
 					}
+
+					return enviroment.get(expressionName);
 				});
 
 		if (expressionToRoll == null) {
@@ -198,8 +200,8 @@ public class DiceASTLanguageTest {
 		// The parser to turn strings into AST's
 		DiceASTParser astParser = new DiceASTParser();
 
-		DiceASTLanguageState languageState =
-				new DiceASTLanguageState(astParser, enviroment);
+		DiceASTLanguageState languageState = new DiceASTLanguageState(
+				astParser, enviroment);
 
 		while (!currentLine.equalsIgnoreCase("quit")) {
 			String prospectiveCommandName = currentLine.split(" ")[0];
@@ -214,20 +216,20 @@ public class DiceASTLanguageTest {
 				AST<IDiceASTNode> builtAST;
 
 				try {
-					builtAST = astParser.buildAST(currentLine);
+					builtAST = DiceASTParser.buildAST(currentLine);
 				} catch (IllegalStateException isex) {
 					System.out.println(
 							"ERROR: " + isex.getLocalizedMessage());
 
-					currentLine =
-							getNextCommand(inputSource, commandNumber);
+					currentLine = getNextCommand(inputSource,
+							commandNumber);
 
 					continue;
 				}
 
 				// Build a rollable expression from the AST
-				DiceASTExpression expression =
-						new DiceASTExpression(builtAST, enviroment);
+				DiceASTExpression expression = new DiceASTExpression(
+						builtAST, enviroment);
 
 				int sampleRoll;
 
@@ -237,8 +239,8 @@ public class DiceASTLanguageTest {
 					System.out.println(
 							"ERROR: " + usex.getLocalizedMessage());
 
-					currentLine =
-							getNextCommand(inputSource, commandNumber);
+					currentLine = getNextCommand(inputSource,
+							commandNumber);
 
 					continue;
 				}
@@ -249,8 +251,8 @@ public class DiceASTLanguageTest {
 									+ " Problematic expression: \n\t"
 									+ expression);
 
-					currentLine =
-							getNextCommand(inputSource, commandNumber);
+					currentLine = getNextCommand(inputSource,
+							commandNumber);
 
 					continue;
 				}
@@ -320,9 +322,8 @@ public class DiceASTLanguageTest {
 	private static DiceASTExpression freezeOutLast(
 			Map<String, DiceASTExpression> enviroment,
 			AST<IDiceASTNode> builtAST) {
-		FunctionalMap<String, AST<IDiceASTNode>> transformedEnviroment =
-				new FunctionalMap<>(enviroment)
-						.mapValues((expr) -> expr.getAst());
+		IFunctionalMap<String, AST<IDiceASTNode>> transformedEnviroment = new FunctionalMap<>(
+				enviroment).mapValues((expr) -> expr.getAst());
 
 		AST<IDiceASTNode> expressionSansLast = DiceASTInliner
 				.selectiveInline(builtAST, transformedEnviroment, "last");

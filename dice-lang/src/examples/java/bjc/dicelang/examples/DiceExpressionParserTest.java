@@ -44,7 +44,8 @@ public class DiceExpressionParserTest {
 		 */
 		DiceExpressionParser dep = new DiceExpressionParser();
 
-		IDiceExpression dexp = dep.parse(exp, new HashMap<>());
+		IDiceExpression dexp = DiceExpressionParser.parse(exp,
+				new HashMap<>());
 
 		/*
 		 * Roll the dice a specified amount of times

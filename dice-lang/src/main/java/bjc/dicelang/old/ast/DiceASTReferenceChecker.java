@@ -1,6 +1,5 @@
-package bjc.dicelang.ast;
+package bjc.dicelang.old.ast;
 
-import java.util.Map;
 import java.util.function.Consumer;
 
 import bjc.dicelang.ast.nodes.DiceASTType;
@@ -14,46 +13,46 @@ import bjc.utils.data.IHolder;
  * @author ben
  *
  */
-public final class DiceASTDefinedChecker
+public final class DiceASTReferenceChecker
 		implements Consumer<IDiceASTNode> {
 	/**
 	 * This is true if the specified node references the set variable
 	 */
-	private IHolder<Boolean>				referencesVariable;
+	private IHolder<Boolean>	referencesVariable;
 
-	private Map<String, DiceASTExpression>	enviroment;
+	private String				varName;
 
 	/**
 	 * Create a new reference checker
 	 * 
 	 * @param referencesVar
 	 *            The holder of whether the variable is referenced or not
-	 * @param env
-	 *            The enviroment to check undefinedness against
+	 * @param varName
+	 *            The variable to check for references in
 	 */
-	public DiceASTDefinedChecker(IHolder<Boolean> referencesVar,
-			Map<String, DiceASTExpression> env) {
+	public DiceASTReferenceChecker(IHolder<Boolean> referencesVar,
+			String varName) {
 		this.referencesVariable = referencesVar;
-		this.enviroment = env;
+		this.varName = varName;
 	}
 
 	@Override
 	public void accept(IDiceASTNode astNode) {
-		referencesVariable.transform((bool) -> checkUndefined(astNode));
+		referencesVariable.transform((bool) -> isDirectReference(astNode));
 	}
 
 	/**
-	 * Check if a given AST node references an undefined variable
+	 * Check if a given AST node directly references the specified variable
 	 * 
 	 * @param astNode
 	 *            The node to check
 	 * @return Whether or not the node directly the variable
 	 */
-	private boolean checkUndefined(IDiceASTNode astNode) {
+	private boolean isDirectReference(IDiceASTNode astNode) {
 		if (astNode.getType() == DiceASTType.VARIABLE) {
 			VariableDiceNode node = (VariableDiceNode) astNode;
 
-			return !enviroment.containsKey(node.getVariable());
+			return node.getVariable().equals(varName);
 		} else {
 			return false;
 		}

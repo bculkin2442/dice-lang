@@ -36,26 +36,26 @@ public class DiceASTOptimizer {
 		@Override
 		public AST<IDiceASTNode> apply(AST<IDiceASTNode> leftAST,
 				AST<IDiceASTNode> rightAST) {
-			AST<IDiceASTNode> rightBranchOfLeftAST =
-					leftAST.applyToRight((rightSideAST) -> rightSideAST);
-			AST<IDiceASTNode> leftBranchOfLeftAST =
-					leftAST.applyToRight((rightSideAST) -> rightSideAST);
+			AST<IDiceASTNode> rightBranchOfLeftAST = leftAST
+					.applyToRight((rightSideAST) -> rightSideAST);
+			AST<IDiceASTNode> leftBranchOfLeftAST = leftAST
+					.applyToRight((rightSideAST) -> rightSideAST);
 
 			boolean leftContainsNestedConstant = DiceASTOptimizer
 					.checkNodeType(rightBranchOfLeftAST, LITERAL)
 					&& DiceASTOptimizer.isNodeConstant(leftAST);
 
-			boolean isRightConstant =
-					DiceASTOptimizer.checkNodeType(rightAST, LITERAL)
-							&& DiceASTOptimizer.isNodeConstant(leftAST);
+			boolean isRightConstant = DiceASTOptimizer
+					.checkNodeType(rightAST, LITERAL)
+					&& DiceASTOptimizer.isNodeConstant(leftAST);
 
 			if (leftContainsNestedConstant && isRightConstant) {
 				int combinedValue = valueCollapser.apply(
 						getNodeValue(rightBranchOfLeftAST),
 						getNodeValue(rightAST));
 
-				AST<IDiceASTNode> newRightBranch =
-						new AST<>(new LiteralDiceNode(combinedValue));
+				AST<IDiceASTNode> newRightBranch = new AST<>(
+						new LiteralDiceNode(combinedValue));
 
 				return new AST<>(type, leftBranchOfLeftAST,
 						newRightBranch);
@@ -82,13 +82,13 @@ public class DiceASTOptimizer {
 		@Override
 		public AST<IDiceASTNode> apply(AST<IDiceASTNode> leftAST,
 				AST<IDiceASTNode> rightAST) {
-			boolean isLeftConstant =
-					DiceASTOptimizer.checkNodeType(leftAST, LITERAL)
-							&& DiceASTOptimizer.isNodeConstant(leftAST);
+			boolean isLeftConstant = DiceASTOptimizer
+					.checkNodeType(leftAST, LITERAL)
+					&& DiceASTOptimizer.isNodeConstant(leftAST);
 
-			boolean isRightConstant =
-					DiceASTOptimizer.checkNodeType(rightAST, LITERAL)
-							&& DiceASTOptimizer.isNodeConstant(leftAST);
+			boolean isRightConstant = DiceASTOptimizer
+					.checkNodeType(rightAST, LITERAL)
+					&& DiceASTOptimizer.isNodeConstant(leftAST);
 
 			if (isLeftConstant) {
 				if (isRightConstant) {
@@ -107,10 +107,8 @@ public class DiceASTOptimizer {
 		}
 	}
 
-	private static Map<IDiceASTNode, BinaryOperator<AST<IDiceASTNode>>>
-			buildConstantCollapsers() {
-		Map<IDiceASTNode, BinaryOperator<AST<IDiceASTNode>>> operatorCollapsers =
-				new HashMap<>();
+	private static Map<IDiceASTNode, BinaryOperator<AST<IDiceASTNode>>> buildConstantCollapsers() {
+		Map<IDiceASTNode, BinaryOperator<AST<IDiceASTNode>>> operatorCollapsers = new HashMap<>();
 
 		operatorCollapsers.put(OperatorDiceNode.ADD,
 				new ArithmeticOperationCollapser(OperatorDiceNode.ADD,
@@ -131,10 +129,8 @@ public class DiceASTOptimizer {
 		return operatorCollapsers;
 	}
 
-	private static Map<IDiceASTNode, BinaryOperator<AST<IDiceASTNode>>>
-			buildNestedConstantCollapsers() {
-		Map<IDiceASTNode, BinaryOperator<AST<IDiceASTNode>>> operatorCollapsers =
-				new HashMap<>();
+	private static Map<IDiceASTNode, BinaryOperator<AST<IDiceASTNode>>> buildNestedConstantCollapsers() {
+		Map<IDiceASTNode, BinaryOperator<AST<IDiceASTNode>>> operatorCollapsers = new HashMap<>();
 
 		operatorCollapsers.put(OperatorDiceNode.ADD,
 				new NestedArithmeticOperationCollapser(
@@ -167,9 +163,9 @@ public class DiceASTOptimizer {
 			IDiceExpression leaf) {
 		if (leaf.canOptimize()) {
 			return new LiteralDiceNode(Integer.toString(leaf.optimize()));
-		} else {
-			return node;
 		}
+
+		return node;
 	}
 
 	private static AST<IDiceASTNode> finishTree(AST<IDiceASTNode> tree) {
@@ -184,14 +180,13 @@ public class DiceASTOptimizer {
 	 * @return The optimized tree
 	 */
 	public static AST<IDiceASTNode> optimizeTree(AST<IDiceASTNode> tree) {
-		AST<IDiceASTNode> astWithConstantsFolded =
-				tree.collapse(DiceASTOptimizer::collapseLeaf,
-						buildConstantCollapsers()::get,
-						DiceASTOptimizer::finishTree);
+		AST<IDiceASTNode> astWithConstantsFolded = tree.collapse(
+				DiceASTOptimizer::collapseLeaf,
+				buildConstantCollapsers()::get,
+				DiceASTOptimizer::finishTree);
 
-		AST<IDiceASTNode> astWithNestedConstantsFolded =
-				astWithConstantsFolded.collapse(
-						DiceASTOptimizer::collapseLeaf,
+		AST<IDiceASTNode> astWithNestedConstantsFolded = astWithConstantsFolded
+				.collapse(DiceASTOptimizer::collapseLeaf,
 						buildNestedConstantCollapsers()::get,
 						DiceASTOptimizer::finishTree);
 

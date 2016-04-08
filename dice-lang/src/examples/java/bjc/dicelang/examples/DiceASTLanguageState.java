@@ -2,8 +2,8 @@ package bjc.dicelang.examples;
 
 import java.util.Map;
 
-import bjc.dicelang.ast.DiceASTExpression;
-import bjc.dicelang.ast.DiceASTParser;
+import bjc.dicelang.old.ast.DiceASTExpression;
+import bjc.dicelang.old.ast.DiceASTParser;
 import bjc.utils.data.Pair;
 
 /**

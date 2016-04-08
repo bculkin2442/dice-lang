@@ -1,7 +1,8 @@
-package bjc.dicelang.ast;
+package bjc.dicelang.old.ast;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BinaryOperator;
 import java.util.function.Function;
 
 import bjc.dicelang.ComplexDice;
@@ -24,6 +25,37 @@ import bjc.utils.parserutils.AST;
  *
  */
 public class DiceASTExpression implements IDiceExpression {
+	private static final class ArithmeticCollapser
+			implements IOperatorCollapser {
+		private OperatorDiceNode		type;
+
+		private BinaryOperator<Integer>	valueOp;
+
+		public ArithmeticCollapser(OperatorDiceNode type,
+				BinaryOperator<Integer> valueOp) {
+			this.type = type;
+			this.valueOp = valueOp;
+		}
+
+		@Override
+		public Pair<Integer, AST<IDiceASTNode>> apply(
+				Pair<Integer, AST<IDiceASTNode>> leftNode,
+				Pair<Integer, AST<IDiceASTNode>> rightNode) {
+			return leftNode.merge((leftValue, leftAST) -> {
+				return rightNode.merge((rightValue, rightAST) -> {
+					if (type == OperatorDiceNode.DIVIDE
+							&& rightValue == 0) {
+						throw new ArithmeticException(
+								"Attempted to divide by zero. The AST of the problem expression is "
+										+ rightAST);
+					}
+
+					return new Pair<>(valueOp.apply(leftValue, rightValue),
+							new AST<>(type, leftAST, rightAST));
+				});
+			});
+		}
+	}
 
 	private static final class VariableRetriever
 			implements Function<IDiceASTNode, String> {
@@ -47,59 +79,26 @@ public class DiceASTExpression implements IDiceExpression {
 	 *            The enviroment to evaluate bindings and such against
 	 * @return The operations to use when collapsing the AST
 	 */
-	private static Map<IDiceASTNode, IOperatorCollapser> buildOperations(
-			Map<String, DiceASTExpression> enviroment) {
-		Map<IDiceASTNode, IOperatorCollapser> operatorCollapsers = new HashMap<>();
+	private static Map<IDiceASTNode, IOperatorCollapser>
+			buildOperations(Map<String, DiceASTExpression> enviroment) {
+		Map<IDiceASTNode, IOperatorCollapser> operatorCollapsers =
+				new HashMap<>();
 
 		operatorCollapsers.put(OperatorDiceNode.ADD,
-				(leftNode, rightNode) -> {
-					return leftNode.merge((leftValue, leftAST) -> {
-						return rightNode.merge((rightValue, rightAST) -> {
-							return new Pair<>(leftValue + rightValue,
-									new AST<>(OperatorDiceNode.ADD,
-											leftAST, rightAST));
-						});
-					});
+				new ArithmeticCollapser(OperatorDiceNode.ADD,
+						(left, right) -> left + right));
 
-				});
 		operatorCollapsers.put(OperatorDiceNode.SUBTRACT,
-				(leftNode, rightNode) -> {
-					return leftNode.merge((leftValue, leftAST) -> {
-						return rightNode.merge((rightValue, rightAST) -> {
-							return new Pair<>(leftValue - rightValue,
-									new AST<>(OperatorDiceNode.SUBTRACT,
-											leftAST, rightAST));
-						});
-					});
-				});
+				new ArithmeticCollapser(OperatorDiceNode.SUBTRACT,
+						(left, right) -> left - right));
 
 		operatorCollapsers.put(OperatorDiceNode.MULTIPLY,
-				(leftNode, rightNode) -> {
-					return leftNode.merge((leftValue, leftAST) -> {
-						return rightNode.merge((rightValue, rightAST) -> {
-							return new Pair<>(leftValue * rightValue,
-									new AST<>(OperatorDiceNode.MULTIPLY,
-											leftAST, rightAST));
-						});
-					});
+				new ArithmeticCollapser(OperatorDiceNode.MULTIPLY,
+						(left, right) -> left * right));
 
-				});
 		operatorCollapsers.put(OperatorDiceNode.DIVIDE,
-				(leftNode, rightNode) -> {
-					return leftNode.merge((leftValue, leftAST) -> {
-						return rightNode.merge((rightValue, rightAST) -> {
-							if (rightValue == 0) {
-								throw new ArithmeticException(
-										"Attempted to divide by zero. The AST of the problem expression is "
-												+ rightAST);
-							}
-
-							return new Pair<>(leftValue / rightValue,
-									new AST<>(OperatorDiceNode.DIVIDE,
-											leftAST, rightAST));
-						});
-					});
-				});
+				new ArithmeticCollapser(OperatorDiceNode.DIVIDE,
+						(left, right) -> left / right));
 
 		operatorCollapsers.put(OperatorDiceNode.ASSIGN, (left, right) -> {
 			return parseBinding(enviroment, left, right);
@@ -111,7 +110,44 @@ public class DiceASTExpression implements IDiceExpression {
 		operatorCollapsers.put(OperatorDiceNode.GROUP,
 				DiceASTExpression::parseGroup);
 
+		operatorCollapsers.put(OperatorDiceNode.LET, (left, right) -> {
+			return doLet(enviroment, left, right);
+		});
+
 		return operatorCollapsers;
+	}
+
+	private static Pair<Integer, AST<IDiceASTNode>> doLet(
+			Map<String, DiceASTExpression> enviroment,
+			Pair<Integer, AST<IDiceASTNode>> left,
+			Pair<Integer, AST<IDiceASTNode>> right) {
+		return left.merge((leftValue, leftAST) -> {
+			return right.merge((rightValue, rightAST) -> {
+				if (!leftAST
+						.applyToHead(DiceASTExpression::isAssignNode)) {
+					// Just ignore the left block then
+					return new Pair<>(rightValue, rightAST);
+				} else {
+					// Left block has an assignment to handle
+					String varName = leftAST.applyToLeft((leftBranch) -> {
+						return getAssignmentVar(leftBranch);
+					});
+
+					return null;
+				}
+			});
+		});
+	}
+
+	private static String getAssignmentVar(AST<IDiceASTNode> leftBranch) {
+		return leftBranch.applyToHead((node) -> {
+			return ((VariableDiceNode) node).getVariable();
+		});
+	}
+
+	private static Boolean isAssignNode(IDiceASTNode node) {
+		return node.getType() == DiceASTType.OPERATOR
+				&& node == OperatorDiceNode.ASSIGN;
 	}
 
 	private static Pair<Integer, AST<IDiceASTNode>> parseBinding(
@@ -129,8 +165,9 @@ public class DiceASTExpression implements IDiceExpression {
 
 				GenHolder<Boolean> selfReference = new GenHolder<>(false);
 
-				DiceASTReferenceChecker refChecker = new DiceASTReferenceChecker(
-						selfReference, variableName);
+				DiceASTReferenceChecker refChecker =
+						new DiceASTReferenceChecker(selfReference,
+								variableName);
 
 				rightAST.traverse(TreeLinearizationMethod.PREORDER,
 						refChecker);
@@ -163,8 +200,8 @@ public class DiceASTExpression implements IDiceExpression {
 			Pair<Integer, AST<IDiceASTNode>> rightNode) {
 		return leftNode.merge((leftValue, leftAST) -> {
 			return rightNode.merge((rightValue, rightAST) -> {
-				int compoundValue = Integer
-						.parseInt(Integer.toString(leftValue)
+				int compoundValue =
+						Integer.parseInt(Integer.toString(leftValue)
 								+ Integer.toString(rightValue));
 
 				return new Pair<>(compoundValue, new AST<>(
@@ -190,8 +227,8 @@ public class DiceASTExpression implements IDiceExpression {
 									+ rightAST);
 				}
 
-				int rolledValue = new ComplexDice(leftValue, rightValue)
-						.roll();
+				int rolledValue =
+						new ComplexDice(leftValue, rightValue).roll();
 
 				return new Pair<>(rolledValue, new AST<>(
 						OperatorDiceNode.GROUP, leftAST, rightAST));
@@ -231,8 +268,8 @@ public class DiceASTExpression implements IDiceExpression {
 	 * @return A pair consisting of the token's value and the AST it
 	 *         represents
 	 */
-	private Pair<Integer, AST<IDiceASTNode>> evaluateLeaf(
-			IDiceASTNode leafNode) {
+	private Pair<Integer, AST<IDiceASTNode>>
+			evaluateLeaf(IDiceASTNode leafNode) {
 		if (leafNode.getType() == DiceASTType.VARIABLE) {
 			VariableDiceNode node = (VariableDiceNode) leafNode;
 
@@ -247,8 +284,8 @@ public class DiceASTExpression implements IDiceExpression {
 		}
 	}
 
-	private Pair<Integer, AST<IDiceASTNode>> parseVariable(
-			VariableDiceNode leafNode) {
+	private Pair<Integer, AST<IDiceASTNode>>
+			parseVariable(VariableDiceNode leafNode) {
 		String varName = leafNode.getVariable();
 
 		if (env.containsKey(varName)) {
@@ -276,8 +313,8 @@ public class DiceASTExpression implements IDiceExpression {
 	 */
 	@Override
 	public int roll() {
-		Map<IDiceASTNode, IOperatorCollapser> operations = buildOperations(
-				env);
+		Map<IDiceASTNode, IOperatorCollapser> operations =
+				buildOperations(env);
 
 		return ast.collapse(this::evaluateLeaf, operations::get,
 				(returnedValue) -> returnedValue

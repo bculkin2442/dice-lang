@@ -5,8 +5,8 @@ import java.util.Stack;
 
 import org.apache.commons.lang3.StringUtils;
 
-import bjc.utils.funcdata.FunctionalList;
 import bjc.utils.funcdata.FunctionalStringTokenizer;
+import bjc.utils.funcdata.IFunctionalList;
 import bjc.utils.parserutils.ShuntingYard;
 
 /**
@@ -25,7 +25,7 @@ public class DiceExpressionParser {
 	 *            The enviroment to use when parsing expressions
 	 * @return The parsed dice expression
 	 */
-	public IDiceExpression parse(String exp,
+	public static IDiceExpression parse(String exp,
 			Map<String, IDiceExpression> env) {
 		/*
 		 * Create a tokenizer over the strings
@@ -50,8 +50,8 @@ public class DiceExpressionParser {
 		/*
 		 * Shunt the expression to postfix form
 		 */
-		FunctionalList<String> ls =
-				yard.postfix(fst.toList(s -> s), s -> s);
+		IFunctionalList<String> ls = yard.postfix(fst.toList(s -> s),
+				s -> s);
 
 		/*
 		 * Create a stack for building an expression from parts
@@ -82,8 +82,8 @@ public class DiceExpressionParser {
 					 * Handle scalar numbers
 					 */
 					dexps.push(new ScalarDie(Integer.parseInt(tok)));
-				} catch (NumberFormatException nfex) {
-
+				} catch (@SuppressWarnings("unused") NumberFormatException nfex) {
+					// We don't care about details, just that it failed
 					if (dexps.size() >= 2) {
 						/*
 						 * Apply an operation to two dice
