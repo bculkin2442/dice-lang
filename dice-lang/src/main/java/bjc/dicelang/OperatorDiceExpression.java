@@ -64,10 +64,15 @@ public class OperatorDiceExpression implements IDiceExpression {
 				try {
 					return right.roll() / left.roll();
 				} catch (ArithmeticException aex) {
-					throw new UnsupportedOperationException(
-							"Attempted to divide by zero."
-									+ " Problematic expression is "
-									+ left);
+					UnsupportedOperationException usex =
+							new UnsupportedOperationException(
+									"Attempted to divide by zero."
+											+ " Problematic expression is "
+											+ left);
+
+					usex.initCause(aex);
+
+					throw usex;
 				}
 			default:
 				throw new IllegalArgumentException(

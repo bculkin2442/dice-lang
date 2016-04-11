@@ -55,7 +55,7 @@ public class ReferenceDiceExpression implements IDiceExpression {
 			throw new UnsupportedOperationException(
 					"Attempted to reference undefined variable " + name);
 		}
-		
+
 		return env.get(name).roll();
 	}
 
@@ -68,8 +68,8 @@ public class ReferenceDiceExpression implements IDiceExpression {
 	public String toString() {
 		if (env.containsKey(name)) {
 			return env.get(name).toString();
-		} else {
-			return name;
 		}
+
+		return name;
 	}
 }

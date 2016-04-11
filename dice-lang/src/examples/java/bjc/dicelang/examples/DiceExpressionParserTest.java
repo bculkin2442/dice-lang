@@ -39,11 +39,6 @@ public class DiceExpressionParserTest {
 
 		int nTimes = Integer.parseInt(scn.nextLine());
 
-		/*
-		 * Parse the string expression into a dice expression
-		 */
-		DiceExpressionParser dep = new DiceExpressionParser();
-
 		IDiceExpression dexp = DiceExpressionParser.parse(exp,
 				new HashMap<>());
 

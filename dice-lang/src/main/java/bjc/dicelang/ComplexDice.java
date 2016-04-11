@@ -28,7 +28,8 @@ public class ComplexDice implements IDiceExpression {
 			return new ComplexDice(
 					new ScalarDie(Integer.parseInt(strangs[0])),
 					new Die(Integer.parseInt(strangs[1])));
-		} catch (NumberFormatException nfex) {
+		} catch (@SuppressWarnings("unused") NumberFormatException nfex) {
+			// We don't care about details
 			/*
 			 * Tell the user the expression is invalid
 			 */
@@ -111,10 +112,10 @@ public class ComplexDice implements IDiceExpression {
 	public String toString() {
 		if (nDice instanceof ScalarDie && die instanceof Die) {
 			return nDice.toString() + die.toString();
-		} else {
-			return "complex[n=" + nDice.toString() + ", d="
-					+ die.toString() + "]";
 		}
+
+		return "complex[n=" + nDice.toString() + ", d=" + die.toString()
+				+ "]";
 	}
 
 	@Override

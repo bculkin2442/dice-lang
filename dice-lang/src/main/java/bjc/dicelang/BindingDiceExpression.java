@@ -38,11 +38,11 @@ public class BindingDiceExpression implements IDiceExpression {
 			throw new UnsupportedOperationException(
 					"Binding to non-references is unsupported."
 							+ " Problematic expression is " + left);
-		} else {
-			String varName = ((ReferenceDiceExpression) left).getName();
-
-			initialize(varName, right, env);
 		}
+
+		String varName = ((ReferenceDiceExpression) left).getName();
+
+		initialize(varName, right, env);
 	}
 
 	/**
