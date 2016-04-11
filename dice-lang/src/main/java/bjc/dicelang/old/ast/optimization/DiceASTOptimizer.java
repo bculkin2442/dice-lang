@@ -1,4 +1,6 @@
-package bjc.dicelang.ast.optimization;
+package bjc.dicelang.old.ast.optimization;
+
+import static bjc.dicelang.old.ast.nodes.DiceASTType.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,13 +8,10 @@ import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
 
 import bjc.dicelang.IDiceExpression;
-import bjc.dicelang.ast.nodes.DiceASTType;
-import bjc.dicelang.ast.nodes.IDiceASTNode;
-import bjc.dicelang.ast.nodes.LiteralDiceNode;
-import bjc.dicelang.ast.nodes.OperatorDiceNode;
-
-import static bjc.dicelang.ast.nodes.DiceASTType.*;
-
+import bjc.dicelang.old.ast.nodes.DiceASTType;
+import bjc.dicelang.old.ast.nodes.IDiceASTNode;
+import bjc.dicelang.old.ast.nodes.LiteralDiceNode;
+import bjc.dicelang.old.ast.nodes.OperatorDiceNode;
 import bjc.utils.parserutils.AST;
 
 /**

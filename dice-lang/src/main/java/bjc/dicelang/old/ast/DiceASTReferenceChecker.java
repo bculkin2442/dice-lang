@@ -2,9 +2,9 @@ package bjc.dicelang.old.ast;
 
 import java.util.function.Consumer;
 
-import bjc.dicelang.ast.nodes.DiceASTType;
-import bjc.dicelang.ast.nodes.IDiceASTNode;
-import bjc.dicelang.ast.nodes.VariableDiceNode;
+import bjc.dicelang.old.ast.nodes.DiceASTType;
+import bjc.dicelang.old.ast.nodes.IDiceASTNode;
+import bjc.dicelang.old.ast.nodes.VariableDiceNode;
 import bjc.utils.data.IHolder;
 
 /**
@@ -53,8 +53,8 @@ public final class DiceASTReferenceChecker
 			VariableDiceNode node = (VariableDiceNode) astNode;
 
 			return node.getVariable().equals(varName);
-		} else {
-			return false;
 		}
+
+		return false;
 	}
 }

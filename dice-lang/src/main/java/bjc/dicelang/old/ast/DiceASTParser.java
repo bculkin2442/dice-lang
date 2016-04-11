@@ -4,12 +4,10 @@ import java.util.Deque;
 import java.util.LinkedList;
 import java.util.function.Function;
 
-import org.apache.commons.lang3.StringUtils;
-
-import bjc.dicelang.ast.nodes.IDiceASTNode;
-import bjc.dicelang.ast.nodes.LiteralDiceNode;
-import bjc.dicelang.ast.nodes.OperatorDiceNode;
-import bjc.dicelang.ast.nodes.VariableDiceNode;
+import bjc.dicelang.old.ast.nodes.IDiceASTNode;
+import bjc.dicelang.old.ast.nodes.LiteralDiceNode;
+import bjc.dicelang.old.ast.nodes.OperatorDiceNode;
+import bjc.dicelang.old.ast.nodes.VariableDiceNode;
 import bjc.utils.data.IPair;
 import bjc.utils.data.Pair;
 import bjc.utils.funcdata.FunctionalStringTokenizer;
@@ -32,35 +30,10 @@ public class DiceASTParser {
 		public IDiceASTNode apply(String tok) {
 			if (isOperator(tok)) {
 				return OperatorDiceNode.fromString(tok);
-			} else if (NodeBaker.isLiteral(tok)) {
+			} else if (LiteralDiceNode.isLiteral(tok)) {
 				return new LiteralDiceNode(tok);
 			} else {
 				return new VariableDiceNode(tok);
-			}
-		}
-
-		/**
-		 * Check if a token represents a literal
-		 * 
-		 * @param tok
-		 *            The token to check
-		 * @return Whether or not the token represents a literal
-		 */
-		private static boolean isLiteral(String tok) {
-			if (StringUtils.countMatches(tok, 'c') == 1
-					&& !tok.equalsIgnoreCase("c")) {
-				return true;
-			} else if (StringUtils.countMatches(tok, 'd') == 1
-					&& !tok.equalsIgnoreCase("d")) {
-				return true;
-			} else {
-				try {
-					Integer.parseInt(tok);
-					return true;
-				} catch (@SuppressWarnings("unused") NumberFormatException nfex) {
-					// We don't care about details
-					return false;
-				}
 			}
 		}
 	}

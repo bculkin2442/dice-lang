@@ -1,4 +1,4 @@
-package bjc.dicelang.ast.nodes;
+package bjc.dicelang.old.ast.nodes;
 
 // The following classes need to be changed upon addition of a new operator
 // 1. DiceASTExpression

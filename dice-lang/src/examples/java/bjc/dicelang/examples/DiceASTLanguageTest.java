@@ -6,13 +6,13 @@ import java.util.Scanner;
 import java.util.function.BiConsumer;
 
 import bjc.dicelang.IDiceExpression;
-import bjc.dicelang.ast.nodes.IDiceASTNode;
-import bjc.dicelang.ast.optimization.DiceASTOptimizer;
 import bjc.dicelang.old.ast.DiceASTDefinedChecker;
 import bjc.dicelang.old.ast.DiceASTExpression;
 import bjc.dicelang.old.ast.DiceASTInliner;
 import bjc.dicelang.old.ast.DiceASTParser;
 import bjc.dicelang.old.ast.DiceASTReferenceChecker;
+import bjc.dicelang.old.ast.nodes.IDiceASTNode;
+import bjc.dicelang.old.ast.optimization.DiceASTOptimizer;
 
 import static bjc.dicelang.examples.DiceASTLanguagePragmaHandlers.*;
 

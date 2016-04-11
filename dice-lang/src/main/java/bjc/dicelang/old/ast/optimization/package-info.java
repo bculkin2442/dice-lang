@@ -3,4 +3,4 @@
  * @author ben
  *
  */
-package bjc.dicelang.ast.optimization;
+package bjc.dicelang.old.ast.optimization;

@@ -3,9 +3,9 @@ package bjc.dicelang.old.ast;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import bjc.dicelang.ast.nodes.DiceASTType;
-import bjc.dicelang.ast.nodes.IDiceASTNode;
-import bjc.dicelang.ast.nodes.VariableDiceNode;
+import bjc.dicelang.old.ast.nodes.DiceASTType;
+import bjc.dicelang.old.ast.nodes.IDiceASTNode;
+import bjc.dicelang.old.ast.nodes.VariableDiceNode;
 import bjc.utils.data.IHolder;
 
 /**
@@ -54,8 +54,8 @@ public final class DiceASTDefinedChecker
 			VariableDiceNode node = (VariableDiceNode) astNode;
 
 			return !enviroment.containsKey(node.getVariable());
-		} else {
-			return false;
 		}
+
+		return false;
 	}
 }

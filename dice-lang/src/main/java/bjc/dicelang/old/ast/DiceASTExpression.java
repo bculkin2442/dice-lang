@@ -7,11 +7,11 @@ import java.util.function.Function;
 
 import bjc.dicelang.ComplexDice;
 import bjc.dicelang.IDiceExpression;
-import bjc.dicelang.ast.nodes.DiceASTType;
-import bjc.dicelang.ast.nodes.IDiceASTNode;
-import bjc.dicelang.ast.nodes.LiteralDiceNode;
-import bjc.dicelang.ast.nodes.OperatorDiceNode;
-import bjc.dicelang.ast.nodes.VariableDiceNode;
+import bjc.dicelang.old.ast.nodes.DiceASTType;
+import bjc.dicelang.old.ast.nodes.IDiceASTNode;
+import bjc.dicelang.old.ast.nodes.LiteralDiceNode;
+import bjc.dicelang.old.ast.nodes.OperatorDiceNode;
+import bjc.dicelang.old.ast.nodes.VariableDiceNode;
 import bjc.utils.data.GenHolder;
 import bjc.utils.data.Pair;
 import bjc.utils.funcdata.bst.ITreePart.TreeLinearizationMethod;
@@ -79,8 +79,8 @@ public class DiceASTExpression implements IDiceExpression {
 	 *            The enviroment to evaluate bindings and such against
 	 * @return The operations to use when collapsing the AST
 	 */
-	private static Map<IDiceASTNode, IOperatorCollapser>
-			buildOperations(Map<String, DiceASTExpression> enviroment) {
+	private static Map<IDiceASTNode, IOperatorCollapser> buildOperations(
+			Map<String, DiceASTExpression> enviroment) {
 		Map<IDiceASTNode, IOperatorCollapser> operatorCollapsers =
 				new HashMap<>();
 
@@ -111,14 +111,13 @@ public class DiceASTExpression implements IDiceExpression {
 				DiceASTExpression::parseGroup);
 
 		operatorCollapsers.put(OperatorDiceNode.LET, (left, right) -> {
-			return doLet(enviroment, left, right);
+			return doLet(left, right);
 		});
 
 		return operatorCollapsers;
 	}
 
 	private static Pair<Integer, AST<IDiceASTNode>> doLet(
-			Map<String, DiceASTExpression> enviroment,
 			Pair<Integer, AST<IDiceASTNode>> left,
 			Pair<Integer, AST<IDiceASTNode>> right) {
 		return left.merge((leftValue, leftAST) -> {
@@ -127,21 +126,10 @@ public class DiceASTExpression implements IDiceExpression {
 						.applyToHead(DiceASTExpression::isAssignNode)) {
 					// Just ignore the left block then
 					return new Pair<>(rightValue, rightAST);
-				} else {
-					// Left block has an assignment to handle
-					String varName = leftAST.applyToLeft((leftBranch) -> {
-						return getAssignmentVar(leftBranch);
-					});
-
-					return null;
 				}
-			});
-		});
-	}
 
-	private static String getAssignmentVar(AST<IDiceASTNode> leftBranch) {
-		return leftBranch.applyToHead((node) -> {
-			return ((VariableDiceNode) node).getVariable();
+				return null;
+			});
 		});
 	}
 
@@ -268,8 +256,8 @@ public class DiceASTExpression implements IDiceExpression {
 	 * @return A pair consisting of the token's value and the AST it
 	 *         represents
 	 */
-	private Pair<Integer, AST<IDiceASTNode>>
-			evaluateLeaf(IDiceASTNode leafNode) {
+	private Pair<Integer, AST<IDiceASTNode>> evaluateLeaf(
+			IDiceASTNode leafNode) {
 		if (leafNode.getType() == DiceASTType.VARIABLE) {
 			VariableDiceNode node = (VariableDiceNode) leafNode;
 
@@ -284,17 +272,17 @@ public class DiceASTExpression implements IDiceExpression {
 		}
 	}
 
-	private Pair<Integer, AST<IDiceASTNode>>
-			parseVariable(VariableDiceNode leafNode) {
+	private Pair<Integer, AST<IDiceASTNode>> parseVariable(
+			VariableDiceNode leafNode) {
 		String varName = leafNode.getVariable();
 
 		if (env.containsKey(varName)) {
 			return new Pair<>(env.get(varName).roll(),
 					new AST<>(leafNode));
-		} else {
-			// Handle special case for defining variables
-			return new Pair<>(0, new AST<>(leafNode));
 		}
+
+		// Handle special case for defining variables
+		return new Pair<>(0, new AST<>(leafNode));
 	}
 
 	/**

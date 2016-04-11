@@ -1,4 +1,4 @@
-package bjc.dicelang.ast.nodes;
+package bjc.dicelang.old.ast.nodes;
 
 /**
  * A node that represents a variable reference

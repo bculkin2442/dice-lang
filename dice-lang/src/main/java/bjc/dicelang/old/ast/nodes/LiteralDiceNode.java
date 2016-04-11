@@ -1,4 +1,4 @@
-package bjc.dicelang.ast.nodes;
+package bjc.dicelang.old.ast.nodes;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -188,5 +188,30 @@ public class LiteralDiceNode implements IDiceASTNode {
 	 */
 	public int toConstant() {
 		return Integer.parseInt(value);
+	}
+
+	/**
+	 * Check if a token represents a literal
+	 * 
+	 * @param tok
+	 *            The token to check
+	 * @return Whether or not the token represents a literal
+	 */
+	public static boolean isLiteral(String tok) {
+		if (StringUtils.countMatches(tok, 'c') == 1
+				&& !tok.equalsIgnoreCase("c")) {
+			return true;
+		} else if (StringUtils.countMatches(tok, 'd') == 1
+				&& !tok.equalsIgnoreCase("d")) {
+			return true;
+		} else {
+			try {
+				Integer.parseInt(tok);
+				return true;
+			} catch (@SuppressWarnings("unused") NumberFormatException nfex) {
+				// We don't care about details
+				return false;
+			}
+		}
 	}
 }
