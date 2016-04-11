@@ -50,8 +50,8 @@ public class DiceASTEvaluator {
 		public IPair<Integer, AST<IDiceASTNode>> apply(
 				IPair<Integer, AST<IDiceASTNode>> leftNode,
 				IPair<Integer, AST<IDiceASTNode>> rightNode) {
-			return leftNode.merge((leftValue, leftAST) -> {
-				return rightNode.merge((rightValue, rightAST) -> {
+			return leftNode.bind((leftValue, leftAST) -> {
+				return rightNode.bind((rightValue, rightAST) -> {
 					if (type == OperatorDiceNode.DIVIDE
 							&& rightValue == 0) {
 						throw new ArithmeticException(
@@ -179,8 +179,8 @@ public class DiceASTEvaluator {
 			IFunctionalMap<String, AST<IDiceASTNode>> enviroment,
 			IPair<Integer, AST<IDiceASTNode>> left,
 			IPair<Integer, AST<IDiceASTNode>> right) {
-		return left.merge((leftValue, leftAST) -> {
-			return right.merge((rightValue, rightAST) -> {
+		return left.bind((leftValue, leftAST) -> {
+			return right.bind((rightValue, rightAST) -> {
 				String variableName = leftAST.applyToHead((node) -> {
 					if (node.getType() != DiceASTType.VARIABLE) {
 						throw new UnsupportedOperationException(
@@ -224,8 +224,8 @@ public class DiceASTEvaluator {
 	private static IPair<Integer, AST<IDiceASTNode>> parseCompound(
 			IPair<Integer, AST<IDiceASTNode>> leftNode,
 			IPair<Integer, AST<IDiceASTNode>> rightNode) {
-		return leftNode.merge((leftValue, leftAST) -> {
-			return rightNode.merge((rightValue, rightAST) -> {
+		return leftNode.bind((leftValue, leftAST) -> {
+			return rightNode.bind((rightValue, rightAST) -> {
 				int compoundValue =
 						Integer.parseInt(Integer.toString(leftValue)
 								+ Integer.toString(rightValue));
@@ -239,8 +239,8 @@ public class DiceASTEvaluator {
 	private static IPair<Integer, AST<IDiceASTNode>> parseGroup(
 			IPair<Integer, AST<IDiceASTNode>> leftNode,
 			IPair<Integer, AST<IDiceASTNode>> rightNode) {
-		return leftNode.merge((leftValue, leftAST) -> {
-			return rightNode.merge((rightValue, rightAST) -> {
+		return leftNode.bind((leftValue, leftAST) -> {
+			return rightNode.bind((rightValue, rightAST) -> {
 				if (leftValue < 0) {
 					throw new UnsupportedOperationException(
 							"Can't attempt to roll a negative number of dice."
