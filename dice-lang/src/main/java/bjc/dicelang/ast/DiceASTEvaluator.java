@@ -16,6 +16,7 @@ import bjc.dicelang.ast.nodes.VariableDiceNode;
 import bjc.utils.data.GenHolder;
 import bjc.utils.data.IPair;
 import bjc.utils.data.Pair;
+import bjc.utils.data.lazy.LazyPair;
 import bjc.utils.funcdata.FunctionalMap;
 import bjc.utils.funcdata.IFunctionalMap;
 import bjc.utils.funcdata.bst.ITreePart.TreeLinearizationMethod;
@@ -73,11 +74,9 @@ public class DiceASTEvaluator {
 	 *            The enviroment to evaluate bindings and such against
 	 * @return The operations to use when collapsing the AST
 	 */
-	private static IFunctionalMap<IDiceASTNode, IOperatorCollapser>
-			buildOperations(
-					IFunctionalMap<String, AST<IDiceASTNode>> enviroment) {
-		IFunctionalMap<IDiceASTNode, IOperatorCollapser> operatorCollapsers =
-				new FunctionalMap<>();
+	private static IFunctionalMap<IDiceASTNode, IOperatorCollapser> buildOperations(
+			IFunctionalMap<String, AST<IDiceASTNode>> enviroment) {
+		IFunctionalMap<IDiceASTNode, IOperatorCollapser> operatorCollapsers = new FunctionalMap<>();
 
 		operatorCollapsers.put(OperatorDiceNode.ADD,
 				new ArithmeticCollapser(OperatorDiceNode.ADD,
@@ -119,8 +118,8 @@ public class DiceASTEvaluator {
 	 */
 	public static int evaluateAST(AST<IDiceASTNode> expression,
 			IFunctionalMap<String, AST<IDiceASTNode>> enviroment) {
-		IFunctionalMap<IDiceASTNode, IOperatorCollapser> collapsers =
-				buildOperations(enviroment);
+		IFunctionalMap<IDiceASTNode, IOperatorCollapser> collapsers = buildOperations(
+				enviroment);
 
 		return expression.collapse(
 				(node) -> evaluateLeaf(node, enviroment), collapsers::get,
@@ -130,49 +129,41 @@ public class DiceASTEvaluator {
 	private static IPair<Integer, AST<IDiceASTNode>> evaluateLeaf(
 			IDiceASTNode leafNode,
 			IFunctionalMap<String, AST<IDiceASTNode>> enviroment) {
-		int returnedValue = 0;
+		AST<IDiceASTNode> returnedAST = new AST<>(leafNode);
 
 		switch (leafNode.getType()) {
 			case LITERAL:
-				returnedValue = evaluateLiteral(leafNode, returnedValue);
 
-				break;
+				return new Pair<>(evaluateLiteral(leafNode), returnedAST);
 			case VARIABLE:
-				String variableName =
-						((VariableDiceNode) leafNode).getVariable();
+				return new LazyPair<>(() -> {
+					String variableName = ((VariableDiceNode) leafNode)
+							.getVariable();
 
-				returnedValue = evaluateAST(enviroment.get(variableName),
-						enviroment);
-				break;
+					return evaluateAST(enviroment.get(variableName),
+							enviroment);
+				}, () -> returnedAST);
 			case OPERATOR:
-				throw new UnsupportedOperationException(
-						"Operator '" + leafNode + "' cannot be a leaf.");
 			default:
-				break;
-
+				throw new UnsupportedOperationException(
+						"Node '" + leafNode + "' cannot be a leaf.");
 		}
-
-		return new Pair<>(returnedValue, new AST<>(leafNode));
 	}
 
-	private static int evaluateLiteral(IDiceASTNode leafNode,
-			int returnedValue) {
-		DiceLiteralType literalType =
-				((ILiteralDiceNode) leafNode).getLiteralType();
+	private static int evaluateLiteral(IDiceASTNode leafNode) {
+		DiceLiteralType literalType = ((ILiteralDiceNode) leafNode)
+				.getLiteralType();
 
 		switch (literalType) {
 			case DICE:
-				returnedValue = ((DiceLiteralNode) leafNode).getValue();
-				break;
+				return ((DiceLiteralNode) leafNode).getValue();
 			case INTEGER:
-				returnedValue = ((IntegerLiteralNode) leafNode).getValue();
-				break;
+				return ((IntegerLiteralNode) leafNode).getValue();
 			default:
 				throw new UnsupportedOperationException("Literal value '"
 						+ leafNode + "' is of a type (" + literalType
 						+ ") not currently supported.");
 		}
-		return returnedValue;
 	}
 
 	private static IPair<Integer, AST<IDiceASTNode>> parseBinding(
@@ -193,9 +184,8 @@ public class DiceASTEvaluator {
 
 				GenHolder<Boolean> selfReference = new GenHolder<>(false);
 
-				DiceASTReferenceChecker refChecker =
-						new DiceASTReferenceChecker(selfReference,
-								variableName);
+				DiceASTReferenceChecker refChecker = new DiceASTReferenceChecker(
+						selfReference, variableName);
 
 				rightAST.traverse(TreeLinearizationMethod.PREORDER,
 						refChecker);
@@ -226,8 +216,8 @@ public class DiceASTEvaluator {
 			IPair<Integer, AST<IDiceASTNode>> rightNode) {
 		return leftNode.bind((leftValue, leftAST) -> {
 			return rightNode.bind((rightValue, rightAST) -> {
-				int compoundValue =
-						Integer.parseInt(Integer.toString(leftValue)
+				int compoundValue = Integer
+						.parseInt(Integer.toString(leftValue)
 								+ Integer.toString(rightValue));
 
 				return new Pair<>(compoundValue, new AST<>(
@@ -253,8 +243,8 @@ public class DiceASTEvaluator {
 									+ rightAST);
 				}
 
-				int rolledValue =
-						new ComplexDice(leftValue, rightValue).roll();
+				int rolledValue = new ComplexDice(leftValue, rightValue)
+						.roll();
 
 				return new Pair<>(rolledValue, new AST<>(
 						OperatorDiceNode.GROUP, leftAST, rightAST));
