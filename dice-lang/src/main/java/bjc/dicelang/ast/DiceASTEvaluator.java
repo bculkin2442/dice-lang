@@ -140,8 +140,13 @@ public class DiceASTEvaluator {
 					String variableName = ((VariableDiceNode) leafNode)
 							.getVariable();
 
-					return evaluateAST(enviroment.get(variableName),
-							enviroment);
+					if (enviroment.containsKey(variableName)) {
+						return evaluateAST(enviroment.get(variableName),
+								enviroment);
+					}
+
+					// Value to allow for assignments
+					return 0;
 				}, () -> returnedAST);
 			case OPERATOR:
 			default:
