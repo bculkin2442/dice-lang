@@ -28,6 +28,12 @@ import bjc.utils.parserutils.AST;
  *
  */
 public class DiceASTEvaluator {
+	/**
+	 * Responsible for collapsing arithmetic operators
+	 * 
+	 * @author ben
+	 *
+	 */
 	private static final class ArithmeticCollapser
 			implements IOperatorCollapser {
 		private OperatorDiceNode		type;
@@ -58,27 +64,6 @@ public class DiceASTEvaluator {
 				});
 			});
 		}
-	}
-
-	/**
-	 * Evaluate the provided AST to a numeric value
-	 * 
-	 * @param expression
-	 *            The expression to evaluate
-	 * @param enviroment
-	 *            The enviroment to look up variables in
-	 * @return The integer value of the expression
-	 */
-	public static int evaluateAST(AST<IDiceASTNode> expression,
-			IFunctionalMap<String, AST<IDiceASTNode>> enviroment) {
-		IFunctionalMap<IDiceASTNode, IOperatorCollapser> collapsers =
-				buildOperations(enviroment);
-
-		return expression.collapse((node) -> {
-			return evaluateLeaf(node, enviroment);
-		}, collapsers::get, (pair) -> {
-			return pair.merge((left, right) -> left);
-		});
 	}
 
 	/**
@@ -123,92 +108,23 @@ public class DiceASTEvaluator {
 		return operatorCollapsers;
 	}
 
-	private static IPair<Integer, AST<IDiceASTNode>> parseBinding(
-			IFunctionalMap<String, AST<IDiceASTNode>> enviroment,
-			IPair<Integer, AST<IDiceASTNode>> left,
-			IPair<Integer, AST<IDiceASTNode>> right) {
-		return left.merge((leftValue, leftAST) -> {
-			return right.merge((rightValue, rightAST) -> {
-				String variableName = leftAST.applyToHead((node) -> {
-					if (node.getType() != DiceASTType.VARIABLE) {
-						throw new UnsupportedOperationException(
-								"Attempted to assign to '" + node
-										+ "' which is not a variable");
-					}
+	/**
+	 * Evaluate the provided AST to a numeric value
+	 * 
+	 * @param expression
+	 *            The expression to evaluate
+	 * @param enviroment
+	 *            The enviroment to look up variables in
+	 * @return The integer value of the expression
+	 */
+	public static int evaluateAST(AST<IDiceASTNode> expression,
+			IFunctionalMap<String, AST<IDiceASTNode>> enviroment) {
+		IFunctionalMap<IDiceASTNode, IOperatorCollapser> collapsers =
+				buildOperations(enviroment);
 
-					return ((VariableDiceNode) node).getVariable();
-				});
-
-				GenHolder<Boolean> selfReference = new GenHolder<>(false);
-
-				DiceASTReferenceChecker refChecker =
-						new DiceASTReferenceChecker(selfReference,
-								variableName);
-
-				rightAST.traverse(TreeLinearizationMethod.PREORDER,
-						refChecker);
-
-				// Ignore meta-variable that'll be auto-frozen to restore
-				// definition sanity
-				if (selfReference.unwrap((bool) -> bool)
-						&& !variableName.equals("last")) {
-					throw new UnsupportedOperationException(
-							"Variable '" + variableName
-									+ "' references itself. Problematic definition: \n\t"
-									+ rightAST);
-				}
-
-				if (!variableName.equals("last")) {
-					enviroment.put(variableName, rightAST);
-				} else {
-					// Do nothing, last is a auto-handled meta-variable
-				}
-
-				return new Pair<>(rightValue, new AST<>(
-						OperatorDiceNode.ASSIGN, leftAST, rightAST));
-			});
-		});
-	}
-
-	private static IPair<Integer, AST<IDiceASTNode>> parseCompound(
-			IPair<Integer, AST<IDiceASTNode>> leftNode,
-			IPair<Integer, AST<IDiceASTNode>> rightNode) {
-		return leftNode.merge((leftValue, leftAST) -> {
-			return rightNode.merge((rightValue, rightAST) -> {
-				int compoundValue =
-						Integer.parseInt(Integer.toString(leftValue)
-								+ Integer.toString(rightValue));
-
-				return new Pair<>(compoundValue, new AST<>(
-						OperatorDiceNode.COMPOUND, leftAST, rightAST));
-			});
-		});
-	}
-
-	private static IPair<Integer, AST<IDiceASTNode>> parseGroup(
-			IPair<Integer, AST<IDiceASTNode>> leftNode,
-			IPair<Integer, AST<IDiceASTNode>> rightNode) {
-		return leftNode.merge((leftValue, leftAST) -> {
-			return rightNode.merge((rightValue, rightAST) -> {
-				if (leftValue < 0) {
-					throw new UnsupportedOperationException(
-							"Can't attempt to roll a negative number of dice."
-									+ " The problematic AST is "
-									+ leftAST);
-				} else if (rightValue < 1) {
-					throw new UnsupportedOperationException(
-							"Can't roll dice with less than one side."
-									+ " The problematic AST is "
-									+ rightAST);
-				}
-
-				int rolledValue =
-						new ComplexDice(leftValue, rightValue).roll();
-
-				return new Pair<>(rolledValue, new AST<>(
-						OperatorDiceNode.GROUP, leftAST, rightAST));
-			});
-		});
+		return expression.collapse(
+				(node) -> evaluateLeaf(node, enviroment), collapsers::get,
+				(pair) -> pair.merge((left, right) -> left));
 	}
 
 	private static IPair<Integer, AST<IDiceASTNode>> evaluateLeaf(
@@ -257,5 +173,92 @@ public class DiceASTEvaluator {
 						+ ") not currently supported.");
 		}
 		return returnedValue;
+	}
+
+	private static IPair<Integer, AST<IDiceASTNode>> parseBinding(
+			IFunctionalMap<String, AST<IDiceASTNode>> enviroment,
+			IPair<Integer, AST<IDiceASTNode>> left,
+			IPair<Integer, AST<IDiceASTNode>> right) {
+		return left.merge((leftValue, leftAST) -> {
+			return right.merge((rightValue, rightAST) -> {
+				String variableName = leftAST.applyToHead((node) -> {
+					if (node.getType() != DiceASTType.VARIABLE) {
+						throw new UnsupportedOperationException(
+								"Attempted to assign to '" + node
+										+ "' which is not a variable");
+					}
+
+					return ((VariableDiceNode) node).getVariable();
+				});
+
+				GenHolder<Boolean> selfReference = new GenHolder<>(false);
+
+				DiceASTReferenceChecker refChecker =
+						new DiceASTReferenceChecker(selfReference,
+								variableName);
+
+				rightAST.traverse(TreeLinearizationMethod.PREORDER,
+						refChecker);
+
+				// Ignore meta-variable
+				if (selfReference.unwrap((bool) -> bool)
+						&& !variableName.equals("last")) {
+					throw new UnsupportedOperationException(
+							"Variable '" + variableName
+									+ "' references itself. Problematic definition: \n\t"
+									+ rightAST);
+				}
+
+				if (!variableName.equals("last")) {
+					enviroment.put(variableName, rightAST);
+				} else {
+					// Do nothing, last is an auto-handled meta-variable
+				}
+
+				return new Pair<>(rightValue, new AST<>(
+						OperatorDiceNode.ASSIGN, leftAST, rightAST));
+			});
+		});
+	}
+
+	private static IPair<Integer, AST<IDiceASTNode>> parseCompound(
+			IPair<Integer, AST<IDiceASTNode>> leftNode,
+			IPair<Integer, AST<IDiceASTNode>> rightNode) {
+		return leftNode.merge((leftValue, leftAST) -> {
+			return rightNode.merge((rightValue, rightAST) -> {
+				int compoundValue =
+						Integer.parseInt(Integer.toString(leftValue)
+								+ Integer.toString(rightValue));
+
+				return new Pair<>(compoundValue, new AST<>(
+						OperatorDiceNode.COMPOUND, leftAST, rightAST));
+			});
+		});
+	}
+
+	private static IPair<Integer, AST<IDiceASTNode>> parseGroup(
+			IPair<Integer, AST<IDiceASTNode>> leftNode,
+			IPair<Integer, AST<IDiceASTNode>> rightNode) {
+		return leftNode.merge((leftValue, leftAST) -> {
+			return rightNode.merge((rightValue, rightAST) -> {
+				if (leftValue < 0) {
+					throw new UnsupportedOperationException(
+							"Can't attempt to roll a negative number of dice."
+									+ " The problematic AST is "
+									+ leftAST);
+				} else if (rightValue < 1) {
+					throw new UnsupportedOperationException(
+							"Can't roll dice with less than one side."
+									+ " The problematic AST is "
+									+ rightAST);
+				}
+
+				int rolledValue =
+						new ComplexDice(leftValue, rightValue).roll();
+
+				return new Pair<>(rolledValue, new AST<>(
+						OperatorDiceNode.GROUP, leftAST, rightAST));
+			});
+		});
 	}
 }

@@ -54,4 +54,9 @@ public class DiceLiteralNode implements ILiteralDiceNode {
 	public int optimize() {
 		return expression.optimize();
 	}
+	
+	@Override
+	public String toString() {
+		return expression.toString();
+	}
 }

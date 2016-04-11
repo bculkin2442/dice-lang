@@ -32,4 +32,9 @@ public class IntegerLiteralNode implements ILiteralDiceNode {
 	public int getValue() {
 		return value;
 	}
+	
+	@Override
+	public String toString() {
+		return Integer.toString(value);
+	}
 }
