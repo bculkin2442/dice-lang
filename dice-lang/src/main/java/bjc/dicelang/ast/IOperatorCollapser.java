@@ -1,9 +1,9 @@
-package bjc.dicelang.old.ast;
+package bjc.dicelang.ast;
 
 import java.util.function.BinaryOperator;
 
-import bjc.dicelang.old.ast.nodes.IDiceASTNode;
-import bjc.utils.data.Pair;
+import bjc.dicelang.ast.nodes.IDiceASTNode;
+import bjc.utils.data.IPair;
 import bjc.utils.parserutils.AST;
 
 /**
@@ -13,6 +13,6 @@ import bjc.utils.parserutils.AST;
  *
  */
 public interface IOperatorCollapser
-		extends BinaryOperator<Pair<Integer, AST<IDiceASTNode>>> {
+		extends BinaryOperator<IPair<Integer, AST<IDiceASTNode>>> {
 	// Just an alias
 }

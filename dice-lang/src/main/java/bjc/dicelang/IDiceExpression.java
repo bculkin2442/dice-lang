@@ -1,5 +1,7 @@
 package bjc.dicelang;
 
+import bjc.utils.funcutils.StringUtils;
+
 /**
  * An expression for something that can be rolled like a polyhedral die
  * 
@@ -36,5 +38,38 @@ public interface IDiceExpression {
 	 */
 	public default boolean canOptimize() {
 		return false;
+	}
+
+	/**
+	 * Parse this node into an expression
+	 * @param exp The string to convert to an expression
+	 * 
+	 * @return The node in expression form
+	 */
+	static IDiceExpression toExpression(String exp) {
+		String literalData = exp;
+	
+		if (StringUtils.containsInfixOperator(literalData, "c")) {
+			String[] strangs = literalData.split("c");
+	
+			return new CompoundDice(strangs);
+		} else if (StringUtils.containsInfixOperator(literalData,
+				"d")) {
+			/*
+			 * Handle dice groups
+			 */
+			return ComplexDice.fromString(literalData);
+		} else {
+			try {
+				return new ScalarDie(Integer.parseInt(literalData));
+			} catch (NumberFormatException nfex) {
+				UnsupportedOperationException usex = new UnsupportedOperationException(
+						"Found malformed leaf token " + exp);
+	
+				usex.initCause(nfex);
+	
+				throw usex;
+			}
+		}
 	}
 }

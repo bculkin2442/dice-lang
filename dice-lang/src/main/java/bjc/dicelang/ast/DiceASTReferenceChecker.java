@@ -1,10 +1,10 @@
-package bjc.dicelang.old.ast;
+package bjc.dicelang.ast;
 
 import java.util.function.Consumer;
 
-import bjc.dicelang.old.ast.nodes.DiceASTType;
-import bjc.dicelang.old.ast.nodes.IDiceASTNode;
-import bjc.dicelang.old.ast.nodes.VariableDiceNode;
+import bjc.dicelang.ast.nodes.DiceASTType;
+import bjc.dicelang.ast.nodes.IDiceASTNode;
+import bjc.dicelang.ast.nodes.VariableDiceNode;
 import bjc.utils.data.IHolder;
 
 /**

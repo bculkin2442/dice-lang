@@ -1,7 +1,7 @@
-package bjc.dicelang.old.ast.nodes;
+package bjc.dicelang.ast.nodes;
 
 /**
- * A node that represents a variable reference
+ * A node that represents a reference to a variable
  * 
  * @author ben
  *

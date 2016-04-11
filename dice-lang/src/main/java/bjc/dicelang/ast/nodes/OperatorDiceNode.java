@@ -1,4 +1,6 @@
-package bjc.dicelang.old.ast.nodes;
+package bjc.dicelang.ast.nodes;
+
+import static bjc.dicelang.ast.nodes.DiceOperatorType.*;
 
 // The following classes need to be changed upon addition of a new operator
 // 1. DiceASTExpression
@@ -14,35 +16,41 @@ public enum OperatorDiceNode implements IDiceASTNode {
 	/**
 	 * Represents adding two nodes
 	 */
-	ADD,
+	ADD(MATH),
 	/**
 	 * Represents assigning one node to another
 	 */
-	ASSIGN,
+	ASSIGN(EXPRESSION),
 	/**
 	 * Representings combining two node values together
 	 */
-	COMPOUND,
+	COMPOUND(DICE),
 	/**
 	 * Represents dividing two nodes
 	 */
-	DIVIDE,
+	DIVIDE(MATH),
 	/**
 	 * Represents using one node a variable number of times
 	 */
-	GROUP,
+	GROUP(DICE),
 	/**
 	 * Represents multiplying two nodes
 	 */
-	MULTIPLY,
+	MULTIPLY(MATH),
 	/**
 	 * Represents subtracting two nodes
 	 */
-	SUBTRACT,
+	SUBTRACT(MATH);
+
 	/**
-	 * Represents executing one statement in the context of the other
+	 * Represents the group of operator this operator is sorted into.
+	 * 
 	 */
-	LET;
+	public final DiceOperatorType type;
+
+	private OperatorDiceNode(DiceOperatorType ty) {
+		type = ty;
+	}
 
 	/**
 	 * Create a operator node from a string
@@ -64,11 +72,11 @@ public enum OperatorDiceNode implements IDiceASTNode {
 			case "/":
 				return DIVIDE;
 			case "d":
+			case "group":
 				return GROUP;
 			case "c":
+			case "compound":
 				return COMPOUND;
-			case "->":
-				return LET;
 			default:
 				throw new IllegalArgumentException(
 						s + " is not a valid operator node");

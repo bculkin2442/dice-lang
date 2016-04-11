@@ -2,10 +2,14 @@ package bjc.dicelang.ast;
 
 import java.util.InputMismatchException;
 
-import bjc.dicelang.old.ast.nodes.IDiceASTNode;
-import bjc.dicelang.old.ast.nodes.LiteralDiceNode;
-import bjc.dicelang.old.ast.nodes.OperatorDiceNode;
-import bjc.dicelang.old.ast.nodes.VariableDiceNode;
+import bjc.dicelang.IDiceExpression;
+import bjc.dicelang.ast.nodes.DiceLiteralNode;
+import bjc.dicelang.ast.nodes.DiceLiteralType;
+import bjc.dicelang.ast.nodes.IDiceASTNode;
+import bjc.dicelang.ast.nodes.ILiteralDiceNode;
+import bjc.dicelang.ast.nodes.IntegerLiteralNode;
+import bjc.dicelang.ast.nodes.OperatorDiceNode;
+import bjc.dicelang.ast.nodes.VariableDiceNode;
 import bjc.utils.funcdata.IFunctionalList;
 import bjc.utils.parserutils.AST;
 import bjc.utils.parserutils.TreeConstructor;
@@ -26,8 +30,8 @@ public class DiceASTParser {
 	 */
 	public static AST<IDiceASTNode> createFromString(
 			IFunctionalList<String> tokens) {
-		AST<String> rawTokens =
-				TreeConstructor.constructTree(tokens, (token) -> {
+		AST<String> rawTokens = TreeConstructor.constructTree(tokens,
+				(token) -> {
 					return isOperatorNode(token);
 				}, (operator) -> false, null);
 		// The last argument is valid because there are no special
@@ -48,8 +52,22 @@ public class DiceASTParser {
 	}
 
 	private static IDiceASTNode convertLeafNode(String leafNode) {
-		if (LiteralDiceNode.isLiteral(leafNode)) {
-			return new LiteralDiceNode(leafNode);
+		DiceLiteralType literalType = ILiteralDiceNode
+				.getLiteralType(leafNode);
+
+		if (literalType != null) {
+			switch (literalType) {
+				case DICE:
+					return new DiceLiteralNode(
+							IDiceExpression.toExpression(leafNode));
+				case INTEGER:
+					return new IntegerLiteralNode(
+							Integer.parseInt(leafNode));
+				default:
+					throw new InputMismatchException(
+							"Cannot convert string '" + leafNode
+									+ "' into a literal.");
+			}
 		}
 
 		return new VariableDiceNode(leafNode);
