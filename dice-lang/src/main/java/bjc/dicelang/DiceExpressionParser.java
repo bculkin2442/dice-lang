@@ -19,18 +19,19 @@ public class DiceExpressionParser {
 	/**
 	 * Parse a dice expression from a string
 	 * 
-	 * @param exp
+	 * @param expression
 	 *            The string to parse an expression from
-	 * @param env
+	 * @param enviroment
 	 *            The enviroment to use when parsing expressions
 	 * @return The parsed dice expression
 	 */
-	public static IDiceExpression parse(String exp,
-			Map<String, IDiceExpression> env) {
+	public static IDiceExpression parse(String expression,
+			Map<String, IDiceExpression> enviroment) {
 		/*
 		 * Create a tokenizer over the strings
 		 */
-		FunctionalStringTokenizer fst = new FunctionalStringTokenizer(exp);
+		FunctionalStringTokenizer tokenizer =
+				new FunctionalStringTokenizer(expression);
 
 		/*
 		 * Create a shunter to rewrite the expression
@@ -50,72 +51,90 @@ public class DiceExpressionParser {
 		/*
 		 * Shunt the expression to postfix form
 		 */
-		IFunctionalList<String> ls = yard.postfix(fst.toList(s -> s),
-				s -> s);
+		IFunctionalList<String> list =
+				yard.postfix(tokenizer.toList(), s -> s);
 
 		/*
 		 * Create a stack for building an expression from parts
 		 */
-		Stack<IDiceExpression> dexps = new Stack<>();
+		Stack<IDiceExpression> expressions = new Stack<>();
 
 		/*
 		 * Create the expression from parts
 		 */
-		ls.forEach((tok) -> {
+		list.forEach((expressionPart) -> {
 			/*
 			 * Handle compound dice
 			 */
-			if (StringUtils.countMatches(tok, 'c') == 1
-					&& !tok.equalsIgnoreCase("c")) {
-				String[] strangs = tok.split("c");
+			if (StringUtils.countMatches(expressionPart, 'c') == 1
+					&& !expressionPart.equalsIgnoreCase("c")) {
+				String[] strangs = expressionPart.split("c");
 
-				dexps.push(new CompoundDice(strangs));
-			} else if (StringUtils.countMatches(tok, 'd') == 1
-					&& !tok.equalsIgnoreCase("d")) {
+				expressions.push(new CompoundDice(strangs));
+			} else if (StringUtils.countMatches(expressionPart, 'd') == 1
+					&& !expressionPart.equalsIgnoreCase("d")) {
 				/*
 				 * Handle dice groups
 				 */
-				dexps.push(ComplexDice.fromString(tok));
+				expressions.push(ComplexDice.fromString(expressionPart));
 			} else {
 				try {
 					/*
 					 * Handle scalar numbers
 					 */
-					dexps.push(new ScalarDie(Integer.parseInt(tok)));
+					expressions.push(new ScalarDie(
+							Integer.parseInt(expressionPart)));
 				} catch (@SuppressWarnings("unused") NumberFormatException nfex) {
 					// We don't care about details, just that it failed
-					if (dexps.size() >= 2) {
+					if (expressions.size() >= 2) {
 						/*
 						 * Apply an operation to two dice
 						 */
-						IDiceExpression r = dexps.pop();
-						IDiceExpression l = dexps.pop();
-						switch (tok) {
+						IDiceExpression rightExpression =
+								expressions.pop();
+						IDiceExpression leftExpression = expressions.pop();
+
+						switch (expressionPart) {
 							case ":=":
-								dexps.push(new BindingDiceExpression(l, r,
-										env));
+								expressions.push(new BindingDiceExpression(
+										leftExpression, rightExpression,
+										enviroment));
 								break;
 							case "+":
-								dexps.push(new OperatorDiceExpression(r, l,
-										DiceExpressionType.ADD));
+								expressions
+										.push(new OperatorDiceExpression(
+												rightExpression,
+												leftExpression,
+												DiceExpressionType.ADD));
 								break;
 							case "-":
-								dexps.push(new OperatorDiceExpression(r, l,
-										DiceExpressionType.SUBTRACT));
+								expressions
+										.push(new OperatorDiceExpression(
+												rightExpression,
+												leftExpression,
+												DiceExpressionType.SUBTRACT));
 								break;
 							case "*":
-								dexps.push(new OperatorDiceExpression(r, l,
-										DiceExpressionType.MULTIPLY));
+								expressions
+										.push(new OperatorDiceExpression(
+												rightExpression,
+												leftExpression,
+												DiceExpressionType.MULTIPLY));
 								break;
 							case "/":
-								dexps.push(new OperatorDiceExpression(r, l,
-										DiceExpressionType.DIVIDE));
+								expressions
+										.push(new OperatorDiceExpression(
+												rightExpression,
+												leftExpression,
+												DiceExpressionType.DIVIDE));
 								break;
 							case "c":
-								dexps.push(new CompoundDice(l, r));
+								expressions.push(new CompoundDice(
+										leftExpression, rightExpression));
 								break;
 							case "d":
-								dexps.push(new ComplexDice(l, r));
+								expressions.push(new ComplexDice(
+										leftExpression, rightExpression));
 								break;
 							default:
 								/*
@@ -123,23 +142,26 @@ public class DiceExpressionParser {
 								 * 
 								 * Make sure to restore popped variables
 								 */
-								dexps.push(l);
-								dexps.push(r);
+								expressions.push(leftExpression);
+								expressions.push(rightExpression);
 
-								dexps.push(new ReferenceDiceExpression(tok,
-										env));
+								expressions
+										.push(new ReferenceDiceExpression(
+												expressionPart,
+												enviroment));
 						}
 					} else {
 						/*
 						 * Parse it as a variable reference
 						 */
-						dexps.push(new ReferenceDiceExpression(tok, env));
+						expressions.push(new ReferenceDiceExpression(
+								expressionPart, enviroment));
 					}
 				}
 			}
 		});
 
-		if (dexps.size() != 1) {
+		if (expressions.size() != 1) {
 			System.err.println(
 					"WARNING: Leftovers found on dice expression stack. Remember, := is assignment.");
 		}
@@ -147,6 +169,6 @@ public class DiceExpressionParser {
 		/*
 		 * Return the built expression
 		 */
-		return dexps.pop();
+		return expressions.pop();
 	}
 }

@@ -8,6 +8,15 @@ package bjc.dicelang;
  */
 public class PolyhedralDice {
 	/**
+	 * Produce a single d10
+	 * 
+	 * @return A single d10
+	 */
+	public static IDiceExpression d10() {
+		return d10(1);
+	}
+
+	/**
 	 * Produce the specified number of 10-sided dice
 	 * 
 	 * @param nDice
@@ -19,12 +28,12 @@ public class PolyhedralDice {
 	}
 
 	/**
-	 * Produce a single d10
+	 * Produce a single d100
 	 * 
-	 * @return A single d10
+	 * @return A single d100
 	 */
-	public static IDiceExpression d10() {
-		return d10(1);
+	public static IDiceExpression d100() {
+		return d100(1);
 	}
 
 	/**
@@ -39,12 +48,12 @@ public class PolyhedralDice {
 	}
 
 	/**
-	 * Produce a single d100
+	 * Produce a single d12
 	 * 
-	 * @return A single d100
+	 * @return A single d12
 	 */
-	public static IDiceExpression d100() {
-		return d100(1);
+	public static IDiceExpression d12() {
+		return d12(1);
 	}
 
 	/**
@@ -59,12 +68,12 @@ public class PolyhedralDice {
 	}
 
 	/**
-	 * Produce a single d12
+	 * Produce a single d20
 	 * 
-	 * @return A single d12
+	 * @return A single d20
 	 */
-	public static IDiceExpression d12() {
-		return d12(1);
+	public static IDiceExpression d20() {
+		return d20(1);
 	}
 
 	/**
@@ -79,12 +88,12 @@ public class PolyhedralDice {
 	}
 
 	/**
-	 * Produce a single d20
+	 * Produce a single d4
 	 * 
-	 * @return A single d20
+	 * @return A single d4
 	 */
-	public static IDiceExpression d20() {
-		return d20(1);
+	public static IDiceExpression d4() {
+		return d4(1);
 	}
 
 	/**
@@ -99,12 +108,12 @@ public class PolyhedralDice {
 	}
 
 	/**
-	 * Produce a single d4
+	 * Produce a single d6
 	 * 
-	 * @return A single d4
+	 * @return A single d6
 	 */
-	public static IDiceExpression d4() {
-		return d4(1);
+	public static IDiceExpression d6() {
+		return d6(1);
 	}
 
 	/**
@@ -119,12 +128,12 @@ public class PolyhedralDice {
 	}
 
 	/**
-	 * Produce a single d6
+	 * Produce a single d8
 	 * 
-	 * @return A single d6
+	 * @return A single d8
 	 */
-	public static IDiceExpression d6() {
-		return d6(1);
+	public static IDiceExpression d8() {
+		return d8(1);
 	}
 
 	/**
@@ -136,14 +145,5 @@ public class PolyhedralDice {
 	 */
 	public static IDiceExpression d8(int nDice) {
 		return new ComplexDice(nDice, 8);
-	}
-
-	/**
-	 * Produce a single d8
-	 * 
-	 * @return A single d8
-	 */
-	public static IDiceExpression d8() {
-		return d8(1);
 	}
 }

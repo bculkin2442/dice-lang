@@ -10,17 +10,17 @@ public class OperatorDiceExpression implements IDiceExpression {
 	/**
 	 * The operator to use for combining the dice
 	 */
-	private DiceExpressionType	det;
+	private DiceExpressionType	expressionType;
 
 	/**
 	 * The dice on the left side of the expression
 	 */
-	private IDiceExpression		left;
+	private IDiceExpression		leftExpression;
 
 	/**
 	 * The dice on the right side of the expression
 	 */
-	private IDiceExpression		right;
+	private IDiceExpression		rightExpression;
 
 	/**
 	 * Create a new compound expression using the specified parameters
@@ -29,14 +29,14 @@ public class OperatorDiceExpression implements IDiceExpression {
 	 *            The die on the right side of the expression
 	 * @param left
 	 *            The die on the left side of the expression
-	 * @param det
+	 * @param type
 	 *            The operator to use for combining the dices
 	 */
 	public OperatorDiceExpression(IDiceExpression right,
-			IDiceExpression left, DiceExpressionType det) {
-		this.right = right;
-		this.left = left;
-		this.det = det;
+			IDiceExpression left, DiceExpressionType type) {
+		this.rightExpression = right;
+		this.leftExpression = left;
+		this.expressionType = type;
 	}
 
 	/*
@@ -49,26 +49,27 @@ public class OperatorDiceExpression implements IDiceExpression {
 		/*
 		 * Handle each operator
 		 */
-		switch (det) {
+		switch (expressionType) {
 			case ADD:
-				return right.roll() + left.roll();
+				return rightExpression.roll() + leftExpression.roll();
 			case SUBTRACT:
-				return right.roll() - left.roll();
+				return rightExpression.roll() - leftExpression.roll();
 			case MULTIPLY:
-				return right.roll() * left.roll();
+				return rightExpression.roll() * leftExpression.roll();
 			case DIVIDE:
 				/*
 				 * Round to keep results as integers. We don't really have
-				 * any need for floating-point dice
+				 * any need for floating-point dice, and continuous
+				 * probability is a pain
 				 */
 				try {
-					return right.roll() / left.roll();
+					return rightExpression.roll() / leftExpression.roll();
 				} catch (ArithmeticException aex) {
 					UnsupportedOperationException usex =
 							new UnsupportedOperationException(
 									"Attempted to divide by zero."
 											+ " Problematic expression is "
-											+ left);
+											+ leftExpression);
 
 					usex.initCause(aex);
 
@@ -76,8 +77,8 @@ public class OperatorDiceExpression implements IDiceExpression {
 				}
 			default:
 				throw new IllegalArgumentException(
-						"Got passed  a invalid ScalarExpressionType " + det
-								+ ". WAT");
+						"Got passed  a invalid ScalarExpressionType "
+								+ expressionType + ". WAT");
 
 		}
 	}
@@ -89,7 +90,8 @@ public class OperatorDiceExpression implements IDiceExpression {
 	 */
 	@Override
 	public String toString() {
-		return "dice-exp[type=" + det + ", l=" + left.toString() + ", r="
-				+ right.toString() + "]";
+		return "dice-exp[type=" + expressionType + ", l="
+				+ leftExpression.toString() + ", r="
+				+ rightExpression.toString() + "]";
 	}
 }

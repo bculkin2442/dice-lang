@@ -10,12 +10,12 @@ public class ScalarDiceExpression implements IDiceExpression {
 	/**
 	 * The operation to combine with
 	 */
-	private DiceExpressionType	det;
+	private DiceExpressionType	expressionType;
 
 	/**
 	 * The expression to be combined
 	 */
-	private IDiceExpression		exp;
+	private IDiceExpression		expression;
 
 	/**
 	 * The scalar to be combined
@@ -25,18 +25,18 @@ public class ScalarDiceExpression implements IDiceExpression {
 	/**
 	 * Create a dice expression with a scalar
 	 * 
-	 * @param dex
+	 * @param expr
 	 *            The dice to use
 	 * @param scalr
 	 *            The scalar to use
-	 * @param dt
+	 * @param type
 	 *            The operation to combine with
 	 */
-	public ScalarDiceExpression(IDiceExpression dex, int scalr,
-			DiceExpressionType dt) {
-		exp = dex;
+	public ScalarDiceExpression(IDiceExpression expr, int scalr,
+			DiceExpressionType type) {
+		expression = expr;
 		scalar = scalr;
-		det = dt;
+		expressionType = type;
 	}
 
 	/*
@@ -46,16 +46,16 @@ public class ScalarDiceExpression implements IDiceExpression {
 	 */
 	@Override
 	public int roll() {
-		switch (det) {
+		switch (expressionType) {
 			case ADD:
-				return exp.roll() + scalar;
+				return expression.roll() + scalar;
 			case SUBTRACT:
-				return exp.roll() - scalar;
+				return expression.roll() - scalar;
 			case MULTIPLY:
-				return exp.roll() * scalar;
+				return expression.roll() * scalar;
 			case DIVIDE:
 				try {
-					return exp.roll() / scalar;
+					return expression.roll() / scalar;
 				} catch (ArithmeticException aex) {
 					UnsupportedOperationException usex =
 							new UnsupportedOperationException(
@@ -68,7 +68,7 @@ public class ScalarDiceExpression implements IDiceExpression {
 			default:
 				throw new IllegalStateException(
 						"Got passed  a invalid ScalarExpressionType "
-								+ det);
+								+ expressionType);
 		}
 	}
 
@@ -79,7 +79,7 @@ public class ScalarDiceExpression implements IDiceExpression {
 	 */
 	@Override
 	public String toString() {
-		return "scalar-exp[type=" + det + ", l=" + scalar + ", r="
-				+ exp.toString() + "]";
+		return "scalar-exp[type=" + expressionType + ", l=" + scalar
+				+ ", r=" + expression.toString() + "]";
 	}
 }

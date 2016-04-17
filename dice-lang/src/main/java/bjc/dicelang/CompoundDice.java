@@ -13,46 +13,63 @@ public class CompoundDice implements IDiceExpression {
 	/**
 	 * The left die of the expression
 	 */
-	private IDiceExpression	l;
+	private IDiceExpression	leftDice;
 
 	/**
 	 * The right die of the expression
 	 */
-	private IDiceExpression	r;
+	private IDiceExpression	rightDice;
 
 	/**
 	 * Create a new compound dice using the specified dice
 	 * 
-	 * @param l
+	 * @param left
 	 *            The die to use on the left
-	 * @param r
+	 * @param right
 	 *            The die to use on the right
 	 */
-	public CompoundDice(IDiceExpression l, IDiceExpression r) {
-		this.l = l;
-		this.r = r;
+	public CompoundDice(IDiceExpression left, IDiceExpression right) {
+		this.leftDice = left;
+		this.rightDice = right;
 	}
 
 	/**
 	 * Create a new compound dice from two dice strings
 	 * 
-	 * @param l
-	 *            The left side dice
-	 * @param r
-	 *            The right side dice
+	 * @param leftExp
+	 *            The left side dice as a string
+	 * @param rightExp
+	 *            The right side dice as a string
 	 */
-	public CompoundDice(String l, String r) {
-		this(ComplexDice.fromString(l), ComplexDice.fromString(r));
+	public CompoundDice(String leftExp, String rightExp) {
+		this(ComplexDice.fromString(leftExp),
+				ComplexDice.fromString(rightExp));
 	}
 
 	/**
 	 * Create a new compound dice from an array of dice strings
 	 * 
 	 * @param exps
-	 *            An array of dice strings
+	 *            An array of two dice strings
 	 */
 	public CompoundDice(String[] exps) {
 		this(exps[0], exps[1]);
+	}
+
+	@Override
+	public boolean canOptimize() {
+		return leftDice.canOptimize() && rightDice.canOptimize();
+	}
+
+	@Override
+	public int optimize() {
+		if (!canOptimize()) {
+			throw new UnsupportedOperationException(
+					"Cannot optimize this compound dice");
+		}
+
+		return Integer
+				.parseInt(leftDice.optimize() + "" + rightDice.optimize());
 	}
 
 	/*
@@ -65,7 +82,7 @@ public class CompoundDice implements IDiceExpression {
 		/*
 		 * Make the combination of the two dice
 		 */
-		return Integer.parseInt(l.roll() + "" + r.roll());
+		return Integer.parseInt(leftDice.roll() + "" + rightDice.roll());
 	}
 
 	/*
@@ -75,16 +92,7 @@ public class CompoundDice implements IDiceExpression {
 	 */
 	@Override
 	public String toString() {
-		return "compound[l=" + l.toString() + ", r=" + r.toString() + "]";
-	}
-
-	@Override
-	public int optimize() {
-		return Integer.parseInt(l.optimize() + "" + r.optimize());
-	}
-
-	@Override
-	public boolean canOptimize() {
-		return l.canOptimize() && r.canOptimize();
+		return "compound[l=" + leftDice.toString() + ", r="
+				+ rightDice.toString() + "]";
 	}
 }

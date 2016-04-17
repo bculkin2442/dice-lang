@@ -13,12 +13,12 @@ public class ReferenceDiceExpression implements IDiceExpression {
 	/**
 	 * The enviroment to do variable dereferencing against
 	 */
-	private Map<String, IDiceExpression>	env;
+	private Map<String, IDiceExpression>	enviroment;
 
 	/**
 	 * The name of the bound variable
 	 */
-	private String							name;
+	private String							variableName;
 
 	/**
 	 * Create a new reference dice expression referring to the given name
@@ -31,8 +31,8 @@ public class ReferenceDiceExpression implements IDiceExpression {
 	 */
 	public ReferenceDiceExpression(String name,
 			Map<String, IDiceExpression> env) {
-		this.name = name;
-		this.env = env;
+		this.variableName = name;
+		this.enviroment = env;
 	}
 
 	/**
@@ -41,7 +41,7 @@ public class ReferenceDiceExpression implements IDiceExpression {
 	 * @return the name of the referenced variable
 	 */
 	public String getName() {
-		return name;
+		return variableName;
 	}
 
 	/*
@@ -51,12 +51,12 @@ public class ReferenceDiceExpression implements IDiceExpression {
 	 */
 	@Override
 	public int roll() {
-		if (!env.containsKey(name)) {
+		if (!enviroment.containsKey(variableName)) {
 			throw new UnsupportedOperationException(
-					"Attempted to reference undefined variable " + name);
+					"Attempted to reference undefined variable " + variableName);
 		}
 
-		return env.get(name).roll();
+		return enviroment.get(variableName).roll();
 	}
 
 	/*
@@ -66,10 +66,10 @@ public class ReferenceDiceExpression implements IDiceExpression {
 	 */
 	@Override
 	public String toString() {
-		if (env.containsKey(name)) {
-			return env.get(name).toString();
+		if (enviroment.containsKey(variableName)) {
+			return enviroment.get(variableName).toString();
 		}
 
-		return name;
+		return variableName;
 	}
 }

@@ -42,19 +42,20 @@ public interface IDiceExpression {
 
 	/**
 	 * Parse this node into an expression
-	 * @param exp The string to convert to an expression
 	 * 
-	 * @return The node in expression form
+	 * @param expression
+	 *            The string to convert to an expression
+	 * 
+	 * @return The string in expression form
 	 */
-	static IDiceExpression toExpression(String exp) {
-		String literalData = exp;
-	
+	static IDiceExpression toExpression(String expression) {
+		String literalData = expression;
+
 		if (StringUtils.containsInfixOperator(literalData, "c")) {
 			String[] strangs = literalData.split("c");
-	
+
 			return new CompoundDice(strangs);
-		} else if (StringUtils.containsInfixOperator(literalData,
-				"d")) {
+		} else if (StringUtils.containsInfixOperator(literalData, "d")) {
 			/*
 			 * Handle dice groups
 			 */
@@ -63,11 +64,13 @@ public interface IDiceExpression {
 			try {
 				return new ScalarDie(Integer.parseInt(literalData));
 			} catch (NumberFormatException nfex) {
-				UnsupportedOperationException usex = new UnsupportedOperationException(
-						"Found malformed leaf token " + exp);
-	
+				UnsupportedOperationException usex =
+						new UnsupportedOperationException(
+								"Found malformed leaf token "
+										+ expression);
+
 				usex.initCause(nfex);
-	
+
 				throw usex;
 			}
 		}

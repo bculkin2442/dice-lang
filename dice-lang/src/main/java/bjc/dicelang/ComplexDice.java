@@ -11,15 +11,15 @@ public class ComplexDice implements IDiceExpression {
 	/**
 	 * Create a dice from a string expression
 	 * 
-	 * @param dice
+	 * @param expression
 	 *            The string to parse the dice from
 	 * @return A dice group parsed from the string
 	 */
-	public static IDiceExpression fromString(String dice) {
+	public static IDiceExpression fromString(String expression) {
 		/*
 		 * Split it on the dice type marker
 		 */
-		String[] strangs = dice.split("d");
+		String[] strangs = expression.split("d");
 
 		try {
 			/*
@@ -129,6 +129,11 @@ public class ComplexDice implements IDiceExpression {
 
 	@Override
 	public int optimize() {
+		if (!canOptimize()) {
+			throw new UnsupportedOperationException(
+					"This complex dice cannot be optimized");
+		}
+
 		return nDice.optimize();
 	}
 }

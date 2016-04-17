@@ -34,6 +34,21 @@ public class Die implements IDiceExpression {
 		this.nSides = nSides;
 	}
 
+	@Override
+	public boolean canOptimize() {
+		return nSides == 1;
+	}
+
+	@Override
+	public int optimize() {
+		if (nSides != 1) {
+			throw new UnsupportedOperationException(
+					"Can't optimize " + nSides + "-sided dice");
+		}
+
+		return 1;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -52,15 +67,5 @@ public class Die implements IDiceExpression {
 	@Override
 	public String toString() {
 		return "d" + nSides;
-	}
-
-	@Override
-	public int optimize() {
-		return 1;
-	}
-
-	@Override
-	public boolean canOptimize() {
-		return nSides == 1;
 	}
 }
