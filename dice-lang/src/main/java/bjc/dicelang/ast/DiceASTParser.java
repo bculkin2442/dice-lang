@@ -11,7 +11,7 @@ import bjc.dicelang.ast.nodes.IntegerLiteralNode;
 import bjc.dicelang.ast.nodes.OperatorDiceNode;
 import bjc.dicelang.ast.nodes.VariableDiceNode;
 import bjc.utils.funcdata.IFunctionalList;
-import bjc.utils.parserutils.AST;
+import bjc.utils.funcdata.ITree;
 import bjc.utils.parserutils.TreeConstructor;
 
 /**
@@ -28,9 +28,9 @@ public class DiceASTParser {
 	 *            The list of tokens to convert
 	 * @return An AST built from the tokens
 	 */
-	public static AST<IDiceASTNode> createFromString(
+	public static ITree<IDiceASTNode> createFromString(
 			IFunctionalList<String> tokens) {
-		AST<String> rawTokens = TreeConstructor.constructTree(tokens,
+		ITree<String> rawTokens = TreeConstructor.constructTree(tokens,
 				(token) -> {
 					return isOperatorNode(token);
 				}, (operator) -> false, null);

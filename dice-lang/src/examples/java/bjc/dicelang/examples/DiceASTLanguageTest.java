@@ -9,7 +9,7 @@ import bjc.dicelang.ast.nodes.IDiceASTNode;
 import bjc.utils.funcdata.FunctionalMap;
 import bjc.utils.funcdata.IFunctionalList;
 import bjc.utils.funcdata.IFunctionalMap;
-import bjc.utils.parserutils.AST;
+import bjc.utils.funcdata.ITree;
 
 /**
  * Test interface for AST-based dice language
@@ -32,12 +32,12 @@ public class DiceASTLanguageTest {
 		String currentLine = inputSource.nextLine();
 
 		// The enviroment for variables
-		IFunctionalMap<String, AST<IDiceASTNode>> enviroment =
+		IFunctionalMap<String, ITree<IDiceASTNode>> enviroment =
 				new FunctionalMap<>();
 
 		while (!currentLine.equalsIgnoreCase("quit")) {
 			// Build an AST from the string expression
-			AST<IDiceASTNode> builtAST;
+			ITree<IDiceASTNode> builtAST;
 
 			IFunctionalList<String> preparedTokens =
 					DiceExpressionPreparer.prepareCommand(currentLine);
