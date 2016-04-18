@@ -78,6 +78,7 @@ public class ConstantCollapser implements IOptimizationPass {
 
 				return new Tree<>(operator, children);
 			case ASSIGN:
+			case LET:
 			default:
 				// We don't optimize these operators
 				return new Tree<>(operator, children);

@@ -20,17 +20,31 @@ public class DiceExpressionPreparer {
 	/**
 	 * The yard to use for shunting expressions
 	 */
-	private static ShuntingYard<String> yard;
+	private static ShuntingYard<String>	yard;
+
+	private static final int			MATH_PREC	= 20;
+	private static final int			DICE_PREC	= 10;
+	private static final int			EXPR_PREC	= 0;
 
 	static {
-		yard = new ShuntingYard<>();
+		yard = new ShuntingYard<>(false);
 
-		yard.addOp("d", 5); // dice operator: use for creating variable
-		// size dice groups
-		yard.addOp("c", 6); // compound operator: use for creating compound
-		// dice from expressions
-		yard.addOp(":=", 0); // binding operator: Bind a name to a variable
-		// expression
+		// Basic mathematical operators
+		yard.addOp("+", 0 + MATH_PREC);
+		yard.addOp("-", 0 + MATH_PREC);
+
+		yard.addOp("*", 1 + MATH_PREC);
+		yard.addOp("/", 1 + MATH_PREC);
+
+		yard.addOp("d", 0 + DICE_PREC); // dice operator: use for creating
+		// variable size dice groups
+		yard.addOp("c", 1 + DICE_PREC); // compound operator: use for
+		// creating compound dice from expressions
+
+		yard.addOp("=>", 0 + EXPR_PREC); // let operator: evaluate an
+		// expression in the context of another
+		yard.addOp(":=", 1 + EXPR_PREC); // binding operator: Bind a name
+		// to a variable expression
 	}
 
 	static IFunctionalList<String> prepareCommand(String currentLine) {
@@ -44,6 +58,7 @@ public class DiceExpressionPreparer {
 		ops.add(new Pair<>("*", "\\*"));
 		ops.add(new Pair<>("/", "/"));
 		ops.add(new Pair<>(":=", ":="));
+		ops.add(new Pair<>("=>", "=>"));
 
 		IFunctionalList<String> semiExpandedTokens =
 				ListUtils.splitTokens(tokens, ops);
@@ -52,11 +67,6 @@ public class DiceExpressionPreparer {
 
 		ops.add(new Pair<>("(", "\\("));
 		ops.add(new Pair<>(")", "\\)"));
-		ops.add(new Pair<>("+", "\\+"));
-		ops.add(new Pair<>("-", "-"));
-		ops.add(new Pair<>("*", "\\*"));
-		ops.add(new Pair<>("/", "/"));
-		ops.add(new Pair<>(":=", ":="));
 
 		IFunctionalList<String> fullyExpandedTokens =
 				ListUtils.deAffixTokens(semiExpandedTokens, ops);

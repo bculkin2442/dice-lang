@@ -36,7 +36,7 @@ public class DiceExpressionParser {
 		/*
 		 * Create a shunter to rewrite the expression
 		 */
-		ShuntingYard<String> yard = new ShuntingYard<>();
+		ShuntingYard<String> yard = new ShuntingYard<>(true);
 
 		/*
 		 * Add our custom operators to the yard

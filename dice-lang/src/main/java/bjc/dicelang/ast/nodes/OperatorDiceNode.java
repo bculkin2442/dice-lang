@@ -14,21 +14,9 @@ public enum OperatorDiceNode implements IDiceASTNode {
 	 */
 	ADD(MATH),
 	/**
-	 * Represents assigning one node to another
-	 */
-	ASSIGN(EXPRESSION),
-	/**
-	 * Representings combining two node values together
-	 */
-	COMPOUND(DICE),
-	/**
 	 * Represents dividing two nodes
 	 */
 	DIVIDE(MATH),
-	/**
-	 * Represents using one node a variable number of times
-	 */
-	GROUP(DICE),
 	/**
 	 * Represents multiplying two nodes
 	 */
@@ -36,7 +24,23 @@ public enum OperatorDiceNode implements IDiceASTNode {
 	/**
 	 * Represents subtracting two nodes
 	 */
-	SUBTRACT(MATH);
+	SUBTRACT(MATH),
+	/**
+	 * Representings combining two node values together
+	 */
+	COMPOUND(DICE),
+	/**
+	 * Represents using one node a variable number of times
+	 */
+	GROUP(DICE),
+	/**
+	 * Represents assigning one node to another
+	 */
+	ASSIGN(EXPRESSION),
+	/**
+	 * Represents evaluating one expression in the context of another
+	 */
+	LET(EXPRESSION);
 
 	/**
 	 * Represents the group of operator this operator is sorted into.
@@ -73,6 +77,8 @@ public enum OperatorDiceNode implements IDiceASTNode {
 			case "c":
 			case "compound":
 				return COMPOUND;
+			case "=>":
+				return LET;
 			default:
 				throw new IllegalArgumentException(
 						s + " is not a valid operator node");

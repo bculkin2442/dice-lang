@@ -44,14 +44,16 @@ public class DiceASTOptimizer {
 	 */
 	public ITree<IDiceASTNode> optimizeTree(ITree<IDiceASTNode> ast,
 			IFunctionalMap<String, ITree<IDiceASTNode>> enviroment) {
-		return passes.reduceAux(ast, (currentPass, currentTree) -> {
-			return currentTree.collapse(currentPass::optimizeLeaf,
-					(operator) -> {
-						return (nodes) -> {
-							return currentPass.optimizeOperator(operator,
-									nodes);
-						};
-					}, (tree) -> tree);
-		}, (tree) -> tree);
+		ITree<IDiceASTNode> optimizedTree =
+				passes.reduceAux(ast, (currentPass, currentTree) -> {
+					return currentTree.collapse(currentPass::optimizeLeaf,
+							(operator) -> {
+								return (nodes) -> {
+									return currentPass.optimizeOperator(
+											operator, nodes);
+								};
+							}, (tree) -> tree);
+				}, (tree) -> tree);
+		return optimizedTree;
 	}
 }

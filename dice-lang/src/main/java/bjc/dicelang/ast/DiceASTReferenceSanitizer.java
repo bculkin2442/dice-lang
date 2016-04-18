@@ -41,6 +41,8 @@ public class DiceASTReferenceSanitizer {
 		switch (((OperatorDiceNode) node)) {
 			case ASSIGN:
 				return TopDownTransformResult.TRANSFORM;
+			case LET:
+				return TopDownTransformResult.PASSTHROUGH;
 			case ADD:
 			case COMPOUND:
 			case DIVIDE:

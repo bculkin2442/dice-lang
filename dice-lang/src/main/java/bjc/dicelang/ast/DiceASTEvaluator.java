@@ -67,7 +67,36 @@ public class DiceASTEvaluator {
 		operatorCollapsers.put(OperatorDiceNode.GROUP,
 				DiceASTEvaluator::parseGroup);
 
+		operatorCollapsers.put(OperatorDiceNode.LET, (nodes) -> {
+			return parseLet(enviroment, nodes);
+		});
+
 		return operatorCollapsers;
+	}
+
+	private static IPair<Integer, ITree<IDiceASTNode>> parseLet(
+			IFunctionalMap<String, ITree<IDiceASTNode>> enviroment,
+			IFunctionalList<IPair<Integer, ITree<IDiceASTNode>>> nodes) {
+		if (nodes.getSize() != 2) {
+			throw new UnsupportedOperationException(
+					"Can only use let with two expressions.");
+		}
+
+		ITree<IDiceASTNode> bindTree = nodes.getByIndex(0).getRight();
+		ITree<IDiceASTNode> expressionTree =
+				nodes.getByIndex(1).getRight();
+
+		IFunctionalMap<String, ITree<IDiceASTNode>> letEnviroment =
+				enviroment.extend();
+
+		evaluateAST(bindTree, letEnviroment);
+		int exprResult = evaluateAST(expressionTree, letEnviroment);
+
+		IFunctionalList<ITree<IDiceASTNode>> childrn =
+				nodes.map((pair) -> pair.getRight());
+
+		return new Pair<>(exprResult,
+				new Tree<>(OperatorDiceNode.LET, childrn));
 	}
 
 	/**
@@ -121,8 +150,9 @@ public class DiceASTEvaluator {
 			return result;
 		}
 
-		// Value to allow for assignments
-		return 0;
+		throw new UnsupportedOperationException(
+				"Attempted to dereference unbound variable "
+						+ variableName);
 	}
 
 	private static int evaluateLiteral(IDiceASTNode leafNode) {

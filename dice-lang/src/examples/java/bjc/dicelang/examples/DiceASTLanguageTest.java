@@ -9,6 +9,7 @@ import bjc.dicelang.ast.DiceASTParser;
 import bjc.dicelang.ast.DiceASTReferenceSanitizer;
 import bjc.dicelang.ast.nodes.IDiceASTNode;
 import bjc.dicelang.ast.optimization.ConstantCollapser;
+import bjc.dicelang.ast.optimization.OperationCondenser;
 import bjc.utils.funcdata.FunctionalMap;
 import bjc.utils.funcdata.FunctionalStringTokenizer;
 import bjc.utils.funcdata.IFunctionalList;
@@ -166,8 +167,11 @@ public class DiceASTLanguageTest {
 		ITree<IDiceASTNode> optimizedTree =
 				optimizer.optimizeTree(builtAST, enviroment);
 
+		ITree<IDiceASTNode> condensedTree =
+				OperationCondenser.condense(optimizedTree);
+
 		ITree<IDiceASTNode> sanitizedTree = DiceASTReferenceSanitizer
-				.sanitize(optimizedTree, enviroment);
+				.sanitize(condensedTree, enviroment);
 
 		return sanitizedTree;
 	}
