@@ -4,8 +4,11 @@ import java.util.Scanner;
 
 import bjc.dicelang.ast.DiceASTEvaluator;
 import bjc.dicelang.ast.DiceASTInliner;
+import bjc.dicelang.ast.DiceASTOptimizer;
 import bjc.dicelang.ast.DiceASTParser;
+import bjc.dicelang.ast.DiceASTReferenceSanitizer;
 import bjc.dicelang.ast.nodes.IDiceASTNode;
+import bjc.dicelang.ast.optimization.ConstantCollapser;
 import bjc.utils.funcdata.FunctionalMap;
 import bjc.utils.funcdata.FunctionalStringTokenizer;
 import bjc.utils.funcdata.IFunctionalList;
@@ -19,7 +22,9 @@ import bjc.utils.funcdata.ITree;
  *
  */
 public class DiceASTLanguageTest {
-	private static IFunctionalMap<String, DiceASTPragma> actions;
+	private static IFunctionalMap<String, DiceASTPragma>	actions;
+
+	private static DiceASTOptimizer							optimizer;
 
 	static {
 		actions = new FunctionalMap<>();
@@ -31,6 +36,10 @@ public class DiceASTLanguageTest {
 				System.out.println(varName + " is bound to " + varValue);
 			});
 		});
+
+		optimizer = new DiceASTOptimizer();
+
+		optimizer.addPass(new ConstantCollapser());
 	}
 
 	private static void handleInlineAction(
@@ -117,9 +126,14 @@ public class DiceASTLanguageTest {
 
 			int sampleRoll;
 
+			ITree<IDiceASTNode> transformedAST =
+					transformAST(builtAST, enviroment);
+
 			try {
-				sampleRoll =
-						DiceASTEvaluator.evaluateAST(builtAST, enviroment);
+				sampleRoll = DiceASTEvaluator.evaluateAST(transformedAST,
+						enviroment);
+
+				enviroment.put("last", transformedAST);
 			} catch (UnsupportedOperationException usex) {
 				System.out.println("ERROR: " + usex.getLocalizedMessage());
 
@@ -130,6 +144,8 @@ public class DiceASTLanguageTest {
 
 			// Print out results
 			System.out.println("\tParsed: " + builtAST.toString());
+			System.out
+					.println("\tEvaluated: " + transformedAST.toString());
 			System.out.println("\t\tSample Roll: " + sampleRoll);
 
 			// Increase the number of commands
@@ -142,6 +158,18 @@ public class DiceASTLanguageTest {
 
 		// Cleanup after ourselves
 		inputSource.close();
+	}
+
+	private static ITree<IDiceASTNode> transformAST(
+			ITree<IDiceASTNode> builtAST,
+			IFunctionalMap<String, ITree<IDiceASTNode>> enviroment) {
+		ITree<IDiceASTNode> optimizedTree =
+				optimizer.optimizeTree(builtAST, enviroment);
+
+		ITree<IDiceASTNode> sanitizedTree = DiceASTReferenceSanitizer
+				.sanitize(optimizedTree, enviroment);
+
+		return sanitizedTree;
 	}
 
 	private static String getNextCommand(Scanner inputSource,

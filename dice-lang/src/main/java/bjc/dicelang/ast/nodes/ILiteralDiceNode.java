@@ -27,6 +27,22 @@ public interface ILiteralDiceNode extends IDiceASTNode {
 	DiceLiteralType getLiteralType();
 
 	/**
+	 * Optimize this node to a constant if possible
+	 * 
+	 * @return This node in constant form if possible
+	 * @see bjc.dicelang.IDiceExpression#optimize()
+	 */
+	int optimize();
+
+	/**
+	 * Check if this node can be optimized to a constant
+	 * 
+	 * @return Whether or not this node can be optimized to a constant
+	 * @see bjc.dicelang.IDiceExpression#canOptimize()
+	 */
+	boolean canOptimize();
+
+	/**
 	 * Check if a token represents a literal, and if so, what type
 	 * 
 	 * @param tok

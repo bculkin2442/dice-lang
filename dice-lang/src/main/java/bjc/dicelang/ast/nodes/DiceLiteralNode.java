@@ -21,12 +21,7 @@ public class DiceLiteralNode implements ILiteralDiceNode {
 		expression = exp;
 	}
 
-	/**
-	 * Check if this node can be optimized to a constant
-	 * 
-	 * @return Whether or not this node can be optimized to a constant
-	 * @see bjc.dicelang.IDiceExpression#canOptimize()
-	 */
+	@Override
 	public boolean canOptimize() {
 		return expression.canOptimize();
 	}
@@ -37,24 +32,19 @@ public class DiceLiteralNode implements ILiteralDiceNode {
 	}
 
 	/**
-	 * Return a value from the expression being represented
+	 * Return the expression being represented
 	 * 
-	 * @return A value from the expression being represented
+	 * @return The expression being represented
 	 */
-	public int getValue() {
-		return expression.roll();
+	public IDiceExpression getValue() {
+		return expression;
 	}
 
-	/**
-	 * Optimize this node to a constant if possible
-	 * 
-	 * @return This node in constant form if possible
-	 * @see bjc.dicelang.IDiceExpression#optimize()
-	 */
+	@Override
 	public int optimize() {
 		return expression.optimize();
 	}
-	
+
 	@Override
 	public String toString() {
 		return expression.toString();

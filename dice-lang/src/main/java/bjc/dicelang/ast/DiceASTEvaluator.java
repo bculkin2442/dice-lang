@@ -1,7 +1,6 @@
 package bjc.dicelang.ast;
 
 import bjc.dicelang.ComplexDice;
-import bjc.dicelang.ast.nodes.DiceASTType;
 import bjc.dicelang.ast.nodes.DiceLiteralNode;
 import bjc.dicelang.ast.nodes.DiceLiteralType;
 import bjc.dicelang.ast.nodes.IDiceASTNode;
@@ -59,7 +58,11 @@ public class DiceASTEvaluator {
 		});
 
 		operatorCollapsers.put(OperatorDiceNode.COMPOUND,
-				DiceASTEvaluator::parseCompound);
+				new ArithmeticCollapser(OperatorDiceNode.COMPOUND,
+						(left, right) -> {
+							return Integer.parseInt(Integer.toString(left)
+									+ Integer.toString(right));
+						}));
 
 		operatorCollapsers.put(OperatorDiceNode.GROUP,
 				DiceASTEvaluator::parseGroup);
@@ -128,7 +131,7 @@ public class DiceASTEvaluator {
 
 		switch (literalType) {
 			case DICE:
-				return ((DiceLiteralNode) leafNode).getValue();
+				return ((DiceLiteralNode) leafNode).getValue().roll();
 			case INTEGER:
 				return ((IntegerLiteralNode) leafNode).getValue();
 			default:
@@ -156,7 +159,7 @@ public class DiceASTEvaluator {
 
 		return nameNode.bindRight((nameTree) -> {
 			return valueNode.bind((valueValue, valueTree) -> {
-				if (containsSimpleVariable(nameTree)) {
+				if (DiceASTUtils.containsSimpleVariable(nameTree)) {
 					String varName = nameTree.transformHead((nameNod) -> {
 						return ((VariableDiceNode) nameNod).getVariable();
 					});
@@ -166,46 +169,9 @@ public class DiceASTEvaluator {
 					return new Pair<>(valueValue, nameTree);
 				}
 
-				throw new IllegalStateException(
-						"Statement that shouldn't be hit was hit.");
-			});
-		});
-	}
-
-	private static boolean
-			containsSimpleVariable(ITree<IDiceASTNode> nameTree) {
-		return nameTree.transformHead((nameNod) -> {
-			if (nameNod.getType() != DiceASTType.VARIABLE) {
 				throw new UnsupportedOperationException(
 						"Assigning to complex variables isn't supported. Problem node is "
-								+ nameNod);
-			}
-
-			return true;
-		});
-	}
-
-	private static IPair<Integer, ITree<IDiceASTNode>> parseCompound(
-			IFunctionalList<IPair<Integer, ITree<IDiceASTNode>>> nodes) {
-		if (nodes.getSize() != 2) {
-			throw new UnsupportedOperationException(
-					"Can only form a group from two dice");
-		}
-
-		IPair<Integer, ITree<IDiceASTNode>> leftDiceNode =
-				nodes.getByIndex(0);
-		IPair<Integer, ITree<IDiceASTNode>> rightDiceNode =
-				nodes.getByIndex(1);
-
-		return leftDiceNode.bind((leftDiceValue, leftDiceTree) -> {
-			return rightDiceNode.bind((rightDiceValue, rightDiceTree) -> {
-				Integer result =
-						Integer.parseInt(Integer.toString(leftDiceValue)
-								+ Integer.toString(rightDiceValue));
-
-				return new Pair<>(result,
-						new Tree<>(OperatorDiceNode.GROUP, leftDiceTree,
-								rightDiceTree));
+								+ nameNode.getRight());
 			});
 		});
 	}

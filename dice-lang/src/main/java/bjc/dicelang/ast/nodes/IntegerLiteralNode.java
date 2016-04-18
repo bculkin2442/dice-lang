@@ -32,9 +32,19 @@ public class IntegerLiteralNode implements ILiteralDiceNode {
 	public int getValue() {
 		return value;
 	}
-	
+
 	@Override
 	public String toString() {
 		return Integer.toString(value);
+	}
+
+	@Override
+	public int optimize() {
+		return value;
+	}
+
+	@Override
+	public boolean canOptimize() {
+		return true;
 	}
 }
