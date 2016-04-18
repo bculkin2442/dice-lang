@@ -7,6 +7,7 @@ import bjc.dicelang.ast.DiceASTInliner;
 import bjc.dicelang.ast.DiceASTOptimizer;
 import bjc.dicelang.ast.DiceASTParser;
 import bjc.dicelang.ast.DiceASTReferenceSanitizer;
+import bjc.dicelang.ast.IResult;
 import bjc.dicelang.ast.nodes.IDiceASTNode;
 import bjc.dicelang.ast.optimization.ConstantCollapser;
 import bjc.dicelang.ast.optimization.OperationCondenser;
@@ -114,7 +115,7 @@ public class DiceASTLanguageTest {
 
 			IFunctionalList<String> preparedTokens =
 					DiceExpressionPreparer.prepareCommand(currentLine);
-
+			
 			try {
 				builtAST = DiceASTParser.createFromString(preparedTokens);
 			} catch (IllegalStateException isex) {
@@ -125,10 +126,16 @@ public class DiceASTLanguageTest {
 				continue;
 			}
 
-			int sampleRoll;
+			// Print out results
+			System.out.println("\tParsed: " + builtAST.toString());
 
 			ITree<IDiceASTNode> transformedAST =
 					transformAST(builtAST, enviroment);
+
+			System.out
+					.println("\tEvaluated: " + transformedAST.toString());
+
+			IResult sampleRoll;
 
 			try {
 				sampleRoll = DiceASTEvaluator.evaluateAST(transformedAST,
@@ -143,10 +150,6 @@ public class DiceASTLanguageTest {
 				continue;
 			}
 
-			// Print out results
-			System.out.println("\tParsed: " + builtAST.toString());
-			System.out
-					.println("\tEvaluated: " + transformedAST.toString());
 			System.out.println("\t\tSample Roll: " + sampleRoll);
 
 			// Increase the number of commands
@@ -173,7 +176,11 @@ public class DiceASTLanguageTest {
 		ITree<IDiceASTNode> sanitizedTree = DiceASTReferenceSanitizer
 				.sanitize(condensedTree, enviroment);
 
-		return sanitizedTree;
+		optimizedTree = optimizer.optimizeTree(sanitizedTree, enviroment);
+
+		condensedTree = OperationCondenser.condense(optimizedTree);
+
+		return condensedTree;
 	}
 
 	private static String getNextCommand(Scanner inputSource,

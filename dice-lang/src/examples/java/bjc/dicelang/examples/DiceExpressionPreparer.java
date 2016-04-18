@@ -67,6 +67,8 @@ public class DiceExpressionPreparer {
 
 		ops.add(new Pair<>("(", "\\("));
 		ops.add(new Pair<>(")", "\\)"));
+		ops.add(new Pair<>("[", "\\["));
+		ops.add(new Pair<>("]", "\\]"));
 
 		IFunctionalList<String> fullyExpandedTokens =
 				ListUtils.deAffixTokens(semiExpandedTokens, ops);

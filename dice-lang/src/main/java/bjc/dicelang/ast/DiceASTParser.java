@@ -1,6 +1,9 @@
 package bjc.dicelang.ast;
 
+import java.util.Deque;
 import java.util.InputMismatchException;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 import bjc.dicelang.IDiceExpression;
 import bjc.dicelang.ast.nodes.DiceLiteralNode;
@@ -10,8 +13,13 @@ import bjc.dicelang.ast.nodes.ILiteralDiceNode;
 import bjc.dicelang.ast.nodes.IntegerLiteralNode;
 import bjc.dicelang.ast.nodes.OperatorDiceNode;
 import bjc.dicelang.ast.nodes.VariableDiceNode;
+import bjc.utils.funcdata.FunctionalList;
+import bjc.utils.funcdata.FunctionalMap;
 import bjc.utils.funcdata.IFunctionalList;
+import bjc.utils.funcdata.IFunctionalMap;
 import bjc.utils.funcdata.ITree;
+import bjc.utils.funcdata.Tree;
+import bjc.utils.funcutils.StringUtils;
 import bjc.utils.parserutils.TreeConstructor;
 
 /**
@@ -30,22 +38,77 @@ public class DiceASTParser {
 	 */
 	public static ITree<IDiceASTNode>
 			createFromString(IFunctionalList<String> tokens) {
+		Predicate<String> specialPicker = (operator) -> {
+			if (StringUtils.containsOnly(operator, "\\[")) {
+				return true;
+			} else if (StringUtils.containsOnly(operator, "\\]")) {
+				return true;
+			}
+
+			return false;
+		};
+
+		IFunctionalMap<String, Function<Deque<ITree<String>>, ITree<String>>> operators =
+				new FunctionalMap<>();
+
+		operators.put("[", (queuedTrees) -> {
+			Tree<String> openTree = new Tree<>("[");
+
+			return openTree;
+		});
+
+		operators.put("]", (queuedTrees) -> {
+			return parseCloseArray(queuedTrees);
+		});
+
 		ITree<String> rawTokens =
 				TreeConstructor.constructTree(tokens, (token) -> {
 					return isOperatorNode(token);
-				}, (operator) -> false, null);
-
-		// The last argument is valid because there are no special
-		// operators yet, so it'll never get called
+				}, specialPicker, operators::get);
 
 		ITree<IDiceASTNode> tokenizedTree =
 				rawTokens.rebuildTree(DiceASTParser::convertLeafNode,
 						DiceASTParser::convertOperatorNode);
-		
+
 		return tokenizedTree;
 	}
 
+	private static ITree<String>
+			parseCloseArray(Deque<ITree<String>> queuedTrees) {
+		IFunctionalList<ITree<String>> children = new FunctionalList<>();
+
+		while (shouldContinuePopping(queuedTrees)) {
+			children.add(queuedTrees.pop());
+		}
+		
+		queuedTrees.pop();
+		
+		children.reverse();
+
+		ITree<String> arrayTree = new Tree<>("[]", children);
+
+		return arrayTree;
+	}
+
+	private static boolean
+			shouldContinuePopping(Deque<ITree<String>> queuedTrees) {
+		String peekToken = queuedTrees.peek().getHead();
+
+		return !peekToken.equals("[");
+	}
+
 	private static boolean isOperatorNode(String token) {
+		if (StringUtils.containsOnly(token, "\\[")) {
+			return true;
+		} else if (StringUtils.containsOnly(token, "\\]")) {
+			return true;
+		}
+
+		if (token.equals("[]")) {
+			// This is a synthetic operator, constructed by [ and ]
+			return true;
+		}
+
 		try {
 			OperatorDiceNode.fromString(token);
 			return true;

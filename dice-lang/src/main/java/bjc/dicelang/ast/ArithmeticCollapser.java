@@ -28,12 +28,12 @@ final class ArithmeticCollapser implements IOperatorCollapser {
 	}
 
 	@Override
-	public IPair<Integer, ITree<IDiceASTNode>> apply(
-			IFunctionalList<IPair<Integer, ITree<IDiceASTNode>>> nodes) {
-		IPair<Integer, ITree<IDiceASTNode>> initState =
-				new Pair<>(0, new Tree<>(type));
+	public IPair<IResult, ITree<IDiceASTNode>> apply(
+			IFunctionalList<IPair<IResult, ITree<IDiceASTNode>>> nodes) {
+		IPair<IResult, ITree<IDiceASTNode>> initState =
+				new Pair<>(new IntegerResult(0), new Tree<>(type));
 
-		BinaryOperator<IPair<Integer, ITree<IDiceASTNode>>> reducer =
+		BinaryOperator<IPair<IResult, ITree<IDiceASTNode>>> reducer =
 				(currentState, accumulatedState) -> {
 					// Force evaluation of accumulated state to prevent
 					// certain bugs from occuring
@@ -42,27 +42,133 @@ final class ArithmeticCollapser implements IOperatorCollapser {
 					return reduceStates(accumulatedState, currentState);
 				};
 
-		IPair<Integer, ITree<IDiceASTNode>> reducedState =
+		IPair<IResult, ITree<IDiceASTNode>> reducedState =
 				nodes.reduceAux(initState, reducer, (state) -> state);
 
 		return reducedState;
 	}
 
-	private IPair<Integer, ITree<IDiceASTNode>> reduceStates(
-			IPair<Integer, ITree<IDiceASTNode>> accumulatedState,
-			IPair<Integer, ITree<IDiceASTNode>> currentState) {
+	private IPair<IResult, ITree<IDiceASTNode>> reduceStates(
+			IPair<IResult, ITree<IDiceASTNode>> accumulatedState,
+			IPair<IResult, ITree<IDiceASTNode>> currentState) {
 		return accumulatedState
 				.bind((accumulatedValue, accumulatedTree) -> {
 					return currentState
 							.bind((currentValue, currentTree) -> {
 								accumulatedTree.addChild(currentTree);
 
-								Integer combinedValue = valueOp.apply(
-										accumulatedValue, currentValue);
-
-								return new Pair<>(combinedValue,
-										accumulatedTree);
+								return doArithmeticCollapse(
+										accumulatedValue, accumulatedTree,
+										currentValue);
 							});
 				});
+	}
+
+	private IPair<IResult, ITree<IDiceASTNode>> doArithmeticCollapse(
+			IResult accumulatedValue, ITree<IDiceASTNode> accumulatedTree,
+			IResult currentValue) {
+		boolean currentIsInt =
+				currentValue.getType() == ResultType.INTEGER;
+		boolean accumulatedIsInt =
+				accumulatedValue.getType() == ResultType.INTEGER;
+
+		if (!currentIsInt) {
+			if (!accumulatedIsInt) {
+				IFunctionalList<IResult> resultList = combineArrayResults(
+						accumulatedValue, currentValue);
+
+				return new Pair<>(new ArrayResult(resultList),
+						accumulatedTree);
+			}
+
+			IFunctionalList<IResult> resultList = halfCombineLists(
+					((ArrayResult) currentValue).getValue(),
+					accumulatedValue, true);
+
+			return new Pair<>(new ArrayResult(resultList),
+					accumulatedTree);
+		} else if (!accumulatedIsInt) {
+			IFunctionalList<IResult> resultList = halfCombineLists(
+					((ArrayResult) accumulatedValue).getValue(),
+					currentValue, false);
+
+			return new Pair<>(new ArrayResult(resultList),
+					accumulatedTree);
+		}
+
+		int accumulatedInt = ((IntegerResult) accumulatedValue).getValue();
+		int currentInt = ((IntegerResult) currentValue).getValue();
+
+		int combinedValue = valueOp.apply(accumulatedInt, currentInt);
+
+		return new Pair<>(new IntegerResult(combinedValue),
+				accumulatedTree);
+	}
+
+	private IFunctionalList<IResult> combineArrayResults(
+			IResult accumulatedValue, IResult currentValue) {
+		IFunctionalList<IResult> currentList =
+				((ArrayResult) currentValue).getValue();
+		IFunctionalList<IResult> accumulatedList =
+				((ArrayResult) accumulatedValue).getValue();
+
+		if (currentList.getSize() != accumulatedList.getSize()) {
+			throw new UnsupportedOperationException(
+					"Can only apply operations to equal-length arrays");
+		}
+
+		IFunctionalList<IResult> resultList = currentList.combineWith(
+				accumulatedList, (currentNode, accumulatedNode) -> {
+					boolean currentNotInt =
+							currentNode.getType() != ResultType.INTEGER;
+					boolean accumulatedNotInt = accumulatedNode
+							.getType() != ResultType.INTEGER;
+
+					if (currentNotInt || accumulatedNotInt) {
+						throw new UnsupportedOperationException(
+								"Nesting of array operations isn't allowed");
+					}
+
+					int accumulatedInt =
+							((IntegerResult) accumulatedNode).getValue();
+					int currentInt =
+							((IntegerResult) currentNode).getValue();
+
+					IResult combinedValue = new IntegerResult(
+							valueOp.apply(accumulatedInt, currentInt));
+					return combinedValue;
+				});
+		return resultList;
+	}
+
+	private IFunctionalList<IResult> halfCombineLists(
+			IFunctionalList<IResult> list, IResult scalar,
+			boolean scalarLeft) {
+		if (scalar.getType() != ResultType.INTEGER) {
+			throw new UnsupportedOperationException(
+					"Nested array operations not supported");
+		}
+
+		int scalarInt = ((IntegerResult) scalar).getValue();
+
+		return list.map((element) -> {
+			if (element.getType() != ResultType.INTEGER) {
+				throw new UnsupportedOperationException(
+						"Nested array operations not supported");
+			}
+			int elementInt = ((IntegerResult) element).getValue();
+
+			IResult combinedValue;
+
+			if (scalarLeft) {
+				combinedValue = new IntegerResult(
+						valueOp.apply(scalarInt, elementInt));
+			} else {
+				combinedValue = new IntegerResult(
+						valueOp.apply(elementInt, scalarInt));
+			}
+
+			return combinedValue;
+		});
 	}
 }

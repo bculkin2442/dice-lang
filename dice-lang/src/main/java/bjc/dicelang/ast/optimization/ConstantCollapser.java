@@ -77,6 +77,12 @@ public class ConstantCollapser implements IOptimizationPass {
 				}
 
 				return new Tree<>(operator, children);
+			case ARRAY:
+				if (children.getSize() != 1) {
+					return new Tree<>(operator, children);
+				}
+
+				return children.first();
 			case ASSIGN:
 			case LET:
 			default:

@@ -51,6 +51,7 @@ public class OperationCondenser {
 			case DIVIDE:
 			case COMPOUND:
 				return TopDownTransformResult.PUSHDOWN;
+			case ARRAY:
 			case ASSIGN:
 			case GROUP:
 			case LET:

@@ -14,7 +14,7 @@ import bjc.utils.funcdata.ITree;
  *
  */
 public interface IOperatorCollapser extends
-		Function<IFunctionalList<IPair<Integer, ITree<IDiceASTNode>>>,
-							IPair<Integer, ITree<IDiceASTNode>>> {
+		Function<IFunctionalList<IPair<IResult, ITree<IDiceASTNode>>>,
+							IPair<IResult, ITree<IDiceASTNode>>> {
 	// Just an alias
 }

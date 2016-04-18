@@ -34,6 +34,10 @@ public enum OperatorDiceNode implements IDiceASTNode {
 	 */
 	GROUP(DICE),
 	/**
+	 * Represents constructing an array from a sequence of expressions
+	 */
+	ARRAY(EXPRESSION),
+	/**
 	 * Represents assigning one node to another
 	 */
 	ASSIGN(EXPRESSION),
@@ -79,6 +83,8 @@ public enum OperatorDiceNode implements IDiceASTNode {
 				return COMPOUND;
 			case "=>":
 				return LET;
+			case "[]":
+				return ARRAY;
 			default:
 				throw new IllegalArgumentException(
 						s + " is not a valid operator node");

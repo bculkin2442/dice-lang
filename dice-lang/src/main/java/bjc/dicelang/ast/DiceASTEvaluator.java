@@ -1,6 +1,7 @@
 package bjc.dicelang.ast;
 
 import bjc.dicelang.ComplexDice;
+import bjc.dicelang.ast.nodes.DiceASTType;
 import bjc.dicelang.ast.nodes.DiceLiteralNode;
 import bjc.dicelang.ast.nodes.DiceLiteralType;
 import bjc.dicelang.ast.nodes.IDiceASTNode;
@@ -8,9 +9,12 @@ import bjc.dicelang.ast.nodes.ILiteralDiceNode;
 import bjc.dicelang.ast.nodes.IntegerLiteralNode;
 import bjc.dicelang.ast.nodes.OperatorDiceNode;
 import bjc.dicelang.ast.nodes.VariableDiceNode;
+import bjc.utils.data.IHolder;
 import bjc.utils.data.IPair;
+import bjc.utils.data.Identity;
 import bjc.utils.data.LazyPair;
 import bjc.utils.data.Pair;
+import bjc.utils.funcdata.FunctionalList;
 import bjc.utils.funcdata.FunctionalMap;
 import bjc.utils.funcdata.IFunctionalList;
 import bjc.utils.funcdata.IFunctionalMap;
@@ -71,12 +75,27 @@ public class DiceASTEvaluator {
 			return parseLet(enviroment, nodes);
 		});
 
+		operatorCollapsers.put(OperatorDiceNode.ARRAY, (nodes) -> {
+			ITree<IDiceASTNode> returnedTree =
+					new Tree<>(OperatorDiceNode.ARRAY);
+			IFunctionalList<IResult> resultList = new FunctionalList<>();
+
+			nodes.forEach((element) -> {
+				element.doWith((result, tree) -> {
+					resultList.add(result);
+					returnedTree.addChild(tree);
+				});
+			});
+
+			return new Pair<>(new ArrayResult(resultList), returnedTree);
+		});
+
 		return operatorCollapsers;
 	}
 
-	private static IPair<Integer, ITree<IDiceASTNode>> parseLet(
+	private static IPair<IResult, ITree<IDiceASTNode>> parseLet(
 			IFunctionalMap<String, ITree<IDiceASTNode>> enviroment,
-			IFunctionalList<IPair<Integer, ITree<IDiceASTNode>>> nodes) {
+			IFunctionalList<IPair<IResult, ITree<IDiceASTNode>>> nodes) {
 		if (nodes.getSize() != 2) {
 			throw new UnsupportedOperationException(
 					"Can only use let with two expressions.");
@@ -90,7 +109,7 @@ public class DiceASTEvaluator {
 				enviroment.extend();
 
 		evaluateAST(bindTree, letEnviroment);
-		int exprResult = evaluateAST(expressionTree, letEnviroment);
+		IResult exprResult = evaluateAST(expressionTree, letEnviroment);
 
 		IFunctionalList<ITree<IDiceASTNode>> childrn =
 				nodes.map((pair) -> pair.getRight());
@@ -108,7 +127,7 @@ public class DiceASTEvaluator {
 	 *            The enviroment to look up variables in
 	 * @return The integer value of the expression
 	 */
-	public static int evaluateAST(ITree<IDiceASTNode> expression,
+	public static IResult evaluateAST(ITree<IDiceASTNode> expression,
 			IFunctionalMap<String, ITree<IDiceASTNode>> enviroment) {
 		IFunctionalMap<IDiceASTNode, IOperatorCollapser> collapsers =
 				buildOperations(enviroment);
@@ -118,7 +137,7 @@ public class DiceASTEvaluator {
 				(pair) -> pair.getLeft());
 	}
 
-	private static IPair<Integer, ITree<IDiceASTNode>> evaluateLeaf(
+	private static IPair<IResult, ITree<IDiceASTNode>> evaluateLeaf(
 			IDiceASTNode leafNode,
 			IFunctionalMap<String, ITree<IDiceASTNode>> enviroment) {
 		ITree<IDiceASTNode> returnedAST = new Tree<>(leafNode);
@@ -139,31 +158,35 @@ public class DiceASTEvaluator {
 		}
 	}
 
-	private static Integer bindLiteralValue(IDiceASTNode leafNode,
+	private static IResult bindLiteralValue(IDiceASTNode leafNode,
 			IFunctionalMap<String, ITree<IDiceASTNode>> enviroment) {
 		String variableName = ((VariableDiceNode) leafNode).getVariable();
 
 		if (enviroment.containsKey(variableName)) {
-			int result =
+			IResult result =
 					evaluateAST(enviroment.get(variableName), enviroment);
 
 			return result;
 		}
 
-		throw new UnsupportedOperationException(
-				"Attempted to dereference unbound variable "
-						+ variableName);
+		// Allow for array assignment easily
+		return new IntegerResult(0);
 	}
 
-	private static int evaluateLiteral(IDiceASTNode leafNode) {
+	private static IResult evaluateLiteral(IDiceASTNode leafNode) {
 		DiceLiteralType literalType =
 				((ILiteralDiceNode) leafNode).getLiteralType();
 
 		switch (literalType) {
 			case DICE:
-				return ((DiceLiteralNode) leafNode).getValue().roll();
+				int diceRoll =
+						((DiceLiteralNode) leafNode).getValue().roll();
+
+				return new IntegerResult(diceRoll);
 			case INTEGER:
-				return ((IntegerLiteralNode) leafNode).getValue();
+				int val = ((IntegerLiteralNode) leafNode).getValue();
+
+				return new IntegerResult(val);
 			default:
 				throw new UnsupportedOperationException("Literal value '"
 						+ leafNode + "' is of a type (" + literalType
@@ -171,21 +194,18 @@ public class DiceASTEvaluator {
 		}
 	}
 
-	private static IPair<Integer, ITree<IDiceASTNode>> parseBinding(
+	private static IPair<IResult, ITree<IDiceASTNode>> parseBinding(
 			IFunctionalMap<String, ITree<IDiceASTNode>> enviroment,
-			IFunctionalList<IPair<Integer, ITree<IDiceASTNode>>> nodes) {
+			IFunctionalList<IPair<IResult, ITree<IDiceASTNode>>> nodes) {
 		if (nodes.getSize() != 2) {
 			throw new UnsupportedOperationException(
 					"Can only bind nodes with two children. Problem children are "
 							+ nodes);
 		}
 
-		IPair<Integer, ITree<IDiceASTNode>> nameNode = nodes.getByIndex(0);
-		IPair<Integer, ITree<IDiceASTNode>> valueNode =
+		IPair<IResult, ITree<IDiceASTNode>> nameNode = nodes.getByIndex(0);
+		IPair<IResult, ITree<IDiceASTNode>> valueNode =
 				nodes.getByIndex(1);
-
-		// Force valueNode to materialize for debugging purposes
-		valueNode.merge((l, r) -> null);
 
 		return nameNode.bindRight((nameTree) -> {
 			return valueNode.bind((valueValue, valueTree) -> {
@@ -197,6 +217,36 @@ public class DiceASTEvaluator {
 					enviroment.put(varName, valueTree);
 
 					return new Pair<>(valueValue, nameTree);
+				} else if (nameTree.getHead() == OperatorDiceNode.ARRAY) {
+					if (valueTree.getHead() == OperatorDiceNode.ARRAY) {
+						if (nameTree.getChildrenCount() != valueTree
+								.getChildrenCount()) {
+							throw new UnsupportedOperationException(
+									"Array assignment must be between two equal length arrays");
+						}
+
+						IHolder<Integer> childCount = new Identity<>(0);
+
+						nameTree.doForChildren((child) -> {
+							doArrayAssign(enviroment, nameNode, nameTree,
+									valueTree, childCount, child);
+
+							childCount.transform(val -> val + 1);
+						});
+
+						return new Pair<>(valueValue, nameTree);
+					}
+
+					nameTree.doForChildren((child) -> {
+						String varName = child.transformHead((nameNod) -> {
+							return ((VariableDiceNode) nameNod)
+									.getVariable();
+						});
+
+						enviroment.put(varName, valueTree);
+					});
+
+					return new Pair<>(valueValue, nameTree);
 				}
 
 				throw new UnsupportedOperationException(
@@ -206,24 +256,45 @@ public class DiceASTEvaluator {
 		});
 	}
 
-	private static IPair<Integer, ITree<IDiceASTNode>> parseGroup(
-			IFunctionalList<IPair<Integer, ITree<IDiceASTNode>>> nodes) {
+	private static void doArrayAssign(
+			IFunctionalMap<String, ITree<IDiceASTNode>> enviroment,
+			IPair<IResult, ITree<IDiceASTNode>> nameNode,
+			ITree<IDiceASTNode> nameTree, ITree<IDiceASTNode> valueTree,
+			IHolder<Integer> childCount, ITree<IDiceASTNode> child) {
+		if (nameTree.getHead().getType() != DiceASTType.VARIABLE) {
+			throw new UnsupportedOperationException(
+					"Assigning to complex variables isn't supported. Problem node is "
+							+ nameNode.getRight());
+		}
+
+		String varName = child.transformHead((nameNod) -> {
+			return ((VariableDiceNode) nameNod).getVariable();
+		});
+
+		enviroment.put(varName, valueTree.getChild(childCount.getValue()));
+
+		childCount.transform(val -> val + 1);
+	}
+
+	private static IPair<IResult, ITree<IDiceASTNode>> parseGroup(
+			IFunctionalList<IPair<IResult, ITree<IDiceASTNode>>> nodes) {
 		if (nodes.getSize() != 2) {
 			throw new UnsupportedOperationException(
 					"Can only form a group from two dice");
 		}
 
-		IPair<Integer, ITree<IDiceASTNode>> numberDiceNode =
+		IPair<IResult, ITree<IDiceASTNode>> numberDiceNode =
 				nodes.getByIndex(0);
-		IPair<Integer, ITree<IDiceASTNode>> diceTypeNode =
+		IPair<IResult, ITree<IDiceASTNode>> diceTypeNode =
 				nodes.getByIndex(1);
 
 		return numberDiceNode.bind((numberDiceValue, numberDiceTree) -> {
 			return diceTypeNode.bind((diceTypeValue, diceTypeTree) -> {
-				ComplexDice cDice =
-						new ComplexDice(numberDiceValue, diceTypeValue);
+				ComplexDice cDice = new ComplexDice(
+						((IntegerResult) numberDiceValue).getValue(),
+						((IntegerResult) diceTypeValue).getValue());
 
-				return new Pair<>(cDice.roll(),
+				return new Pair<>(new IntegerResult(cDice.roll()),
 						new Tree<>(OperatorDiceNode.GROUP, numberDiceTree,
 								diceTypeTree));
 			});
