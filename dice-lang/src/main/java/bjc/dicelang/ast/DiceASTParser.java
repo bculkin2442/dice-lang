@@ -28,17 +28,21 @@ public class DiceASTParser {
 	 *            The list of tokens to convert
 	 * @return An AST built from the tokens
 	 */
-	public static ITree<IDiceASTNode> createFromString(
-			IFunctionalList<String> tokens) {
-		ITree<String> rawTokens = TreeConstructor.constructTree(tokens,
-				(token) -> {
+	public static ITree<IDiceASTNode>
+			createFromString(IFunctionalList<String> tokens) {
+		ITree<String> rawTokens =
+				TreeConstructor.constructTree(tokens, (token) -> {
 					return isOperatorNode(token);
 				}, (operator) -> false, null);
+
 		// The last argument is valid because there are no special
 		// operators yet, so it'll never get called
 
-		return rawTokens.rebuildTree(DiceASTParser::convertLeafNode,
-				DiceASTParser::convertOperatorNode);
+		ITree<IDiceASTNode> tokenizedTree =
+				rawTokens.rebuildTree(DiceASTParser::convertLeafNode,
+						DiceASTParser::convertOperatorNode);
+		
+		return tokenizedTree;
 	}
 
 	private static boolean isOperatorNode(String token) {
@@ -52,8 +56,8 @@ public class DiceASTParser {
 	}
 
 	private static IDiceASTNode convertLeafNode(String leafNode) {
-		DiceLiteralType literalType = ILiteralDiceNode
-				.getLiteralType(leafNode);
+		DiceLiteralType literalType =
+				ILiteralDiceNode.getLiteralType(leafNode);
 
 		if (literalType != null) {
 			switch (literalType) {

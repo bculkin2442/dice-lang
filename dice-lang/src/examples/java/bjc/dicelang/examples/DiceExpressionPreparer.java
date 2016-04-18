@@ -52,9 +52,16 @@ public class DiceExpressionPreparer {
 
 		ops.add(new Pair<>("(", "\\("));
 		ops.add(new Pair<>(")", "\\)"));
+		ops.add(new Pair<>("+", "\\+"));
+		ops.add(new Pair<>("-", "-"));
+		ops.add(new Pair<>("*", "\\*"));
+		ops.add(new Pair<>("/", "/"));
+		ops.add(new Pair<>(":=", ":="));
 
 		IFunctionalList<String> fullyExpandedTokens =
 				ListUtils.deAffixTokens(semiExpandedTokens, ops);
+
+		fullyExpandedTokens.removeIf((strang) -> strang.equals(""));
 
 		return yard.postfix(fullyExpandedTokens, (token) -> token);
 	}

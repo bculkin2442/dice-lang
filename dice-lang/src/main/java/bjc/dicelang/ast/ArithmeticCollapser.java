@@ -16,8 +16,7 @@ import bjc.utils.funcdata.Tree;
  * @author ben
  *
  */
-final class ArithmeticCollapser
-		implements IOperatorCollapser {
+final class ArithmeticCollapser implements IOperatorCollapser {
 	private OperatorDiceNode		type;
 
 	private BinaryOperator<Integer>	valueOp;
@@ -35,12 +34,18 @@ final class ArithmeticCollapser
 				new Pair<>(0, new Tree<>(type));
 
 		BinaryOperator<IPair<Integer, ITree<IDiceASTNode>>> reducer =
-				(accumulatedState, currentState) -> {
-					return reduceStates(accumulatedState,
-							currentState);
+				(currentState, accumulatedState) -> {
+					// Force evaluation of accumulated state to prevent
+					// certain bugs from occuring
+					accumulatedState.merge((l, r) -> null);
+
+					return reduceStates(accumulatedState, currentState);
 				};
 
-		return nodes.reduceAux(initState, reducer, (state) -> state);
+		IPair<Integer, ITree<IDiceASTNode>> reducedState =
+				nodes.reduceAux(initState, reducer, (state) -> state);
+
+		return reducedState;
 	}
 
 	private IPair<Integer, ITree<IDiceASTNode>> reduceStates(
@@ -52,9 +57,8 @@ final class ArithmeticCollapser
 							.bind((currentValue, currentTree) -> {
 								accumulatedTree.addChild(currentTree);
 
-								Integer combinedValue =
-										valueOp.apply(accumulatedValue,
-												currentValue);
+								Integer combinedValue = valueOp.apply(
+										accumulatedValue, currentValue);
 
 								return new Pair<>(combinedValue,
 										accumulatedTree);

@@ -112,7 +112,10 @@ public class DiceASTEvaluator {
 		String variableName = ((VariableDiceNode) leafNode).getVariable();
 
 		if (enviroment.containsKey(variableName)) {
-			return evaluateAST(enviroment.get(variableName), enviroment);
+			int result =
+					evaluateAST(enviroment.get(variableName), enviroment);
+
+			return result;
 		}
 
 		// Value to allow for assignments
@@ -147,6 +150,9 @@ public class DiceASTEvaluator {
 		IPair<Integer, ITree<IDiceASTNode>> nameNode = nodes.getByIndex(0);
 		IPair<Integer, ITree<IDiceASTNode>> valueNode =
 				nodes.getByIndex(1);
+
+		// Force valueNode to materialize for debugging purposes
+		valueNode.merge((l, r) -> null);
 
 		return nameNode.bindRight((nameTree) -> {
 			return valueNode.bind((valueValue, valueTree) -> {

@@ -2,10 +2,6 @@ package bjc.dicelang.ast.nodes;
 
 import static bjc.dicelang.ast.nodes.DiceOperatorType.*;
 
-// The following classes need to be changed upon addition of a new operator
-// 1. DiceASTExpression
-// 2. DiceASTFlattener
-// 3. DiceASTParser
 /**
  * A node that represents an operator
  * 

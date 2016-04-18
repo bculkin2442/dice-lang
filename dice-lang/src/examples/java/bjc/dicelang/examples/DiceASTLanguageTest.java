@@ -3,10 +3,11 @@ package bjc.dicelang.examples;
 import java.util.Scanner;
 
 import bjc.dicelang.ast.DiceASTEvaluator;
+import bjc.dicelang.ast.DiceASTInliner;
 import bjc.dicelang.ast.DiceASTParser;
 import bjc.dicelang.ast.nodes.IDiceASTNode;
-
 import bjc.utils.funcdata.FunctionalMap;
+import bjc.utils.funcdata.FunctionalStringTokenizer;
 import bjc.utils.funcdata.IFunctionalList;
 import bjc.utils.funcdata.IFunctionalMap;
 import bjc.utils.funcdata.ITree;
@@ -18,6 +19,49 @@ import bjc.utils.funcdata.ITree;
  *
  */
 public class DiceASTLanguageTest {
+	private static IFunctionalMap<String, DiceASTPragma> actions;
+
+	static {
+		actions = new FunctionalMap<>();
+
+		actions.put("inline", DiceASTLanguageTest::handleInlineAction);
+
+		actions.put("env", (tokenizer, enviroment) -> {
+			enviroment.forEach((varName, varValue) -> {
+				System.out.println(varName + " is bound to " + varValue);
+			});
+		});
+	}
+
+	private static void handleInlineAction(
+			FunctionalStringTokenizer tokenizer,
+			IFunctionalMap<String, ITree<IDiceASTNode>> enviroment) {
+		// Skip the pragma name
+		tokenizer.nextToken();
+
+		IFunctionalList<String> pragmaArgs = tokenizer.toList();
+
+		if (pragmaArgs.getSize() < 3) {
+			System.err.println(
+					"ERROR: Inline requires at least 3 parameters. They are:"
+							+ "\n\t1. The name of the expression to inline."
+							+ "\n\t2. The name of the variable to bind the result to."
+							+ "\n\t3 and onwards. Names of variables to inline in the expression.");
+		} else {
+			String inlineExpression = pragmaArgs.getByIndex(0);
+			String variableName = pragmaArgs.getByIndex(1);
+
+			IFunctionalList<String> inlinedVariables =
+					pragmaArgs.tail().tail();
+
+			ITree<IDiceASTNode> inlinedExpression = DiceASTInliner
+					.selectiveInline(enviroment.get(inlineExpression),
+							enviroment, inlinedVariables);
+
+			enviroment.put(variableName, inlinedExpression);
+		}
+	}
+
 	/**
 	 * Main method of class
 	 * 
@@ -36,6 +80,25 @@ public class DiceASTLanguageTest {
 				new FunctionalMap<>();
 
 		while (!currentLine.equalsIgnoreCase("quit")) {
+			String possibleActionName = currentLine.split(" ")[0];
+
+			if (actions.containsKey(possibleActionName)) {
+				System.err.println(
+						"\nTRACE: Executing action " + possibleActionName
+								+ " with line " + currentLine + "\n");
+
+				// Execute action
+				FunctionalStringTokenizer tokenizer =
+						new FunctionalStringTokenizer(currentLine);
+
+				actions.get(possibleActionName).accept(tokenizer,
+						enviroment);
+
+				currentLine = getNextCommand(inputSource, commandNumber);
+
+				continue;
+			}
+
 			// Build an AST from the string expression
 			ITree<IDiceASTNode> builtAST;
 
@@ -83,7 +146,7 @@ public class DiceASTLanguageTest {
 
 	private static String getNextCommand(Scanner inputSource,
 			int commandNumber) {
-		System.out.print("dice-lang-" + commandNumber + "> ");
+		System.out.print("\ndice-lang-" + commandNumber + "> ");
 
 		return inputSource.nextLine();
 	}
