@@ -1,5 +1,7 @@
 package bjc.dicelang.ast;
 
+import java.util.function.Supplier;
+
 import bjc.dicelang.ComplexDice;
 import bjc.dicelang.ast.nodes.DiceASTType;
 import bjc.dicelang.ast.nodes.DiceLiteralNode;
@@ -35,11 +37,9 @@ public class DiceASTEvaluator {
 	 *            The enviroment to evaluate bindings and such against
 	 * @return The operations to use when collapsing the AST
 	 */
-	private static IFunctionalMap<IDiceASTNode, IOperatorCollapser>
-			buildOperations(
-					IFunctionalMap<String, ITree<IDiceASTNode>> enviroment) {
-		IFunctionalMap<IDiceASTNode, IOperatorCollapser> operatorCollapsers =
-				new FunctionalMap<>();
+	private static IFunctionalMap<IDiceASTNode, IOperatorCollapser> buildOperations(
+			IFunctionalMap<String, ITree<IDiceASTNode>> enviroment) {
+		IFunctionalMap<IDiceASTNode, IOperatorCollapser> operatorCollapsers = new FunctionalMap<>();
 
 		operatorCollapsers.put(OperatorDiceNode.ADD,
 				new ArithmeticCollapser(OperatorDiceNode.ADD,
@@ -76,18 +76,30 @@ public class DiceASTEvaluator {
 		});
 
 		operatorCollapsers.put(OperatorDiceNode.ARRAY, (nodes) -> {
-			ITree<IDiceASTNode> returnedTree =
-					new Tree<>(OperatorDiceNode.ARRAY);
-			IFunctionalList<IResult> resultList = new FunctionalList<>();
 
-			nodes.forEach((element) -> {
-				element.doWith((result, tree) -> {
-					resultList.add(result);
-					returnedTree.addChild(tree);
+			// This is so that arrays respect lazy results properly
+			Supplier<IResult> resultSupplier = () -> {
+				IFunctionalList<IResult> resultList = new FunctionalList<>();
+
+				nodes.forEach((node) -> {
+					resultList.add(node.getLeft());
 				});
-			});
 
-			return new Pair<>(new ArrayResult(resultList), returnedTree);
+				return new ArrayResult(resultList);
+			};
+
+			Supplier<ITree<IDiceASTNode>> treeSupplier = () -> {
+				ITree<IDiceASTNode> returnedTree = new Tree<>(
+						OperatorDiceNode.ARRAY);
+
+				nodes.forEach((element) -> {
+					returnedTree.addChild(element.getRight());
+				});
+
+				return returnedTree;
+			};
+
+			return new LazyPair<>(resultSupplier, treeSupplier);
 		});
 
 		return operatorCollapsers;
@@ -102,17 +114,17 @@ public class DiceASTEvaluator {
 		}
 
 		ITree<IDiceASTNode> bindTree = nodes.getByIndex(0).getRight();
-		ITree<IDiceASTNode> expressionTree =
-				nodes.getByIndex(1).getRight();
+		ITree<IDiceASTNode> expressionTree = nodes.getByIndex(1)
+				.getRight();
 
-		IFunctionalMap<String, ITree<IDiceASTNode>> letEnviroment =
-				enviroment.extend();
+		IFunctionalMap<String, ITree<IDiceASTNode>> letEnviroment = enviroment
+				.extend();
 
 		evaluateAST(bindTree, letEnviroment);
 		IResult exprResult = evaluateAST(expressionTree, letEnviroment);
 
-		IFunctionalList<ITree<IDiceASTNode>> childrn =
-				nodes.map((pair) -> pair.getRight());
+		IFunctionalList<ITree<IDiceASTNode>> childrn = nodes
+				.map((pair) -> pair.getRight());
 
 		return new Pair<>(exprResult,
 				new Tree<>(OperatorDiceNode.LET, childrn));
@@ -129,8 +141,8 @@ public class DiceASTEvaluator {
 	 */
 	public static IResult evaluateAST(ITree<IDiceASTNode> expression,
 			IFunctionalMap<String, ITree<IDiceASTNode>> enviroment) {
-		IFunctionalMap<IDiceASTNode, IOperatorCollapser> collapsers =
-				buildOperations(enviroment);
+		IFunctionalMap<IDiceASTNode, IOperatorCollapser> collapsers = buildOperations(
+				enviroment);
 
 		return expression.collapse(
 				(node) -> evaluateLeaf(node, enviroment), collapsers::get,
@@ -163,24 +175,24 @@ public class DiceASTEvaluator {
 		String variableName = ((VariableDiceNode) leafNode).getVariable();
 
 		if (enviroment.containsKey(variableName)) {
-			IResult result =
-					evaluateAST(enviroment.get(variableName), enviroment);
+			IResult result = evaluateAST(enviroment.get(variableName),
+					enviroment);
 
 			return result;
 		}
 
-		// Allow for array assignment easily
-		return new IntegerResult(0);
+		throw new UnsupportedOperationException(
+				"Attempted to deref unbound variable " + variableName);
 	}
 
 	private static IResult evaluateLiteral(IDiceASTNode leafNode) {
-		DiceLiteralType literalType =
-				((ILiteralDiceNode) leafNode).getLiteralType();
+		DiceLiteralType literalType = ((ILiteralDiceNode) leafNode)
+				.getLiteralType();
 
 		switch (literalType) {
 			case DICE:
-				int diceRoll =
-						((DiceLiteralNode) leafNode).getValue().roll();
+				int diceRoll = ((DiceLiteralNode) leafNode).getValue()
+						.roll();
 
 				return new IntegerResult(diceRoll);
 			case INTEGER:
@@ -204,8 +216,8 @@ public class DiceASTEvaluator {
 		}
 
 		IPair<IResult, ITree<IDiceASTNode>> nameNode = nodes.getByIndex(0);
-		IPair<IResult, ITree<IDiceASTNode>> valueNode =
-				nodes.getByIndex(1);
+		IPair<IResult, ITree<IDiceASTNode>> valueNode = nodes
+				.getByIndex(1);
 
 		return nameNode.bindRight((nameTree) -> {
 			return valueNode.bind((valueValue, valueTree) -> {
@@ -283,10 +295,10 @@ public class DiceASTEvaluator {
 					"Can only form a group from two dice");
 		}
 
-		IPair<IResult, ITree<IDiceASTNode>> numberDiceNode =
-				nodes.getByIndex(0);
-		IPair<IResult, ITree<IDiceASTNode>> diceTypeNode =
-				nodes.getByIndex(1);
+		IPair<IResult, ITree<IDiceASTNode>> numberDiceNode = nodes
+				.getByIndex(0);
+		IPair<IResult, ITree<IDiceASTNode>> diceTypeNode = nodes
+				.getByIndex(1);
 
 		return numberDiceNode.bind((numberDiceValue, numberDiceTree) -> {
 			return diceTypeNode.bind((diceTypeValue, diceTypeTree) -> {

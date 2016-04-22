@@ -34,8 +34,8 @@ public class DiceASTReferenceSanitizer {
 				});
 	}
 
-	private static TopDownTransformResult
-			shouldSanitize(IDiceASTNode node) {
+	private static TopDownTransformResult shouldSanitize(
+			IDiceASTNode node) {
 		if (!node.isOperator()) {
 			return TopDownTransformResult.SKIP;
 		}
@@ -63,7 +63,7 @@ public class DiceASTReferenceSanitizer {
 			throw new UnsupportedOperationException(
 					"Assignment must have two arguments.");
 		}
-		
+
 		ITree<IDiceASTNode> nameTree = ast.getChild(0);
 		ITree<IDiceASTNode> valueTree = ast.getChild(1);
 
@@ -73,8 +73,8 @@ public class DiceASTReferenceSanitizer {
 
 				nameTree.doForChildren((child) -> {
 					if (allSimpleVariables.getValue()) {
-						boolean isSimple =
-								DiceASTUtils.containsSimpleVariable(child);
+						boolean isSimple = DiceASTUtils
+								.containsSimpleVariable(child);
 
 						allSimpleVariables.replace(isSimple);
 					}
@@ -104,20 +104,20 @@ public class DiceASTReferenceSanitizer {
 			if (valueTree.getHead() == OperatorDiceNode.ARRAY) {
 				IHolder<Integer> childCounter = new Identity<>(0);
 
-				ITree<IDiceASTNode> returnTree =
-						new Tree<>(OperatorDiceNode.ARRAY);
+				ITree<IDiceASTNode> returnTree = new Tree<>(
+						OperatorDiceNode.ARRAY);
 
 				nameTree.doForChildren((child) -> {
 					String variableName = child.transformHead((node) -> {
 						return ((VariableDiceNode) node).getVariable();
 					});
 
-					ITree<IDiceASTNode> currentValue =
-							valueTree.getChild(childCounter.getValue());
+					ITree<IDiceASTNode> currentValue = valueTree
+							.getChild(childCounter.getValue());
 
-					ITree<IDiceASTNode> sanitizedSubtree =
-							doSingleSanitize(ast, enviroment, child,
-									currentValue, variableName);
+					ITree<IDiceASTNode> sanitizedSubtree = doSingleSanitize(
+							ast, enviroment, child, currentValue,
+							variableName);
 
 					if (sanitizedSubtree == null) {
 						ITree<IDiceASTNode> oldTree = new Tree<>(
@@ -134,8 +134,8 @@ public class DiceASTReferenceSanitizer {
 				return returnTree;
 			}
 
-			ITree<IDiceASTNode> returnTree =
-					new Tree<>(OperatorDiceNode.ARRAY);
+			ITree<IDiceASTNode> returnTree = new Tree<>(
+					OperatorDiceNode.ARRAY);
 
 			nameTree.doForChildren((child) -> {
 				String variableName = child.transformHead(
@@ -144,8 +144,8 @@ public class DiceASTReferenceSanitizer {
 				ITree<IDiceASTNode> sanitizedChild = doSingleSanitize(ast,
 						enviroment, child, valueTree, variableName);
 				if (sanitizedChild == null) {
-					ITree<IDiceASTNode> oldTree =
-							new Tree<>(ast.getHead(), child, valueTree);
+					ITree<IDiceASTNode> oldTree = new Tree<>(ast.getHead(),
+							child, valueTree);
 
 					returnTree.addChild(oldTree);
 				} else {
@@ -177,16 +177,20 @@ public class DiceASTReferenceSanitizer {
 		if (enviroment.containsKey(variableName)) {
 			// @ is a meta-variable standing for the left side of an
 			// assignment
-			enviroment.put("@", enviroment.get(variableName));
+			ITree<IDiceASTNode> oldVal = enviroment.put("@",
+					enviroment.get(variableName));
 
 			// We should always inline out references to last, because it
 			// will always change
-			ITree<IDiceASTNode> inlinedValue =
-					DiceASTInliner.selectiveInline(valueTree, enviroment,
-							variableName, "last", "@");
+			ITree<IDiceASTNode> inlinedValue = DiceASTInliner
+					.selectiveInline(valueTree, enviroment, variableName,
+							"last", "@");
 
-			// Remove temporary meta-variable
-			enviroment.remove("@");
+			if (oldVal != null) {
+				enviroment.put("@", oldVal);
+			} else {
+				enviroment.remove("@");
+			}
 
 			return new Tree<>(ast.getHead(), nameTree, inlinedValue);
 		}
