@@ -5,14 +5,6 @@ import java.util.InputMismatchException;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import bjc.dicelang.IDiceExpression;
-import bjc.dicelang.ast.nodes.DiceLiteralNode;
-import bjc.dicelang.ast.nodes.DiceLiteralType;
-import bjc.dicelang.ast.nodes.IDiceASTNode;
-import bjc.dicelang.ast.nodes.ILiteralDiceNode;
-import bjc.dicelang.ast.nodes.IntegerLiteralNode;
-import bjc.dicelang.ast.nodes.OperatorDiceNode;
-import bjc.dicelang.ast.nodes.VariableDiceNode;
 import bjc.utils.funcdata.FunctionalList;
 import bjc.utils.funcdata.FunctionalMap;
 import bjc.utils.funcdata.IFunctionalList;
@@ -21,6 +13,15 @@ import bjc.utils.funcdata.ITree;
 import bjc.utils.funcdata.Tree;
 import bjc.utils.funcutils.StringUtils;
 import bjc.utils.parserutils.TreeConstructor;
+
+import bjc.dicelang.IDiceExpression;
+import bjc.dicelang.ast.nodes.DiceLiteralNode;
+import bjc.dicelang.ast.nodes.DiceLiteralType;
+import bjc.dicelang.ast.nodes.IDiceASTNode;
+import bjc.dicelang.ast.nodes.ILiteralDiceNode;
+import bjc.dicelang.ast.nodes.IntegerLiteralNode;
+import bjc.dicelang.ast.nodes.OperatorDiceNode;
+import bjc.dicelang.ast.nodes.VariableDiceNode;
 
 /**
  * Parse a string expression into AST form. Doesn't do anything else
@@ -36,8 +37,8 @@ public class DiceASTParser {
 	 *            The list of tokens to convert
 	 * @return An AST built from the tokens
 	 */
-	public static ITree<IDiceASTNode>
-			createFromString(IFunctionalList<String> tokens) {
+	public static ITree<IDiceASTNode> createFromString(
+			IFunctionalList<String> tokens) {
 		Predicate<String> specialPicker = (operator) -> {
 			if (StringUtils.containsOnly(operator, "\\[")) {
 				return true;
@@ -48,8 +49,7 @@ public class DiceASTParser {
 			return false;
 		};
 
-		IFunctionalMap<String, Function<Deque<ITree<String>>, ITree<String>>> operators =
-				new FunctionalMap<>();
+		IFunctionalMap<String, Function<Deque<ITree<String>>, ITree<String>>> operators = new FunctionalMap<>();
 
 		operators.put("[", (queuedTrees) -> {
 			Tree<String> openTree = new Tree<>("[");
@@ -61,28 +61,28 @@ public class DiceASTParser {
 			return parseCloseArray(queuedTrees);
 		});
 
-		ITree<String> rawTokens =
-				TreeConstructor.constructTree(tokens, (token) -> {
+		ITree<String> rawTokens = TreeConstructor.constructTree(tokens,
+				(token) -> {
 					return isOperatorNode(token);
 				}, specialPicker, operators::get);
 
-		ITree<IDiceASTNode> tokenizedTree =
-				rawTokens.rebuildTree(DiceASTParser::convertLeafNode,
-						DiceASTParser::convertOperatorNode);
+		ITree<IDiceASTNode> tokenizedTree = rawTokens.rebuildTree(
+				DiceASTParser::convertLeafNode,
+				DiceASTParser::convertOperatorNode);
 
 		return tokenizedTree;
 	}
 
-	private static ITree<String>
-			parseCloseArray(Deque<ITree<String>> queuedTrees) {
+	private static ITree<String> parseCloseArray(
+			Deque<ITree<String>> queuedTrees) {
 		IFunctionalList<ITree<String>> children = new FunctionalList<>();
 
 		while (shouldContinuePopping(queuedTrees)) {
 			children.add(queuedTrees.pop());
 		}
-		
+
 		queuedTrees.pop();
-		
+
 		children.reverse();
 
 		ITree<String> arrayTree = new Tree<>("[]", children);
@@ -90,8 +90,8 @@ public class DiceASTParser {
 		return arrayTree;
 	}
 
-	private static boolean
-			shouldContinuePopping(Deque<ITree<String>> queuedTrees) {
+	private static boolean shouldContinuePopping(
+			Deque<ITree<String>> queuedTrees) {
 		String peekToken = queuedTrees.peek().getHead();
 
 		return !peekToken.equals("[");
@@ -119,8 +119,8 @@ public class DiceASTParser {
 	}
 
 	private static IDiceASTNode convertLeafNode(String leafNode) {
-		DiceLiteralType literalType =
-				ILiteralDiceNode.getLiteralType(leafNode);
+		DiceLiteralType literalType = ILiteralDiceNode
+				.getLiteralType(leafNode);
 
 		if (literalType != null) {
 			switch (literalType) {

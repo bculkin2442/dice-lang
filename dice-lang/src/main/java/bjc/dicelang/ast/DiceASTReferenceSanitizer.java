@@ -1,14 +1,15 @@
 package bjc.dicelang.ast;
 
-import bjc.dicelang.ast.nodes.IDiceASTNode;
-import bjc.dicelang.ast.nodes.OperatorDiceNode;
-import bjc.dicelang.ast.nodes.VariableDiceNode;
 import bjc.utils.data.IHolder;
 import bjc.utils.data.Identity;
 import bjc.utils.funcdata.IFunctionalMap;
 import bjc.utils.funcdata.ITree;
 import bjc.utils.funcdata.TopDownTransformResult;
 import bjc.utils.funcdata.Tree;
+
+import bjc.dicelang.ast.nodes.IDiceASTNode;
+import bjc.dicelang.ast.nodes.OperatorDiceNode;
+import bjc.dicelang.ast.nodes.VariableDiceNode;
 
 /**
  * Sanitize the references in an AST so that a variable that refers to
@@ -47,6 +48,7 @@ public class DiceASTReferenceSanitizer {
 			case LET:
 				return TopDownTransformResult.PASSTHROUGH;
 			case ADD:
+			case CALL:
 			case COMPOUND:
 			case DIVIDE:
 			case GROUP:

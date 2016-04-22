@@ -2,10 +2,11 @@ package bjc.dicelang.ast;
 
 import java.util.function.Consumer;
 
+import bjc.utils.data.IHolder;
+
 import bjc.dicelang.ast.nodes.DiceASTType;
 import bjc.dicelang.ast.nodes.IDiceASTNode;
 import bjc.dicelang.ast.nodes.VariableDiceNode;
-import bjc.utils.data.IHolder;
 
 /**
  * Check if the specified node references a particular variable

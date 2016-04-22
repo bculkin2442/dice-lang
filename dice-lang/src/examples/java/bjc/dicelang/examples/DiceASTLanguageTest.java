@@ -2,6 +2,12 @@ package bjc.dicelang.examples;
 
 import java.util.Scanner;
 
+import bjc.utils.funcdata.FunctionalMap;
+import bjc.utils.funcdata.FunctionalStringTokenizer;
+import bjc.utils.funcdata.IFunctionalList;
+import bjc.utils.funcdata.IFunctionalMap;
+import bjc.utils.funcdata.ITree;
+
 import bjc.dicelang.ast.DiceASTEvaluator;
 import bjc.dicelang.ast.DiceASTInliner;
 import bjc.dicelang.ast.DiceASTOptimizer;
@@ -11,11 +17,6 @@ import bjc.dicelang.ast.IResult;
 import bjc.dicelang.ast.nodes.IDiceASTNode;
 import bjc.dicelang.ast.optimization.ConstantCollapser;
 import bjc.dicelang.ast.optimization.OperationCondenser;
-import bjc.utils.funcdata.FunctionalMap;
-import bjc.utils.funcdata.FunctionalStringTokenizer;
-import bjc.utils.funcdata.IFunctionalList;
-import bjc.utils.funcdata.IFunctionalMap;
-import bjc.utils.funcdata.ITree;
 
 /**
  * Test interface for AST-based dice language
@@ -62,8 +63,8 @@ public class DiceASTLanguageTest {
 			String inlineExpression = pragmaArgs.getByIndex(0);
 			String variableName = pragmaArgs.getByIndex(1);
 
-			IFunctionalList<String> inlinedVariables =
-					pragmaArgs.tail().tail();
+			IFunctionalList<String> inlinedVariables = pragmaArgs.tail()
+					.tail();
 
 			ITree<IDiceASTNode> inlinedExpression = DiceASTInliner
 					.selectiveInline(enviroment.get(inlineExpression),
@@ -87,8 +88,7 @@ public class DiceASTLanguageTest {
 		String currentLine = inputSource.nextLine();
 
 		// The enviroment for variables
-		IFunctionalMap<String, ITree<IDiceASTNode>> enviroment =
-				new FunctionalMap<>();
+		IFunctionalMap<String, ITree<IDiceASTNode>> enviroment = new FunctionalMap<>();
 
 		while (!currentLine.equalsIgnoreCase("quit")) {
 			String possibleActionName = currentLine.split(" ")[0];
@@ -99,8 +99,8 @@ public class DiceASTLanguageTest {
 								+ " with line " + currentLine + "\n");
 
 				// Execute action
-				FunctionalStringTokenizer tokenizer =
-						new FunctionalStringTokenizer(currentLine);
+				FunctionalStringTokenizer tokenizer = new FunctionalStringTokenizer(
+						currentLine);
 
 				actions.get(possibleActionName).accept(tokenizer,
 						enviroment);
@@ -113,9 +113,9 @@ public class DiceASTLanguageTest {
 			// Build an AST from the string expression
 			ITree<IDiceASTNode> builtAST;
 
-			IFunctionalList<String> preparedTokens =
-					DiceExpressionPreparer.prepareCommand(currentLine);
-			
+			IFunctionalList<String> preparedTokens = DiceExpressionPreparer
+					.prepareCommand(currentLine);
+
 			try {
 				builtAST = DiceASTParser.createFromString(preparedTokens);
 			} catch (IllegalStateException isex) {
@@ -129,8 +129,8 @@ public class DiceASTLanguageTest {
 			// Print out results
 			System.out.println("\tParsed: " + builtAST.toString());
 
-			ITree<IDiceASTNode> transformedAST =
-					transformAST(builtAST, enviroment);
+			ITree<IDiceASTNode> transformedAST = transformAST(builtAST,
+					enviroment);
 
 			System.out
 					.println("\tEvaluated: " + transformedAST.toString());
@@ -167,11 +167,11 @@ public class DiceASTLanguageTest {
 	private static ITree<IDiceASTNode> transformAST(
 			ITree<IDiceASTNode> builtAST,
 			IFunctionalMap<String, ITree<IDiceASTNode>> enviroment) {
-		ITree<IDiceASTNode> optimizedTree =
-				optimizer.optimizeTree(builtAST, enviroment);
+		ITree<IDiceASTNode> optimizedTree = optimizer
+				.optimizeTree(builtAST, enviroment);
 
-		ITree<IDiceASTNode> condensedTree =
-				OperationCondenser.condense(optimizedTree);
+		ITree<IDiceASTNode> condensedTree = OperationCondenser
+				.condense(optimizedTree);
 
 		ITree<IDiceASTNode> sanitizedTree = DiceASTReferenceSanitizer
 				.sanitize(condensedTree, enviroment);

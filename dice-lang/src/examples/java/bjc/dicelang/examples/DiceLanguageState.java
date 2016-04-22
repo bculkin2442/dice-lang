@@ -2,9 +2,10 @@ package bjc.dicelang.examples;
 
 import java.util.Map;
 
+import bjc.utils.data.Pair;
+
 import bjc.dicelang.DiceExpressionParser;
 import bjc.dicelang.IDiceExpression;
-import bjc.utils.data.Pair;
 
 /**
  * Internal state of dice language

@@ -57,9 +57,8 @@ public class ScalarDiceExpression implements IDiceExpression {
 				try {
 					return expression.roll() / scalar;
 				} catch (ArithmeticException aex) {
-					UnsupportedOperationException usex =
-							new UnsupportedOperationException(
-									"Attempted to divide by zero.");
+					UnsupportedOperationException usex = new UnsupportedOperationException(
+							"Attempted to divide by zero.");
 
 					usex.initCause(aex);
 

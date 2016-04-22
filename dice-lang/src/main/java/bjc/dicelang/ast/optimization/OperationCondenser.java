@@ -1,13 +1,14 @@
 package bjc.dicelang.ast.optimization;
 
-import bjc.dicelang.ast.nodes.DiceASTType;
-import bjc.dicelang.ast.nodes.IDiceASTNode;
-import bjc.dicelang.ast.nodes.OperatorDiceNode;
 import bjc.utils.data.IHolder;
 import bjc.utils.data.Identity;
 import bjc.utils.funcdata.ITree;
 import bjc.utils.funcdata.TopDownTransformResult;
 import bjc.utils.funcdata.Tree;
+
+import bjc.dicelang.ast.nodes.DiceASTType;
+import bjc.dicelang.ast.nodes.IDiceASTNode;
+import bjc.dicelang.ast.nodes.OperatorDiceNode;
 
 /**
  * Condenses chained operations into a single level
@@ -42,8 +43,8 @@ public class OperationCondenser {
 		}
 	}
 
-	private static TopDownTransformResult
-			pickOperator(OperatorDiceNode node) {
+	private static TopDownTransformResult pickOperator(
+			OperatorDiceNode node) {
 		switch (node) {
 			case ADD:
 			case MULTIPLY:
@@ -62,10 +63,10 @@ public class OperationCondenser {
 		}
 	}
 
-	private static ITree<IDiceASTNode>
-			doCondense(ITree<IDiceASTNode> ast) {
-		OperatorDiceNode operation =
-				ast.transformHead((node) -> (OperatorDiceNode) node);
+	private static ITree<IDiceASTNode> doCondense(
+			ITree<IDiceASTNode> ast) {
+		OperatorDiceNode operation = ast
+				.transformHead((node) -> (OperatorDiceNode) node);
 
 		IHolder<Boolean> canCondense = new Identity<>(true);
 

@@ -1,6 +1,9 @@
 package bjc.dicelang;
 
-import static bjc.dicelang.DiceExpressionType.*;
+import static bjc.dicelang.DiceExpressionType.ADD;
+import static bjc.dicelang.DiceExpressionType.DIVIDE;
+import static bjc.dicelang.DiceExpressionType.MULTIPLY;
+import static bjc.dicelang.DiceExpressionType.SUBTRACT;
 
 /**
  * Build a dice expression piece by piece

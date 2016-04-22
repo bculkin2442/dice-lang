@@ -2,15 +2,16 @@ package bjc.dicelang.ast.optimization;
 
 import java.util.function.BinaryOperator;
 
+import bjc.utils.funcdata.IFunctionalList;
+import bjc.utils.funcdata.ITree;
+import bjc.utils.funcdata.Tree;
+
 import bjc.dicelang.ast.DiceASTUtils;
 import bjc.dicelang.ast.nodes.DiceASTType;
 import bjc.dicelang.ast.nodes.IDiceASTNode;
 import bjc.dicelang.ast.nodes.ILiteralDiceNode;
 import bjc.dicelang.ast.nodes.IntegerLiteralNode;
 import bjc.dicelang.ast.nodes.OperatorDiceNode;
-import bjc.utils.funcdata.IFunctionalList;
-import bjc.utils.funcdata.ITree;
-import bjc.utils.funcdata.Tree;
 
 class ArithmeticCollapser {
 	private BinaryOperator<Integer>	reducer;
@@ -22,8 +23,8 @@ class ArithmeticCollapser {
 		this.type = typ;
 	}
 
-	public ITree<IDiceASTNode>
-			collapse(IFunctionalList<ITree<IDiceASTNode>> children) {
+	public ITree<IDiceASTNode> collapse(
+			IFunctionalList<ITree<IDiceASTNode>> children) {
 		boolean allConstant = children.allMatch((subtree) -> {
 			return subtree.transformHead((node) -> {
 				if (node.getType() == DiceASTType.LITERAL) {

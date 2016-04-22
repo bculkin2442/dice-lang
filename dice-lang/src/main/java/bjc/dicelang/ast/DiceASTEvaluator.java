@@ -2,15 +2,6 @@ package bjc.dicelang.ast;
 
 import java.util.function.Supplier;
 
-import bjc.dicelang.ComplexDice;
-import bjc.dicelang.ast.nodes.DiceASTType;
-import bjc.dicelang.ast.nodes.DiceLiteralNode;
-import bjc.dicelang.ast.nodes.DiceLiteralType;
-import bjc.dicelang.ast.nodes.IDiceASTNode;
-import bjc.dicelang.ast.nodes.ILiteralDiceNode;
-import bjc.dicelang.ast.nodes.IntegerLiteralNode;
-import bjc.dicelang.ast.nodes.OperatorDiceNode;
-import bjc.dicelang.ast.nodes.VariableDiceNode;
 import bjc.utils.data.IHolder;
 import bjc.utils.data.IPair;
 import bjc.utils.data.Identity;
@@ -22,6 +13,16 @@ import bjc.utils.funcdata.IFunctionalList;
 import bjc.utils.funcdata.IFunctionalMap;
 import bjc.utils.funcdata.ITree;
 import bjc.utils.funcdata.Tree;
+
+import bjc.dicelang.ComplexDice;
+import bjc.dicelang.ast.nodes.DiceASTType;
+import bjc.dicelang.ast.nodes.DiceLiteralNode;
+import bjc.dicelang.ast.nodes.DiceLiteralType;
+import bjc.dicelang.ast.nodes.IDiceASTNode;
+import bjc.dicelang.ast.nodes.ILiteralDiceNode;
+import bjc.dicelang.ast.nodes.IntegerLiteralNode;
+import bjc.dicelang.ast.nodes.OperatorDiceNode;
+import bjc.dicelang.ast.nodes.VariableDiceNode;
 
 /**
  * Evaluate a dice AST to an integer value

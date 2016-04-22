@@ -15,6 +15,10 @@ public enum DiceOperatorType {
 	 */
 	MATH,
 	/**
+	 * Represents operators that do things with arrays
+	 */
+	ARRAY,
+	/**
 	 * Represents operators that do things with dice
 	 */
 	DICE,

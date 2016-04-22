@@ -1,5 +1,7 @@
 package bjc.dicelang.ast;
 
+import bjc.utils.funcdata.ITree;
+
 import bjc.dicelang.IDiceExpression;
 import bjc.dicelang.ScalarDie;
 import bjc.dicelang.ast.nodes.DiceASTType;
@@ -7,7 +9,6 @@ import bjc.dicelang.ast.nodes.DiceLiteralNode;
 import bjc.dicelang.ast.nodes.IDiceASTNode;
 import bjc.dicelang.ast.nodes.ILiteralDiceNode;
 import bjc.dicelang.ast.nodes.IntegerLiteralNode;
-import bjc.utils.funcdata.ITree;
 
 /**
  * Functions that are useful when dealing with dice ASTs
@@ -23,8 +24,8 @@ public class DiceASTUtils {
 	 * @return Whether or not a dice AST contains a simple variable
 	 *         reference
 	 */
-	public static boolean
-			containsSimpleVariable(ITree<IDiceASTNode> nameTree) {
+	public static boolean containsSimpleVariable(
+			ITree<IDiceASTNode> nameTree) {
 		return nameTree.transformHead((nameNod) -> {
 			if (nameNod.getType() != DiceASTType.VARIABLE) {
 				return false;

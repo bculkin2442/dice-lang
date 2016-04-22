@@ -48,8 +48,8 @@ public class DiceExpressionPreparer {
 	}
 
 	static IFunctionalList<String> prepareCommand(String currentLine) {
-		IFunctionalList<String> tokens =
-				FunctionalStringTokenizer.fromString(currentLine).toList();
+		IFunctionalList<String> tokens = FunctionalStringTokenizer
+				.fromString(currentLine).toList();
 
 		Deque<IPair<String, String>> ops = new LinkedList<>();
 
@@ -60,8 +60,8 @@ public class DiceExpressionPreparer {
 		ops.add(new Pair<>(":=", ":="));
 		ops.add(new Pair<>("=>", "=>"));
 
-		IFunctionalList<String> semiExpandedTokens =
-				ListUtils.splitTokens(tokens, ops);
+		IFunctionalList<String> semiExpandedTokens = ListUtils
+				.splitTokens(tokens, ops);
 
 		ops = new LinkedList<>();
 
@@ -70,8 +70,8 @@ public class DiceExpressionPreparer {
 		ops.add(new Pair<>("[", "\\["));
 		ops.add(new Pair<>("]", "\\]"));
 
-		IFunctionalList<String> fullyExpandedTokens =
-				ListUtils.deAffixTokens(semiExpandedTokens, ops);
+		IFunctionalList<String> fullyExpandedTokens = ListUtils
+				.deAffixTokens(semiExpandedTokens, ops);
 
 		fullyExpandedTokens.removeIf((strang) -> strang.equals(""));
 

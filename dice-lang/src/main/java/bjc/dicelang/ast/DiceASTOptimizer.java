@@ -1,11 +1,12 @@
 package bjc.dicelang.ast;
 
-import bjc.dicelang.ast.nodes.IDiceASTNode;
-import bjc.dicelang.ast.optimization.IOptimizationPass;
 import bjc.utils.funcdata.FunctionalList;
 import bjc.utils.funcdata.IFunctionalList;
 import bjc.utils.funcdata.IFunctionalMap;
 import bjc.utils.funcdata.ITree;
+
+import bjc.dicelang.ast.nodes.IDiceASTNode;
+import bjc.dicelang.ast.optimization.IOptimizationPass;
 
 /**
  * Contains optimizations appliable to a dice AST
@@ -44,8 +45,8 @@ public class DiceASTOptimizer {
 	 */
 	public ITree<IDiceASTNode> optimizeTree(ITree<IDiceASTNode> ast,
 			IFunctionalMap<String, ITree<IDiceASTNode>> enviroment) {
-		ITree<IDiceASTNode> optimizedTree =
-				passes.reduceAux(ast, (currentPass, currentTree) -> {
+		ITree<IDiceASTNode> optimizedTree = passes.reduceAux(ast,
+				(currentPass, currentTree) -> {
 					return currentTree.collapse(currentPass::optimizeLeaf,
 							(operator) -> {
 								return (nodes) -> {

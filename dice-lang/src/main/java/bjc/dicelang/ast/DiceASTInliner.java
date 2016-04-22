@@ -1,13 +1,14 @@
 package bjc.dicelang.ast;
 
-import bjc.dicelang.ast.nodes.DiceASTType;
-import bjc.dicelang.ast.nodes.IDiceASTNode;
-import bjc.dicelang.ast.nodes.VariableDiceNode;
 import bjc.utils.funcdata.FunctionalList;
 import bjc.utils.funcdata.IFunctionalList;
 import bjc.utils.funcdata.IFunctionalMap;
 import bjc.utils.funcdata.ITree;
 import bjc.utils.funcdata.Tree;
+
+import bjc.dicelang.ast.nodes.DiceASTType;
+import bjc.dicelang.ast.nodes.IDiceASTNode;
+import bjc.dicelang.ast.nodes.VariableDiceNode;
 
 /**
  * Inline variables in a dice AST
@@ -81,8 +82,8 @@ public class DiceASTInliner {
 			IFunctionalMap<String, ITree<IDiceASTNode>> enviroment,
 			String... variables) {
 		if (variables != null && variables.length > 0) {
-			IFunctionalList<String> variableNames =
-					new FunctionalList<>(variables);
+			IFunctionalList<String> variableNames = new FunctionalList<>(
+					variables);
 
 			return ast.flatMapTree((node) -> {
 				return inlineNode(node, enviroment, true, variableNames);

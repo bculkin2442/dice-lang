@@ -1,8 +1,9 @@
 package bjc.dicelang.ast.optimization;
 
-import bjc.dicelang.ast.nodes.IDiceASTNode;
 import bjc.utils.funcdata.IFunctionalList;
 import bjc.utils.funcdata.ITree;
+
+import bjc.dicelang.ast.nodes.IDiceASTNode;
 
 /**
  * Represents a pass of optimizations over a dice AST

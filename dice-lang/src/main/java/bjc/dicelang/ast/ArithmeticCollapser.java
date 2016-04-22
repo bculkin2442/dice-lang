@@ -2,13 +2,14 @@ package bjc.dicelang.ast;
 
 import java.util.function.BinaryOperator;
 
-import bjc.dicelang.ast.nodes.IDiceASTNode;
-import bjc.dicelang.ast.nodes.OperatorDiceNode;
 import bjc.utils.data.IPair;
 import bjc.utils.data.Pair;
 import bjc.utils.funcdata.IFunctionalList;
 import bjc.utils.funcdata.ITree;
 import bjc.utils.funcdata.Tree;
+
+import bjc.dicelang.ast.nodes.IDiceASTNode;
+import bjc.dicelang.ast.nodes.OperatorDiceNode;
 
 /**
  * Responsible for collapsing arithmetic operators
@@ -30,20 +31,20 @@ final class ArithmeticCollapser implements IOperatorCollapser {
 	@Override
 	public IPair<IResult, ITree<IDiceASTNode>> apply(
 			IFunctionalList<IPair<IResult, ITree<IDiceASTNode>>> nodes) {
-		IPair<IResult, ITree<IDiceASTNode>> initState =
-				new Pair<>(new IntegerResult(0), new Tree<>(type));
+		IPair<IResult, ITree<IDiceASTNode>> initState = new Pair<>(
+				new IntegerResult(0), new Tree<>(type));
 
-		BinaryOperator<IPair<IResult, ITree<IDiceASTNode>>> reducer =
-				(currentState, accumulatedState) -> {
-					// Force evaluation of accumulated state to prevent
-					// certain bugs from occuring
-					accumulatedState.merge((l, r) -> null);
+		BinaryOperator<IPair<IResult, ITree<IDiceASTNode>>> reducer = (
+				currentState, accumulatedState) -> {
+			// Force evaluation of accumulated state to prevent
+			// certain bugs from occuring
+			accumulatedState.merge((l, r) -> null);
 
-					return reduceStates(accumulatedState, currentState);
-				};
+			return reduceStates(accumulatedState, currentState);
+		};
 
-		IPair<IResult, ITree<IDiceASTNode>> reducedState =
-				nodes.reduceAux(initState, reducer, (state) -> state);
+		IPair<IResult, ITree<IDiceASTNode>> reducedState = nodes
+				.reduceAux(initState, reducer, (state) -> state);
 
 		return reducedState;
 	}
@@ -67,10 +68,10 @@ final class ArithmeticCollapser implements IOperatorCollapser {
 	private IPair<IResult, ITree<IDiceASTNode>> doArithmeticCollapse(
 			IResult accumulatedValue, ITree<IDiceASTNode> accumulatedTree,
 			IResult currentValue) {
-		boolean currentIsInt =
-				currentValue.getType() == ResultType.INTEGER;
-		boolean accumulatedIsInt =
-				accumulatedValue.getType() == ResultType.INTEGER;
+		boolean currentIsInt = currentValue
+				.getType() == ResultType.INTEGER;
+		boolean accumulatedIsInt = accumulatedValue
+				.getType() == ResultType.INTEGER;
 
 		if (!currentIsInt) {
 			if (!accumulatedIsInt) {
@@ -107,10 +108,10 @@ final class ArithmeticCollapser implements IOperatorCollapser {
 
 	private IFunctionalList<IResult> combineArrayResults(
 			IResult accumulatedValue, IResult currentValue) {
-		IFunctionalList<IResult> currentList =
-				((ArrayResult) currentValue).getValue();
-		IFunctionalList<IResult> accumulatedList =
-				((ArrayResult) accumulatedValue).getValue();
+		IFunctionalList<IResult> currentList = ((ArrayResult) currentValue)
+				.getValue();
+		IFunctionalList<IResult> accumulatedList = ((ArrayResult) accumulatedValue)
+				.getValue();
 
 		if (currentList.getSize() != accumulatedList.getSize()) {
 			throw new UnsupportedOperationException(
@@ -119,8 +120,8 @@ final class ArithmeticCollapser implements IOperatorCollapser {
 
 		IFunctionalList<IResult> resultList = currentList.combineWith(
 				accumulatedList, (currentNode, accumulatedNode) -> {
-					boolean currentNotInt =
-							currentNode.getType() != ResultType.INTEGER;
+					boolean currentNotInt = currentNode
+							.getType() != ResultType.INTEGER;
 					boolean accumulatedNotInt = accumulatedNode
 							.getType() != ResultType.INTEGER;
 
@@ -129,10 +130,10 @@ final class ArithmeticCollapser implements IOperatorCollapser {
 								"Nesting of array operations isn't allowed");
 					}
 
-					int accumulatedInt =
-							((IntegerResult) accumulatedNode).getValue();
-					int currentInt =
-							((IntegerResult) currentNode).getValue();
+					int accumulatedInt = ((IntegerResult) accumulatedNode)
+							.getValue();
+					int currentInt = ((IntegerResult) currentNode)
+							.getValue();
 
 					IResult combinedValue = new IntegerResult(
 							valueOp.apply(accumulatedInt, currentInt));

@@ -3,11 +3,11 @@ package bjc.dicelang;
 import java.util.Map;
 import java.util.Stack;
 
-import org.apache.commons.lang3.StringUtils;
-
 import bjc.utils.funcdata.FunctionalStringTokenizer;
 import bjc.utils.funcdata.IFunctionalList;
 import bjc.utils.parserutils.ShuntingYard;
+
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Parse a dice expression from a string
@@ -30,8 +30,8 @@ public class DiceExpressionParser {
 		/*
 		 * Create a tokenizer over the strings
 		 */
-		FunctionalStringTokenizer tokenizer =
-				new FunctionalStringTokenizer(expression);
+		FunctionalStringTokenizer tokenizer = new FunctionalStringTokenizer(
+				expression);
 
 		/*
 		 * Create a shunter to rewrite the expression
@@ -51,8 +51,8 @@ public class DiceExpressionParser {
 		/*
 		 * Shunt the expression to postfix form
 		 */
-		IFunctionalList<String> list =
-				yard.postfix(tokenizer.toList(), s -> s);
+		IFunctionalList<String> list = yard.postfix(tokenizer.toList(),
+				s -> s);
 
 		/*
 		 * Create a stack for building an expression from parts
@@ -90,8 +90,8 @@ public class DiceExpressionParser {
 						/*
 						 * Apply an operation to two dice
 						 */
-						IDiceExpression rightExpression =
-								expressions.pop();
+						IDiceExpression rightExpression = expressions
+								.pop();
 						IDiceExpression leftExpression = expressions.pop();
 
 						switch (expressionPart) {

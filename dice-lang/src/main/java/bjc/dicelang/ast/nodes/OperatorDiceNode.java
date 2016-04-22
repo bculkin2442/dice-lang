@@ -1,6 +1,8 @@
 package bjc.dicelang.ast.nodes;
 
-import static bjc.dicelang.ast.nodes.DiceOperatorType.*;
+import static bjc.dicelang.ast.nodes.DiceOperatorType.DICE;
+import static bjc.dicelang.ast.nodes.DiceOperatorType.EXPRESSION;
+import static bjc.dicelang.ast.nodes.DiceOperatorType.MATH;
 
 /**
  * A node that represents an operator
@@ -36,11 +38,15 @@ public enum OperatorDiceNode implements IDiceASTNode {
 	/**
 	 * Represents constructing an array from a sequence of expressions
 	 */
-	ARRAY(EXPRESSION),
+	ARRAY(DiceOperatorType.ARRAY),
 	/**
 	 * Represents assigning one node to another
 	 */
 	ASSIGN(EXPRESSION),
+	/**
+	 * Represents calling a function
+	 */
+	CALL(EXPRESSION),
 	/**
 	 * Represents evaluating one expression in the context of another
 	 */
@@ -85,6 +91,8 @@ public enum OperatorDiceNode implements IDiceASTNode {
 				return LET;
 			case "[]":
 				return ARRAY;
+			case "call":
+				return CALL;
 			default:
 				throw new IllegalArgumentException(
 						s + " is not a valid operator node");

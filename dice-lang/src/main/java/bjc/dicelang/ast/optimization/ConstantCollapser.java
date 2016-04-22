@@ -1,13 +1,14 @@
 package bjc.dicelang.ast.optimization;
 
+import bjc.utils.funcdata.IFunctionalList;
+import bjc.utils.funcdata.ITree;
+import bjc.utils.funcdata.Tree;
+
 import bjc.dicelang.ComplexDice;
 import bjc.dicelang.ast.DiceASTUtils;
 import bjc.dicelang.ast.nodes.IDiceASTNode;
 import bjc.dicelang.ast.nodes.IntegerLiteralNode;
 import bjc.dicelang.ast.nodes.OperatorDiceNode;
-import bjc.utils.funcdata.IFunctionalList;
-import bjc.utils.funcdata.ITree;
-import bjc.utils.funcdata.Tree;
 
 /**
  * Collapses operations with constants to constants
@@ -16,27 +17,22 @@ import bjc.utils.funcdata.Tree;
  *
  */
 public class ConstantCollapser implements IOptimizationPass {
-	private static final ArithmeticCollapser	additionCollapser	=
-			new ArithmeticCollapser((left, right) -> left + right,
-					OperatorDiceNode.ADD);
+	private static final ArithmeticCollapser	additionCollapser	= new ArithmeticCollapser(
+			(left, right) -> left + right, OperatorDiceNode.ADD);
 
-	private static final ArithmeticCollapser	divideCollapser		=
-			new ArithmeticCollapser((left, right) -> left / right,
-					OperatorDiceNode.DIVIDE);
+	private static final ArithmeticCollapser	divideCollapser		= new ArithmeticCollapser(
+			(left, right) -> left / right, OperatorDiceNode.DIVIDE);
 
-	private static final ArithmeticCollapser	multiplyCollapser	=
-			new ArithmeticCollapser((left, right) -> left * right,
-					OperatorDiceNode.MULTIPLY);
+	private static final ArithmeticCollapser	multiplyCollapser	= new ArithmeticCollapser(
+			(left, right) -> left * right, OperatorDiceNode.MULTIPLY);
 
-	private static final ArithmeticCollapser	subtractCollapser	=
-			new ArithmeticCollapser((left, right) -> left - right,
-					OperatorDiceNode.SUBTRACT);
+	private static final ArithmeticCollapser	subtractCollapser	= new ArithmeticCollapser(
+			(left, right) -> left - right, OperatorDiceNode.SUBTRACT);
 
-	private static final ArithmeticCollapser	compoundCollapser	=
-			new ArithmeticCollapser((left,
-					right) -> Integer.parseInt(Integer.toString(left)
-							+ Integer.toString(left)),
-					OperatorDiceNode.SUBTRACT);
+	private static final ArithmeticCollapser	compoundCollapser	= new ArithmeticCollapser(
+			(left, right) -> Integer.parseInt(
+					Integer.toString(left) + Integer.toString(left)),
+			OperatorDiceNode.SUBTRACT);
 
 	@Override
 	public ITree<IDiceASTNode> optimizeLeaf(IDiceASTNode leafNode) {

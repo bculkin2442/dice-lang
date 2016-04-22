@@ -64,10 +64,8 @@ public interface IDiceExpression {
 			try {
 				return new ScalarDie(Integer.parseInt(literalData));
 			} catch (NumberFormatException nfex) {
-				UnsupportedOperationException usex =
-						new UnsupportedOperationException(
-								"Found malformed leaf token "
-										+ expression);
+				UnsupportedOperationException usex = new UnsupportedOperationException(
+						"Found malformed leaf token " + expression);
 
 				usex.initCause(nfex);
 

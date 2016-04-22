@@ -43,8 +43,8 @@ public class DiceLanguageTest {
 
 		int nRolls = Integer.parseInt(strangs[2]);
 
-		IDiceExpression dexp =
-				stat.merge((dep, env) -> env.get(strangs[1]));
+		IDiceExpression dexp = stat
+				.merge((dep, env) -> env.get(strangs[1]));
 
 		for (int i = 1; i <= nRolls; i++) {
 			int roll = dexp.roll();
