@@ -36,25 +36,6 @@ public class DiceASTUtils {
 	}
 
 	/**
-	 * Convert an AST tree to an integer, if possible.
-	 * 
-	 * @param tree
-	 *            The tree to convert
-	 * @return The tree as an integer
-	 * 
-	 * @throws ClassCastException
-	 *             if the head of the tree is not a literal (implements
-	 *             {@link ILiteralDiceNode})
-	 * @throws UnsupportedOperationException
-	 *             if the head of the tree is not optimizable
-	 */
-	public static int toInt(ITree<IDiceASTNode> tree) {
-		return tree.transformHead((node) -> {
-			return ((ILiteralDiceNode) node).optimize();
-		});
-	}
-
-	/**
 	 * Convert an AST tree to a dice expression, if possible.
 	 * 
 	 * @param tree
@@ -80,5 +61,24 @@ public class DiceASTUtils {
 				throw new UnsupportedOperationException(
 						"This type of literal isn't convertable to an expression");
 		}
+	}
+
+	/**
+	 * Convert an AST tree to an integer, if possible.
+	 * 
+	 * @param tree
+	 *            The tree to convert
+	 * @return The tree as an integer
+	 * 
+	 * @throws ClassCastException
+	 *             if the head of the tree is not a literal (implements
+	 *             {@link ILiteralDiceNode})
+	 * @throws UnsupportedOperationException
+	 *             if the head of the tree is not optimizable
+	 */
+	public static int toInt(ITree<IDiceASTNode> tree) {
+		return tree.transformHead((node) -> {
+			return ((ILiteralDiceNode) node).optimize();
+		});
 	}
 }

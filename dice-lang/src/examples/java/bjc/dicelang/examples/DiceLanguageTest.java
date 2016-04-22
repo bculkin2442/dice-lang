@@ -25,35 +25,6 @@ public class DiceLanguageTest {
 	}
 
 	/**
-	 * @param ln
-	 *            Unused parameter, kept to comply with expected type sig
-	 */
-	private static void printEnv(String ln, DiceLanguageState stat) {
-		System.out.println("Printing enviroment for debugging purposes.");
-
-		stat.doWith((dep, env) -> env.forEach((key, exp) -> System.out
-				.println("\tKey: " + key + "\tExp: " + exp.toString())));
-	}
-
-	private static void rollReference(String ln, DiceLanguageState stat) {
-		String[] strangs = ln.split(" ");
-
-		System.out.println("\tRolling dice expression " + strangs[1] + " "
-				+ strangs[2] + " times.");
-
-		int nRolls = Integer.parseInt(strangs[2]);
-
-		IDiceExpression dexp = stat
-				.merge((dep, env) -> env.get(strangs[1]));
-
-		for (int i = 1; i <= nRolls; i++) {
-			int roll = dexp.roll();
-
-			System.out.println("\tRolled " + roll);
-		}
-	}
-
-	/**
 	 * Main method
 	 * 
 	 * @param args
@@ -92,5 +63,34 @@ public class DiceLanguageTest {
 
 		System.out.println("Bye.");
 		scn.close();
+	}
+
+	/**
+	 * @param ln
+	 *            Unused parameter, kept to comply with expected type sig
+	 */
+	private static void printEnv(String ln, DiceLanguageState stat) {
+		System.out.println("Printing enviroment for debugging purposes.");
+
+		stat.doWith((dep, env) -> env.forEach((key, exp) -> System.out
+				.println("\tKey: " + key + "\tExp: " + exp.toString())));
+	}
+
+	private static void rollReference(String ln, DiceLanguageState stat) {
+		String[] strangs = ln.split(" ");
+
+		System.out.println("\tRolling dice expression " + strangs[1] + " "
+				+ strangs[2] + " times.");
+
+		int nRolls = Integer.parseInt(strangs[2]);
+
+		IDiceExpression dexp = stat
+				.merge((dep, env) -> env.get(strangs[1]));
+
+		for (int i = 1; i <= nRolls; i++) {
+			int roll = dexp.roll();
+
+			System.out.println("\tRolled " + roll);
+		}
 	}
 }

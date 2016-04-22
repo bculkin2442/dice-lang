@@ -80,19 +80,9 @@ public class DiceASTInliner {
 	public static ITree<IDiceASTNode> selectiveInline(
 			ITree<IDiceASTNode> ast,
 			IFunctionalMap<String, ITree<IDiceASTNode>> enviroment,
-			String... variables) {
-		if (variables != null && variables.length > 0) {
-			IFunctionalList<String> variableNames = new FunctionalList<>(
-					variables);
-
-			return ast.flatMapTree((node) -> {
-				return inlineNode(node, enviroment, true, variableNames);
-			});
-		}
-
-		return ast.flatMapTree((node) -> {
-			return inlineNode(node, enviroment, false, null);
-		});
+			IFunctionalList<String> variables) {
+		return selectiveInline(ast, enviroment,
+				variables.toArray(new String[0]));
 	}
 
 	/**
@@ -109,8 +99,18 @@ public class DiceASTInliner {
 	public static ITree<IDiceASTNode> selectiveInline(
 			ITree<IDiceASTNode> ast,
 			IFunctionalMap<String, ITree<IDiceASTNode>> enviroment,
-			IFunctionalList<String> variables) {
-		return selectiveInline(ast, enviroment,
-				variables.toArray(new String[0]));
+			String... variables) {
+		if (variables != null && variables.length > 0) {
+			IFunctionalList<String> variableNames = new FunctionalList<>(
+					variables);
+
+			return ast.flatMapTree((node) -> {
+				return inlineNode(node, enviroment, true, variableNames);
+			});
+		}
+
+		return ast.flatMapTree((node) -> {
+			return inlineNode(node, enviroment, false, null);
+		});
 	}
 }

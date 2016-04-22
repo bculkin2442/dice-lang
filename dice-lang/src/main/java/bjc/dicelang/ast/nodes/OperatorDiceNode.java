@@ -53,16 +53,6 @@ public enum OperatorDiceNode implements IDiceASTNode {
 	LET(EXPRESSION);
 
 	/**
-	 * Represents the group of operator this operator is sorted into.
-	 * 
-	 */
-	public final DiceOperatorType type;
-
-	private OperatorDiceNode(DiceOperatorType ty) {
-		type = ty;
-	}
-
-	/**
 	 * Create a operator node from a string
 	 * 
 	 * @param s
@@ -97,6 +87,16 @@ public enum OperatorDiceNode implements IDiceASTNode {
 				throw new IllegalArgumentException(
 						s + " is not a valid operator node");
 		}
+	}
+
+	/**
+	 * Represents the group of operator this operator is sorted into.
+	 * 
+	 */
+	public final DiceOperatorType type;
+
+	private OperatorDiceNode(DiceOperatorType ty) {
+		type = ty;
 	}
 
 	@Override

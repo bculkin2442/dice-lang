@@ -19,6 +19,11 @@ public class IntegerResult implements IResult {
 		value = val;
 	}
 
+	@Override
+	public ResultType getType() {
+		return ResultType.INTEGER;
+	}
+
 	/**
 	 * Get the value of this result
 	 * 
@@ -26,11 +31,6 @@ public class IntegerResult implements IResult {
 	 */
 	public int getValue() {
 		return value;
-	}
-
-	@Override
-	public ResultType getType() {
-		return ResultType.INTEGER;
 	}
 
 	@Override

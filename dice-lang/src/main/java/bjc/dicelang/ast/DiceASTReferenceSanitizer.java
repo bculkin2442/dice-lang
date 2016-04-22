@@ -20,45 +20,6 @@ import bjc.dicelang.ast.nodes.VariableDiceNode;
  *
  */
 public class DiceASTReferenceSanitizer {
-	/**
-	 * Sanitize the references in an AST
-	 * 
-	 * @param ast
-	 * @param enviroment
-	 * @return The sanitized AST
-	 */
-	public static ITree<IDiceASTNode> sanitize(ITree<IDiceASTNode> ast,
-			IFunctionalMap<String, ITree<IDiceASTNode>> enviroment) {
-		return ast.topDownTransform(
-				DiceASTReferenceSanitizer::shouldSanitize, (subTree) -> {
-					return doSanitize(subTree, enviroment);
-				});
-	}
-
-	private static TopDownTransformResult shouldSanitize(
-			IDiceASTNode node) {
-		if (!node.isOperator()) {
-			return TopDownTransformResult.SKIP;
-		}
-
-		switch (((OperatorDiceNode) node)) {
-			case ASSIGN:
-				return TopDownTransformResult.TRANSFORM;
-			case ARRAY:
-			case LET:
-				return TopDownTransformResult.PASSTHROUGH;
-			case ADD:
-			case CALL:
-			case COMPOUND:
-			case DIVIDE:
-			case GROUP:
-			case MULTIPLY:
-			case SUBTRACT:
-			default:
-				return TopDownTransformResult.SKIP;
-		}
-	}
-
 	private static ITree<IDiceASTNode> doSanitize(ITree<IDiceASTNode> ast,
 			IFunctionalMap<String, ITree<IDiceASTNode>> enviroment) {
 		if (ast.getChildrenCount() != 2) {
@@ -198,5 +159,44 @@ public class DiceASTReferenceSanitizer {
 		}
 
 		return null;
+	}
+
+	/**
+	 * Sanitize the references in an AST
+	 * 
+	 * @param ast
+	 * @param enviroment
+	 * @return The sanitized AST
+	 */
+	public static ITree<IDiceASTNode> sanitize(ITree<IDiceASTNode> ast,
+			IFunctionalMap<String, ITree<IDiceASTNode>> enviroment) {
+		return ast.topDownTransform(
+				DiceASTReferenceSanitizer::shouldSanitize, (subTree) -> {
+					return doSanitize(subTree, enviroment);
+				});
+	}
+
+	private static TopDownTransformResult shouldSanitize(
+			IDiceASTNode node) {
+		if (!node.isOperator()) {
+			return TopDownTransformResult.SKIP;
+		}
+
+		switch (((OperatorDiceNode) node)) {
+			case ASSIGN:
+				return TopDownTransformResult.TRANSFORM;
+			case ARRAY:
+			case LET:
+				return TopDownTransformResult.PASSTHROUGH;
+			case ADD:
+			case CALL:
+			case COMPOUND:
+			case DIVIDE:
+			case GROUP:
+			case MULTIPLY:
+			case SUBTRACT:
+			default:
+				return TopDownTransformResult.SKIP;
+		}
 	}
 }

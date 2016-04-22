@@ -30,6 +30,41 @@ import bjc.dicelang.ast.nodes.VariableDiceNode;
  *
  */
 public class DiceASTParser {
+	private static IDiceASTNode convertLeafNode(String leafNode) {
+		DiceLiteralType literalType = ILiteralDiceNode
+				.getLiteralType(leafNode);
+
+		if (literalType != null) {
+			switch (literalType) {
+				case DICE:
+					return new DiceLiteralNode(
+							IDiceExpression.toExpression(leafNode));
+				case INTEGER:
+					return new IntegerLiteralNode(
+							Integer.parseInt(leafNode));
+				default:
+					throw new InputMismatchException(
+							"Cannot convert string '" + leafNode
+									+ "' into a literal.");
+			}
+		}
+
+		return new VariableDiceNode(leafNode);
+	}
+
+	private static IDiceASTNode convertOperatorNode(String operatorNode) {
+		try {
+			return OperatorDiceNode.fromString(operatorNode);
+		} catch (IllegalArgumentException iaex) {
+			InputMismatchException imex = new InputMismatchException(
+					"Attempted to parse invalid operator " + operatorNode);
+
+			imex.initCause(iaex);
+
+			throw imex;
+		}
+	}
+
 	/**
 	 * Create an AST from a list of tokens
 	 * 
@@ -73,6 +108,27 @@ public class DiceASTParser {
 		return tokenizedTree;
 	}
 
+	private static boolean isOperatorNode(String token) {
+		if (StringUtils.containsOnly(token, "\\[")) {
+			return true;
+		} else if (StringUtils.containsOnly(token, "\\]")) {
+			return true;
+		}
+
+		if (token.equals("[]")) {
+			// This is a synthetic operator, constructed by [ and ]
+			return true;
+		}
+
+		try {
+			OperatorDiceNode.fromString(token);
+			return true;
+		} catch (@SuppressWarnings("unused") IllegalArgumentException iaex) {
+			// We don't care about details
+			return false;
+		}
+	}
+
 	private static ITree<String> parseCloseArray(
 			Deque<ITree<String>> queuedTrees) {
 		IFunctionalList<ITree<String>> children = new FunctionalList<>();
@@ -95,61 +151,5 @@ public class DiceASTParser {
 		String peekToken = queuedTrees.peek().getHead();
 
 		return !peekToken.equals("[");
-	}
-
-	private static boolean isOperatorNode(String token) {
-		if (StringUtils.containsOnly(token, "\\[")) {
-			return true;
-		} else if (StringUtils.containsOnly(token, "\\]")) {
-			return true;
-		}
-
-		if (token.equals("[]")) {
-			// This is a synthetic operator, constructed by [ and ]
-			return true;
-		}
-
-		try {
-			OperatorDiceNode.fromString(token);
-			return true;
-		} catch (@SuppressWarnings("unused") IllegalArgumentException iaex) {
-			// We don't care about details
-			return false;
-		}
-	}
-
-	private static IDiceASTNode convertLeafNode(String leafNode) {
-		DiceLiteralType literalType = ILiteralDiceNode
-				.getLiteralType(leafNode);
-
-		if (literalType != null) {
-			switch (literalType) {
-				case DICE:
-					return new DiceLiteralNode(
-							IDiceExpression.toExpression(leafNode));
-				case INTEGER:
-					return new IntegerLiteralNode(
-							Integer.parseInt(leafNode));
-				default:
-					throw new InputMismatchException(
-							"Cannot convert string '" + leafNode
-									+ "' into a literal.");
-			}
-		}
-
-		return new VariableDiceNode(leafNode);
-	}
-
-	private static IDiceASTNode convertOperatorNode(String operatorNode) {
-		try {
-			return OperatorDiceNode.fromString(operatorNode);
-		} catch (IllegalArgumentException iaex) {
-			InputMismatchException imex = new InputMismatchException(
-					"Attempted to parse invalid operator " + operatorNode);
-
-			imex.initCause(iaex);
-
-			throw imex;
-		}
 	}
 }

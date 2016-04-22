@@ -20,6 +20,11 @@ public class IntegerLiteralNode implements ILiteralDiceNode {
 	}
 
 	@Override
+	public boolean canOptimize() {
+		return true;
+	}
+
+	@Override
 	public DiceLiteralType getLiteralType() {
 		return DiceLiteralType.INTEGER;
 	}
@@ -34,17 +39,12 @@ public class IntegerLiteralNode implements ILiteralDiceNode {
 	}
 
 	@Override
-	public String toString() {
-		return Integer.toString(value);
-	}
-
-	@Override
 	public int optimize() {
 		return value;
 	}
 
 	@Override
-	public boolean canOptimize() {
-		return true;
+	public String toString() {
+		return Integer.toString(value);
 	}
 }

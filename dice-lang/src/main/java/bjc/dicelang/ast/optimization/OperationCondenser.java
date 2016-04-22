@@ -29,40 +29,6 @@ public class OperationCondenser {
 				OperationCondenser::doCondense);
 	}
 
-	private static TopDownTransformResult pickNode(IDiceASTNode node) {
-		switch (node.getType()) {
-			case LITERAL:
-				return TopDownTransformResult.SKIP;
-			case OPERATOR:
-				return pickOperator((OperatorDiceNode) node);
-			case VARIABLE:
-				return TopDownTransformResult.SKIP;
-			default:
-				throw new UnsupportedOperationException(
-						"Attempted to traverse unknown node type " + node);
-		}
-	}
-
-	private static TopDownTransformResult pickOperator(
-			OperatorDiceNode node) {
-		switch (node) {
-			case ADD:
-			case MULTIPLY:
-			case SUBTRACT:
-			case DIVIDE:
-			case COMPOUND:
-				return TopDownTransformResult.PUSHDOWN;
-			case ARRAY:
-			case ASSIGN:
-			case GROUP:
-			case LET:
-				return TopDownTransformResult.PASSTHROUGH;
-			default:
-				throw new UnsupportedOperationException(
-						"Attempted to traverse unknown operator " + node);
-		}
-	}
-
 	private static ITree<IDiceASTNode> doCondense(
 			ITree<IDiceASTNode> ast) {
 		OperatorDiceNode operation = ast
@@ -103,5 +69,39 @@ public class OperationCondenser {
 		});
 
 		return condensedAST;
+	}
+
+	private static TopDownTransformResult pickNode(IDiceASTNode node) {
+		switch (node.getType()) {
+			case LITERAL:
+				return TopDownTransformResult.SKIP;
+			case OPERATOR:
+				return pickOperator((OperatorDiceNode) node);
+			case VARIABLE:
+				return TopDownTransformResult.SKIP;
+			default:
+				throw new UnsupportedOperationException(
+						"Attempted to traverse unknown node type " + node);
+		}
+	}
+
+	private static TopDownTransformResult pickOperator(
+			OperatorDiceNode node) {
+		switch (node) {
+			case ADD:
+			case MULTIPLY:
+			case SUBTRACT:
+			case DIVIDE:
+			case COMPOUND:
+				return TopDownTransformResult.PUSHDOWN;
+			case ARRAY:
+			case ASSIGN:
+			case GROUP:
+			case LET:
+				return TopDownTransformResult.PASSTHROUGH;
+			default:
+				throw new UnsupportedOperationException(
+						"Attempted to traverse unknown operator " + node);
+		}
 	}
 }

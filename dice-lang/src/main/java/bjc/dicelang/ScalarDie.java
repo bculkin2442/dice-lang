@@ -22,6 +22,16 @@ public class ScalarDie implements IDiceExpression {
 		this.number = num;
 	}
 
+	@Override
+	public boolean canOptimize() {
+		return true;
+	}
+
+	@Override
+	public int optimize() {
+		return number;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -40,15 +50,5 @@ public class ScalarDie implements IDiceExpression {
 	@Override
 	public String toString() {
 		return Integer.toString(number);
-	}
-
-	@Override
-	public int optimize() {
-		return number;
-	}
-
-	@Override
-	public boolean canOptimize() {
-		return true;
 	}
 }

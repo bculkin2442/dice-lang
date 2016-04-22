@@ -31,6 +31,21 @@ import bjc.dicelang.ast.nodes.VariableDiceNode;
  *
  */
 public class DiceASTEvaluator {
+	private static IResult bindLiteralValue(IDiceASTNode leafNode,
+			IFunctionalMap<String, ITree<IDiceASTNode>> enviroment) {
+		String variableName = ((VariableDiceNode) leafNode).getVariable();
+
+		if (enviroment.containsKey(variableName)) {
+			IResult result = evaluateAST(enviroment.get(variableName),
+					enviroment);
+
+			return result;
+		}
+
+		throw new UnsupportedOperationException(
+				"Attempted to deref unbound variable " + variableName);
+	}
+
 	/**
 	 * Build the map of operations to use when collapsing the AST
 	 * 
@@ -106,29 +121,24 @@ public class DiceASTEvaluator {
 		return operatorCollapsers;
 	}
 
-	private static IPair<IResult, ITree<IDiceASTNode>> parseLet(
+	private static void doArrayAssign(
 			IFunctionalMap<String, ITree<IDiceASTNode>> enviroment,
-			IFunctionalList<IPair<IResult, ITree<IDiceASTNode>>> nodes) {
-		if (nodes.getSize() != 2) {
+			IPair<IResult, ITree<IDiceASTNode>> nameNode,
+			ITree<IDiceASTNode> nameTree, ITree<IDiceASTNode> valueTree,
+			IHolder<Integer> childCount, ITree<IDiceASTNode> child) {
+		if (nameTree.getHead().getType() != DiceASTType.VARIABLE) {
 			throw new UnsupportedOperationException(
-					"Can only use let with two expressions.");
+					"Assigning to complex variables isn't supported. Problem node is "
+							+ nameNode.getRight());
 		}
 
-		ITree<IDiceASTNode> bindTree = nodes.getByIndex(0).getRight();
-		ITree<IDiceASTNode> expressionTree = nodes.getByIndex(1)
-				.getRight();
+		String varName = child.transformHead((nameNod) -> {
+			return ((VariableDiceNode) nameNod).getVariable();
+		});
 
-		IFunctionalMap<String, ITree<IDiceASTNode>> letEnviroment = enviroment
-				.extend();
+		enviroment.put(varName, valueTree.getChild(childCount.getValue()));
 
-		evaluateAST(bindTree, letEnviroment);
-		IResult exprResult = evaluateAST(expressionTree, letEnviroment);
-
-		IFunctionalList<ITree<IDiceASTNode>> childrn = nodes
-				.map((pair) -> pair.getRight());
-
-		return new Pair<>(exprResult,
-				new Tree<>(OperatorDiceNode.LET, childrn));
+		childCount.transform(val -> val + 1);
 	}
 
 	/**
@@ -169,21 +179,6 @@ public class DiceASTEvaluator {
 				throw new UnsupportedOperationException(
 						"Node '" + leafNode + "' cannot be a leaf.");
 		}
-	}
-
-	private static IResult bindLiteralValue(IDiceASTNode leafNode,
-			IFunctionalMap<String, ITree<IDiceASTNode>> enviroment) {
-		String variableName = ((VariableDiceNode) leafNode).getVariable();
-
-		if (enviroment.containsKey(variableName)) {
-			IResult result = evaluateAST(enviroment.get(variableName),
-					enviroment);
-
-			return result;
-		}
-
-		throw new UnsupportedOperationException(
-				"Attempted to deref unbound variable " + variableName);
 	}
 
 	private static IResult evaluateLiteral(IDiceASTNode leafNode) {
@@ -269,26 +264,6 @@ public class DiceASTEvaluator {
 		});
 	}
 
-	private static void doArrayAssign(
-			IFunctionalMap<String, ITree<IDiceASTNode>> enviroment,
-			IPair<IResult, ITree<IDiceASTNode>> nameNode,
-			ITree<IDiceASTNode> nameTree, ITree<IDiceASTNode> valueTree,
-			IHolder<Integer> childCount, ITree<IDiceASTNode> child) {
-		if (nameTree.getHead().getType() != DiceASTType.VARIABLE) {
-			throw new UnsupportedOperationException(
-					"Assigning to complex variables isn't supported. Problem node is "
-							+ nameNode.getRight());
-		}
-
-		String varName = child.transformHead((nameNod) -> {
-			return ((VariableDiceNode) nameNod).getVariable();
-		});
-
-		enviroment.put(varName, valueTree.getChild(childCount.getValue()));
-
-		childCount.transform(val -> val + 1);
-	}
-
 	private static IPair<IResult, ITree<IDiceASTNode>> parseGroup(
 			IFunctionalList<IPair<IResult, ITree<IDiceASTNode>>> nodes) {
 		if (nodes.getSize() != 2) {
@@ -312,5 +287,30 @@ public class DiceASTEvaluator {
 								diceTypeTree));
 			});
 		});
+	}
+
+	private static IPair<IResult, ITree<IDiceASTNode>> parseLet(
+			IFunctionalMap<String, ITree<IDiceASTNode>> enviroment,
+			IFunctionalList<IPair<IResult, ITree<IDiceASTNode>>> nodes) {
+		if (nodes.getSize() != 2) {
+			throw new UnsupportedOperationException(
+					"Can only use let with two expressions.");
+		}
+
+		ITree<IDiceASTNode> bindTree = nodes.getByIndex(0).getRight();
+		ITree<IDiceASTNode> expressionTree = nodes.getByIndex(1)
+				.getRight();
+
+		IFunctionalMap<String, ITree<IDiceASTNode>> letEnviroment = enviroment
+				.extend();
+
+		evaluateAST(bindTree, letEnviroment);
+		IResult exprResult = evaluateAST(expressionTree, letEnviroment);
+
+		IFunctionalList<ITree<IDiceASTNode>> childrn = nodes
+				.map((pair) -> pair.getRight());
+
+		return new Pair<>(exprResult,
+				new Tree<>(OperatorDiceNode.LET, childrn));
 	}
 }

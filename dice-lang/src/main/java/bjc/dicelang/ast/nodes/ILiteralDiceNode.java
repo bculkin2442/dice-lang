@@ -9,39 +9,6 @@ import org.apache.commons.lang3.StringUtils;
  *
  */
 public interface ILiteralDiceNode extends IDiceASTNode {
-	@Override
-	default DiceASTType getType() {
-		return DiceASTType.LITERAL;
-	}
-
-	@Override
-	default boolean isOperator() {
-		return false;
-	}
-
-	/**
-	 * Get the type of literal this node represents
-	 * 
-	 * @return The type of literal this node represents
-	 */
-	DiceLiteralType getLiteralType();
-
-	/**
-	 * Optimize this node to a constant if possible
-	 * 
-	 * @return This node in constant form if possible
-	 * @see bjc.dicelang.IDiceExpression#optimize()
-	 */
-	int optimize();
-
-	/**
-	 * Check if this node can be optimized to a constant
-	 * 
-	 * @return Whether or not this node can be optimized to a constant
-	 * @see bjc.dicelang.IDiceExpression#canOptimize()
-	 */
-	boolean canOptimize();
-
 	/**
 	 * Check if a token represents a literal, and if so, what type
 	 * 
@@ -67,4 +34,37 @@ public interface ILiteralDiceNode extends IDiceASTNode {
 			}
 		}
 	}
+
+	/**
+	 * Check if this node can be optimized to a constant
+	 * 
+	 * @return Whether or not this node can be optimized to a constant
+	 * @see bjc.dicelang.IDiceExpression#canOptimize()
+	 */
+	boolean canOptimize();
+
+	/**
+	 * Get the type of literal this node represents
+	 * 
+	 * @return The type of literal this node represents
+	 */
+	DiceLiteralType getLiteralType();
+
+	@Override
+	default DiceASTType getType() {
+		return DiceASTType.LITERAL;
+	}
+
+	@Override
+	default boolean isOperator() {
+		return false;
+	}
+
+	/**
+	 * Optimize this node to a constant if possible
+	 * 
+	 * @return This node in constant form if possible
+	 * @see bjc.dicelang.IDiceExpression#optimize()
+	 */
+	int optimize();
 }

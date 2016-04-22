@@ -45,6 +45,13 @@ public class DiceASTLanguageTest {
 		optimizer.addPass(new ConstantCollapser());
 	}
 
+	private static String getNextCommand(Scanner inputSource,
+			int commandNumber) {
+		System.out.print("\ndice-lang-" + commandNumber + "> ");
+
+		return inputSource.nextLine();
+	}
+
 	private static void handleInlineAction(
 			FunctionalStringTokenizer tokenizer,
 			IFunctionalMap<String, ITree<IDiceASTNode>> enviroment) {
@@ -181,12 +188,5 @@ public class DiceASTLanguageTest {
 		condensedTree = OperationCondenser.condense(optimizedTree);
 
 		return condensedTree;
-	}
-
-	private static String getNextCommand(Scanner inputSource,
-			int commandNumber) {
-		System.out.print("\ndice-lang-" + commandNumber + "> ");
-
-		return inputSource.nextLine();
 	}
 }

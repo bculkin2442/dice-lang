@@ -76,6 +76,25 @@ public class ComplexDice implements IDiceExpression {
 		die = new Die(de);
 	}
 
+	@Override
+	public boolean canOptimize() {
+		if (nDice.canOptimize() && die.canOptimize()) {
+			return die.optimize() == 1;
+		}
+
+		return false;
+	}
+
+	@Override
+	public int optimize() {
+		if (!canOptimize()) {
+			throw new UnsupportedOperationException(
+					"This complex dice cannot be optimized");
+		}
+
+		return nDice.optimize();
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -116,24 +135,5 @@ public class ComplexDice implements IDiceExpression {
 
 		return "complex[n=" + nDice.toString() + ", d=" + die.toString()
 				+ "]";
-	}
-
-	@Override
-	public boolean canOptimize() {
-		if (nDice.canOptimize() && die.canOptimize()) {
-			return die.optimize() == 1;
-		}
-
-		return false;
-	}
-
-	@Override
-	public int optimize() {
-		if (!canOptimize()) {
-			throw new UnsupportedOperationException(
-					"This complex dice cannot be optimized");
-		}
-
-		return nDice.optimize();
 	}
 }
