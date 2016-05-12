@@ -7,8 +7,8 @@ import java.util.function.Predicate;
 
 import bjc.utils.funcdata.FunctionalList;
 import bjc.utils.funcdata.FunctionalMap;
-import bjc.utils.funcdata.IFunctionalList;
-import bjc.utils.funcdata.IFunctionalMap;
+import bjc.utils.funcdata.IList;
+import bjc.utils.funcdata.IMap;
 import bjc.utils.funcdata.ITree;
 import bjc.utils.funcdata.Tree;
 import bjc.utils.funcutils.StringUtils;
@@ -31,8 +31,8 @@ import bjc.dicelang.ast.nodes.VariableDiceNode;
  */
 public class DiceASTParser {
 	private static IDiceASTNode convertLeafNode(String leafNode) {
-		DiceLiteralType literalType = ILiteralDiceNode
-				.getLiteralType(leafNode);
+		DiceLiteralType literalType =
+				ILiteralDiceNode.getLiteralType(leafNode);
 
 		if (literalType != null) {
 			switch (literalType) {
@@ -73,7 +73,7 @@ public class DiceASTParser {
 	 * @return An AST built from the tokens
 	 */
 	public static ITree<IDiceASTNode> createFromString(
-			IFunctionalList<String> tokens) {
+			IList<String> tokens) {
 		Predicate<String> specialPicker = (operator) -> {
 			if (StringUtils.containsOnly(operator, "\\[")) {
 				return true;
@@ -84,7 +84,8 @@ public class DiceASTParser {
 			return false;
 		};
 
-		IFunctionalMap<String, Function<Deque<ITree<String>>, ITree<String>>> operators = new FunctionalMap<>();
+		IMap<String, Function<Deque<ITree<String>>, ITree<String>>> operators =
+				new FunctionalMap<>();
 
 		operators.put("[", (queuedTrees) -> {
 			Tree<String> openTree = new Tree<>("[");
@@ -96,14 +97,14 @@ public class DiceASTParser {
 			return parseCloseArray(queuedTrees);
 		});
 
-		ITree<String> rawTokens = TreeConstructor.constructTree(tokens,
-				(token) -> {
+		ITree<String> rawTokens =
+				TreeConstructor.constructTree(tokens, (token) -> {
 					return isOperatorNode(token);
 				}, specialPicker, operators::get);
 
-		ITree<IDiceASTNode> tokenizedTree = rawTokens.rebuildTree(
-				DiceASTParser::convertLeafNode,
-				DiceASTParser::convertOperatorNode);
+		ITree<IDiceASTNode> tokenizedTree =
+				rawTokens.rebuildTree(DiceASTParser::convertLeafNode,
+						DiceASTParser::convertOperatorNode);
 
 		return tokenizedTree;
 	}
@@ -131,7 +132,7 @@ public class DiceASTParser {
 
 	private static ITree<String> parseCloseArray(
 			Deque<ITree<String>> queuedTrees) {
-		IFunctionalList<ITree<String>> children = new FunctionalList<>();
+		IList<ITree<String>> children = new FunctionalList<>();
 
 		while (shouldContinuePopping(queuedTrees)) {
 			children.add(queuedTrees.pop());

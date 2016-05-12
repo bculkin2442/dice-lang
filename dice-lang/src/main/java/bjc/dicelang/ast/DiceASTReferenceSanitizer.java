@@ -2,7 +2,7 @@ package bjc.dicelang.ast;
 
 import bjc.utils.data.IHolder;
 import bjc.utils.data.Identity;
-import bjc.utils.funcdata.IFunctionalMap;
+import bjc.utils.funcdata.IMap;
 import bjc.utils.funcdata.ITree;
 import bjc.utils.funcdata.TopDownTransformResult;
 import bjc.utils.funcdata.Tree;
@@ -21,7 +21,7 @@ import bjc.dicelang.ast.nodes.VariableDiceNode;
  */
 public class DiceASTReferenceSanitizer {
 	private static ITree<IDiceASTNode> doSanitize(ITree<IDiceASTNode> ast,
-			IFunctionalMap<String, ITree<IDiceASTNode>> enviroment) {
+			IMap<String, ITree<IDiceASTNode>> enviroment) {
 		if (ast.getChildrenCount() != 2) {
 			throw new UnsupportedOperationException(
 					"Assignment must have two arguments.");
@@ -134,7 +134,7 @@ public class DiceASTReferenceSanitizer {
 
 	private static ITree<IDiceASTNode> doSingleSanitize(
 			ITree<IDiceASTNode> ast,
-			IFunctionalMap<String, ITree<IDiceASTNode>> enviroment,
+			IMap<String, ITree<IDiceASTNode>> enviroment,
 			ITree<IDiceASTNode> nameTree, ITree<IDiceASTNode> valueTree,
 			String variableName) {
 		if (enviroment.containsKey(variableName)) {
@@ -169,7 +169,7 @@ public class DiceASTReferenceSanitizer {
 	 * @return The sanitized AST
 	 */
 	public static ITree<IDiceASTNode> sanitize(ITree<IDiceASTNode> ast,
-			IFunctionalMap<String, ITree<IDiceASTNode>> enviroment) {
+			IMap<String, ITree<IDiceASTNode>> enviroment) {
 		return ast.topDownTransform(
 				DiceASTReferenceSanitizer::shouldSanitize, (subTree) -> {
 					return doSanitize(subTree, enviroment);

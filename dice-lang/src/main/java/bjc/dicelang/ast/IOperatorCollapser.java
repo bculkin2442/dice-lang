@@ -3,7 +3,7 @@ package bjc.dicelang.ast;
 import java.util.function.Function;
 
 import bjc.utils.data.IPair;
-import bjc.utils.funcdata.IFunctionalList;
+import bjc.utils.funcdata.IList;
 import bjc.utils.funcdata.ITree;
 
 import bjc.dicelang.ast.nodes.IDiceASTNode;
@@ -15,6 +15,6 @@ import bjc.dicelang.ast.nodes.IDiceASTNode;
  *
  */
 public interface IOperatorCollapser extends
-		Function<IFunctionalList<IPair<IResult, ITree<IDiceASTNode>>>, IPair<IResult, ITree<IDiceASTNode>>> {
+		Function<IList<IPair<IResult, ITree<IDiceASTNode>>>, IPair<IResult, ITree<IDiceASTNode>>> {
 	// Just an alias
 }

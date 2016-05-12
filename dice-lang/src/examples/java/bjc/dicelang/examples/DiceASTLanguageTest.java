@@ -4,8 +4,8 @@ import java.util.Scanner;
 
 import bjc.utils.funcdata.FunctionalMap;
 import bjc.utils.funcdata.FunctionalStringTokenizer;
-import bjc.utils.funcdata.IFunctionalList;
-import bjc.utils.funcdata.IFunctionalMap;
+import bjc.utils.funcdata.IList;
+import bjc.utils.funcdata.IMap;
 import bjc.utils.funcdata.ITree;
 
 import bjc.dicelang.ast.DiceASTEvaluator;
@@ -25,7 +25,7 @@ import bjc.dicelang.ast.optimization.OperationCondenser;
  *
  */
 public class DiceASTLanguageTest {
-	private static IFunctionalMap<String, DiceASTPragma>	actions;
+	private static IMap<String, DiceASTPragma>	actions;
 
 	private static DiceASTOptimizer							optimizer;
 
@@ -54,11 +54,11 @@ public class DiceASTLanguageTest {
 
 	private static void handleInlineAction(
 			FunctionalStringTokenizer tokenizer,
-			IFunctionalMap<String, ITree<IDiceASTNode>> enviroment) {
+			IMap<String, ITree<IDiceASTNode>> enviroment) {
 		// Skip the pragma name
 		tokenizer.nextToken();
 
-		IFunctionalList<String> pragmaArgs = tokenizer.toList();
+		IList<String> pragmaArgs = tokenizer.toList();
 
 		if (pragmaArgs.getSize() < 3) {
 			System.err.println(
@@ -70,7 +70,7 @@ public class DiceASTLanguageTest {
 			String inlineExpression = pragmaArgs.getByIndex(0);
 			String variableName = pragmaArgs.getByIndex(1);
 
-			IFunctionalList<String> inlinedVariables = pragmaArgs.tail()
+			IList<String> inlinedVariables = pragmaArgs.tail()
 					.tail();
 
 			ITree<IDiceASTNode> inlinedExpression = DiceASTInliner
@@ -95,7 +95,7 @@ public class DiceASTLanguageTest {
 		String currentLine = inputSource.nextLine();
 
 		// The enviroment for variables
-		IFunctionalMap<String, ITree<IDiceASTNode>> enviroment = new FunctionalMap<>();
+		IMap<String, ITree<IDiceASTNode>> enviroment = new FunctionalMap<>();
 
 		while (!currentLine.equalsIgnoreCase("quit")) {
 			String possibleActionName = currentLine.split(" ")[0];
@@ -120,7 +120,7 @@ public class DiceASTLanguageTest {
 			// Build an AST from the string expression
 			ITree<IDiceASTNode> builtAST;
 
-			IFunctionalList<String> preparedTokens = DiceExpressionPreparer
+			IList<String> preparedTokens = DiceExpressionPreparer
 					.prepareCommand(currentLine);
 
 			try {
@@ -173,7 +173,7 @@ public class DiceASTLanguageTest {
 
 	private static ITree<IDiceASTNode> transformAST(
 			ITree<IDiceASTNode> builtAST,
-			IFunctionalMap<String, ITree<IDiceASTNode>> enviroment) {
+			IMap<String, ITree<IDiceASTNode>> enviroment) {
 		ITree<IDiceASTNode> optimizedTree = optimizer
 				.optimizeTree(builtAST, enviroment);
 

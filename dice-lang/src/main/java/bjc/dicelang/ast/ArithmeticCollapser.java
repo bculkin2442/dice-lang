@@ -4,7 +4,7 @@ import java.util.function.BinaryOperator;
 
 import bjc.utils.data.IPair;
 import bjc.utils.data.Pair;
-import bjc.utils.funcdata.IFunctionalList;
+import bjc.utils.funcdata.IList;
 import bjc.utils.funcdata.ITree;
 import bjc.utils.funcdata.Tree;
 
@@ -30,7 +30,7 @@ final class ArithmeticCollapser implements IOperatorCollapser {
 
 	@Override
 	public IPair<IResult, ITree<IDiceASTNode>> apply(
-			IFunctionalList<IPair<IResult, ITree<IDiceASTNode>>> nodes) {
+			IList<IPair<IResult, ITree<IDiceASTNode>>> nodes) {
 		IPair<IResult, ITree<IDiceASTNode>> initState = new Pair<>(
 				new IntegerResult(0), new Tree<>(type));
 
@@ -49,11 +49,11 @@ final class ArithmeticCollapser implements IOperatorCollapser {
 		return reducedState;
 	}
 
-	private IFunctionalList<IResult> combineArrayResults(
+	private IList<IResult> combineArrayResults(
 			IResult accumulatedValue, IResult currentValue) {
-		IFunctionalList<IResult> currentList = ((ArrayResult) currentValue)
+		IList<IResult> currentList = ((ArrayResult) currentValue)
 				.getValue();
-		IFunctionalList<IResult> accumulatedList = ((ArrayResult) accumulatedValue)
+		IList<IResult> accumulatedList = ((ArrayResult) accumulatedValue)
 				.getValue();
 
 		if (currentList.getSize() != accumulatedList.getSize()) {
@@ -61,7 +61,7 @@ final class ArithmeticCollapser implements IOperatorCollapser {
 					"Can only apply operations to equal-length arrays");
 		}
 
-		IFunctionalList<IResult> resultList = currentList.combineWith(
+		IList<IResult> resultList = currentList.combineWith(
 				accumulatedList, (currentNode, accumulatedNode) -> {
 					boolean currentNotInt = currentNode
 							.getType() != ResultType.INTEGER;
@@ -95,21 +95,21 @@ final class ArithmeticCollapser implements IOperatorCollapser {
 
 		if (!currentIsInt) {
 			if (!accumulatedIsInt) {
-				IFunctionalList<IResult> resultList = combineArrayResults(
+				IList<IResult> resultList = combineArrayResults(
 						accumulatedValue, currentValue);
 
 				return new Pair<>(new ArrayResult(resultList),
 						accumulatedTree);
 			}
 
-			IFunctionalList<IResult> resultList = halfCombineLists(
+			IList<IResult> resultList = halfCombineLists(
 					((ArrayResult) currentValue).getValue(),
 					accumulatedValue, true);
 
 			return new Pair<>(new ArrayResult(resultList),
 					accumulatedTree);
 		} else if (!accumulatedIsInt) {
-			IFunctionalList<IResult> resultList = halfCombineLists(
+			IList<IResult> resultList = halfCombineLists(
 					((ArrayResult) accumulatedValue).getValue(),
 					currentValue, false);
 
@@ -126,8 +126,8 @@ final class ArithmeticCollapser implements IOperatorCollapser {
 				accumulatedTree);
 	}
 
-	private IFunctionalList<IResult> halfCombineLists(
-			IFunctionalList<IResult> list, IResult scalar,
+	private IList<IResult> halfCombineLists(
+			IList<IResult> list, IResult scalar,
 			boolean scalarLeft) {
 		if (scalar.getType() != ResultType.INTEGER) {
 			throw new UnsupportedOperationException(

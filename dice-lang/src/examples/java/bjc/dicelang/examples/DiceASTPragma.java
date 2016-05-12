@@ -3,7 +3,7 @@ package bjc.dicelang.examples;
 import java.util.function.BiConsumer;
 
 import bjc.utils.funcdata.FunctionalStringTokenizer;
-import bjc.utils.funcdata.IFunctionalMap;
+import bjc.utils.funcdata.IMap;
 import bjc.utils.funcdata.ITree;
 
 import bjc.dicelang.ast.nodes.IDiceASTNode;
@@ -15,6 +15,6 @@ import bjc.dicelang.ast.nodes.IDiceASTNode;
  *
  */
 public interface DiceASTPragma extends
-		BiConsumer<FunctionalStringTokenizer, IFunctionalMap<String, ITree<IDiceASTNode>>> {
+		BiConsumer<FunctionalStringTokenizer, IMap<String, ITree<IDiceASTNode>>> {
 	// Just an alias
 }

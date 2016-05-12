@@ -1,6 +1,6 @@
 package bjc.dicelang.ast.optimization;
 
-import bjc.utils.funcdata.IFunctionalList;
+import bjc.utils.funcdata.IList;
 import bjc.utils.funcdata.ITree;
 
 import bjc.dicelang.ast.nodes.IDiceASTNode;
@@ -31,5 +31,5 @@ public interface IOptimizationPass {
 	 * @return The optimized node
 	 */
 	public ITree<IDiceASTNode> optimizeOperator(IDiceASTNode operator,
-			IFunctionalList<ITree<IDiceASTNode>> children);
+			IList<ITree<IDiceASTNode>> children);
 }

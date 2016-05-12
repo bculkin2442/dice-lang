@@ -1,6 +1,6 @@
 package bjc.dicelang.ast.optimization;
 
-import bjc.utils.funcdata.IFunctionalList;
+import bjc.utils.funcdata.IList;
 import bjc.utils.funcdata.ITree;
 import bjc.utils.funcdata.Tree;
 
@@ -42,7 +42,7 @@ public class ConstantCollapser implements IOptimizationPass {
 
 	@Override
 	public ITree<IDiceASTNode> optimizeOperator(IDiceASTNode operator,
-			IFunctionalList<ITree<IDiceASTNode>> children) {
+			IList<ITree<IDiceASTNode>> children) {
 		if (!operator.isOperator()) {
 			return new Tree<>(operator, children);
 		}

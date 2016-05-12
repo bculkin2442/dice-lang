@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import bjc.utils.data.IPair;
 import bjc.utils.data.Pair;
 import bjc.utils.funcdata.FunctionalStringTokenizer;
-import bjc.utils.funcdata.IFunctionalList;
+import bjc.utils.funcdata.IList;
 import bjc.utils.funcutils.ListUtils;
 import bjc.utils.parserutils.ShuntingYard;
 
@@ -47,8 +47,8 @@ public class DiceExpressionPreparer {
 		// to a variable expression
 	}
 
-	static IFunctionalList<String> prepareCommand(String currentLine) {
-		IFunctionalList<String> tokens = FunctionalStringTokenizer
+	static IList<String> prepareCommand(String currentLine) {
+		IList<String> tokens = FunctionalStringTokenizer
 				.fromString(currentLine).toList();
 
 		Deque<IPair<String, String>> ops = new LinkedList<>();
@@ -60,7 +60,7 @@ public class DiceExpressionPreparer {
 		ops.add(new Pair<>(":=", ":="));
 		ops.add(new Pair<>("=>", "=>"));
 
-		IFunctionalList<String> semiExpandedTokens = ListUtils
+		IList<String> semiExpandedTokens = ListUtils
 				.splitTokens(tokens, ops);
 
 		ops = new LinkedList<>();
@@ -70,7 +70,7 @@ public class DiceExpressionPreparer {
 		ops.add(new Pair<>("[", "\\["));
 		ops.add(new Pair<>("]", "\\]"));
 
-		IFunctionalList<String> fullyExpandedTokens = ListUtils
+		IList<String> fullyExpandedTokens = ListUtils
 				.deAffixTokens(semiExpandedTokens, ops);
 
 		fullyExpandedTokens.removeIf((strang) -> strang.equals(""));

@@ -1,6 +1,6 @@
 package bjc.dicelang.ast;
 
-import bjc.utils.funcdata.IFunctionalList;
+import bjc.utils.funcdata.IList;
 
 /**
  * Represents a result that is an array of other results
@@ -10,7 +10,7 @@ import bjc.utils.funcdata.IFunctionalList;
  *         TODO finish implementing me
  */
 public class ArrayResult implements IResult {
-	private IFunctionalList<IResult> arrayContents;
+	private IList<IResult> arrayContents;
 
 	/**
 	 * Create a new array-valued result
@@ -18,7 +18,7 @@ public class ArrayResult implements IResult {
 	 * @param results
 	 *            The results in the array
 	 */
-	public ArrayResult(IFunctionalList<IResult> results) {
+	public ArrayResult(IList<IResult> results) {
 		this.arrayContents = results;
 	}
 
@@ -32,7 +32,7 @@ public class ArrayResult implements IResult {
 	 * 
 	 * @return The value of this result
 	 */
-	public IFunctionalList<IResult> getValue() {
+	public IList<IResult> getValue() {
 		return arrayContents;
 	}
 

@@ -9,8 +9,8 @@ import bjc.utils.data.LazyPair;
 import bjc.utils.data.Pair;
 import bjc.utils.funcdata.FunctionalList;
 import bjc.utils.funcdata.FunctionalMap;
-import bjc.utils.funcdata.IFunctionalList;
-import bjc.utils.funcdata.IFunctionalMap;
+import bjc.utils.funcdata.IList;
+import bjc.utils.funcdata.IMap;
 import bjc.utils.funcdata.ITree;
 import bjc.utils.funcdata.Tree;
 
@@ -32,7 +32,7 @@ import bjc.dicelang.ast.nodes.VariableDiceNode;
  */
 public class DiceASTEvaluator {
 	private static IResult bindLiteralValue(IDiceASTNode leafNode,
-			IFunctionalMap<String, ITree<IDiceASTNode>> enviroment) {
+			IMap<String, ITree<IDiceASTNode>> enviroment) {
 		String variableName = ((VariableDiceNode) leafNode).getVariable();
 
 		if (enviroment.containsKey(variableName)) {
@@ -53,9 +53,9 @@ public class DiceASTEvaluator {
 	 *            The enviroment to evaluate bindings and such against
 	 * @return The operations to use when collapsing the AST
 	 */
-	private static IFunctionalMap<IDiceASTNode, IOperatorCollapser> buildOperations(
-			IFunctionalMap<String, ITree<IDiceASTNode>> enviroment) {
-		IFunctionalMap<IDiceASTNode, IOperatorCollapser> operatorCollapsers = new FunctionalMap<>();
+	private static IMap<IDiceASTNode, IOperatorCollapser> buildOperations(
+			IMap<String, ITree<IDiceASTNode>> enviroment) {
+		IMap<IDiceASTNode, IOperatorCollapser> operatorCollapsers = new FunctionalMap<>();
 
 		operatorCollapsers.put(OperatorDiceNode.ADD,
 				new ArithmeticCollapser(OperatorDiceNode.ADD,
@@ -95,7 +95,7 @@ public class DiceASTEvaluator {
 
 			// This is so that arrays respect lazy results properly
 			Supplier<IResult> resultSupplier = () -> {
-				IFunctionalList<IResult> resultList = new FunctionalList<>();
+				IList<IResult> resultList = new FunctionalList<>();
 
 				nodes.forEach((node) -> {
 					resultList.add(node.getLeft());
@@ -122,7 +122,7 @@ public class DiceASTEvaluator {
 	}
 
 	private static void doArrayAssign(
-			IFunctionalMap<String, ITree<IDiceASTNode>> enviroment,
+			IMap<String, ITree<IDiceASTNode>> enviroment,
 			IPair<IResult, ITree<IDiceASTNode>> nameNode,
 			ITree<IDiceASTNode> nameTree, ITree<IDiceASTNode> valueTree,
 			IHolder<Integer> childCount, ITree<IDiceASTNode> child) {
@@ -151,8 +151,8 @@ public class DiceASTEvaluator {
 	 * @return The integer value of the expression
 	 */
 	public static IResult evaluateAST(ITree<IDiceASTNode> expression,
-			IFunctionalMap<String, ITree<IDiceASTNode>> enviroment) {
-		IFunctionalMap<IDiceASTNode, IOperatorCollapser> collapsers = buildOperations(
+			IMap<String, ITree<IDiceASTNode>> enviroment) {
+		IMap<IDiceASTNode, IOperatorCollapser> collapsers = buildOperations(
 				enviroment);
 
 		return expression.collapse(
@@ -162,7 +162,7 @@ public class DiceASTEvaluator {
 
 	private static IPair<IResult, ITree<IDiceASTNode>> evaluateLeaf(
 			IDiceASTNode leafNode,
-			IFunctionalMap<String, ITree<IDiceASTNode>> enviroment) {
+			IMap<String, ITree<IDiceASTNode>> enviroment) {
 		ITree<IDiceASTNode> returnedAST = new Tree<>(leafNode);
 
 		switch (leafNode.getType()) {
@@ -203,8 +203,8 @@ public class DiceASTEvaluator {
 	}
 
 	private static IPair<IResult, ITree<IDiceASTNode>> parseBinding(
-			IFunctionalMap<String, ITree<IDiceASTNode>> enviroment,
-			IFunctionalList<IPair<IResult, ITree<IDiceASTNode>>> nodes) {
+			IMap<String, ITree<IDiceASTNode>> enviroment,
+			IList<IPair<IResult, ITree<IDiceASTNode>>> nodes) {
 		if (nodes.getSize() != 2) {
 			throw new UnsupportedOperationException(
 					"Can only bind nodes with two children. Problem children are "
@@ -265,7 +265,7 @@ public class DiceASTEvaluator {
 	}
 
 	private static IPair<IResult, ITree<IDiceASTNode>> parseGroup(
-			IFunctionalList<IPair<IResult, ITree<IDiceASTNode>>> nodes) {
+			IList<IPair<IResult, ITree<IDiceASTNode>>> nodes) {
 		if (nodes.getSize() != 2) {
 			throw new UnsupportedOperationException(
 					"Can only form a group from two dice");
@@ -290,8 +290,8 @@ public class DiceASTEvaluator {
 	}
 
 	private static IPair<IResult, ITree<IDiceASTNode>> parseLet(
-			IFunctionalMap<String, ITree<IDiceASTNode>> enviroment,
-			IFunctionalList<IPair<IResult, ITree<IDiceASTNode>>> nodes) {
+			IMap<String, ITree<IDiceASTNode>> enviroment,
+			IList<IPair<IResult, ITree<IDiceASTNode>>> nodes) {
 		if (nodes.getSize() != 2) {
 			throw new UnsupportedOperationException(
 					"Can only use let with two expressions.");
@@ -301,13 +301,13 @@ public class DiceASTEvaluator {
 		ITree<IDiceASTNode> expressionTree = nodes.getByIndex(1)
 				.getRight();
 
-		IFunctionalMap<String, ITree<IDiceASTNode>> letEnviroment = enviroment
+		IMap<String, ITree<IDiceASTNode>> letEnviroment = enviroment
 				.extend();
 
 		evaluateAST(bindTree, letEnviroment);
 		IResult exprResult = evaluateAST(expressionTree, letEnviroment);
 
-		IFunctionalList<ITree<IDiceASTNode>> childrn = nodes
+		IList<ITree<IDiceASTNode>> childrn = nodes
 				.map((pair) -> pair.getRight());
 
 		return new Pair<>(exprResult,

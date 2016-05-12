@@ -1,8 +1,8 @@
 package bjc.dicelang.ast;
 
 import bjc.utils.funcdata.FunctionalList;
-import bjc.utils.funcdata.IFunctionalList;
-import bjc.utils.funcdata.IFunctionalMap;
+import bjc.utils.funcdata.IList;
+import bjc.utils.funcdata.IMap;
 import bjc.utils.funcdata.ITree;
 import bjc.utils.funcdata.Tree;
 
@@ -27,16 +27,16 @@ public class DiceASTInliner {
 	 * @return The inlined AST
 	 */
 	public static ITree<IDiceASTNode> inlineAll(ITree<IDiceASTNode> ast,
-			IFunctionalMap<String, ITree<IDiceASTNode>> enviroment) {
+			IMap<String, ITree<IDiceASTNode>> enviroment) {
 		// Tell the compiler that the null is for the entire varargs
 		// parameter, not a single one with a null value
 		return selectiveInline(ast, enviroment, (String[]) null);
 	}
 
 	private static ITree<IDiceASTNode> inlineNode(IDiceASTNode node,
-			IFunctionalMap<String, ITree<IDiceASTNode>> enviroment,
+			IMap<String, ITree<IDiceASTNode>> enviroment,
 			boolean specificInline,
-			IFunctionalList<String> variableNames) {
+			IList<String> variableNames) {
 		if (node.getType() != DiceASTType.VARIABLE) {
 			return new Tree<>(node);
 		}
@@ -79,8 +79,8 @@ public class DiceASTInliner {
 	 */
 	public static ITree<IDiceASTNode> selectiveInline(
 			ITree<IDiceASTNode> ast,
-			IFunctionalMap<String, ITree<IDiceASTNode>> enviroment,
-			IFunctionalList<String> variables) {
+			IMap<String, ITree<IDiceASTNode>> enviroment,
+			IList<String> variables) {
 		return selectiveInline(ast, enviroment,
 				variables.toArray(new String[0]));
 	}
@@ -98,10 +98,10 @@ public class DiceASTInliner {
 	 */
 	public static ITree<IDiceASTNode> selectiveInline(
 			ITree<IDiceASTNode> ast,
-			IFunctionalMap<String, ITree<IDiceASTNode>> enviroment,
+			IMap<String, ITree<IDiceASTNode>> enviroment,
 			String... variables) {
 		if (variables != null && variables.length > 0) {
-			IFunctionalList<String> variableNames = new FunctionalList<>(
+			IList<String> variableNames = new FunctionalList<>(
 					variables);
 
 			return ast.flatMapTree((node) -> {

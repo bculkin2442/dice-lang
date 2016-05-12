@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.Stack;
 
 import bjc.utils.funcdata.FunctionalStringTokenizer;
-import bjc.utils.funcdata.IFunctionalList;
+import bjc.utils.funcdata.IList;
 import bjc.utils.parserutils.ShuntingYard;
 
 import org.apache.commons.lang3.StringUtils;
@@ -51,7 +51,7 @@ public class DiceExpressionParser {
 		/*
 		 * Shunt the expression to postfix form
 		 */
-		IFunctionalList<String> list = yard.postfix(tokenizer.toList(),
+		IList<String> list = yard.postfix(tokenizer.toList(),
 				s -> s);
 
 		/*
