@@ -60,8 +60,8 @@ public class DiceExpressionPreparer {
 		ops.add(new Pair<>(":=", ":="));
 		ops.add(new Pair<>("=>", "=>"));
 
-		IList<String> semiExpandedTokens = ListUtils
-				.splitTokens(tokens, ops);
+		IList<String> semiExpandedTokens = ListUtils.splitTokens(tokens,
+				ops);
 
 		ops = new LinkedList<>();
 

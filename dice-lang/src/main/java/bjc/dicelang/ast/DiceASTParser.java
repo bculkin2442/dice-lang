@@ -31,8 +31,8 @@ import bjc.dicelang.ast.nodes.VariableDiceNode;
  */
 public class DiceASTParser {
 	private static IDiceASTNode convertLeafNode(String leafNode) {
-		DiceLiteralType literalType =
-				ILiteralDiceNode.getLiteralType(leafNode);
+		DiceLiteralType literalType = ILiteralDiceNode
+				.getLiteralType(leafNode);
 
 		if (literalType != null) {
 			switch (literalType) {
@@ -84,8 +84,7 @@ public class DiceASTParser {
 			return false;
 		};
 
-		IMap<String, Function<Deque<ITree<String>>, ITree<String>>> operators =
-				new FunctionalMap<>();
+		IMap<String, Function<Deque<ITree<String>>, ITree<String>>> operators = new FunctionalMap<>();
 
 		operators.put("[", (queuedTrees) -> {
 			Tree<String> openTree = new Tree<>("[");
@@ -97,14 +96,14 @@ public class DiceASTParser {
 			return parseCloseArray(queuedTrees);
 		});
 
-		ITree<String> rawTokens =
-				TreeConstructor.constructTree(tokens, (token) -> {
+		ITree<String> rawTokens = TreeConstructor.constructTree(tokens,
+				(token) -> {
 					return isOperatorNode(token);
 				}, specialPicker, operators::get);
 
-		ITree<IDiceASTNode> tokenizedTree =
-				rawTokens.rebuildTree(DiceASTParser::convertLeafNode,
-						DiceASTParser::convertOperatorNode);
+		ITree<IDiceASTNode> tokenizedTree = rawTokens.rebuildTree(
+				DiceASTParser::convertLeafNode,
+				DiceASTParser::convertOperatorNode);
 
 		return tokenizedTree;
 	}

@@ -35,8 +35,7 @@ public class DiceASTInliner {
 
 	private static ITree<IDiceASTNode> inlineNode(IDiceASTNode node,
 			IMap<String, ITree<IDiceASTNode>> enviroment,
-			boolean specificInline,
-			IList<String> variableNames) {
+			boolean specificInline, IList<String> variableNames) {
 		if (node.getType() != DiceASTType.VARIABLE) {
 			return new Tree<>(node);
 		}
@@ -101,8 +100,7 @@ public class DiceASTInliner {
 			IMap<String, ITree<IDiceASTNode>> enviroment,
 			String... variables) {
 		if (variables != null && variables.length > 0) {
-			IList<String> variableNames = new FunctionalList<>(
-					variables);
+			IList<String> variableNames = new FunctionalList<>(variables);
 
 			return ast.flatMapTree((node) -> {
 				return inlineNode(node, enviroment, true, variableNames);

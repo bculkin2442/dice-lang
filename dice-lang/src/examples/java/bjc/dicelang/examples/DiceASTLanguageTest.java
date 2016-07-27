@@ -27,7 +27,7 @@ import bjc.dicelang.ast.optimization.OperationCondenser;
 public class DiceASTLanguageTest {
 	private static IMap<String, DiceASTPragma>	actions;
 
-	private static DiceASTOptimizer							optimizer;
+	private static DiceASTOptimizer				optimizer;
 
 	static {
 		actions = new FunctionalMap<>();
@@ -70,8 +70,7 @@ public class DiceASTLanguageTest {
 			String inlineExpression = pragmaArgs.getByIndex(0);
 			String variableName = pragmaArgs.getByIndex(1);
 
-			IList<String> inlinedVariables = pragmaArgs.tail()
-					.tail();
+			IList<String> inlinedVariables = pragmaArgs.tail().tail();
 
 			ITree<IDiceASTNode> inlinedExpression = DiceASTInliner
 					.selectiveInline(enviroment.get(inlineExpression),
@@ -101,10 +100,6 @@ public class DiceASTLanguageTest {
 			String possibleActionName = currentLine.split(" ")[0];
 
 			if (actions.containsKey(possibleActionName)) {
-				System.err.println(
-						"\nTRACE: Executing action " + possibleActionName
-								+ " with line " + currentLine + "\n");
-
 				// Execute action
 				FunctionalStringTokenizer tokenizer = new FunctionalStringTokenizer(
 						currentLine);

@@ -49,8 +49,8 @@ final class ArithmeticCollapser implements IOperatorCollapser {
 		return reducedState;
 	}
 
-	private IList<IResult> combineArrayResults(
-			IResult accumulatedValue, IResult currentValue) {
+	private IList<IResult> combineArrayResults(IResult accumulatedValue,
+			IResult currentValue) {
 		IList<IResult> currentList = ((ArrayResult) currentValue)
 				.getValue();
 		IList<IResult> accumulatedList = ((ArrayResult) accumulatedValue)
@@ -126,9 +126,8 @@ final class ArithmeticCollapser implements IOperatorCollapser {
 				accumulatedTree);
 	}
 
-	private IList<IResult> halfCombineLists(
-			IList<IResult> list, IResult scalar,
-			boolean scalarLeft) {
+	private IList<IResult> halfCombineLists(IList<IResult> list,
+			IResult scalar, boolean scalarLeft) {
 		if (scalar.getType() != ResultType.INTEGER) {
 			throw new UnsupportedOperationException(
 					"Nested array operations not supported");

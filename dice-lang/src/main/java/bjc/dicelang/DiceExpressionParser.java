@@ -51,8 +51,7 @@ public class DiceExpressionParser {
 		/*
 		 * Shunt the expression to postfix form
 		 */
-		IList<String> list = yard.postfix(tokenizer.toList(),
-				s -> s);
+		IList<String> list = yard.postfix(tokenizer.toList(), s -> s);
 
 		/*
 		 * Create a stack for building an expression from parts
