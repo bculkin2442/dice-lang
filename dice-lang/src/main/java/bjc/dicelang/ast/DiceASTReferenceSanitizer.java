@@ -189,7 +189,6 @@ public class DiceASTReferenceSanitizer {
 			case LET:
 				return TopDownTransformResult.PASSTHROUGH;
 			case ADD:
-			case CALL:
 			case COMPOUND:
 			case DIVIDE:
 			case GROUP:

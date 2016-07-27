@@ -44,10 +44,6 @@ public enum OperatorDiceNode implements IDiceASTNode {
 	 */
 	ASSIGN(EXPRESSION),
 	/**
-	 * Represents calling a function
-	 */
-	CALL(EXPRESSION),
-	/**
 	 * Represents evaluating one expression in the context of another
 	 */
 	LET(EXPRESSION);
@@ -81,8 +77,6 @@ public enum OperatorDiceNode implements IDiceASTNode {
 				return LET;
 			case "[]":
 				return ARRAY;
-			case "call":
-				return CALL;
 			default:
 				throw new IllegalArgumentException(
 						s + " is not a valid operator node");
