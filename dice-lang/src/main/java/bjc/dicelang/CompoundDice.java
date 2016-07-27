@@ -65,7 +65,9 @@ public class CompoundDice implements IDiceExpression {
 	public int optimize() {
 		if (!canOptimize()) {
 			throw new UnsupportedOperationException(
-					"Cannot optimize this compound dice");
+					"Cannot optimize this compound dice. "
+							+ "Both component dice must be optimizable"
+							+ " to optimize a compound dice");
 		}
 
 		return Integer

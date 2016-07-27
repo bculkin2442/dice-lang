@@ -29,20 +29,22 @@ public class BindingDiceExpression implements IDiceExpression {
 	 *            ReferenceDiceExpression
 	 * @param right
 	 *            The right side to bind to the name
-	 * @param env
+	 * @param enviroment
 	 *            The enviroment to bind into
 	 */
 	public BindingDiceExpression(IDiceExpression left,
-			IDiceExpression right, Map<String, IDiceExpression> env) {
+			IDiceExpression right,
+			Map<String, IDiceExpression> enviroment) {
 		if (!(left instanceof ReferenceDiceExpression)) {
 			throw new UnsupportedOperationException(
-					"Binding to non-references is unsupported."
+					"Error: Binding an expression to something that is not a variable reference,"
+							+ " or array thereof. is unsupported."
 							+ " Problematic expression is " + left);
 		}
 
 		String varName = ((ReferenceDiceExpression) left).getName();
 
-		initialize(varName, right, env);
+		initialize(varName, right, enviroment);
 	}
 
 	/**
@@ -50,22 +52,22 @@ public class BindingDiceExpression implements IDiceExpression {
 	 * 
 	 * @param name
 	 *            The name of the variable to bind
-	 * @param exp
+	 * @param expression
 	 *            The expression to bind to the variable
-	 * @param env
+	 * @param enviroment
 	 *            The enviroment to bind it in
 	 */
-	public BindingDiceExpression(String name, IDiceExpression exp,
-			Map<String, IDiceExpression> env) {
-		initialize(name, exp, env);
+	public BindingDiceExpression(String name, IDiceExpression expression,
+			Map<String, IDiceExpression> enviroment) {
+		initialize(name, expression, enviroment);
 	}
 
-	private void initialize(String name, IDiceExpression exp,
-			Map<String, IDiceExpression> env) {
+	private void initialize(String name, IDiceExpression expr,
+			Map<String, IDiceExpression> enviroment) {
 		this.variableName = name;
-		this.expression = exp;
+		this.expression = expr;
 
-		env.put(name, exp);
+		enviroment.put(name, expr);
 	}
 
 	/*

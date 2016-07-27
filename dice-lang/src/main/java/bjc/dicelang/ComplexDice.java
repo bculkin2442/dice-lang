@@ -16,27 +16,29 @@ public class ComplexDice implements IDiceExpression {
 	 * @return A dice group parsed from the string
 	 */
 	public static IDiceExpression fromString(String expression) {
-		/*
-		 * Split it on the dice type marker
-		 */
+		// Handle the case where someone passes us a simple expression
+		// containing a single die
+		if (!expression.contains("d")) {
+			return new Die(Integer.parseInt(expression));
+		}
+		// Split it on the dice type marker
+
 		String[] strangs = expression.split("d");
 
 		try {
-			/*
-			 * Create the actual dice
-			 */
+			// Create the actual group of dice
 			return new ComplexDice(
 					new ScalarDie(Integer.parseInt(strangs[0])),
 					new Die(Integer.parseInt(strangs[1])));
 		} catch (@SuppressWarnings("unused") NumberFormatException nfex) {
 			// We don't care about details
-			/*
-			 * Tell the user the expression is invalid
-			 */
+
+			// Tell the user the expression is invalid
 			throw new IllegalArgumentException(
-					"Attempted to create a dice using something that's not"
-							+ " an integer: " + strangs[0] + " and "
-							+ strangs[1] + " are likely culprits.");
+					"Attempted to create a set of dice using invalid arguments."
+							+ " They must be integers. " + strangs[0]
+							+ " and " + strangs[1]
+							+ " are likely culprits.");
 		}
 	}
 
@@ -46,7 +48,7 @@ public class ComplexDice implements IDiceExpression {
 	private IDiceExpression	die;
 
 	/**
-	 * The number of the specified die to roll
+	 * The number of the particular die to roll
 	 */
 	private IDiceExpression	nDice;
 
@@ -78,6 +80,8 @@ public class ComplexDice implements IDiceExpression {
 
 	@Override
 	public boolean canOptimize() {
+		// Can only optimize this dice group if both components can be
+		// optimized and the die itself has only one value
 		if (nDice.canOptimize() && die.canOptimize()) {
 			return die.optimize() == 1;
 		}
@@ -89,7 +93,9 @@ public class ComplexDice implements IDiceExpression {
 	public int optimize() {
 		if (!canOptimize()) {
 			throw new UnsupportedOperationException(
-					"This complex dice cannot be optimized");
+					"This complex dice cannot be optimized. "
+							+ "Both the dice to be rolled and the number of"
+							+ " dice must be optimizable.");
 		}
 
 		return nDice.optimize();
@@ -115,6 +121,7 @@ public class ComplexDice implements IDiceExpression {
 							+ "The problematic expression is " + nDice);
 		}
 
+		// Roll all the dice and combine them
 		for (int i = 0; i < nRoll; i++) {
 			res += die.roll();
 		}
@@ -129,6 +136,7 @@ public class ComplexDice implements IDiceExpression {
 	 */
 	@Override
 	public String toString() {
+		// Print simple dice groups in a much clearer manner
 		if (nDice instanceof ScalarDie && die instanceof Die) {
 			return nDice.toString() + die.toString();
 		}

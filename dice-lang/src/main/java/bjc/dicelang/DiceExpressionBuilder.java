@@ -59,7 +59,8 @@ public class DiceExpressionBuilder {
 	 * @return A dice expression adding a scalar to this
 	 */
 	public DiceExpressionBuilder add(int num) {
-		baking = new ScalarDiceExpression(baking, num, ADD);
+		baking = new OperatorDiceExpression(baking, new ScalarDie(num),
+				ADD);
 		return this;
 	}
 
@@ -92,7 +93,8 @@ public class DiceExpressionBuilder {
 	 * @return A dice expression dividing a scalar from this
 	 */
 	public DiceExpressionBuilder divide(int num) {
-		baking = new ScalarDiceExpression(baking, num, DIVIDE);
+		baking = new OperatorDiceExpression(baking, new ScalarDie(num),
+				DIVIDE);
 		return this;
 	}
 
@@ -116,7 +118,8 @@ public class DiceExpressionBuilder {
 	 * @return A dice expression multiplying a scalar to this
 	 */
 	public DiceExpressionBuilder multiply(int num) {
-		baking = new ScalarDiceExpression(baking, num, MULTIPLY);
+		baking = new OperatorDiceExpression(baking, new ScalarDie(num),
+				MULTIPLY);
 		return this;
 	}
 
@@ -140,7 +143,8 @@ public class DiceExpressionBuilder {
 	 * @return A dice expression adding a scalar to this
 	 */
 	public DiceExpressionBuilder subtract(int num) {
-		baking = new ScalarDiceExpression(baking, num, SUBTRACT);
+		baking = new OperatorDiceExpression(baking, new ScalarDie(num),
+				SUBTRACT);
 		return this;
 	}
 }

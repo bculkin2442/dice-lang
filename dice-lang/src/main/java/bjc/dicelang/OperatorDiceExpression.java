@@ -76,8 +76,8 @@ public class OperatorDiceExpression implements IDiceExpression {
 				}
 			default:
 				throw new IllegalArgumentException(
-						"Got passed  a invalid ScalarExpressionType "
-								+ expressionType + ". WAT");
+						"Got passed  a invalid ScalarExpressionType ("
+								+ expressionType + "). WAT");
 
 		}
 	}
