@@ -39,12 +39,12 @@ class ArithmeticCollapser {
 			return new Tree<>(type, children);
 		}
 
-		int initState = DiceASTUtils.toInt(children.first());
+		int initState = DiceASTUtils.literalToInteger(children.first());
 
 		return children.tail().reduceAux(initState,
 				(currentNode, state) -> {
 					return reducer.apply(state,
-							DiceASTUtils.toInt(currentNode));
+							DiceASTUtils.literalToInteger(currentNode));
 				}, (state) -> new Tree<>(new IntegerLiteralNode(state)));
 	}
 }

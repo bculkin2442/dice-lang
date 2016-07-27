@@ -18,8 +18,10 @@ import bjc.dicelang.ast.nodes.OperatorDiceNode;
  *
  */
 final class ArithmeticCollapser implements IOperatorCollapser {
+	// The type of operator we're collapsing
 	private OperatorDiceNode		type;
 
+	// The operator to use to collapse operators
 	private BinaryOperator<Integer>	valueOp;
 
 	public ArithmeticCollapser(OperatorDiceNode type,
@@ -31,7 +33,7 @@ final class ArithmeticCollapser implements IOperatorCollapser {
 	@Override
 	public IPair<IResult, ITree<IDiceASTNode>> apply(
 			IList<IPair<IResult, ITree<IDiceASTNode>>> nodes) {
-		IPair<IResult, ITree<IDiceASTNode>> initState = new Pair<>(
+		IPair<IResult, ITree<IDiceASTNode>> initialState = new Pair<>(
 				new IntegerResult(0), new Tree<>(type));
 
 		BinaryOperator<IPair<IResult, ITree<IDiceASTNode>>> reducer = (
@@ -44,7 +46,7 @@ final class ArithmeticCollapser implements IOperatorCollapser {
 		};
 
 		IPair<IResult, ITree<IDiceASTNode>> reducedState = nodes
-				.reduceAux(initState, reducer, (state) -> state);
+				.reduceAux(initialState, reducer, (state) -> state);
 
 		return reducedState;
 	}

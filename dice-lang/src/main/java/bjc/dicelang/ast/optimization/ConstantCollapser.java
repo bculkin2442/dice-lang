@@ -64,8 +64,8 @@ public class ConstantCollapser implements IOptimizationPass {
 				}
 
 				ComplexDice dice = new ComplexDice(
-						DiceASTUtils.toExpression(children.getByIndex(0)),
-						DiceASTUtils.toExpression(children.getByIndex(1)));
+						DiceASTUtils.literalToExpression(children.getByIndex(0)),
+						DiceASTUtils.literalToExpression(children.getByIndex(1)));
 
 				if (dice.canOptimize()) {
 					return new Tree<>(
