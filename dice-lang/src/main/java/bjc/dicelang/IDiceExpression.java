@@ -41,7 +41,7 @@ public interface IDiceExpression {
 		} else if (StringUtils.containsInfixOperator(literalData, "d")) {
 			// Handle groups of similiar dice
 			return ComplexDice.fromString(literalData);
-		} else if (literalData.startsWith("d")) {
+		} else if (literalData.matches("\\Ad\\d+\\Z")) {
 			// Handle people who put 'd6' instead of '1d6'
 			return new Die(Integer.parseInt(literalData.substring(1)));
 		} else {

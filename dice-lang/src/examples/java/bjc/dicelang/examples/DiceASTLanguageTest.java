@@ -1,5 +1,6 @@
 package bjc.dicelang.examples;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 import bjc.utils.funcdata.FunctionalMap;
@@ -120,8 +121,9 @@ public class DiceASTLanguageTest {
 
 			try {
 				builtAST = DiceASTParser.createFromString(preparedTokens);
-			} catch (IllegalStateException isex) {
-				System.out.println("ERROR: " + isex.getLocalizedMessage());
+			} catch (InputMismatchException | IllegalStateException
+					| UnsupportedOperationException ex) {
+				System.out.println("ERROR: " + ex.getLocalizedMessage());
 
 				currentLine = getNextCommand(inputSource, commandNumber);
 
@@ -139,18 +141,19 @@ public class DiceASTLanguageTest {
 
 			IResult sampleRoll;
 
-			try {
-				sampleRoll = DiceASTEvaluator.evaluateAST(transformedAST,
-						enviroment);
+			// try {
+			sampleRoll = DiceASTEvaluator.evaluateAST(transformedAST,
+					enviroment);
 
-				enviroment.put("last", transformedAST);
-			} catch (UnsupportedOperationException usex) {
-				System.out.println("ERROR: " + usex.getLocalizedMessage());
-
-				currentLine = getNextCommand(inputSource, commandNumber);
-
-				continue;
-			}
+			enviroment.put("last", transformedAST);
+			/*
+			 * } catch (UnsupportedOperationException usex) {
+			 * System.out.println("ERROR: " + usex.getLocalizedMessage());
+			 * 
+			 * currentLine = getNextCommand(inputSource, commandNumber);
+			 * 
+			 * continue; }
+			 */
 
 			System.out.println("\t\tSample Roll: " + sampleRoll);
 

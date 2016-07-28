@@ -59,19 +59,19 @@ public class DiceASTEvaluator {
 
 		operatorCollapsers.put(OperatorDiceNode.ADD,
 				new ArithmeticCollapser(OperatorDiceNode.ADD,
-						(left, right) -> left + right));
+						(left, right) -> left + right, 0));
 
 		operatorCollapsers.put(OperatorDiceNode.SUBTRACT,
 				new ArithmeticCollapser(OperatorDiceNode.SUBTRACT,
-						(left, right) -> left - right));
+						(left, right) -> left - right, 0));
 
 		operatorCollapsers.put(OperatorDiceNode.MULTIPLY,
 				new ArithmeticCollapser(OperatorDiceNode.MULTIPLY,
-						(left, right) -> left * right));
+						(left, right) -> left * right, 1));
 
 		operatorCollapsers.put(OperatorDiceNode.DIVIDE,
 				new ArithmeticCollapser(OperatorDiceNode.DIVIDE,
-						(left, right) -> left / right));
+						(left, right) -> left / right, 1));
 
 		operatorCollapsers.put(OperatorDiceNode.ASSIGN, (nodes) -> {
 			return parseBinding(enviroment, nodes);
@@ -82,7 +82,7 @@ public class DiceASTEvaluator {
 						(left, right) -> {
 							return Integer.parseInt(Integer.toString(left)
 									+ Integer.toString(right));
-						}));
+						}, 0));
 
 		operatorCollapsers.put(OperatorDiceNode.GROUP,
 				DiceASTEvaluator::parseGroup);
@@ -304,7 +304,10 @@ public class DiceASTEvaluator {
 		IMap<String, ITree<IDiceASTNode>> letEnviroment = enviroment
 				.extend();
 
+		System.out.println("Evaluating tree for bound values");
+
 		evaluateAST(bindTree, letEnviroment);
+
 		IResult exprResult = evaluateAST(expressionTree, letEnviroment);
 
 		IList<ITree<IDiceASTNode>> childrn = nodes

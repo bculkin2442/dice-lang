@@ -24,23 +24,27 @@ final class ArithmeticCollapser implements IOperatorCollapser {
 	// The operator to use to collapse operators
 	private BinaryOperator<Integer>	valueOp;
 
+	private int						initialValue;
+
 	public ArithmeticCollapser(OperatorDiceNode type,
-			BinaryOperator<Integer> valueOp) {
+			BinaryOperator<Integer> valueOp, int initVal) {
 		this.type = type;
 		this.valueOp = valueOp;
+		this.initialValue = initVal;
 	}
 
 	@Override
 	public IPair<IResult, ITree<IDiceASTNode>> apply(
 			IList<IPair<IResult, ITree<IDiceASTNode>>> nodes) {
 		IPair<IResult, ITree<IDiceASTNode>> initialState = new Pair<>(
-				new IntegerResult(0), new Tree<>(type));
+				new IntegerResult(initialValue), new Tree<>(type));
 
 		BinaryOperator<IPair<IResult, ITree<IDiceASTNode>>> reducer = (
 				currentState, accumulatedState) -> {
 			// Force evaluation of accumulated state to prevent
 			// certain bugs from occuring
-			accumulatedState.merge((l, r) -> null);
+			// @TODO lets see if some of these bugs are fixed
+			// accumulatedState.merge((l, r) -> null);
 
 			return reduceStates(accumulatedState, currentState);
 		};
@@ -142,6 +146,7 @@ final class ArithmeticCollapser implements IOperatorCollapser {
 				throw new UnsupportedOperationException(
 						"Nested array operations not supported");
 			}
+
 			int elementInt = ((IntegerResult) element).getValue();
 
 			IResult combinedValue;

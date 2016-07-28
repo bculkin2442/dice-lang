@@ -49,6 +49,11 @@ public class DiceASTParser {
 			}
 		}
 
+		if (leafNode.matches("[+-]?\\d*\\.\\d+")) {
+			throw new InputMismatchException(
+					"Floating point literals are not supported");
+		}
+		
 		return new VariableDiceNode(leafNode);
 	}
 
@@ -87,9 +92,9 @@ public class DiceASTParser {
 		IMap<String, Function<Deque<ITree<String>>, ITree<String>>> operators = new FunctionalMap<>();
 
 		operators.put("[", (queuedTrees) -> {
-			Tree<String> openTree = new Tree<>("[");
+			Tree<String> openArray = new Tree<>("[");
 
-			return openTree;
+			return openArray;
 		});
 
 		operators.put("]", (queuedTrees) -> {

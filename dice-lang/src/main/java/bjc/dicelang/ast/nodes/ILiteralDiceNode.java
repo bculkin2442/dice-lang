@@ -1,7 +1,5 @@
 package bjc.dicelang.ast.nodes;
 
-import org.apache.commons.lang3.StringUtils;
-
 /**
  * Represents a literal of some type in the AST
  * 
@@ -18,20 +16,25 @@ public interface ILiteralDiceNode extends IDiceASTNode {
 	 *         otherwise
 	 */
 	static DiceLiteralType getLiteralType(String tok) {
-		if (StringUtils.countMatches(tok, 'c') == 1
-				&& !tok.equalsIgnoreCase("c")) {
+		String diceGroupOrNumber = "[(?:\\d*d\\d+)(?:\\d+)]";
+
+		if (tok.matches("\\A" + diceGroupOrNumber + "?" + "c"
+				+ diceGroupOrNumber + "\\Z")) {
 			return DiceLiteralType.DICE;
-		} else if (StringUtils.countMatches(tok, 'd') == 1
-				&& !tok.equalsIgnoreCase("d")) {
+		}
+
+		String diceGroup = "\\d*d\\d+\\";
+
+		if (tok.matches("\\A" + diceGroup + "Z")) {
 			return DiceLiteralType.DICE;
-		} else {
-			try {
-				Integer.parseInt(tok);
-				return DiceLiteralType.INTEGER;
-			} catch (@SuppressWarnings("unused") NumberFormatException nfex) {
-				// We don't care about details
-				return null;
-			}
+		}
+
+		try {
+			Integer.parseInt(tok);
+			return DiceLiteralType.INTEGER;
+		} catch (@SuppressWarnings("unused") NumberFormatException nfex) {
+			// We don't care about details
+			return null;
 		}
 	}
 
