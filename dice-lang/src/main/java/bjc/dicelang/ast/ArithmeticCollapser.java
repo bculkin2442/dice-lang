@@ -43,8 +43,7 @@ final class ArithmeticCollapser implements IOperatorCollapser {
 				currentState, accumulatedState) -> {
 			// Force evaluation of accumulated state to prevent
 			// certain bugs from occuring
-			// @TODO lets see if some of these bugs are fixed
-			// accumulatedState.merge((l, r) -> null);
+			//accumulatedState.merge((l, r) -> null);
 
 			return reduceStates(accumulatedState, currentState);
 		};
@@ -94,6 +93,18 @@ final class ArithmeticCollapser implements IOperatorCollapser {
 	private IPair<IResult, ITree<IDiceASTNode>> doArithmeticCollapse(
 			IResult accumulatedValue, ITree<IDiceASTNode> accumulatedTree,
 			IResult currentValue) {
+		if (accumulatedValue.getType() == ResultType.DUMMY
+				|| currentValue.getType() == ResultType.DUMMY) {
+			DummyResult result = new DummyResult(
+					"Found dummy result with either accumulated dummy ("
+							+ ((DummyResult) accumulatedValue).getData()
+							+ ") or current dummy ("
+							+ ((DummyResult) currentValue).getData()
+							+ ").");
+			
+			return new Pair<>(result, accumulatedTree);
+		}
+
 		boolean currentIsInt = currentValue
 				.getType() == ResultType.INTEGER;
 		boolean accumulatedIsInt = accumulatedValue

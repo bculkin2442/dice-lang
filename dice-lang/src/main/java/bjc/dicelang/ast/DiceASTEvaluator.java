@@ -42,7 +42,8 @@ public class DiceASTEvaluator {
 			return result;
 		}
 
-		throw new UnsupportedOperationException(
+		// Return a DummyResult to handle lets properly
+		return new DummyResult(
 				"Attempted to deref unbound variable " + variableName);
 	}
 
@@ -88,6 +89,7 @@ public class DiceASTEvaluator {
 				DiceASTEvaluator::parseGroup);
 
 		operatorCollapsers.put(OperatorDiceNode.LET, (nodes) -> {
+			// @TODO Fix lets prematurely evaluating things
 			return parseLet(enviroment, nodes);
 		});
 

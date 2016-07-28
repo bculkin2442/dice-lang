@@ -116,11 +116,26 @@ public class DiceASTLanguageTest {
 			// Build an AST from the string expression
 			ITree<IDiceASTNode> builtAST;
 
+			long time = System.nanoTime();
+
 			IList<String> preparedTokens = DiceExpressionPreparer
 					.prepareCommand(currentLine);
 
+			System.out.println("Command prepared in "
+					+ (double) (System.nanoTime() - time) / 1000000000
+					+ " s");
+
 			try {
+				time = System.nanoTime();
+
 				builtAST = DiceASTParser.createFromString(preparedTokens);
+
+				System.out
+						.println(
+								"Command parsed in "
+										+ (double) (System.nanoTime()
+												- time) / 1000000000
+										+ " s");
 			} catch (InputMismatchException | IllegalStateException
 					| UnsupportedOperationException ex) {
 				System.out.println("ERROR: " + ex.getLocalizedMessage());
@@ -133,27 +148,41 @@ public class DiceASTLanguageTest {
 			// Print out results
 			System.out.println("\tParsed: " + builtAST.toString());
 
+			time = System.nanoTime();
+
 			ITree<IDiceASTNode> transformedAST = transformAST(builtAST,
 					enviroment);
+
+			System.out.println("Command transformed in "
+					+ (double) (System.nanoTime() - time) / 1000000000
+					+ " s");
 
 			System.out
 					.println("\tEvaluated: " + transformedAST.toString());
 
 			IResult sampleRoll;
 
-			// try {
-			sampleRoll = DiceASTEvaluator.evaluateAST(transformedAST,
-					enviroment);
+			try {
+				time = System.nanoTime();
 
-			enviroment.put("last", transformedAST);
-			/*
-			 * } catch (UnsupportedOperationException usex) {
-			 * System.out.println("ERROR: " + usex.getLocalizedMessage());
-			 * 
-			 * currentLine = getNextCommand(inputSource, commandNumber);
-			 * 
-			 * continue; }
-			 */
+				sampleRoll = DiceASTEvaluator.evaluateAST(transformedAST,
+						enviroment);
+
+				System.out
+						.println(
+								"Command evaluated in "
+										+ (double) (System.nanoTime()
+												- time) / 1000000000
+										+ " s");
+
+				enviroment.put("last", transformedAST);
+			} catch (UnsupportedOperationException usex) {
+				System.out.println("ERROR: " + usex.getLocalizedMessage());
+
+				currentLine = getNextCommand(inputSource, commandNumber);
+
+				continue;
+			}
 
 			System.out.println("\t\tSample Roll: " + sampleRoll);
 

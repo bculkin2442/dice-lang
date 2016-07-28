@@ -14,5 +14,9 @@ public enum ResultType {
 	/**
 	 * Represents a result that is an array
 	 */
-	ARRAY;
+	ARRAY,
+	/**
+	 * Represents something not to poke at
+	 */
+	DUMMY
 }

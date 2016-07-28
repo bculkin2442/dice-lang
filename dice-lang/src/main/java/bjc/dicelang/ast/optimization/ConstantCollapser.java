@@ -32,7 +32,7 @@ public class ConstantCollapser implements IOptimizationPass {
 	private static final ArithmeticCollapser	compoundCollapser	= new ArithmeticCollapser(
 			(left, right) -> Integer.parseInt(
 					Integer.toString(left) + Integer.toString(left)),
-			OperatorDiceNode.SUBTRACT);
+			OperatorDiceNode.COMPOUND);
 
 	@Override
 	public ITree<IDiceASTNode> optimizeLeaf(IDiceASTNode leafNode) {
