@@ -43,7 +43,7 @@ final class ArithmeticCollapser implements IOperatorCollapser {
 				currentState, accumulatedState) -> {
 			// Force evaluation of accumulated state to prevent
 			// certain bugs from occuring
-			//accumulatedState.merge((l, r) -> null);
+			// accumulatedState.merge((l, r) -> null);
 
 			return reduceStates(accumulatedState, currentState);
 		};
@@ -101,7 +101,7 @@ final class ArithmeticCollapser implements IOperatorCollapser {
 							+ ") or current dummy ("
 							+ ((DummyResult) currentValue).getData()
 							+ ").");
-			
+
 			return new Pair<>(result, accumulatedTree);
 		}
 

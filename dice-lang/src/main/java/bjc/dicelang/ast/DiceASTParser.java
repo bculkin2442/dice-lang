@@ -53,7 +53,7 @@ public class DiceASTParser {
 			throw new InputMismatchException(
 					"Floating point literals are not supported");
 		}
-		
+
 		return new VariableDiceNode(leafNode);
 	}
 

@@ -55,5 +55,5 @@ last
 -> 30
 ```
 We also have let, for binding things in the context of an
-expression. However, let isn't quite working at the moment
+expression. However, it is not as useful at the moment, because blocks don't exist yet.
 ## Arrays

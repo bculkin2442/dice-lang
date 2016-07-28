@@ -10,11 +10,6 @@ public class DummyResult implements IResult {
 		dummyData = data;
 	}
 
-	@Override
-	public ResultType getType() {
-		return ResultType.DUMMY;
-	}
-
 	/**
 	 * Get the data in this dummy
 	 * 
@@ -22,6 +17,11 @@ public class DummyResult implements IResult {
 	 */
 	public String getData() {
 		return dummyData;
+	}
+
+	@Override
+	public ResultType getType() {
+		return ResultType.DUMMY;
 	}
 
 	@Override
