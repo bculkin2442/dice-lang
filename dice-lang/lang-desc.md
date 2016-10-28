@@ -14,7 +14,7 @@ You can use it like a 4-function calculator.
 2+2*2+2
 -> 8
 ```
-However, we don't support floating point numbers or math
+However, we don't support floating point (numbers or math)
 ```
 1.1
 -> ERROR: Floating point literals are not supported

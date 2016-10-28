@@ -11,6 +11,8 @@ import bjc.dicelang.ast.nodes.IDiceASTNode;
 /**
  * Alias for the type of a 'pragma' or special language command
  * 
+ * To explain it, a pragma is a function that takes a tokenizer with the rest
+ * of the line, and an enviroment that contains variable bindings
  * @author ben
  *
  */
