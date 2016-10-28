@@ -1,10 +1,10 @@
 package bjc.dicelang.ast.optimization;
 
 import bjc.utils.data.IHolder;
+import bjc.utils.data.ITree;
 import bjc.utils.data.Identity;
-import bjc.utils.funcdata.ITree;
-import bjc.utils.funcdata.TopDownTransformResult;
-import bjc.utils.funcdata.Tree;
+import bjc.utils.data.TopDownTransformResult;
+import bjc.utils.data.Tree;
 
 import bjc.dicelang.ast.nodes.DiceASTType;
 import bjc.dicelang.ast.nodes.IDiceASTNode;

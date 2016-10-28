@@ -3,8 +3,8 @@ package bjc.dicelang.ast;
 import java.util.function.Function;
 
 import bjc.utils.data.IPair;
+import bjc.utils.data.ITree;
 import bjc.utils.funcdata.IList;
-import bjc.utils.funcdata.ITree;
 
 import bjc.dicelang.ast.nodes.IDiceASTNode;
 

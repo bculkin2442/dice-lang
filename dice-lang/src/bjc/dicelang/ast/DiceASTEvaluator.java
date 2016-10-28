@@ -4,6 +4,7 @@ import java.util.function.Supplier;
 
 import bjc.utils.data.IHolder;
 import bjc.utils.data.IPair;
+import bjc.utils.data.ITree;
 import bjc.utils.data.Identity;
 import bjc.utils.data.LazyPair;
 import bjc.utils.data.Pair;
@@ -11,8 +12,7 @@ import bjc.utils.funcdata.FunctionalList;
 import bjc.utils.funcdata.FunctionalMap;
 import bjc.utils.funcdata.IList;
 import bjc.utils.funcdata.IMap;
-import bjc.utils.funcdata.ITree;
-import bjc.utils.funcdata.Tree;
+import bjc.utils.data.Tree;
 
 import bjc.dicelang.ComplexDice;
 import bjc.dicelang.ast.nodes.DiceASTType;

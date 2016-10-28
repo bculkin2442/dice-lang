@@ -3,10 +3,10 @@ package bjc.dicelang.ast;
 import java.util.function.BinaryOperator;
 
 import bjc.utils.data.IPair;
+import bjc.utils.data.ITree;
 import bjc.utils.data.Pair;
 import bjc.utils.funcdata.IList;
-import bjc.utils.funcdata.ITree;
-import bjc.utils.funcdata.Tree;
+import bjc.utils.data.Tree;
 
 import bjc.dicelang.ast.nodes.IDiceASTNode;
 import bjc.dicelang.ast.nodes.OperatorDiceNode;

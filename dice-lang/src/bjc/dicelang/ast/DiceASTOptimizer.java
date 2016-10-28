@@ -1,9 +1,9 @@
 package bjc.dicelang.ast;
 
+import bjc.utils.data.ITree;
 import bjc.utils.funcdata.FunctionalList;
 import bjc.utils.funcdata.IList;
 import bjc.utils.funcdata.IMap;
-import bjc.utils.funcdata.ITree;
 
 import bjc.dicelang.ast.nodes.IDiceASTNode;
 import bjc.dicelang.ast.optimization.IOptimizationPass;

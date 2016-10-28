@@ -1,10 +1,10 @@
 package bjc.dicelang.ast;
 
+import bjc.utils.data.ITree;
 import bjc.utils.funcdata.FunctionalList;
 import bjc.utils.funcdata.IList;
 import bjc.utils.funcdata.IMap;
-import bjc.utils.funcdata.ITree;
-import bjc.utils.funcdata.Tree;
+import bjc.utils.data.Tree;
 
 import bjc.dicelang.ast.nodes.DiceASTType;
 import bjc.dicelang.ast.nodes.IDiceASTNode;
@@ -58,19 +58,20 @@ public class DiceASTInliner {
 				// Return the tree for the variable
 				return enviroment.get(variableName);
 			}
-		} else {
-			// You can't inline non-existent variables
-			if (!enviroment.containsKey(variableName)) {
-				throw new UnsupportedOperationException(
-						"Attempted to inline non-existant variable "
-								+ variableName);
-			}
 
-			// Return the tree for the variable
-			return enviroment.get(variableName);
+			// We're not inlining this particular variable
+			return new Tree<>(node);
+		}
+		
+		// You can't inline non-existent variables
+		if (!enviroment.containsKey(variableName)) {
+			throw new UnsupportedOperationException(
+					"Attempted to inline non-existant variable "
+							+ variableName);
 		}
 
-		// return new Tree<>(node);
+		// Return the tree for the variable
+		return enviroment.get(variableName);
 	}
 
 	/**

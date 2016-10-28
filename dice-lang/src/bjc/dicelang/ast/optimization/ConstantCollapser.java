@@ -1,8 +1,8 @@
 package bjc.dicelang.ast.optimization;
 
+import bjc.utils.data.ITree;
 import bjc.utils.funcdata.IList;
-import bjc.utils.funcdata.ITree;
-import bjc.utils.funcdata.Tree;
+import bjc.utils.data.Tree;
 
 import bjc.dicelang.ComplexDice;
 import bjc.dicelang.ast.DiceASTUtils;

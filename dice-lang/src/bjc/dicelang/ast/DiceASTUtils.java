@@ -1,6 +1,6 @@
 package bjc.dicelang.ast;
 
-import bjc.utils.funcdata.ITree;
+import bjc.utils.data.ITree;
 
 import bjc.dicelang.IDiceExpression;
 import bjc.dicelang.ScalarDie;

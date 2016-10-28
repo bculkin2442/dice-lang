@@ -2,9 +2,9 @@ package bjc.dicelang.examples;
 
 import java.util.function.BiConsumer;
 
+import bjc.utils.data.ITree;
 import bjc.utils.funcdata.FunctionalStringTokenizer;
 import bjc.utils.funcdata.IMap;
-import bjc.utils.funcdata.ITree;
 
 import bjc.dicelang.ast.nodes.IDiceASTNode;
 

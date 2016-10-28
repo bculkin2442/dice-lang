@@ -5,12 +5,12 @@ import java.util.InputMismatchException;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import bjc.utils.data.ITree;
 import bjc.utils.funcdata.FunctionalList;
 import bjc.utils.funcdata.FunctionalMap;
 import bjc.utils.funcdata.IList;
 import bjc.utils.funcdata.IMap;
-import bjc.utils.funcdata.ITree;
-import bjc.utils.funcdata.Tree;
+import bjc.utils.data.Tree;
 import bjc.utils.funcutils.StringUtils;
 import bjc.utils.parserutils.TreeConstructor;
 

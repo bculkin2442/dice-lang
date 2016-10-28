@@ -2,9 +2,9 @@ package bjc.dicelang.ast.optimization;
 
 import java.util.function.BinaryOperator;
 
+import bjc.utils.data.ITree;
 import bjc.utils.funcdata.IList;
-import bjc.utils.funcdata.ITree;
-import bjc.utils.funcdata.Tree;
+import bjc.utils.data.Tree;
 
 import bjc.dicelang.ast.DiceASTUtils;
 import bjc.dicelang.ast.nodes.DiceASTType;
