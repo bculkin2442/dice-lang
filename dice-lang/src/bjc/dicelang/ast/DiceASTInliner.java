@@ -89,6 +89,7 @@ public class DiceASTInliner {
 			ITree<IDiceASTNode> ast,
 			IMap<String, ITree<IDiceASTNode>> enviroment,
 			IList<String> variables) {
+		// Inline the specified variables
 		return selectiveInline(ast, enviroment,
 				variables.toArray(new String[0]));
 	}

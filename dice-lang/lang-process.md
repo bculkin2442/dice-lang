@@ -17,10 +17,13 @@ The currently implemented actions are:
   * The first is the name of the variable to do inlining in
   * The second is the name of the variable to bind the inlined expression to
   * The third and following are the names of the variables to inline in the
-	variable you are inlining
+	variable you are inlining. If you don't give any, it will inline every
+	variable
 
 ## Details on inlining
-
+The way the inlining process works is simple. The tree for the variable to be
+inlined is read, and then each variable reference is inlined if it is marked as
+one of the variable references to inline. This only occurs one layer deep
 
 # Parsing language commands
 Once it is decided to parse a command as a language command, it goes through
