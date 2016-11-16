@@ -1,11 +1,23 @@
 package bjc.dicelang.ast;
 
+/**
+ * A dummy result
+ * 
+ * @author ben
+ *
+ */
 public class DummyResult implements IResult {
 	/*
 	 * The reason why this result is a dummy
 	 */
 	private String dummyData;
 
+	/**
+	 * Create a new dummy result with a reason
+	 * 
+	 * @param data
+	 *            The reason why the result is a dummy
+	 */
 	public DummyResult(String data) {
 		dummyData = data;
 	}

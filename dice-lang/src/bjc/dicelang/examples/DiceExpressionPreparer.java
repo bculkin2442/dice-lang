@@ -50,9 +50,16 @@ public class DiceExpressionPreparer {
 		// to a variable expression
 	}
 
-	// Prepare a command, turning raw tokens into input for the tree builder
+	/**
+	 * Prepare a command, turning raw tokens into input for the tree
+	 * builder
+	 * 
+	 * @param currentLine
+	 *            The command to prepare
+	 * @return A stream of tokens representing the command
+	 */
 	public static IList<String> prepareCommand(String currentLine) {
-			// Split the command into tokens
+		// Split the command into tokens
 		IList<String> tokens = FunctionalStringTokenizer
 				.fromString(currentLine).toList();
 
