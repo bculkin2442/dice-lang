@@ -177,9 +177,9 @@ combineArrayResults	src/bjc/dicelang/ast/ArithmeticCollapser.java	/^	private ILi
 compoundCollapser	src/bjc/dicelang/ast/optimization/ConstantCollapser.java	/^	private static final ArithmeticCollapser	compoundCollapser	= new ArithmeticCollapser($/;"	f	class:ConstantCollapser	file:
 condense	src/bjc/dicelang/ast/optimization/OperationCondenser.java	/^	public static ITree<IDiceASTNode> condense(ITree<IDiceASTNode> ast) {$/;"	m	class:OperationCondenser
 containsSimpleVariable	src/bjc/dicelang/ast/DiceASTUtils.java	/^	public static boolean containsSimpleVariable($/;"	m	class:DiceASTUtils
-convertLeafNode	src/bjc/dicelang/ast/DiceASTParser.java	/^	private static IDiceASTNode convertLeafNode(String leafNode) {$/;"	m	class:DiceASTParser	file:
-convertOperatorNode	src/bjc/dicelang/ast/DiceASTParser.java	/^	private static IDiceASTNode convertOperatorNode(String operatorNode) {$/;"	m	class:DiceASTParser	file:
-createFromString	src/bjc/dicelang/ast/DiceASTParser.java	/^	public static ITree<IDiceASTNode> createFromString($/;"	m	class:DiceASTParser
+convertLeafNode	src/bjc/dicelang/ast/DiceASTParser.java	/^		private static IDiceASTNode convertLeafNode(String leafNode) {$/;"	m	class:DiceASTParser	file:
+convertOperatorNode	src/bjc/dicelang/ast/DiceASTParser.java	/^		private static IDiceASTNode convertOperatorNode(String operatorNode) {$/;"	m	class:DiceASTParser	file:
+createFromString	src/bjc/dicelang/ast/DiceASTParser.java	/^		public static ITree<IDiceASTNode> createFromString($/;"	m	class:DiceASTParser
 d10	src/bjc/dicelang/PolyhedralDice.java	/^	public static IDiceExpression d10() {$/;"	m	class:PolyhedralDice
 d10	src/bjc/dicelang/PolyhedralDice.java	/^	public static IDiceExpression d10(int nDice) {$/;"	m	class:PolyhedralDice
 d100	src/bjc/dicelang/PolyhedralDice.java	/^	public static IDiceExpression d100() {$/;"	m	class:PolyhedralDice
@@ -246,7 +246,7 @@ isOperator	src/bjc/dicelang/ast/nodes/IDiceASTNode.java	/^	public boolean isOper
 isOperator	src/bjc/dicelang/ast/nodes/ILiteralDiceNode.java	/^	default boolean isOperator() {$/;"	m	interface:ILiteralDiceNode
 isOperator	src/bjc/dicelang/ast/nodes/OperatorDiceNode.java	/^	public boolean isOperator() {$/;"	m	class:OperatorDiceNode
 isOperator	src/bjc/dicelang/ast/nodes/VariableDiceNode.java	/^	public boolean isOperator() {$/;"	m	class:VariableDiceNode
-isOperatorNode	src/bjc/dicelang/ast/DiceASTParser.java	/^	private static boolean isOperatorNode(String token) {$/;"	m	class:DiceASTParser	file:
+isOperatorNode	src/bjc/dicelang/ast/DiceASTParser.java	/^		private static boolean isOperatorNode(String token) {$/;"	m	class:DiceASTParser	file:
 leftDice	src/bjc/dicelang/CompoundDice.java	/^	private IDiceExpression	leftDice;$/;"	f	class:CompoundDice	file:
 leftExpression	src/bjc/dicelang/OperatorDiceExpression.java	/^	private IDiceExpression		leftExpression;$/;"	f	class:OperatorDiceExpression	file:
 literalToExpression	src/bjc/dicelang/ast/DiceASTUtils.java	/^	public static IDiceExpression literalToExpression($/;"	m	class:DiceASTUtils
@@ -276,7 +276,7 @@ optimizeTree	src/bjc/dicelang/ast/DiceASTOptimizer.java	/^	public ITree<IDiceAST
 optimizer	src/bjc/dicelang/examples/DiceASTLanguageTest.java	/^	private static DiceASTOptimizer				optimizer;$/;"	f	class:DiceASTLanguageTest	file:
 parse	src/bjc/dicelang/DiceExpressionParser.java	/^	public static IDiceExpression parse(String expression,$/;"	m	class:DiceExpressionParser
 parseBinding	src/bjc/dicelang/ast/DiceASTEvaluator.java	/^	private static IPair<IResult, ITree<IDiceASTNode>> parseBinding($/;"	m	class:DiceASTEvaluator	file:
-parseCloseArray	src/bjc/dicelang/ast/DiceASTParser.java	/^	private static ITree<String> parseCloseArray($/;"	m	class:DiceASTParser	file:
+parseCloseArray	src/bjc/dicelang/ast/DiceASTParser.java	/^		private static ITree<String> parseCloseArray($/;"	m	class:DiceASTParser	file:
 parseGroup	src/bjc/dicelang/ast/DiceASTEvaluator.java	/^	private static IPair<IResult, ITree<IDiceASTNode>> parseGroup($/;"	m	class:DiceASTEvaluator	file:
 parseLet	src/bjc/dicelang/ast/DiceASTEvaluator.java	/^	private static IPair<IResult, ITree<IDiceASTNode>> parseLet($/;"	m	class:DiceASTEvaluator	file:
 passes	src/bjc/dicelang/ast/DiceASTOptimizer.java	/^	private IList<IOptimizationPass> passes;$/;"	f	class:DiceASTOptimizer	file:
@@ -301,7 +301,7 @@ roll	src/bjc/dicelang/ScalarDie.java	/^	public int roll() {$/;"	m	class:ScalarDi
 rollReference	src/bjc/dicelang/examples/DiceLanguageTest.java	/^	private static void rollReference(String ln, DiceLanguageState stat) {$/;"	m	class:DiceLanguageTest	file:
 sanitize	src/bjc/dicelang/ast/DiceASTReferenceSanitizer.java	/^	public static ITree<IDiceASTNode> sanitize(ITree<IDiceASTNode> ast,$/;"	m	class:DiceASTReferenceSanitizer
 selectiveInline	src/bjc/dicelang/ast/DiceASTInliner.java	/^	public static ITree<IDiceASTNode> selectiveInline($/;"	m	class:DiceASTInliner
-shouldContinuePopping	src/bjc/dicelang/ast/DiceASTParser.java	/^	private static boolean shouldContinuePopping($/;"	m	class:DiceASTParser	file:
+shouldContinuePopping	src/bjc/dicelang/ast/DiceASTParser.java	/^		private static boolean shouldContinuePopping($/;"	m	class:DiceASTParser	file:
 shouldSanitize	src/bjc/dicelang/ast/DiceASTReferenceSanitizer.java	/^	private static TopDownTransformResult shouldSanitize($/;"	m	class:DiceASTReferenceSanitizer	file:
 subtract	src/bjc/dicelang/DiceExpressionBuilder.java	/^	public DiceExpressionBuilder subtract(IDiceExpression exp) {$/;"	m	class:DiceExpressionBuilder
 subtract	src/bjc/dicelang/DiceExpressionBuilder.java	/^	public DiceExpressionBuilder subtract(int num) {$/;"	m	class:DiceExpressionBuilder
