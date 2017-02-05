@@ -16,14 +16,14 @@ public interface ILiteralDiceNode extends IDiceASTNode {
 	 *         otherwise
 	 */
 	static DiceLiteralType getLiteralType(String tok) {
-		String diceGroupOrNumber = "[(?:\\d*d\\d+)(?:\\d+)]";
+		String diceGroup = "\\d*d\\d+\\";
+
+		String diceGroupOrNumber = "[(?:" + diceGroup + ")(?:\\d+)]";
 
 		if (tok.matches("\\A" + diceGroupOrNumber + "?" + "c"
 				+ diceGroupOrNumber + "\\Z")) {
 			return DiceLiteralType.DICE;
 		}
-
-		String diceGroup = "\\d*d\\d+\\";
 
 		if (tok.matches("\\A" + diceGroup + "Z")) {
 			return DiceLiteralType.DICE;
@@ -34,6 +34,8 @@ public interface ILiteralDiceNode extends IDiceASTNode {
 			return DiceLiteralType.INTEGER;
 		} catch (@SuppressWarnings("unused") NumberFormatException nfex) {
 			// We don't care about details
+			// This probably shouldn't return null, but I believe it does so
+			// because where its called checks that. @FIXME
 			return null;
 		}
 	}

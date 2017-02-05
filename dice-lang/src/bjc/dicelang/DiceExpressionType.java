@@ -24,11 +24,6 @@ public enum DiceExpressionType {
 	 */
 	SUBTRACT;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Enum#toString()
-	 */
 	@Override
 	public String toString() {
 		switch (this) {

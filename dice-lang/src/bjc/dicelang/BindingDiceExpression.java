@@ -10,15 +10,15 @@ import java.util.Map;
  *
  */
 public class BindingDiceExpression implements IDiceExpression {
-	/**
+	/*
 	 * The expression being bound to a name
 	 */
 	private IDiceExpression	expression;
 
-	/**
+	/*
 	 * The name to bind the expression to
 	 */
-	private String			variableName;
+	private String			name;
 
 	/**
 	 * Create a new dice expression binder from two expressions and an
@@ -38,8 +38,8 @@ public class BindingDiceExpression implements IDiceExpression {
 		if (!(left instanceof ReferenceDiceExpression)) {
 			throw new UnsupportedOperationException(
 					"Error: Binding an expression to something that is not a variable reference,"
-							+ " or array thereof. is unsupported."
-							+ " Problematic expression is " + left);
+					+ " or array thereof. is unsupported."
+					+ " Problematic expression is " + left);
 		}
 
 		String varName = ((ReferenceDiceExpression) left).getName();
@@ -64,7 +64,7 @@ public class BindingDiceExpression implements IDiceExpression {
 
 	private void initialize(String name, IDiceExpression expr,
 			Map<String, IDiceExpression> enviroment) {
-		this.variableName = name;
+		this.name = name;
 		this.expression = expr;
 
 		enviroment.put(name, expr);
@@ -87,7 +87,7 @@ public class BindingDiceExpression implements IDiceExpression {
 	 */
 	@Override
 	public String toString() {
-		return "assign[n=" + variableName + ", exp="
-				+ expression.toString() + "]";
+		return "assign[n=" + name + ", exp="
+			+ expression.toString() + "]";
 	}
 }

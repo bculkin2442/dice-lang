@@ -98,11 +98,6 @@ public enum OperatorDiceNode implements IDiceASTNode {
 		return DiceASTType.OPERATOR;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see bjc.utils.dice.ast.IDiceASTNode#isOperator()
-	 */
 	@Override
 	public boolean isOperator() {
 		return true;

@@ -3,7 +3,7 @@
 !_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
-!_TAG_PROGRAM_VERSION	5.8	//
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
 ADD	src/bjc/dicelang/DiceExpressionType.java	/^	ADD,$/;"	e	enum:DiceExpressionType	file:
 ADD	src/bjc/dicelang/ast/nodes/OperatorDiceNode.java	/^	ADD(MATH),$/;"	e	enum:OperatorDiceNode	file:
 ARRAY	src/bjc/dicelang/ast/ResultType.java	/^	ARRAY,$/;"	e	enum:ResultType	file:
@@ -23,8 +23,8 @@ COMPOUND	src/bjc/dicelang/ast/nodes/OperatorDiceNode.java	/^	COMPOUND(DICE),$/;"
 ComplexDice	src/bjc/dicelang/ComplexDice.java	/^	public ComplexDice(IDiceExpression nDce, IDiceExpression de) {$/;"	m	class:ComplexDice
 ComplexDice	src/bjc/dicelang/ComplexDice.java	/^	public ComplexDice(int nSides, int de) {$/;"	m	class:ComplexDice
 ComplexDice	src/bjc/dicelang/ComplexDice.java	/^public class ComplexDice implements IDiceExpression {$/;"	c
-CompoundDice	src/bjc/dicelang/CompoundDice.java	/^	public CompoundDice(IDiceExpression left, IDiceExpression right) {$/;"	m	class:CompoundDice
-CompoundDice	src/bjc/dicelang/CompoundDice.java	/^	public CompoundDice(String leftExp, String rightExp) {$/;"	m	class:CompoundDice
+CompoundDice	src/bjc/dicelang/CompoundDice.java	/^	public CompoundDice(IDiceExpression lft, IDiceExpression rght) {$/;"	m	class:CompoundDice
+CompoundDice	src/bjc/dicelang/CompoundDice.java	/^	public CompoundDice(String lft, String rght) {$/;"	m	class:CompoundDice
 CompoundDice	src/bjc/dicelang/CompoundDice.java	/^	public CompoundDice(String[] exps) {$/;"	m	class:CompoundDice
 CompoundDice	src/bjc/dicelang/CompoundDice.java	/^public class CompoundDice implements IDiceExpression {$/;"	c
 ConstantCollapser	src/bjc/dicelang/ast/optimization/ConstantCollapser.java	/^public class ConstantCollapser implements IOptimizationPass {$/;"	c
@@ -88,12 +88,12 @@ MULTIPLY	src/bjc/dicelang/DiceExpressionType.java	/^	MULTIPLY,$/;"	e	enum:DiceEx
 MULTIPLY	src/bjc/dicelang/ast/nodes/OperatorDiceNode.java	/^	MULTIPLY(MATH),$/;"	e	enum:OperatorDiceNode	file:
 OPERATOR	src/bjc/dicelang/ast/nodes/DiceASTType.java	/^	OPERATOR,$/;"	e	enum:DiceASTType	file:
 OperationCondenser	src/bjc/dicelang/ast/optimization/OperationCondenser.java	/^public class OperationCondenser {$/;"	c
-OperatorDiceExpression	src/bjc/dicelang/OperatorDiceExpression.java	/^	public OperatorDiceExpression(IDiceExpression right,$/;"	m	class:OperatorDiceExpression
+OperatorDiceExpression	src/bjc/dicelang/OperatorDiceExpression.java	/^	public OperatorDiceExpression(IDiceExpression rght,$/;"	m	class:OperatorDiceExpression
 OperatorDiceExpression	src/bjc/dicelang/OperatorDiceExpression.java	/^public class OperatorDiceExpression implements IDiceExpression {$/;"	c
 OperatorDiceNode	src/bjc/dicelang/ast/nodes/OperatorDiceNode.java	/^	private OperatorDiceNode(DiceOperatorType ty) {$/;"	m	class:OperatorDiceNode	file:
 OperatorDiceNode	src/bjc/dicelang/ast/nodes/OperatorDiceNode.java	/^public enum OperatorDiceNode implements IDiceASTNode {$/;"	g
 PolyhedralDice	src/bjc/dicelang/PolyhedralDice.java	/^public class PolyhedralDice {$/;"	c
-ReferenceDiceExpression	src/bjc/dicelang/ReferenceDiceExpression.java	/^	public ReferenceDiceExpression(String name,$/;"	m	class:ReferenceDiceExpression
+ReferenceDiceExpression	src/bjc/dicelang/ReferenceDiceExpression.java	/^	public ReferenceDiceExpression(String nme,$/;"	m	class:ReferenceDiceExpression
 ReferenceDiceExpression	src/bjc/dicelang/ReferenceDiceExpression.java	/^public class ReferenceDiceExpression implements IDiceExpression {$/;"	c
 ResultType	src/bjc/dicelang/ast/ResultType.java	/^public enum ResultType {$/;"	g
 SUBTRACT	src/bjc/dicelang/DiceExpressionType.java	/^	SUBTRACT;$/;"	e	enum:DiceExpressionType	file:
@@ -211,7 +211,6 @@ evaluateLeaf	src/bjc/dicelang/ast/DiceASTEvaluator.java	/^	private static IPair<
 evaluateLiteral	src/bjc/dicelang/ast/DiceASTEvaluator.java	/^	private static IResult evaluateLiteral(IDiceASTNode leafNode) {$/;"	m	class:DiceASTEvaluator	file:
 expression	src/bjc/dicelang/BindingDiceExpression.java	/^	private IDiceExpression	expression;$/;"	f	class:BindingDiceExpression	file:
 expression	src/bjc/dicelang/ast/nodes/DiceLiteralNode.java	/^	private IDiceExpression expression;$/;"	f	class:DiceLiteralNode	file:
-expressionType	src/bjc/dicelang/OperatorDiceExpression.java	/^	private DiceExpressionType	expressionType;$/;"	f	class:OperatorDiceExpression	file:
 fromString	src/bjc/dicelang/ComplexDice.java	/^	public static IDiceExpression fromString(String expression) {$/;"	m	class:ComplexDice
 fromString	src/bjc/dicelang/ast/nodes/OperatorDiceNode.java	/^	public static OperatorDiceNode fromString(String s) {$/;"	m	class:OperatorDiceNode
 getData	src/bjc/dicelang/ast/DummyResult.java	/^	public String getData() {$/;"	m	class:DummyResult
@@ -247,8 +246,8 @@ isOperator	src/bjc/dicelang/ast/nodes/ILiteralDiceNode.java	/^	default boolean i
 isOperator	src/bjc/dicelang/ast/nodes/OperatorDiceNode.java	/^	public boolean isOperator() {$/;"	m	class:OperatorDiceNode
 isOperator	src/bjc/dicelang/ast/nodes/VariableDiceNode.java	/^	public boolean isOperator() {$/;"	m	class:VariableDiceNode
 isOperatorNode	src/bjc/dicelang/ast/DiceASTParser.java	/^		private static boolean isOperatorNode(String token) {$/;"	m	class:DiceASTParser	file:
-leftDice	src/bjc/dicelang/CompoundDice.java	/^	private IDiceExpression	leftDice;$/;"	f	class:CompoundDice	file:
-leftExpression	src/bjc/dicelang/OperatorDiceExpression.java	/^	private IDiceExpression		leftExpression;$/;"	f	class:OperatorDiceExpression	file:
+left	src/bjc/dicelang/CompoundDice.java	/^	private IDiceExpression	left;$/;"	f	class:CompoundDice	file:
+left	src/bjc/dicelang/OperatorDiceExpression.java	/^	private IDiceExpression		left;$/;"	f	class:OperatorDiceExpression	file:
 literalToExpression	src/bjc/dicelang/ast/DiceASTUtils.java	/^	public static IDiceExpression literalToExpression($/;"	m	class:DiceASTUtils
 literalToInteger	src/bjc/dicelang/ast/DiceASTUtils.java	/^	public static int literalToInteger(ITree<IDiceASTNode> tree) {$/;"	m	class:DiceASTUtils
 main	src/bjc/dicelang/examples/DiceASTLanguageTest.java	/^	public static void main(String[] args) {$/;"	m	class:DiceASTLanguageTest
@@ -259,6 +258,8 @@ multiply	src/bjc/dicelang/DiceExpressionBuilder.java	/^	public DiceExpressionBui
 multiplyCollapser	src/bjc/dicelang/ast/optimization/ConstantCollapser.java	/^	private static final ArithmeticCollapser	multiplyCollapser	= new ArithmeticCollapser($/;"	f	class:ConstantCollapser	file:
 nDice	src/bjc/dicelang/ComplexDice.java	/^	private IDiceExpression	nDice;$/;"	f	class:ComplexDice	file:
 nSides	src/bjc/dicelang/Die.java	/^	private int				nSides;$/;"	f	class:Die	file:
+name	src/bjc/dicelang/BindingDiceExpression.java	/^	private String			name;$/;"	f	class:BindingDiceExpression	file:
+name	src/bjc/dicelang/ReferenceDiceExpression.java	/^	private String							name;$/;"	f	class:ReferenceDiceExpression	file:
 number	src/bjc/dicelang/ScalarDie.java	/^	private int number;$/;"	f	class:ScalarDie	file:
 optimize	src/bjc/dicelang/ComplexDice.java	/^	public int optimize() {$/;"	m	class:ComplexDice
 optimize	src/bjc/dicelang/CompoundDice.java	/^	public int optimize() {$/;"	m	class:CompoundDice
@@ -287,8 +288,8 @@ printEnv	src/bjc/dicelang/examples/DiceLanguageTest.java	/^	private static void 
 reduceStates	src/bjc/dicelang/ast/ArithmeticCollapser.java	/^	private IPair<IResult, ITree<IDiceASTNode>> reduceStates($/;"	m	class:ArithmeticCollapser	file:
 reducer	src/bjc/dicelang/ast/optimization/ArithmeticCollapser.java	/^	private BinaryOperator<Integer>	reducer;$/;"	f	class:ArithmeticCollapser	file:
 referencesVariable	src/bjc/dicelang/ast/DiceASTReferenceChecker.java	/^	private IHolder<Boolean>	referencesVariable;$/;"	f	class:DiceASTReferenceChecker	file:
-rightDice	src/bjc/dicelang/CompoundDice.java	/^	private IDiceExpression	rightDice;$/;"	f	class:CompoundDice	file:
-rightExpression	src/bjc/dicelang/OperatorDiceExpression.java	/^	private IDiceExpression		rightExpression;$/;"	f	class:OperatorDiceExpression	file:
+right	src/bjc/dicelang/CompoundDice.java	/^	private IDiceExpression	right;$/;"	f	class:CompoundDice	file:
+right	src/bjc/dicelang/OperatorDiceExpression.java	/^	private IDiceExpression		right;$/;"	f	class:OperatorDiceExpression	file:
 rng	src/bjc/dicelang/Die.java	/^	private static Random	rng	= new Random();$/;"	f	class:Die	file:
 roll	src/bjc/dicelang/BindingDiceExpression.java	/^	public int roll() {$/;"	m	class:BindingDiceExpression
 roll	src/bjc/dicelang/ComplexDice.java	/^	public int roll() {$/;"	m	class:ComplexDice
@@ -323,6 +324,7 @@ toString	src/bjc/dicelang/ast/nodes/DiceLiteralNode.java	/^	public String toStri
 toString	src/bjc/dicelang/ast/nodes/IntegerLiteralNode.java	/^	public String toString() {$/;"	m	class:IntegerLiteralNode
 toString	src/bjc/dicelang/ast/nodes/VariableDiceNode.java	/^	public String toString() {$/;"	m	class:VariableDiceNode
 transformAST	src/bjc/dicelang/examples/DiceASTLanguageTest.java	/^	private static ITree<IDiceASTNode> transformAST($/;"	m	class:DiceASTLanguageTest	file:
+type	src/bjc/dicelang/OperatorDiceExpression.java	/^	private DiceExpressionType	type;$/;"	f	class:OperatorDiceExpression	file:
 type	src/bjc/dicelang/ast/ArithmeticCollapser.java	/^	private OperatorDiceNode		type;$/;"	f	class:ArithmeticCollapser	file:
 type	src/bjc/dicelang/ast/nodes/OperatorDiceNode.java	/^	public final DiceOperatorType type;$/;"	f	class:OperatorDiceNode
 type	src/bjc/dicelang/ast/optimization/ArithmeticCollapser.java	/^	private OperatorDiceNode		type;$/;"	f	class:ArithmeticCollapser	file:
@@ -330,7 +332,5 @@ value	src/bjc/dicelang/ast/IntegerResult.java	/^	private int value;$/;"	f	class:
 value	src/bjc/dicelang/ast/nodes/IntegerLiteralNode.java	/^	private int value;$/;"	f	class:IntegerLiteralNode	file:
 valueOp	src/bjc/dicelang/ast/ArithmeticCollapser.java	/^	private BinaryOperator<Integer>	valueOp;$/;"	f	class:ArithmeticCollapser	file:
 varName	src/bjc/dicelang/ast/DiceASTReferenceChecker.java	/^	private String				varName;$/;"	f	class:DiceASTReferenceChecker	file:
-variableName	src/bjc/dicelang/BindingDiceExpression.java	/^	private String			variableName;$/;"	f	class:BindingDiceExpression	file:
-variableName	src/bjc/dicelang/ReferenceDiceExpression.java	/^	private String							variableName;$/;"	f	class:ReferenceDiceExpression	file:
 variableName	src/bjc/dicelang/ast/nodes/VariableDiceNode.java	/^	private String variableName;$/;"	f	class:VariableDiceNode	file:
 yard	src/bjc/dicelang/examples/DiceExpressionPreparer.java	/^	private static ShuntingYard<String>	yard;$/;"	f	class:DiceExpressionPreparer	file:

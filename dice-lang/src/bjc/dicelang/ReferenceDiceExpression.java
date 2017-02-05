@@ -10,28 +10,28 @@ import java.util.Map;
  *
  */
 public class ReferenceDiceExpression implements IDiceExpression {
-	/**
+	/*
 	 * The enviroment to do variable dereferencing against
 	 */
 	private Map<String, IDiceExpression>	enviroment;
 
-	/**
+	/*
 	 * The name of the bound variable
 	 */
-	private String							variableName;
+	private String							name;
 
 	/**
 	 * Create a new reference dice expression referring to the given name
 	 * in an enviroment
 	 * 
-	 * @param name
+	 * @param nme
 	 *            The name of the bound variable
 	 * @param env
 	 *            The enviroment to resolve the variable against
 	 */
-	public ReferenceDiceExpression(String name,
+	public ReferenceDiceExpression(String nme,
 			Map<String, IDiceExpression> env) {
-		this.variableName = name;
+		this.name = name;
 		this.enviroment = env;
 	}
 
@@ -41,36 +41,26 @@ public class ReferenceDiceExpression implements IDiceExpression {
 	 * @return the name of the referenced variable
 	 */
 	public String getName() {
-		return variableName;
+		return name;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see bjc.utils.dice.IDiceExpression#roll()
-	 */
 	@Override
 	public int roll() {
-		if (!enviroment.containsKey(variableName)) {
+		if (!enviroment.containsKey(name)) {
 			throw new UnsupportedOperationException(
 					"Attempted to reference undefined variable "
-							+ variableName);
+							+ name);
 		}
 
-		return enviroment.get(variableName).roll();
+		return enviroment.get(name).roll();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString() {
-		if (enviroment.containsKey(variableName)) {
-			return enviroment.get(variableName).toString();
+		if (enviroment.containsKey(name)) {
+			return enviroment.get(name).toString() + "(bound to " + name + ")";
 		}
 
-		return variableName;
+		return name + "(unbound)";
 	}
 }

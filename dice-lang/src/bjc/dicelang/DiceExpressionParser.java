@@ -89,51 +89,51 @@ public class DiceExpressionParser {
 						/*
 						 * Apply an operation to two dice
 						 */
-						IDiceExpression rightExpression = expressions
+						IDiceExpression right = expressions
 								.pop();
-						IDiceExpression leftExpression = expressions.pop();
+						IDiceExpression left = expressions.pop();
 
 						switch (expressionPart) {
 							case ":=":
 								expressions.push(new BindingDiceExpression(
-										leftExpression, rightExpression,
+										left, right,
 										enviroment));
 								break;
 							case "+":
 								expressions
 										.push(new OperatorDiceExpression(
-												rightExpression,
-												leftExpression,
+												right,
+												left,
 												DiceExpressionType.ADD));
 								break;
 							case "-":
 								expressions
 										.push(new OperatorDiceExpression(
-												rightExpression,
-												leftExpression,
+												right,
+												left,
 												DiceExpressionType.SUBTRACT));
 								break;
 							case "*":
 								expressions
 										.push(new OperatorDiceExpression(
-												rightExpression,
-												leftExpression,
+												right,
+												left,
 												DiceExpressionType.MULTIPLY));
 								break;
 							case "/":
 								expressions
 										.push(new OperatorDiceExpression(
-												rightExpression,
-												leftExpression,
+												right,
+												left,
 												DiceExpressionType.DIVIDE));
 								break;
 							case "c":
 								expressions.push(new CompoundDice(
-										leftExpression, rightExpression));
+										left, right));
 								break;
 							case "d":
 								expressions.push(new ComplexDice(
-										leftExpression, rightExpression));
+										left, right));
 								break;
 							default:
 								/*
@@ -141,8 +141,8 @@ public class DiceExpressionParser {
 								 * 
 								 * Make sure to restore popped variables
 								 */
-								expressions.push(leftExpression);
-								expressions.push(rightExpression);
+								expressions.push(left);
+								expressions.push(right);
 
 								expressions
 										.push(new ReferenceDiceExpression(

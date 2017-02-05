@@ -7,55 +7,50 @@ package bjc.dicelang;
  *
  */
 public class OperatorDiceExpression implements IDiceExpression {
-	/**
+	/*
 	 * The operator to use for combining the dice
 	 */
-	private DiceExpressionType	expressionType;
+	private DiceExpressionType	type;
 
-	/**
+	/*
 	 * The dice on the left side of the expression
 	 */
-	private IDiceExpression		leftExpression;
+	private IDiceExpression		left;
 
-	/**
+	/*
 	 * The dice on the right side of the expression
 	 */
-	private IDiceExpression		rightExpression;
+	private IDiceExpression		right;
 
 	/**
 	 * Create a new compound expression using the specified parameters
 	 * 
-	 * @param right
+	 * @param rght
 	 *            The die on the right side of the expression
-	 * @param left
+	 * @param lft
 	 *            The die on the left side of the expression
 	 * @param type
 	 *            The operator to use for combining the dices
 	 */
-	public OperatorDiceExpression(IDiceExpression right,
-			IDiceExpression left, DiceExpressionType type) {
-		this.rightExpression = right;
-		this.leftExpression = left;
-		this.expressionType = type;
+	public OperatorDiceExpression(IDiceExpression rght,
+			IDiceExpression lft, DiceExpressionType type) {
+		this.right = rght;
+		this.left = lft;
+		this.type = type;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see bjc.utils.dice.IDiceExpression#roll()
-	 */
 	@Override
 	public int roll() {
 		/*
 		 * Handle each operator
 		 */
-		switch (expressionType) {
+		switch (type) {
 			case ADD:
-				return rightExpression.roll() + leftExpression.roll();
+				return right.roll() + left.roll();
 			case SUBTRACT:
-				return rightExpression.roll() - leftExpression.roll();
+				return right.roll() - left.roll();
 			case MULTIPLY:
-				return rightExpression.roll() * leftExpression.roll();
+				return right.roll() * left.roll();
 			case DIVIDE:
 				/*
 				 * Round to keep results as integers. We don't really have
@@ -63,12 +58,12 @@ public class OperatorDiceExpression implements IDiceExpression {
 				 * probability is a pain
 				 */
 				try {
-					return rightExpression.roll() / leftExpression.roll();
+					return right.roll() / left.roll();
 				} catch (ArithmeticException aex) {
 					UnsupportedOperationException usex = new UnsupportedOperationException(
 							"Attempted to divide by zero."
 									+ " Problematic expression is "
-									+ leftExpression);
+									+ left);
 
 					usex.initCause(aex);
 
@@ -76,21 +71,16 @@ public class OperatorDiceExpression implements IDiceExpression {
 				}
 			default:
 				throw new IllegalArgumentException(
-						"Got passed  a invalid ScalarExpressionType ("
-								+ expressionType + "). WAT");
+						"Got passed a invalid ScalarExpressionType ("
+								+ type + "). WAT");
 
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString() {
-		return "dice-exp[type=" + expressionType + ", l="
-				+ leftExpression.toString() + ", r="
-				+ rightExpression.toString() + "]";
+		return "dice-exp[type=" + type + ", l="
+				+ left.toString() + ", r="
+				+ right.toString() + "]";
 	}
 }

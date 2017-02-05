@@ -7,7 +7,7 @@ package bjc.dicelang;
  *
  */
 public class ScalarDie implements IDiceExpression {
-	/**
+	/*
 	 * The represented number
 	 */
 	private int number;
@@ -32,21 +32,11 @@ public class ScalarDie implements IDiceExpression {
 		return number;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see bjc.utils.dice.IDiceExpression#roll()
-	 */
 	@Override
 	public int roll() {
 		return number;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString() {
 		return Integer.toString(number);

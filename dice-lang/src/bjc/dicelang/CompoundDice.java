@@ -10,40 +10,40 @@ package bjc.dicelang;
  *
  */
 public class CompoundDice implements IDiceExpression {
-	/**
+	/*
 	 * The left die of the expression
 	 */
-	private IDiceExpression	leftDice;
+	private IDiceExpression	left;
 
-	/**
+	/*
 	 * The right die of the expression
 	 */
-	private IDiceExpression	rightDice;
+	private IDiceExpression	right;
 
 	/**
 	 * Create a new compound dice using the specified dice
 	 * 
-	 * @param left
+	 * @param lft
 	 *            The die to use on the left
-	 * @param right
+	 * @param rght
 	 *            The die to use on the right
 	 */
-	public CompoundDice(IDiceExpression left, IDiceExpression right) {
-		this.leftDice = left;
-		this.rightDice = right;
+	public CompoundDice(IDiceExpression lft, IDiceExpression rght) {
+		this.left = lft;
+		this.right = rght;
 	}
 
 	/**
 	 * Create a new compound dice from two dice strings
 	 * 
-	 * @param leftExp
+	 * @param lft
 	 *            The left side dice as a string
-	 * @param rightExp
+	 * @param rght
 	 *            The right side dice as a string
 	 */
-	public CompoundDice(String leftExp, String rightExp) {
-		this(ComplexDice.fromString(leftExp),
-				ComplexDice.fromString(rightExp));
+	public CompoundDice(String lft, String rght) {
+		this(ComplexDice.fromString(lft),
+				ComplexDice.fromString(rght));
 	}
 
 	/**
@@ -58,7 +58,7 @@ public class CompoundDice implements IDiceExpression {
 
 	@Override
 	public boolean canOptimize() {
-		return leftDice.canOptimize() && rightDice.canOptimize();
+		return left.canOptimize() && right.canOptimize();
 	}
 
 	@Override
@@ -71,30 +71,20 @@ public class CompoundDice implements IDiceExpression {
 		}
 
 		return Integer
-				.parseInt(leftDice.optimize() + "" + rightDice.optimize());
+				.parseInt(left.optimize() + "" + right.optimize());
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see bjc.utils.dice.IDiceExpression#roll()
-	 */
 	@Override
 	public int roll() {
 		/*
 		 * Make the combination of the two dice
 		 */
-		return Integer.parseInt(leftDice.roll() + "" + rightDice.roll());
+		return Integer.parseInt(left.roll() + "" + right.roll());
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString() {
-		return "compound[l=" + leftDice.toString() + ", r="
-				+ rightDice.toString() + "]";
+		return "compound[l=" + left.toString() + ", r="
+				+ right.toString() + "]";
 	}
 }

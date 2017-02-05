@@ -12,7 +12,7 @@ import static bjc.dicelang.DiceExpressionType.SUBTRACT;
  *
  */
 public class DiceExpressionBuilder {
-	/**
+	/*
 	 * The dice expression we are building
 	 */
 	private IDiceExpression baking;

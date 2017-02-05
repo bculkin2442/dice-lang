@@ -9,12 +9,12 @@ import java.util.Random;
  *
  */
 public class Die implements IDiceExpression {
-	/**
+	/*
 	 * Random # gen to use for dice
 	 */
 	private static Random	rng	= new Random();
 
-	/**
+	/*
 	 * Number of sides this die has
 	 */
 	private int				nSides;
@@ -49,21 +49,11 @@ public class Die implements IDiceExpression {
 		return 1;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see bjc.utils.dice.IDiceExpression#roll()
-	 */
 	@Override
 	public int roll() {
 		return rng.nextInt(nSides) + 1;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString() {
 		return "d" + nSides;

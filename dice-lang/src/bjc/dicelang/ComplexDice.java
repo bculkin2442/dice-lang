@@ -21,6 +21,7 @@ public class ComplexDice implements IDiceExpression {
 		if (!expression.contains("d")) {
 			return new Die(Integer.parseInt(expression));
 		}
+
 		// Split it on the dice type marker
 
 		String[] strangs = expression.split("d");
@@ -42,12 +43,12 @@ public class ComplexDice implements IDiceExpression {
 		}
 	}
 
-	/**
+	/*
 	 * The die being rolled
 	 */
 	private IDiceExpression	die;
 
-	/**
+	/*
 	 * The number of the particular die to roll
 	 */
 	private IDiceExpression	nDice;
@@ -101,11 +102,6 @@ public class ComplexDice implements IDiceExpression {
 		return nDice.optimize();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see bjc.utils.dice.IDiceExpression#roll()
-	 */
 	@Override
 	public int roll() {
 		int res = 0;
@@ -129,11 +125,6 @@ public class ComplexDice implements IDiceExpression {
 		return res;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString() {
 		// Print simple dice groups in a much clearer manner

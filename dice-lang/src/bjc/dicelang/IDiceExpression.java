@@ -33,6 +33,8 @@ public interface IDiceExpression {
 	static IDiceExpression toExpression(String expression) {
 		String literalData = expression;
 
+		String diceMatcher = "\\Ad\\d+\\Z";
+
 		if (StringUtils.containsInfixOperator(literalData, "c")) {
 			// Parse a compound die
 			String[] strangs = literalData.split("c");
@@ -41,7 +43,7 @@ public interface IDiceExpression {
 		} else if (StringUtils.containsInfixOperator(literalData, "d")) {
 			// Handle groups of similiar dice
 			return ComplexDice.fromString(literalData);
-		} else if (literalData.matches("\\Ad\\d+\\Z")) {
+		} else if (literalData.matches(diceMatcher)) {
 			// Handle people who put 'd6' instead of '1d6'
 			return new Die(Integer.parseInt(literalData.substring(1)));
 		} else {
@@ -50,7 +52,8 @@ public interface IDiceExpression {
 				return new ScalarDie(Integer.parseInt(literalData));
 			} catch (NumberFormatException nfex) {
 				UnsupportedOperationException usex = new UnsupportedOperationException(
-						"Found malformed leaf token " + expression);
+						"Found malformed leaf token " + expression + ". Floating point numbers " +
+						"are not supported.");
 
 				usex.initCause(nfex);
 
