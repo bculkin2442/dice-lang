@@ -53,6 +53,10 @@ DiceExpressionParser	src/bjc/dicelang/DiceExpressionParser.java	/^public class D
 DiceExpressionParserTest	src/bjc/dicelang/examples/DiceExpressionParserTest.java	/^public class DiceExpressionParserTest {$/;"	c
 DiceExpressionPreparer	src/bjc/dicelang/examples/DiceExpressionPreparer.java	/^public class DiceExpressionPreparer {$/;"	c
 DiceExpressionType	src/bjc/dicelang/DiceExpressionType.java	/^public enum DiceExpressionType {$/;"	g
+DiceLangConsole	src/bjc/dicelang/v2/DiceLangConsole.java	/^	public DiceLangConsole(String[] args) {$/;"	m	class:DiceLangConsole
+DiceLangConsole	src/bjc/dicelang/v2/DiceLangConsole.java	/^public class DiceLangConsole {$/;"	c
+DiceLangEngine	src/bjc/dicelang/v2/DiceLangEngine.java	/^	public DiceLangEngine() {$/;"	m	class:DiceLangEngine
+DiceLangEngine	src/bjc/dicelang/v2/DiceLangEngine.java	/^public class DiceLangEngine {$/;"	c
 DiceLanguageState	src/bjc/dicelang/examples/DiceLanguageState.java	/^	public DiceLanguageState() {$/;"	m	class:DiceLanguageState
 DiceLanguageState	src/bjc/dicelang/examples/DiceLanguageState.java	/^	public DiceLanguageState(DiceExpressionParser left,$/;"	m	class:DiceLanguageState
 DiceLanguageState	src/bjc/dicelang/examples/DiceLanguageState.java	/^public class DiceLanguageState$/;"	c
@@ -163,6 +167,8 @@ bjc.dicelang.examples	src/bjc/dicelang/examples/DiceExpressionParserTest.java	/^
 bjc.dicelang.examples	src/bjc/dicelang/examples/DiceExpressionPreparer.java	/^package bjc.dicelang.examples;$/;"	p
 bjc.dicelang.examples	src/bjc/dicelang/examples/DiceLanguageState.java	/^package bjc.dicelang.examples;$/;"	p
 bjc.dicelang.examples	src/bjc/dicelang/examples/DiceLanguageTest.java	/^package bjc.dicelang.examples;$/;"	p
+bjc.dicelang.examples.v2	src/bjc/dicelang/v2/DiceLangConsole.java	/^package bjc.dicelang.examples.v2;$/;"	p
+bjc.utils.dicelang.v2	src/bjc/dicelang/v2/DiceLangEngine.java	/^package bjc.utils.dicelang.v2;$/;"	p
 buildOperations	src/bjc/dicelang/ast/DiceASTEvaluator.java	/^	private static IMap<IDiceASTNode, IOperatorCollapser> buildOperations($/;"	m	class:DiceASTEvaluator	file:
 canOptimize	src/bjc/dicelang/ComplexDice.java	/^	public boolean canOptimize() {$/;"	m	class:ComplexDice
 canOptimize	src/bjc/dicelang/CompoundDice.java	/^	public boolean canOptimize() {$/;"	m	class:CompoundDice
@@ -174,6 +180,7 @@ canOptimize	src/bjc/dicelang/ast/nodes/ILiteralDiceNode.java	/^	boolean canOptim
 canOptimize	src/bjc/dicelang/ast/nodes/IntegerLiteralNode.java	/^	public boolean canOptimize() {$/;"	m	class:IntegerLiteralNode
 collapse	src/bjc/dicelang/ast/optimization/ArithmeticCollapser.java	/^	public ITree<IDiceASTNode> collapse($/;"	m	class:ArithmeticCollapser
 combineArrayResults	src/bjc/dicelang/ast/ArithmeticCollapser.java	/^	private IList<IResult> combineArrayResults(IResult accumulatedValue,$/;"	m	class:ArithmeticCollapser	file:
+commandNumber	src/bjc/dicelang/v2/DiceLangConsole.java	/^	private int commandNumber;$/;"	f	class:DiceLangConsole	file:
 compoundCollapser	src/bjc/dicelang/ast/optimization/ConstantCollapser.java	/^	private static final ArithmeticCollapser	compoundCollapser	= new ArithmeticCollapser($/;"	f	class:ConstantCollapser	file:
 condense	src/bjc/dicelang/ast/optimization/OperationCondenser.java	/^	public static ITree<IDiceASTNode> condense(ITree<IDiceASTNode> ast) {$/;"	m	class:OperationCondenser
 containsSimpleVariable	src/bjc/dicelang/ast/DiceASTUtils.java	/^	public static boolean containsSimpleVariable($/;"	m	class:DiceASTUtils
@@ -204,6 +211,7 @@ doCondense	src/bjc/dicelang/ast/optimization/OperationCondenser.java	/^	private 
 doSanitize	src/bjc/dicelang/ast/DiceASTReferenceSanitizer.java	/^	private static ITree<IDiceASTNode> doSanitize(ITree<IDiceASTNode> ast,$/;"	m	class:DiceASTReferenceSanitizer	file:
 doSingleSanitize	src/bjc/dicelang/ast/DiceASTReferenceSanitizer.java	/^	private static ITree<IDiceASTNode> doSingleSanitize($/;"	m	class:DiceASTReferenceSanitizer	file:
 dummyData	src/bjc/dicelang/ast/DummyResult.java	/^	private String dummyData;$/;"	f	class:DummyResult	file:
+eng	src/bjc/dicelang/v2/DiceLangConsole.java	/^	private DiceLangEngine eng;$/;"	f	class:DiceLangConsole	file:
 enviroment	src/bjc/dicelang/ReferenceDiceExpression.java	/^	private Map<String, IDiceExpression>	enviroment;$/;"	f	class:ReferenceDiceExpression	file:
 equals	src/bjc/dicelang/ast/nodes/VariableDiceNode.java	/^	public boolean equals(Object obj) {$/;"	m	class:VariableDiceNode
 evaluateAST	src/bjc/dicelang/ast/DiceASTEvaluator.java	/^	public static IResult evaluateAST(ITree<IDiceASTNode> expression,$/;"	m	class:DiceASTEvaluator
@@ -253,6 +261,7 @@ literalToInteger	src/bjc/dicelang/ast/DiceASTUtils.java	/^	public static int lit
 main	src/bjc/dicelang/examples/DiceASTLanguageTest.java	/^	public static void main(String[] args) {$/;"	m	class:DiceASTLanguageTest
 main	src/bjc/dicelang/examples/DiceExpressionParserTest.java	/^	public static void main(String[] args) {$/;"	m	class:DiceExpressionParserTest
 main	src/bjc/dicelang/examples/DiceLanguageTest.java	/^	public static void main(String[] args) {$/;"	m	class:DiceLanguageTest
+main	src/bjc/dicelang/v2/DiceLangConsole.java	/^	public static void main(String[] args) {$/;"	m	class:DiceLangConsole
 multiply	src/bjc/dicelang/DiceExpressionBuilder.java	/^	public DiceExpressionBuilder multiply(IDiceExpression exp) {$/;"	m	class:DiceExpressionBuilder
 multiply	src/bjc/dicelang/DiceExpressionBuilder.java	/^	public DiceExpressionBuilder multiply(int num) {$/;"	m	class:DiceExpressionBuilder
 multiplyCollapser	src/bjc/dicelang/ast/optimization/ConstantCollapser.java	/^	private static final ArithmeticCollapser	multiplyCollapser	= new ArithmeticCollapser($/;"	f	class:ConstantCollapser	file:
@@ -261,6 +270,7 @@ nSides	src/bjc/dicelang/Die.java	/^	private int				nSides;$/;"	f	class:Die	file:
 name	src/bjc/dicelang/BindingDiceExpression.java	/^	private String			name;$/;"	f	class:BindingDiceExpression	file:
 name	src/bjc/dicelang/ReferenceDiceExpression.java	/^	private String							name;$/;"	f	class:ReferenceDiceExpression	file:
 number	src/bjc/dicelang/ScalarDie.java	/^	private int number;$/;"	f	class:ScalarDie	file:
+opExpansionTokens	src/bjc/dicelang/v2/DiceLangEngine.java	/^	private Deque<IPair<String, String>> opExpansionTokens;$/;"	f	class:DiceLangEngine	file:
 optimize	src/bjc/dicelang/ComplexDice.java	/^	public int optimize() {$/;"	m	class:ComplexDice
 optimize	src/bjc/dicelang/CompoundDice.java	/^	public int optimize() {$/;"	m	class:CompoundDice
 optimize	src/bjc/dicelang/Die.java	/^	public int optimize() {$/;"	m	class:Die
@@ -300,6 +310,8 @@ roll	src/bjc/dicelang/OperatorDiceExpression.java	/^	public int roll() {$/;"	m	c
 roll	src/bjc/dicelang/ReferenceDiceExpression.java	/^	public int roll() {$/;"	m	class:ReferenceDiceExpression
 roll	src/bjc/dicelang/ScalarDie.java	/^	public int roll() {$/;"	m	class:ScalarDie
 rollReference	src/bjc/dicelang/examples/DiceLanguageTest.java	/^	private static void rollReference(String ln, DiceLanguageState stat) {$/;"	m	class:DiceLanguageTest	file:
+run	src/bjc/dicelang/v2/DiceLangConsole.java	/^	public void run() {$/;"	m	class:DiceLangConsole
+runCommand	src/bjc/dicelang/v2/DiceLangEngine.java	/^	public boolean runCommand(String command) {$/;"	m	class:DiceLangEngine
 sanitize	src/bjc/dicelang/ast/DiceASTReferenceSanitizer.java	/^	public static ITree<IDiceASTNode> sanitize(ITree<IDiceASTNode> ast,$/;"	m	class:DiceASTReferenceSanitizer
 selectiveInline	src/bjc/dicelang/ast/DiceASTInliner.java	/^	public static ITree<IDiceASTNode> selectiveInline($/;"	m	class:DiceASTInliner
 shouldContinuePopping	src/bjc/dicelang/ast/DiceASTParser.java	/^		private static boolean shouldContinuePopping($/;"	m	class:DiceASTParser	file:
