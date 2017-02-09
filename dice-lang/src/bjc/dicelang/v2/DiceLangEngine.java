@@ -58,6 +58,19 @@ public class DiceLangEngine {
 		// 		 once there is a sym-table
 		IMap<String, String> stringLiterals = new FunctionalMap<>();
 
+		boolean success = destringTokens(tokens, stringLiterals,
+				destringed);
+
+		if(!success) return success;
+
+		if(debugMode)
+			System.out.println("Command after destringing: "
+					+ destringed.toString());
+	}
+
+	private boolean destringTokens(IList<String> tokens,
+			IMap<String, String> stringLiterals,
+			IList<String> destringed) {
 		// Are we parsing a string literal?
 		boolean stringMode = false;
 
@@ -107,10 +120,10 @@ public class DiceLangEngine {
 		if(stringMode) {
 			System.out.printf("\tERROR: Unclosed string literal (%s"
 					+ ").\n", currentLiteral.toString());
+
+			return false;
 		}
 
-		if(debugMode)
-			System.out.println("Command after destringing: "
-					+ destringed.toString());
+		return true;
 	}
 }
