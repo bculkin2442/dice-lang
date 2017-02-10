@@ -1,4 +1,4 @@
-package bjc.dicelang.examples.v2;
+package bjc.dicelang.v2;
 
 import java.util.Scanner;
 
@@ -36,7 +36,7 @@ public class DiceLangConsole {
 			commandNumber += 1;
 
 			System.out.printf("(%d) dice-lang> ", commandNumber);
-			String comm = scn.nextLine();
+			comm = scn.nextLine();
 		}
 
 		scn.close();

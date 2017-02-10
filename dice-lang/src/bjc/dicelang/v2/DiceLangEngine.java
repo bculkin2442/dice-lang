@@ -1,5 +1,7 @@
-package bjc.utils.dicelang.v2;
+package bjc.dicelang.v2;
 
+import bjc.utils.data.IPair;
+import bjc.utils.data.Pair;
 import bjc.utils.funcdata.FunctionalList;
 import bjc.utils.funcdata.FunctionalMap;
 import bjc.utils.funcdata.FunctionalStringTokenizer;
@@ -7,6 +9,7 @@ import bjc.utils.funcdata.IList;
 import bjc.utils.funcdata.IMap;
 import bjc.utils.funcutils.ListUtils;
 
+import java.util.Arrays;
 import java.util.Deque;
 import java.util.LinkedList;
 
@@ -47,7 +50,7 @@ public class DiceLangEngine {
 	public boolean runCommand(String command) {
 		// Split the command into tokens
 		IList<String> tokens = FunctionalStringTokenizer
-			.fromString(currentLine)
+			.fromString(command)
 			.toList();
 
 		// Will hold tokens with string literals removed
@@ -63,9 +66,18 @@ public class DiceLangEngine {
 
 		if(!success) return success;
 
-		if(debugMode)
-			System.out.println("Command after destringing: "
+		if(debugMode) {
+			System.out.println("\tCommand after destringing: "
 					+ destringed.toString());
+
+			System.out.println("\tString literals in table");
+			stringLiterals.forEach((key, val) -> {
+				System.out.printf("\t\tName: (%s)\tValue: (%s)\n",
+					key, val);
+			});
+		}
+
+		return true;
 	}
 
 	private boolean destringTokens(IList<String> tokens,
@@ -76,43 +88,70 @@ public class DiceLangEngine {
 
 		// The current string literal
 		StringBuilder currentLiteral = new StringBuilder();
+		String literalName = "stringLiteral";
 
 		for(String token : tokens.toIterable()) {
-			String[] tokenParts = token.split("^(?!\\\\\")\"");
+			if(token.startsWith("\"")) {
+				if(token.endsWith("\"")) {
+					String litName = literalName + nextLiteral++;
 
-			if(tokenParts.length == 1) {
-				// Insert token into correct place
+					stringLiterals.put(litName,
+						token.substring(1, token.length() - 1));
+					destringed.add(litName);
+
+					continue;
+				}
+
 				if(stringMode) {
-					currentLiteral.add(tokenParts[0]);
+					// @TODO make this not an error
+					System.out.printf("\tPARSER ERROR: Initial" 
+						+" quotes can only start strings\n");
 				} else {
-					destringed.add(tokenParts[0]);
+					currentLiteral.append(token.substring(1) + " ");
+
+					stringMode = true;
+				}
+			} else if (token.endsWith("\"")) {
+				if(!stringMode) {
+					// @TODO make this not an error
+					System.out.printf("\tPARSER ERROR: Terminal" 
+						+" quotes can only end strings\n"); 
+					return false;
+				} else {
+					currentLiteral.append(
+						token.substring(0, token.length() - 1));
+
+					String litName = literalName + nextLiteral++;
+
+					stringLiterals.put(litName,
+							currentLiteral.toString());
+					destringed.add(litName);
+
+					currentLiteral = new StringBuilder();
+
+					stringMode = false;
+				}
+			} else if (token.contains("\"")) {
+				if(token.contains("\\\"")) {
+					if(stringMode) {
+						currentLiteral.append(token + " ");
+					} else {
+						System.out.printf("\tERROR: Escaped quote "
+							+ " outside of string literal\n");
+						return false;
+					}
+				} else {
+					// @TODO make this not an error
+					System.out.printf("\tPARSER ERROR: A string"
+							+ " literal must be delimited by spaces"
+							+ " for now.\n");
+					return false;
 				}
 			} else {
-				// Handle multiple "'s in a token
-				for(String stringPart : tokenParts) {
-					// Insert token into correct place
-					if(stringMode) {
-						currentLiteral.add(stringPart);
-					} else {
-						destringed.add(stringPart);
-					}
-
-					// We found a quote. Toggle string mode
-					// and collect the literal
-					stringMode = !stringMode;
-
-					if(debugMode)
-						System.out.printf("DEBUG: Parsed string"
-								+ " literal (" 
-								+ currentLiteral.toString() + ")");
-
-					stringLiterals.put("stringLiteral"
-							+ nextLiteral,
-							currentLiteral.toString());
-					destringed.add("stringLiteral" + nextLiteral);
-
-					nextLiteral += 1;
-					currentLiteral = new StringBuilder();
+				if(stringMode) {
+					currentLiteral.append(token + " ");
+				} else {
+					destringed.add(token);
 				}
 			}
 		}
