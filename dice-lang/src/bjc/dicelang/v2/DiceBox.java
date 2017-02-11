@@ -1,6 +1,7 @@
 package bjc.dicelang.v2;
 
 import java.util.Random;
+import java.util.regex.Pattern;
 
 public class DiceBox {
 	private static final Random rng = new Random();
@@ -69,12 +70,34 @@ public class DiceBox {
 		}
 	}
 
+	private static class CompoundDie implements Die {
+		private Die left;
+		private Die right;
+
+		public CompoundDie(Die lft, Die rght) {
+			left = lft;
+			right = rght;
+		}
+
+		public boolean canOptimize() {
+			return left.canOptimize() && right.canOptimize();
+		}
+
+		public int optimize() {
+			return left.optimize() + "" + right.optimize();
+		}
+
+		public int roll() {
+			return Integer.parseInt(left.roll() + "" + right.roll());
+		}
+	}
+
 	public static Die parseExpression(String exp) {
 		if(!isValidExpression(exp)) return null;
 
-		if(exp.matches(scalarDiePattern)) {
+		if(scalarDiePattern.matcher(exp).matches()) {
 			return new ScalarDie(Integer.parseInt(exp));
-		} else if(exp.matches(simpleDiePattern)) {
+		} else if(simpleDiePattern.matcher(exp).matches()) {
 			String[] dieParts = exp.split("d");
 
 			if(dieParts[0].equals("")) {
@@ -82,18 +105,28 @@ public class DiceBox {
 			} else {
 				return new SimpleDie(Integer.parseInt(dieParts[0]), Integer.parseInt(dieParts[1]));
 			}
+		} else if(compoundDiePattern.matcher(exp).matches()) {
+			String[] dieParts = exp.split("c");
+
+			return new CompoundDie(parseExpression(dieParts[0]), parseExpression(dieParts[1]));
 		}
 
 		return null;
 	}
 
-	private static final String scalarDiePattern = "[\\+\\-]?\\d+";
-	private static final String simpleDiePattern = "(?:\\d+)?d\\d+";
+	private static final Pattern scalarDiePattern   = Pattern.compile(
+			"[\\+\\-]?\\d+");
+	private static final Pattern simpleDiePattern   = Pattern.compile(
+			"(?:\\d+)?d\\d+");
+	private static final Pattern compoundDiePattern = Pattern.compile(
+			simpleDiePattern + "c(?:(?:" + simpleDiePattern + ")|(?:\\d+))";
 
 	public static boolean isValidExpression(String exp) {
-		if(exp.matches(scalarDiePattern)) {
+		if(scalarDiePattern.matcher(exp).matches()) {
 			return true;
-		} else if(exp.matches(simpleDiePattern)) {
+		} else if(simpleDiePattern.matcher(exp).matches()) {
+			return true;
+		} else if (compoundDiePattern.matcher(exp).matches()) {
 			return true;
 		} else {
 			return false;
