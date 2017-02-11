@@ -12,6 +12,9 @@ import bjc.utils.funcutils.ListUtils;
 import java.util.Arrays;
 import java.util.Deque;
 import java.util.LinkedList;
+import java.util.regex.Pattern;
+
+import static bjc.dicelang.v2.Token.Type.*;
 
 public class DiceLangEngine {
 	// Input rules for processing tokens
@@ -24,12 +27,17 @@ public class DiceLangEngine {
 	// Debug indicator
 	private boolean debugMode;
 
+	private final int MATH_PREC = 20;
+	private final int DICE_PREC = 10;
+	private final int EXPR_PREC = 0;
+
 	public DiceLangEngine() {
 		opExpansionTokens = new LinkedList<>();
 
 		opExpansionTokens.add(new Pair<>("+", "\\+"));
 		opExpansionTokens.add(new Pair<>("-", "-"));
 		opExpansionTokens.add(new Pair<>("*", "\\*"));
+		opExpansionTokens.add(new Pair<>("//", "//"));
 		opExpansionTokens.add(new Pair<>("/", "/"));
 		opExpansionTokens.add(new Pair<>(":=", ":="));
 		opExpansionTokens.add(new Pair<>("=>", "=>"));
@@ -37,12 +45,12 @@ public class DiceLangEngine {
 		deaffixationTokens = new LinkedList<>();
 
 		deaffixationTokens.add(new Pair<>("(", "\\("));
-		deaffixationTokens.add(new Pair<>(")", "\\("));
+		deaffixationTokens.add(new Pair<>(")", "\\)"));
 		deaffixationTokens.add(new Pair<>("[", "\\["));
 		deaffixationTokens.add(new Pair<>("]", "\\]"));
 
 		nextLiteral = 1;
-		
+
 		// @TODO make configurable
 		debugMode = true;
 	}
@@ -77,7 +85,97 @@ public class DiceLangEngine {
 			});
 		}
 
+		IList<String> semiExpandedTokens = 
+			ListUtils.deAffixTokens(
+					destringed, deaffixationTokens);
+
+		IList<String> fullyExpandedTokens = 
+			ListUtils.splitTokens(
+					semiExpandedTokens, opExpansionTokens);
+
+		if(debugMode)
+			System.out.printf("\tCommand after token"
+					+ " expansion: " 
+					+ fullyExpandedTokens.toString()
+					+ "\n");
+
+		IList<Token> lexedTokens = new FunctionalList<>();
+
+		for(String token : fullyExpandedTokens.toIterable()) {
+			Token tk = lexToken(token);
+
+			if(tk == null) continue;
+			else if(tk == Token.NIL_TOKEN) return false;
+			else lexedTokens.add(tk);
+		}
+
+		if(debugMode)
+			System.out.printf("\tCommand after tokenization: %s\n", lexedTokens.toString());
+
 		return true;
+	}
+
+	private Token lexToken(String token) {
+		if(token.equals("")) return null;
+
+		Token tk = Token.NIL_TOKEN;
+
+		switch(token) {
+			case "+":
+				tk = new Token(ADD);
+				break;
+			case "-":
+				tk = new Token(SUBTRACT);
+				break;
+			case "*":
+				tk = new Token(MULTIPLY);
+				break;
+			case "/":
+				tk = new Token(DIVIDE);
+				break;
+			case "//":
+				tk = new Token(IDIVIDE);
+				break;
+			case "(":
+				tk = new Token(OPAREN);
+				break;
+			case ")":
+				tk = new Token(CPAREN);
+				break;
+			case "[":
+				tk = new Token(OBRACKET);
+				break;
+			case "]":
+				tk = new Token(CBRACKET);
+				break;
+			default:
+
+				tk = tokenizeLiteral(token);
+		}
+
+		return tk;
+	}
+
+	private Pattern intMatcher = Pattern.compile(
+			"[\\-\\+]?\\d+");
+
+	private Token tokenizeLiteral(String token) {
+		Token tk = Token.NIL_TOKEN;
+
+		if(DoubleMatcher.floatingLiteral.matcher(token).matches()) {
+			tk = new Token(FLOAT_LIT, Double.parseDouble(token));
+		} else if(intMatcher.matcher(token).matches()) {
+			tk = new Token(INT_LIT, Integer.parseInt(token));
+		} else if(DiceBox.isValidExpression(token)) {
+			tk = new Token(DICE_LIT, DiceBox.parseExpression(token));
+		} else {
+			System.out.printf("\tERROR: Unrecognized token:"
+					+ "%s\n", token);
+
+			return tk;
+		}
+
+		return tk;
 	}
 
 	private boolean destringTokens(IList<String> tokens,
@@ -96,7 +194,7 @@ public class DiceLangEngine {
 					String litName = literalName + nextLiteral++;
 
 					stringLiterals.put(litName,
-						token.substring(1, token.length() - 1));
+							token.substring(1, token.length() - 1));
 					destringed.add(litName);
 
 					continue;
@@ -105,7 +203,7 @@ public class DiceLangEngine {
 				if(stringMode) {
 					// @TODO make this not an error
 					System.out.printf("\tPARSER ERROR: Initial" 
-						+" quotes can only start strings\n");
+							+" quotes can only start strings\n");
 				} else {
 					currentLiteral.append(token.substring(1) + " ");
 
@@ -115,11 +213,11 @@ public class DiceLangEngine {
 				if(!stringMode) {
 					// @TODO make this not an error
 					System.out.printf("\tPARSER ERROR: Terminal" 
-						+" quotes can only end strings\n"); 
+							+" quotes can only end strings\n"); 
 					return false;
 				} else {
 					currentLiteral.append(
-						token.substring(0, token.length() - 1));
+							token.substring(0, token.length() - 1));
 
 					String litName = literalName + nextLiteral++;
 
@@ -137,7 +235,7 @@ public class DiceLangEngine {
 						currentLiteral.append(token + " ");
 					} else {
 						System.out.printf("\tERROR: Escaped quote "
-							+ " outside of string literal\n");
+								+ " outside of string literal\n");
 						return false;
 					}
 				} else {
