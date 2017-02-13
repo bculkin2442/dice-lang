@@ -8,10 +8,12 @@ import bjc.utils.funcdata.FunctionalStringTokenizer;
 import bjc.utils.funcdata.IList;
 import bjc.utils.funcdata.IMap;
 import bjc.utils.funcutils.ListUtils;
+import bjc.utils.funcutils.StringUtils;
 
 import java.util.Arrays;
 import java.util.Deque;
 import java.util.LinkedList;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static bjc.dicelang.v2.Token.Type.*;
@@ -21,11 +23,18 @@ public class DiceLangEngine {
 	private Deque<IPair<String, String>> opExpansionTokens;
 	private Deque<IPair<String, String>> deaffixationTokens;
 
-	// ID for generation of string literal variables
+	// ID for generation
 	private int nextLiteral;
+	private int nextSym;
 
 	// Debug indicator
 	private boolean debugMode;
+
+	// Shunter for token postfixing
+	private Shunter shunt;
+
+	private IMap<Integer, String> symTable;
+	private IMap<Integer, String> stringLits;
 
 	private final int MATH_PREC = 20;
 	private final int DICE_PREC = 10;
@@ -53,6 +62,8 @@ public class DiceLangEngine {
 
 		// @TODO make configurable
 		debugMode = true;
+
+		shunt = new Shunter();
 	}
 
 	public boolean runCommand(String command) {
@@ -75,34 +86,31 @@ public class DiceLangEngine {
 		if(!success) return success;
 
 		if(debugMode) {
-			System.out.println("\tCommand after destringing: "
-					+ destringed.toString());
+			System.out.println("\tCommand after destringing: " + destringed.toString());
 
 			System.out.println("\tString literals in table");
+
 			stringLiterals.forEach((key, val) -> {
 				System.out.printf("\t\tName: (%s)\tValue: (%s)\n",
 					key, val);
 			});
 		}
 
-		IList<String> semiExpandedTokens = 
-			ListUtils.deAffixTokens(
-					destringed, deaffixationTokens);
+		IList<String> semiExpandedTokens  = ListUtils.deAffixTokens(destringed, deaffixationTokens);
+		IList<String> fullyExpandedTokens = ListUtils.splitTokens(semiExpandedTokens, opExpansionTokens);
 
-		IList<String> fullyExpandedTokens = 
-			ListUtils.splitTokens(
-					semiExpandedTokens, opExpansionTokens);
+		if(debugMode) {
+			System.out.printf("\tCommand after token deaffixation: " 
+					+ semiExpandedTokens.toString() + "\n");
 
-		if(debugMode)
-			System.out.printf("\tCommand after token"
-					+ " expansion: " 
-					+ fullyExpandedTokens.toString()
-					+ "\n");
+			System.out.printf("\tCommand after token expansion: " 
+					+ fullyExpandedTokens.toString() + "\n");
+		}
 
 		IList<Token> lexedTokens = new FunctionalList<>();
 
 		for(String token : fullyExpandedTokens.toIterable()) {
-			Token tk = lexToken(token);
+			Token tk = lexToken(token, stringLiterals);
 
 			if(tk == null) continue;
 			else if(tk == Token.NIL_TOKEN) return false;
@@ -112,10 +120,18 @@ public class DiceLangEngine {
 		if(debugMode)
 			System.out.printf("\tCommand after tokenization: %s\n", lexedTokens.toString());
 
+		IList<Token> shuntedTokens = new FunctionalList<>();
+		success                    = shunt.shuntTokens(lexedTokens, shuntedTokens);
+
+		if(!success) return false;
+
+		if(debugMode)
+			System.out.printf("\tCommand after shunting: %s\n", shuntedTokens.toString());
+
 		return true;
 	}
 
-	private Token lexToken(String token) {
+	private Token lexToken(String token, IMap<String, String> stringLts) {
 		if(token.equals("")) return null;
 
 		Token tk = Token.NIL_TOKEN;
@@ -136,43 +152,92 @@ public class DiceLangEngine {
 			case "//":
 				tk = new Token(IDIVIDE);
 				break;
+			case "dg":
+				tk = new Token(DICEGROUP);
+				break;
+			case "dc":
+				tk = new Token(DICECONCAT);
+				break;
+			case "dl":
+				tk = new Token(DICELIST);
+				break;
+			case "=>":
+				tk = new Token(LET);
+				break;
+			case ":=":
+			   tk = new Token(BIND);
+			   break;
 			case "(":
-				tk = new Token(OPAREN);
-				break;
 			case ")":
-				tk = new Token(CPAREN);
-				break;
 			case "[":
-				tk = new Token(OBRACKET);
-				break;
 			case "]":
-				tk = new Token(CBRACKET);
+				tk = tokenizeGrouping(token);
 				break;
 			default:
-
-				tk = tokenizeLiteral(token);
+				tk = tokenizeLiteral(token, stringLts);
 		}
 
 		return tk;
 	}
 
-	private Pattern intMatcher = Pattern.compile(
-			"[\\-\\+]?\\d+");
-
-	private Token tokenizeLiteral(String token) {
+	private Token tokenizeGrouping(String token) {
 		Token tk = Token.NIL_TOKEN;
 
-		if(DoubleMatcher.floatingLiteral.matcher(token).matches()) {
-			tk = new Token(FLOAT_LIT, Double.parseDouble(token));
-		} else if(intMatcher.matcher(token).matches()) {
+		if(StringUtils.containsOnly(token, "\\" + token.charAt(0))) {
+			switch(token) {
+				case "(":
+					tk = new Token(OPAREN, token.length());
+					break;
+				case ")":
+					tk = new Token(CPAREN, token.length());
+					break;
+				case "[":
+					tk = new Token(OBRACKET, token.length());
+					break;
+				case "]":
+					tk = new Token(CBRACKET, token.length());
+					break;
+			}
+		}
+
+		return tk;
+	}
+
+	private Pattern intMatcher = Pattern.compile("\\A[\\-\\+]?\\d+\\Z");
+	private Pattern stringLitMatcher = Pattern.compile("\\AstringLiteral\\d+\\Z");
+
+	private Token tokenizeLiteral(String token, IMap<String, String> stringLts) {
+		Token tk = Token.NIL_TOKEN;
+
+		if(intMatcher.matcher(token).matches()) {
 			tk = new Token(INT_LIT, Integer.parseInt(token));
+		} else if(DoubleMatcher.floatingLiteral.matcher(token).matches()) {
+			tk = new Token(FLOAT_LIT, Double.parseDouble(token));
 		} else if(DiceBox.isValidExpression(token)) {
 			tk = new Token(DICE_LIT, DiceBox.parseExpression(token));
-		} else {
-			System.out.printf("\tERROR: Unrecognized token:"
-					+ "%s\n", token);
 
-			return tk;
+			if(debugMode)
+				System.out.println("\tDEBUG: Parsed dice expression"
+						+ ", evaluated as: " 
+						+ tk.diceValue.value());
+		} else {
+			Matcher stringLit = stringLitMatcher.matcher(token);
+
+			if(stringLit.matches()) {
+				int litNum = Integer.parseInt(stringLit.group());
+
+				stringLits.put(litNum, stringLts.get(token));
+				tk = new Token(STRING_LIT, litNum);
+			} else {
+				// @TODO define what a valid identifier is
+				symTable.put(nextSym++, token);
+
+				tk = new Token(VREF, nextSym - 1);
+			}
+
+			// @TODO uncomment when we have a defn. for var names
+			// System.out.printf("\tERROR: Unrecognized token:"
+			// 		+ "%s\n", token);
 		}
 
 		return tk;

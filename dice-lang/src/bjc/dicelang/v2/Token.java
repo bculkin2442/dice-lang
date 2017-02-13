@@ -1,7 +1,5 @@
 package bjc.dicelang.v2;
 
-import bjc.dicelang.IDiceExpression;
-
 /**
  * Lexer token
  */
@@ -17,7 +15,7 @@ public class Token {
 		DIVIDE, IDIVIDE,
 		INT_LIT, FLOAT_LIT, STRING_LIT,
 		VREF,
-		DICE_LIT, DICEGROUP, DICECONCAT,
+		DICE_LIT, DICEGROUP, DICECONCAT, DICELIST,
 		LET, BIND,
 		OPAREN, CPAREN,
 		OBRACKET, CBRACKET,
@@ -30,7 +28,7 @@ public class Token {
 	// based on the token type
 	public int intValue;
 	public double floatValue;
-	public DiceBox.Die diceValue;
+	public DiceBox.DieExpression diceValue;
 
 	public Token(Type typ) {
 		type = typ;
@@ -48,7 +46,7 @@ public class Token {
 		floatValue = val;
 	}
 
-	public Token(Type typ, DiceBox.Die val) {
+	public Token(Type typ, DiceBox.DieExpression val) {
 		this(typ);
 
 		diceValue = val;
@@ -59,6 +57,10 @@ public class Token {
 			case INT_LIT:
 			case STRING_LIT:
 			case VREF:
+			case OPAREN:
+			case CPAREN:
+			case OBRACKET:
+			case CBRACKET:
 				return type.toString() + "("
 					+ intValue + ")";
 			case FLOAT_LIT:

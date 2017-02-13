@@ -53,6 +53,6 @@ public class DoubleMatcher {
 		 "[fFdD]?))" +
 		 "[\\x00-\\x20]*");// Optional trailing "whitespace"
 
-	public static final Pattern floatingLiteral = Pattern.compile(fpRegex);
+	public static final Pattern floatingLiteral = Pattern.compile("\\A" + fpRegex + "\\Z");
 
 }
