@@ -26,7 +26,7 @@ public class Token {
 
 	// At most one of these is valid
 	// based on the token type
-	public int intValue;
+	public long intValue;
 	public double floatValue;
 	public DiceBox.DieExpression diceValue;
 
@@ -34,7 +34,7 @@ public class Token {
 		type = typ;
 	}
 
-	public Token(Type typ, int val) {
+	public Token(Type typ, long val) {
 		this(typ);
 
 		intValue = val;

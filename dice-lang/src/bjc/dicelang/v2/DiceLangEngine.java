@@ -33,14 +33,20 @@ public class DiceLangEngine {
 	// Shunter for token postfixing
 	private Shunter shunt;
 
+	// Tables for symbols
 	private IMap<Integer, String> symTable;
 	private IMap<Integer, String> stringLits;
+
+	private IMap<String, Token.Type> litTokens;
 
 	private final int MATH_PREC = 20;
 	private final int DICE_PREC = 10;
 	private final int EXPR_PREC = 0;
 
 	public DiceLangEngine() {
+		symTable   = new FunctionalMap<>();
+		stringLits = new FunctionalMap<>();
+		
 		opExpansionTokens = new LinkedList<>();
 
 		opExpansionTokens.add(new Pair<>("+", "\\+"));
@@ -64,6 +70,19 @@ public class DiceLangEngine {
 		debugMode = true;
 
 		shunt = new Shunter();
+
+		litTokens = new FunctionalMap<>();
+
+		litTokens.put("+", ADD);
+		litTokens.put("-", SUBTRACT);
+		litTokens.put("*", MULTIPLY);
+		litTokens.put("/", DIVIDE);
+		litTokens.put("//", IDIVIDE);
+		litTokens.put("dg", DICEGROUP);
+		litTokens.put("dc", DICECONCAT);
+		litTokens.put("dl", DICELIST);
+		litTokens.put("=>", LET);
+		litTokens.put(":=", BIND);
 	}
 
 	public boolean runCommand(String command) {
@@ -136,45 +155,19 @@ public class DiceLangEngine {
 
 		Token tk = Token.NIL_TOKEN;
 
-		switch(token) {
-			case "+":
-				tk = new Token(ADD);
-				break;
-			case "-":
-				tk = new Token(SUBTRACT);
-				break;
-			case "*":
-				tk = new Token(MULTIPLY);
-				break;
-			case "/":
-				tk = new Token(DIVIDE);
-				break;
-			case "//":
-				tk = new Token(IDIVIDE);
-				break;
-			case "dg":
-				tk = new Token(DICEGROUP);
-				break;
-			case "dc":
-				tk = new Token(DICECONCAT);
-				break;
-			case "dl":
-				tk = new Token(DICELIST);
-				break;
-			case "=>":
-				tk = new Token(LET);
-				break;
-			case ":=":
-			   tk = new Token(BIND);
-			   break;
-			case "(":
-			case ")":
-			case "[":
-			case "]":
-				tk = tokenizeGrouping(token);
-				break;
-			default:
-				tk = tokenizeLiteral(token, stringLts);
+		if(litTokens.containsKey(token)) {
+			tk = new Token(litTokens.get(token));
+		} else {
+			switch(token) {
+				case "(":
+				case ")":
+				case "[":
+				case "]":
+					   tk = tokenizeGrouping(token);
+					   break;
+				default:
+					   tk = tokenizeLiteral(token, stringLts);
+			}
 		}
 
 		return tk;
@@ -203,14 +196,23 @@ public class DiceLangEngine {
 		return tk;
 	}
 
-	private Pattern intMatcher = Pattern.compile("\\A[\\-\\+]?\\d+\\Z");
-	private Pattern stringLitMatcher = Pattern.compile("\\AstringLiteral\\d+\\Z");
+	private Pattern intMatcher          = Pattern.compile("\\A[\\-\\+]?\\d+\\Z");
+	private Pattern hexadecimalMatcher  = Pattern.compile("\\A[\\-\\+]?0x[0-9A-Fa-f]+\\Z");
+	private Pattern flexadecimalMatcher = Pattern.compile("\\A[\\-\\+]?[0-9][0-9A-Za-z]+B\\d{1,2}\\Z");
+	private Pattern stringLitMatcher    = Pattern.compile("\\AstringLiteral(\\d+)\\Z");
 
 	private Token tokenizeLiteral(String token, IMap<String, String> stringLts) {
 		Token tk = Token.NIL_TOKEN;
 
 		if(intMatcher.matcher(token).matches()) {
-			tk = new Token(INT_LIT, Integer.parseInt(token));
+			tk = new Token(INT_LIT, Long.parseLong(token));
+		} else if(hexadecimalMatcher.matcher(token).matches()) {
+			String newToken = token.substring(0, 1) + token.substring(token.indexOf('x'));
+
+			tk = new Token(INT_LIT, Long.parseLong(newToken.substring(2).toUpperCase(), 16));
+		} else if(flexadecimalMatcher.matcher(token).matches()) {
+			tk = new Token(INT_LIT, Long.parseLong(token.substring(0, token.lastIndexOf('B')),
+						Integer.parseInt(token.substring(token.lastIndexOf('B') + 1))));
 		} else if(DoubleMatcher.floatingLiteral.matcher(token).matches()) {
 			tk = new Token(FLOAT_LIT, Double.parseDouble(token));
 		} else if(DiceBox.isValidExpression(token)) {

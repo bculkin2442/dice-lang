@@ -9,16 +9,16 @@ public class DiceBox {
 
 	public interface Die {
 		boolean canOptimize();
-		int optimize();
+		long optimize();
 
-		int roll();
+		long roll();
 	}
 
 	public interface DieList {
 		boolean canOptimize();
-		int[] optimize();
+		long[] optimize();
 
-		int[] roll();
+		long[] roll();
 	}
 
 	public static class DieExpression {
@@ -46,14 +46,14 @@ public class DiceBox {
 
 		public String value() {
 			if(isList) return Arrays.toString(list.roll());
-			else       return Integer.toString(scalar.roll());
+			else       return Long.toString(scalar.roll());
 		}
 	}
 
 	private static class ScalarDie implements Die {
-		private int val;
+		private long val;
 
-		public ScalarDie(int vl) {
+		public ScalarDie(long vl) {
 			val = vl;
 		}
 
@@ -61,24 +61,24 @@ public class DiceBox {
 			return true;
 		}
 
-		public int optimize() {
+		public long optimize() {
 			return val;
 		}
 
-		public int roll() {
+		public long roll() {
 			return val;
 		}
 
 		public String toString() {
-			return Integer.toString(val);
+			return Long.toString(val);
 		}
 	}
 
 	private static class SimpleDie implements Die {
-		private int numDice;
-		private int diceSize;
+		private long numDice;
+		private long diceSize;
 
-		public SimpleDie(int nDice, int size) {
+		public SimpleDie(long nDice, long size) {
 			numDice = nDice;
 			diceSize = size;
 		}
@@ -88,15 +88,15 @@ public class DiceBox {
 			else return false;
 		}
 
-		public int optimize() {
+		public long optimize() {
 			return numDice;
 		}
 
-		public int roll() {
-			int total = 0;
+		public long roll() {
+			long total = 0;
 
 			for(int i = 0; i < numDice; i++) {
-				total += rng.nextInt(diceSize) + 1;
+				total += (rng.nextLong() % numDice) + 1;
 			}
 
 			return total;
@@ -120,12 +120,12 @@ public class DiceBox {
 			return left.canOptimize() && right.canOptimize();
 		}
 
-		public int optimize() {
-			return Integer.parseInt(left.optimize() + "" + right.optimize());
+		public long optimize() {
+			return Long.parseLong(left.optimize() + "" + right.optimize());
 		}
 
-		public int roll() {
-			return Integer.parseInt(left.roll() + "" + right.roll());
+		public long roll() {
+			return Long.parseLong(left.roll() + "" + right.roll());
 		}
 
 		public String toString() {
@@ -150,10 +150,10 @@ public class DiceBox {
 			}
 		}
 
-		public int[] optimize() {
-			int[] ret = new int[numDice.optimize()];
+		public long[] optimize() {
+			long[] ret = new long[(int)numDice.optimize()];
 
-			int optSize = size.optimize();
+			long optSize = size.optimize();
 
 			for(int i = 0; i < optSize; i++) {
 				ret[i] = 1;
@@ -162,10 +162,10 @@ public class DiceBox {
 			return ret;
 		}
 
-		public int[] roll() {
-			int num = numDice.roll();
+		public long[] roll() {
+			int num = (int)numDice.roll();
 
-			int[] ret = new int[num];
+			long[] ret = new long[num];
 
 			for(int i = 0; i < num; i++) {
 				ret[i] = size.roll();
@@ -183,14 +183,14 @@ public class DiceBox {
 		if(!isValidExpression(exp)) return null;
 
 		if(scalarDiePattern.matcher(exp).matches()) {
-			return new DieExpression(new ScalarDie(Integer.parseInt(exp)));
+			return new DieExpression(new ScalarDie(Long.parseLong(exp)));
 		} else if(simpleDiePattern.matcher(exp).matches()) {
 			String[] dieParts = exp.split("d");
 
 			if(dieParts[0].equals("")) {
-				return new DieExpression(new SimpleDie(1, Integer.parseInt(dieParts[1])));
+				return new DieExpression(new SimpleDie(1, Long.parseLong(dieParts[1])));
 			} else {
-				return new DieExpression(new SimpleDie(Integer.parseInt(dieParts[0]), Integer.parseInt(dieParts[1])));
+				return new DieExpression(new SimpleDie(Long.parseLong(dieParts[0]), Long.parseLong(dieParts[1])));
 			}
 		} else if(compoundDiePattern.matcher(exp).matches()) {
 			String[] dieParts = exp.split("c");

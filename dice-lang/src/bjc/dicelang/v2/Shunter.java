@@ -127,7 +127,7 @@ public class Shunter {
 					while(currTk.type != OPAREN && currTk.intValue != tk.intValue) {
 						if(opStack.isEmpty()) {
 							System.out.printf("\tError: Could not find matching parenthesis"
-								+ " with matching level %d", tk.intValue);
+								+ " with matching level %d\n", tk.intValue);
 
 							return false;
 						}

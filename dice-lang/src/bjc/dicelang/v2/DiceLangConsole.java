@@ -23,7 +23,7 @@ public class DiceLangConsole {
 		System.out.printf("(%d) dice-lang> ", commandNumber);
 		String comm = scn.nextLine();
 
-		while(!comm.equals("quit")) {
+		while(!comm.equals("quit") && !comm.equals("exit")) {
 			System.out.printf("\tRaw command: %s\n", comm);
 
 			boolean success = eng.runCommand(comm);
