@@ -58,7 +58,7 @@ public class DiceLangConsole {
 	private boolean handlePragma(String pragma) {
 		System.out.println("\tRaw pragma: " + pragma);
 
-		switch(pragma) {
+		switch(pragma.substring(0, pragma.indexOf(' '))) {
 			case "debug":
 				System.out.println("\tDebug mode is now " + eng.toggleDebug());
 				break;

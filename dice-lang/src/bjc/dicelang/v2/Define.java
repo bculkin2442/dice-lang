@@ -12,16 +12,16 @@ public class Define implements UnaryOperator<String> {
 		LINE, TOKEN
 	}
 
-	int priority;
+	public final int priority;
 
-	boolean doRecur;
-	boolean subType;
+	private boolean doRecur;
+	private boolean subType;
 
-	Pattern predicate;
-	Pattern searcher;
+	private Pattern predicate;
+	private Pattern searcher;
 
-	Iterator<String>  replacers;
-	String replacer;
+	private Iterator<String>  replacers;
+	private String replacer;
 
 	public Define(int priorty, boolean isSub, boolean recur,
 			String predicte, String searchr, Iterable<String> replacrs) {

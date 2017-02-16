@@ -11,6 +11,7 @@ import bjc.utils.funcutils.ListUtils;
 import bjc.utils.funcutils.StringUtils;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Deque;
 import java.util.List;
 import java.util.LinkedList;
@@ -49,6 +50,8 @@ public class DiceLangEngine {
 
 	// Are defns sorted by priority
 	private boolean defnsSorted;
+
+	private StreamEngine streamEng;
 
 	private final int MATH_PREC = 20;
 	private final int DICE_PREC = 10;
@@ -98,10 +101,15 @@ public class DiceLangEngine {
 
 		debugMode   = true;
 		postfixMode = false;
+
+		streamEng = new StreamEngine(this);
 	}
 
 	public void sortDefns() {
+		Comparator<Define> defnCmp = (dfn1, dfn2) -> dfn1.priority - dfn2.priority;
 
+		lineDefns.sort(defnCmp);
+		tokenDefns.sort(defnCmp);
 
 		defnsSorted = true;
 	}
@@ -148,9 +156,25 @@ public class DiceLangEngine {
 		// Sort the defines if they aren't sorted
 		if(!defnsSorted) sortDefns();
 
+		IList<String> streamToks = new FunctionalList<>();
+		boolean success = streamEng.doStreams(command.split(" "), streamToks);
+		if(!success) return false;
+
+		String newComm = ListUtils.collapseTokens(streamToks, " ");
+
+		if(debugMode)
+			System.out.println("\tCommand after stream commands: " + newComm);
+
+		for(Define dfn : lineDefns.toIterable()) {
+			newComm = dfn.apply(newComm);
+		}
+
+		if(debugMode)
+			System.out.println("\tCommand after line defines: " + newComm);
+
 		IMap<String, String> stringLiterals = new FunctionalMap<>();
 
-		Matcher quoteMatcher = quotePattern.matcher(command);
+		Matcher quoteMatcher = quotePattern.matcher(newComm);
 		StringBuffer destringedCommand = new StringBuffer();
 
 		while(quoteMatcher.find()) {
@@ -183,14 +207,20 @@ public class DiceLangEngine {
 		IList<String> semiExpandedTokens  = deaffixTokens(tokens, deaffixationList);
 		IList<String> fullyExpandedTokens = deaffixTokens(semiExpandedTokens, opExpansionList);
 
-		if(debugMode) {
+		if(debugMode) 
 			System.out.printf("\tCommand after token expansion: " 
 					+ fullyExpandedTokens.toString() + "\n");
-		}
+		
 
 		IList<Token> lexedTokens = new FunctionalList<>();
 
 		for(String token : fullyExpandedTokens.toIterable()) {
+			String newTok = token;
+
+			for(Define dfn : tokenDefns.toIterable()) {
+				newTok = dfn.apply(newTok);
+			}
+
 			Token tk = lexToken(token, stringLiterals);
 
 			if(tk == null) continue;
@@ -205,7 +235,7 @@ public class DiceLangEngine {
 
 		if(!postfixMode) {
 			shuntedTokens = new FunctionalList<>();
-			boolean success       = shunt.shuntTokens(lexedTokens, shuntedTokens);
+			success       = shunt.shuntTokens(lexedTokens, shuntedTokens);
 			if(!success) return false;
 		}
 
