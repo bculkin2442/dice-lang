@@ -12,6 +12,7 @@ import bjc.utils.funcutils.StringUtils;
 
 import java.util.Arrays;
 import java.util.Deque;
+import java.util.List;
 import java.util.LinkedList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -20,8 +21,8 @@ import static bjc.dicelang.v2.Token.Type.*;
 
 public class DiceLangEngine {
 	// Input rules for processing tokens
-	private Deque<IPair<String, String>> opExpansionTokens;
-	private Deque<IPair<String, String>> deaffixationTokens;
+	private List<IPair<String, String>> opExpansionList;
+	private List<IPair<String, String>> deaffixationList;
 
 	// ID for generation
 	private int nextLiteral;
@@ -29,6 +30,8 @@ public class DiceLangEngine {
 
 	// Debug indicator
 	private boolean debugMode;
+	// Should we do shunting?
+	private boolean postfixMode;
 
 	// Shunter for token postfixing
 	private Shunter shunt;
@@ -37,39 +40,44 @@ public class DiceLangEngine {
 	private IMap<Integer, String> symTable;
 	private IMap<Integer, String> stringLits;
 
+	// Literal tokens for tokenization
 	private IMap<String, Token.Type> litTokens;
+
+	// Lists for preprocessing
+	private IList<Define> lineDefns;
+	private IList<Define> tokenDefns;
+
+	// Are defns sorted by priority
+	private boolean defnsSorted;
 
 	private final int MATH_PREC = 20;
 	private final int DICE_PREC = 10;
 	private final int EXPR_PREC = 0;
 
 	public DiceLangEngine() {
+		lineDefns   = new FunctionalList<>();
+		tokenDefns  = new FunctionalList<>();
+		defnsSorted = true;
+
 		symTable   = new FunctionalMap<>();
 		stringLits = new FunctionalMap<>();
 		
-		opExpansionTokens = new LinkedList<>();
+		opExpansionList = new LinkedList<>();
 
-		opExpansionTokens.add(new Pair<>("+", "\\+"));
-		opExpansionTokens.add(new Pair<>("-", "-"));
-		opExpansionTokens.add(new Pair<>("*", "\\*"));
-		opExpansionTokens.add(new Pair<>("//", "//"));
-		opExpansionTokens.add(new Pair<>("/", "/"));
-		opExpansionTokens.add(new Pair<>(":=", ":="));
-		opExpansionTokens.add(new Pair<>("=>", "=>"));
+		opExpansionList.add(new Pair<>("+", "\\+"));
+		opExpansionList.add(new Pair<>("-", "-"));
+		opExpansionList.add(new Pair<>("*", "\\*"));
+		opExpansionList.add(new Pair<>("//", "//"));
+		opExpansionList.add(new Pair<>("/", "/"));
+		opExpansionList.add(new Pair<>(":=", ":="));
+		opExpansionList.add(new Pair<>("=>", "=>"));
 
-		deaffixationTokens = new LinkedList<>();
+		deaffixationList = new LinkedList<>();
 
-		deaffixationTokens.add(new Pair<>("(", "\\("));
-		deaffixationTokens.add(new Pair<>(")", "\\)"));
-		deaffixationTokens.add(new Pair<>("[", "\\["));
-		deaffixationTokens.add(new Pair<>("]", "\\]"));
-
-		nextLiteral = 1;
-
-		// @TODO make configurable
-		debugMode = true;
-
-		shunt = new Shunter();
+		deaffixationList.add(new Pair<>("(", "\\("));
+		deaffixationList.add(new Pair<>(")", "\\)"));
+		deaffixationList.add(new Pair<>("[", "\\["));
+		deaffixationList.add(new Pair<>("]", "\\]"));
 
 		litTokens = new FunctionalMap<>();
 
@@ -83,29 +91,86 @@ public class DiceLangEngine {
 		litTokens.put("dl", DICELIST);
 		litTokens.put("=>", LET);
 		litTokens.put(":=", BIND);
+
+		shunt = new Shunter();
+
+		nextLiteral = 1;
+
+		debugMode   = true;
+		postfixMode = false;
 	}
 
+	public void sortDefns() {
+
+
+		defnsSorted = true;
+	}
+
+	public void addLineDefine(Define dfn) {
+		lineDefns.add(dfn);
+
+		defnsSorted = false;
+	}
+
+	public void addTokenDefine(Define dfn) {
+		tokenDefns.add(dfn);
+
+		defnsSorted = false;
+	}
+
+	public boolean toggleDebug() {
+		debugMode = !debugMode;
+
+		return debugMode;
+	}
+
+	public boolean togglePostfix() {
+		postfixMode = !postfixMode;
+
+		return postfixMode;
+	}
+
+	/*
+	 * Matches quote-delimited strings
+	 * 		(like "text" or "text\"text")
+	 *		Uses the "normal* (special normal*)*" pattern style
+	 *		recommended in 'Mastering regular expressions'
+	 *		Here, the normal is 'anything but a forward or backslash'
+	 *		(in regex, thats '[^\""]') and the special is 'an escaped forward slash'
+	 *		(in regex, thats '\\"')
+	 *
+	 *		Then, we just follow the pattern, escape it for java strings, and
+	 *		add the enclosing quotes
+	 */
+	private Pattern quotePattern = Pattern.compile("\"([^\\\"]*(?:\\\"/(?:[^\\\"])*)*)\"");
+
 	public boolean runCommand(String command) {
-		// Split the command into tokens
-		IList<String> tokens = FunctionalStringTokenizer
-			.fromString(command)
-			.toList();
+		// Sort the defines if they aren't sorted
+		if(!defnsSorted) sortDefns();
 
-		// Will hold tokens with string literals removed
-		IList<String> destringed = new FunctionalList<>();
-
-		// Where we keep the string literals
-		// @TODO put these in the sym-table early instead
-		// 		 once there is a sym-table
 		IMap<String, String> stringLiterals = new FunctionalMap<>();
 
-		boolean success = destringTokens(tokens, stringLiterals,
-				destringed);
+		Matcher quoteMatcher = quotePattern.matcher(command);
+		StringBuffer destringedCommand = new StringBuffer();
 
-		if(!success) return success;
+		while(quoteMatcher.find()) {
+			String stringLit = quoteMatcher.group(1);
+
+			String litName = "stringLiteral" + nextLiteral++;
+			stringLiterals.put(litName, stringLit);
+
+			quoteMatcher.appendReplacement(destringedCommand, " " + litName + " ");
+		}
+
+		quoteMatcher.appendTail(destringedCommand);
+
+		// Split the command into tokens
+		IList<String> tokens = FunctionalStringTokenizer
+			.fromString(destringedCommand.toString())
+			.toList();
 
 		if(debugMode) {
-			System.out.println("\tCommand after destringing: " + destringed.toString());
+			System.out.println("\tCommand after destringing: " + tokens.toString());
 
 			System.out.println("\tString literals in table");
 
@@ -115,13 +180,10 @@ public class DiceLangEngine {
 			});
 		}
 
-		IList<String> semiExpandedTokens  = ListUtils.deAffixTokens(destringed, deaffixationTokens);
-		IList<String> fullyExpandedTokens = ListUtils.splitTokens(semiExpandedTokens, opExpansionTokens);
+		IList<String> semiExpandedTokens  = deaffixTokens(tokens, deaffixationList);
+		IList<String> fullyExpandedTokens = deaffixTokens(semiExpandedTokens, opExpansionList);
 
 		if(debugMode) {
-			System.out.printf("\tCommand after token deaffixation: " 
-					+ semiExpandedTokens.toString() + "\n");
-
 			System.out.printf("\tCommand after token expansion: " 
 					+ fullyExpandedTokens.toString() + "\n");
 		}
@@ -139,12 +201,15 @@ public class DiceLangEngine {
 		if(debugMode)
 			System.out.printf("\tCommand after tokenization: %s\n", lexedTokens.toString());
 
-		IList<Token> shuntedTokens = new FunctionalList<>();
-		success                    = shunt.shuntTokens(lexedTokens, shuntedTokens);
+		IList<Token> shuntedTokens = lexedTokens;
 
-		if(!success) return false;
+		if(!postfixMode) {
+			shuntedTokens = new FunctionalList<>();
+			boolean success       = shunt.shuntTokens(lexedTokens, shuntedTokens);
+			if(!success) return false;
+		}
 
-		if(debugMode)
+		if(debugMode && !postfixMode)
 			System.out.printf("\tCommand after shunting: %s\n", shuntedTokens.toString());
 
 		return true;
@@ -226,7 +291,7 @@ public class DiceLangEngine {
 			Matcher stringLit = stringLitMatcher.matcher(token);
 
 			if(stringLit.matches()) {
-				int litNum = Integer.parseInt(stringLit.group());
+				int litNum = Integer.parseInt(stringLit.group(1));
 
 				stringLits.put(litNum, stringLts.get(token));
 				tk = new Token(STRING_LIT, litNum);
@@ -245,89 +310,104 @@ public class DiceLangEngine {
 		return tk;
 	}
 
-	private boolean destringTokens(IList<String> tokens,
-			IMap<String, String> stringLiterals,
-			IList<String> destringed) {
-		// Are we parsing a string literal?
-		boolean stringMode = false;
+	 private IList<String> deaffixTokens(IList<String> tokens, List<IPair<String, String>> deaffixTokens) {
+		Deque<String> working = new LinkedList<>();
 
-		// The current string literal
-		StringBuilder currentLiteral = new StringBuilder();
-		String literalName = "stringLiteral";
+		for(String tk : tokens.toIterable()) {
+			working.add(tk);
+		}
 
-		for(String token : tokens.toIterable()) {
-			if(token.startsWith("\"")) {
-				if(token.endsWith("\"")) {
-					String litName = literalName + nextLiteral++;
+		for(IPair<String, String> op : deaffixTokens) {
+			Deque<String> newWorking = new LinkedList<>();
+			
+			String opName  = op.getLeft();
+			String opRegex = op.getRight();
 
-					stringLiterals.put(litName,
-							token.substring(1, token.length() - 1));
-					destringed.add(litName);
+			Pattern opRegexPattern  = Pattern.compile(opRegex);
+			Pattern opRegexOnly     = Pattern.compile("\\A(?:" + opRegex + ")+\\Z");
+			Pattern opRegexStarting = Pattern.compile("\\A" + opRegex);
+			Pattern opRegexEnding   = Pattern.compile(opRegex + "\\Z");
 
-					continue;
-				}
-
-				if(stringMode) {
-					// @TODO make this not an error
-					System.out.printf("\tPARSER ERROR: Initial" 
-							+" quotes can only start strings\n");
+			for(String tk : working) {
+				// @Incomplete
+				if(opRegexOnly.matcher(tk).matches()) {
+					// The string contains only the operator
+					newWorking.add(tk);
 				} else {
-					currentLiteral.append(token.substring(1) + " ");
+					Matcher medianMatcher = opRegexPattern.matcher(tk);
+					
+					// Read the first match
+					boolean found = medianMatcher.find();
 
-					stringMode = true;
-				}
-			} else if (token.endsWith("\"")) {
-				if(!stringMode) {
-					// @TODO make this not an error
-					System.out.printf("\tPARSER ERROR: Terminal" 
-							+" quotes can only end strings\n"); 
-					return false;
-				} else {
-					currentLiteral.append(
-							token.substring(0, token.length() - 1));
-
-					String litName = literalName + nextLiteral++;
-
-					stringLiterals.put(litName,
-							currentLiteral.toString());
-					destringed.add(litName);
-
-					currentLiteral = new StringBuilder();
-
-					stringMode = false;
-				}
-			} else if (token.contains("\"")) {
-				if(token.contains("\\\"")) {
-					if(stringMode) {
-						currentLiteral.append(token + " ");
-					} else {
-						System.out.printf("\tERROR: Escaped quote "
-								+ " outside of string literal\n");
-						return false;
+					if(!found) {
+						newWorking.add(tk);
+						continue;
 					}
-				} else {
-					// @TODO make this not an error
-					System.out.printf("\tPARSER ERROR: A string"
-							+ " literal must be delimited by spaces"
-							+ " for now.\n");
-					return false;
+
+					Matcher startMatcher  = opRegexStarting.matcher(tk);
+					Matcher endMatcher    = opRegexEnding.matcher(tk);
+
+					boolean startsWith = startMatcher.find();
+					boolean endsWith   = endMatcher.find();
+
+					boolean doSplit = medianMatcher.find();
+
+					medianMatcher.reset();
+
+					if(doSplit || (!startsWith && !endsWith)) {
+						String[] pieces = opRegexPattern.split(tk);
+
+						if(startsWith) {
+							// Skip the starting operator
+							medianMatcher.find();
+							newWorking.add(tk.substring(0, startMatcher.end()));
+						}
+
+						for(int i = 0; i < pieces.length; i++) {
+							String piece = pieces[i];
+
+							// Find the next operator
+							boolean didFind = medianMatcher.find();
+
+							if(piece.equals("")) {
+								System.out.printf("\tWARNING: Empty token found during operator expansion"
+										+ "of token (%s). Weirdness may happen as a result\n", tk);
+								continue;
+							}
+
+							newWorking.add(piece);
+
+							if(didFind)
+								newWorking.add(tk.substring(medianMatcher.start(), medianMatcher.end()));
+						}
+
+						if(endsWith)
+							newWorking.add(tk.substring(endMatcher.start()));
+					} else if(startsWith && endsWith) {
+						newWorking.add(tk.substring(0, startMatcher.end()));
+						newWorking.add(tk.substring(startMatcher.end(), endMatcher.start()));
+						newWorking.add(tk.substring(endMatcher.start()));
+					} else if(startsWith) {
+						newWorking.add(tk.substring(0, startMatcher.end()));
+						newWorking.add(tk.substring(startMatcher.end()));
+					} else if(endsWith) {
+						newWorking.add(tk.substring(0, endMatcher.start()));
+						newWorking.add(tk.substring(endMatcher.end()));
+					} else {
+						newWorking.add(tk);
+					}
 				}
-			} else {
-				if(stringMode) {
-					currentLiteral.append(token + " ");
-				} else {
-					destringed.add(token);
-				}
+
 			}
+
+			working = newWorking;
 		}
 
-		if(stringMode) {
-			System.out.printf("\tERROR: Unclosed string literal (%s"
-					+ ").\n", currentLiteral.toString());
-
-			return false;
+		IList<String> returned = new FunctionalList<>();
+		for(String ent : working) {
+			returned.add(ent);
 		}
 
-		return true;
+		return returned;
 	}
 }
