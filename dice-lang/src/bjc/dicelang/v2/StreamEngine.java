@@ -2,6 +2,7 @@ package bjc.dicelang.v2;
 
 import bjc.utils.funcdata.FunctionalList;
 import bjc.utils.funcdata.IList;
+import bjc.utils.esodata.SingleTape;
 import bjc.utils.esodata.Tape;
 
 public class StreamEngine {
@@ -11,7 +12,7 @@ public class StreamEngine {
 	private IList<String>       currStream;
 
 	public StreamEngine(DiceLangEngine eng) {
-		streams = new Tape<>();
+		streams = new SingleTape<>();
 
 		currStream = new FunctionalList<>();
 		streams.append(currStream);
@@ -36,7 +37,7 @@ public class StreamEngine {
 	private boolean processCommand(String tk) {
 		switch(tk.charAt(2)) {
 			case '+':
-				streams.append(new FunctionalList<>());
+				streams.add(new FunctionalList<>());
 				break;
 			case '>':
 				if(!streams.right()) {
