@@ -25,9 +25,9 @@ public class Shunter {
 	// applied to operator tokens
 	private Set<Token.Type> unaryAdverbs;
 
-	private final int MATH_PREC	= 20;
-	private final int DICE_PREC	= 10;
-	private final int EXPR_PREC	= 0;
+	private final int MATH_PREC	 = 20;
+	private final int DICE_PREC	 = 10;
+	private final int EXPR_PREC	 = 0;
 
 	public Shunter() {
 		ops = new FunctionalMap<>();
@@ -53,12 +53,13 @@ public class Shunter {
 	public boolean shuntTokens(IList<Token> tks, IList<Token> returned) {
 		Deque<Token> opStack    = new LinkedList<>();
 
-		boolean unaryMode          = false;
+		boolean unaryMode     = false;
 		Deque<Token> unaryOps = new LinkedList<>();
+
+		Deque<Token> currReturned = new LinkedList<>();
 
 		for(Token tk : tks.toIterable()) {
 			if(unaryMode) {
-				// @TODO finish unary mode
 				if(unaryAdjectives.contains(tk.type) || unaryAdverbs.contains(tk.type)) {
 					unaryOps.push(tk);
 					continue;
@@ -79,8 +80,8 @@ public class Shunter {
 						return false;
 					}
 
-					returned.add(tk);
-					returned.add(unaryOps.pop());
+					currReturned.addLast(tk);
+					currReturned.addLast(unaryOps.pop());
 				} else if (unaryAdverbs.contains(currOperator.type)) {
 					if(opStack.size() < 1) {
 						System.out.printf("\tError: Unary operators %s is an adverb,"
@@ -101,8 +102,8 @@ public class Shunter {
 						return false;
 					}
 
-					returned.add(tk);
-					returned.add(unaryOps.pop());
+					currReturned.addLast(tk);
+					currReturned.addLast(unaryOps.pop());
 				}
 
 				if(unaryOps.isEmpty()) unaryMode = false;
@@ -115,34 +116,75 @@ public class Shunter {
 				} else if(ops.containsKey(tk.type)) {
 					while(!opStack.isEmpty() 
 							&& isHigherPrec(tk.type, opStack.peek().type)) {
-						returned.add(opStack.pop());
+						currReturned.addLast(opStack.pop());
 					}
 
 					opStack.push(tk);
-				} else if(tk.type == OPAREN) {
+				} else if(tk.type == OPAREN || tk.type == OBRACE) {
 					opStack.push(tk);
-				} else if(tk.type == CPAREN) {
-					Token currTk = opStack.peek();
 
-					while(currTk.type != OPAREN && currTk.intValue != tk.intValue) {
-						if(opStack.isEmpty()) {
-							System.out.printf("\tError: Could not find matching parenthesis"
-								+ " with matching level %d\n", tk.intValue);
+					if(tk.type == OBRACE)
+						currReturned.addLast(tk);
+				} else if(tk.type == CPAREN || tk.type == CBRACE) {
+					Token matching = null;
 
-							return false;
-						}
-
-						returned.add(opStack.pop());
+					switch(tk.type) {
+						case CPAREN:
+							matching = new Token(OPAREN, tk.intValue);
+							break;
+						case CBRACE:
+							matching = new Token(OBRACE, tk.intValue);
+							break;
+						default:
+							break;
 					}
+
+					if(!opStack.contains(matching)) {
+						System.out.printf("\tError: Could not find matching grouping "
+								+ tk.type);
+
+						return false;
+					}
+
+					while(!opStack.peek().equals(matching)) {
+						currReturned.addLast(opStack.pop());
+					}
+
+					if(tk.type == CBRACE) {
+						currReturned.addLast(tk);
+					}
+
+					opStack.pop();
+				} else if(tk.type == GROUPSEP) {
+					IList<Token> group = new FunctionalList<>();
+
+					while(currReturned.size() != 0 && !currReturned.peek().isGrouper()) {
+						group.add(currReturned.pop());
+					}
+
+					while(opStack.size() != 0 && !opStack.peek().isGrouper()) {
+						group.add(opStack.pop());
+					}
+
+					if(currReturned.size() == 0) {
+						System.out.println("\tERROR: Didn't find grouper for group seperator to attach to");
+						return false;
+					}
+
+					currReturned.addLast(new Token(TOKGROUP, group));
 				} else {
-					returned.add(tk);
+					currReturned.addLast(tk);
 				}
 			}
 		}
 
 		// Flush leftover operators
 		while(!opStack.isEmpty()) {
-			returned.add(opStack.pop());
+			currReturned.addLast(opStack.pop());
+		}
+
+		for(Token tk : currReturned) {
+			returned.add(tk);
 		}
 
 		return true;

@@ -58,15 +58,28 @@ public class DiceLangConsole {
 	private boolean handlePragma(String pragma) {
 		System.out.println("\tRaw pragma: " + pragma);
 
-		switch(pragma.substring(0, pragma.indexOf(' '))) {
+		String pragmaName = null;
+		int firstIndex = pragma.indexOf(' ');
+		if(firstIndex == -1) {
+			pragmaName = pragma;
+		} else {
+			pragmaName = pragma.substring(0, firstIndex);
+		}
+
+		switch(pragmaName) {
 			case "debug":
 				System.out.println("\tDebug mode is now " + eng.toggleDebug());
 				break;
 			case "postfix":
 				System.out.println("\tPostfix mode is now " + eng.togglePostfix());
 				break;
+			case "prefix":
+				System.out.println("\tPrefix mode is now " + eng.togglePrefix());
+				break;
 			case "define":
 				return defineMode(pragma.substring(7));
+			case "help":
+				return helpMode(pragma.substring(5));
 			default:
 				System.out.println("\tERROR: Unknown pragma: " + pragma);
 				return false;
@@ -75,6 +88,19 @@ public class DiceLangConsole {
 		return true;
 	}
 	
+	private boolean helpMode(String pragma) {
+		switch(pragma.trim()) {
+			case "define":
+				System.out.println("\tdefine <priority> <type> <recursion> <guard> <circular> <patterns>...");
+				break;
+			default:
+				System.out.println("\tNo help available for pragma " + pragma);
+		}
+
+		// Help always works
+		return true;
+	}
+
 	/*
 	 * Matches slash-delimited strings
 	 * 		(like /text/ or /text\/text/)
@@ -87,7 +113,7 @@ public class DiceLangConsole {
 	 *		Then, we just follow the pattern, escape it for java strings, and
 	 *		add the enclosing slashes
 	 */
-	private Pattern slashPattern = Pattern.compile("/([^/\\\\]*(?:\\\\/(?:[^/\\\\])*)*)/");
+	private Pattern slashPattern = Pattern.compile("/((?:\\\\.|[^/\\\\])*)/");
 
 	private boolean defineMode(String defineText) {
 		int firstIndex    = defineText.indexOf(' ');
@@ -95,6 +121,7 @@ public class DiceLangConsole {
 		int thirdIndex    = defineText.indexOf(' ', secondIndex + 1);
 		int fourthIndex   = defineText.indexOf(' ', thirdIndex  + 1);
 		int fifthIndex    = defineText.indexOf(' ', fourthIndex + 1);
+		int sixthIndex    = defineText.indexOf(' ', fifthIndex + 1);
 
 		if(firstIndex == -1) {
 			System.out.println("\tERROR: Improperly formatted define (no priority)");
@@ -109,6 +136,9 @@ public class DiceLangConsole {
 			System.out.println("\tERROR: Improperly formatted define (no guard type)");
 			return false;
 		} else if(fifthIndex == -1) {
+			System.out.println("\tERROR: Improperly formatted define (no circularity)");
+			return false;
+		} else if(sixthIndex == -1) {
 			System.out.println("\tERROR: Improperly formatted define (no patterns)");
 			return false;
 		}
@@ -141,13 +171,14 @@ public class DiceLangConsole {
 				return false;
 		}
 
-		boolean doRecur = defineText.substring(secondIndex + 1, thirdIndex)
+		boolean doRecur    = defineText.substring(secondIndex + 1, thirdIndex)
 			.equalsIgnoreCase("true");
-		boolean hasGuard = defineText.substring(thirdIndex + 1, fourthIndex).
-			equalsIgnoreCase("true");
+		boolean hasGuard   = defineText.substring(thirdIndex + 1, fourthIndex)
+			.equalsIgnoreCase("true");
+		boolean isCircular = defineText.substring(thirdIndex + 1, fourthIndex)
+			.equalsIgnoreCase("true");
 
-		String pats = defineText.substring(fourthIndex + 1);
-
+		String pats = defineText.substring(fifthIndex + 1).trim();
 		Matcher patMatcher = slashPattern.matcher(pats);
 
 		String guardPattern = null;
@@ -171,7 +202,8 @@ public class DiceLangConsole {
 			replacePatterns.add(patMatcher.group(1));
 		}
 
-		Define dfn = new Define(priority, subMode, doRecur, guardPattern, searchPattern, replacePatterns);
+		Define dfn = new Define(priority, subMode, doRecur, isCircular,
+				guardPattern, searchPattern, replacePatterns);
 		
 		if(type == Define.Type.LINE) {
 			eng.addLineDefine(dfn);

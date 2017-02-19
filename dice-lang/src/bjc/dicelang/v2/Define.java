@@ -23,7 +23,8 @@ public class Define implements UnaryOperator<String> {
 	private Iterator<String>  replacers;
 	private String replacer;
 
-	public Define(int priorty, boolean isSub, boolean recur,
+	public Define(int priorty,
+			boolean isSub, boolean recur, boolean isCircular,
 			String predicte, String searchr, Iterable<String> replacrs) {
 		priority = priorty;
 		doRecur  = recur;
@@ -36,7 +37,7 @@ public class Define implements UnaryOperator<String> {
 
 		if(subType) {
 			if(replacrs.iterator().hasNext()) {
-				replacers = new CircularIterator<>(replacrs);
+				replacers = new CircularIterator<>(replacrs, isCircular);
 			} else {
 				replacers = null;
 			}
@@ -79,8 +80,19 @@ public class Define implements UnaryOperator<String> {
 			StringBuffer sb = new StringBuffer();
 
 			while(searcherMatcher.find()) {
-				if(replacers == null) searcherMatcher.appendReplacement(sb,"");
-				else                  searcherMatcher.appendReplacement(sb, replacers.next());
+				if(replacers == null) {
+					System.out.println("\t\tTRACE: running null replacer  on substring "
+							+ tok.substring(searcherMatcher.start(), searcherMatcher.end()));
+
+					searcherMatcher.appendReplacement(sb,"");
+				} else {
+					String replac = replacers.next();
+
+					System.out.println("\t\tTRACE: running replacer " + replac + " on substring "
+							+ tok.substring(searcherMatcher.start(), searcherMatcher.end()));
+
+					searcherMatcher.appendReplacement(sb, replacers.next());
+				}
 			}
 			
 			searcherMatcher.appendTail(sb);
