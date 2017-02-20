@@ -36,11 +36,12 @@ CompoundDice	src/bjc/dicelang/CompoundDice.java	/^	public CompoundDice(String lf
 CompoundDice	src/bjc/dicelang/CompoundDice.java	/^	public CompoundDice(String[] exps) {$/;"	m	class:CompoundDice
 CompoundDice	src/bjc/dicelang/CompoundDice.java	/^public class CompoundDice implements IDiceExpression {$/;"	c
 CompoundDie	src/bjc/dicelang/v2/DiceBox.java	/^		public CompoundDie(Die lft, Die rght) {$/;"	m	class:DiceBox.CompoundDie
-CompoundDie	src/bjc/dicelang/v2/DiceBox.java	/^	private static class CompoundDie implements Die {$/;"	c	class:DiceBox
+CompoundDie	src/bjc/dicelang/v2/DiceBox.java	/^	public static class CompoundDie implements Die {$/;"	c	class:DiceBox
 ConstantCollapser	src/bjc/dicelang/ast/optimization/ConstantCollapser.java	/^public class ConstantCollapser implements IOptimizationPass {$/;"	c
+DEV	src/bjc/dicelang/v2/Errors.java	/^		WIZARD, DEV$/;"	e	enum:Errors.ErrorMode	file:
 DICE	src/bjc/dicelang/ast/nodes/DiceLiteralType.java	/^	DICE;$/;"	e	enum:DiceLiteralType	file:
 DICE	src/bjc/dicelang/ast/nodes/DiceOperatorType.java	/^	DICE,$/;"	e	enum:DiceOperatorType	file:
-DICE	src/bjc/dicelang/v2/Evaluator.java	/^			INT, FLOAT, DICE$/;"	e	enum:Evaluator.Result.Type	file:
+DICE	src/bjc/dicelang/v2/Evaluator.java	/^			INT, FLOAT, DICE, STRING$/;"	e	enum:Evaluator.Result.Type	file:
 DICECONCAT	src/bjc/dicelang/v2/Token.java	/^		DICE_LIT, DICEGROUP, DICECONCAT, DICELIST,$/;"	e	enum:Token.Type	file:
 DICEGROUP	src/bjc/dicelang/v2/Token.java	/^		DICE_LIT, DICEGROUP, DICECONCAT, DICELIST,$/;"	e	enum:Token.Type	file:
 DICELIST	src/bjc/dicelang/v2/Token.java	/^		DICE_LIT, DICEGROUP, DICECONCAT, DICELIST,$/;"	e	enum:Token.Type	file:
@@ -97,16 +98,61 @@ Digits	src/bjc/dicelang/v2/DoubleMatcher.java	/^	private static final String Dig
 DoubleMatcher	src/bjc/dicelang/v2/DoubleMatcher.java	/^public class DoubleMatcher {$/;"	c
 DummyResult	src/bjc/dicelang/ast/DummyResult.java	/^	public DummyResult(String data) {$/;"	m	class:DummyResult
 DummyResult	src/bjc/dicelang/ast/DummyResult.java	/^public class DummyResult implements IResult {$/;"	c
+EK_CONS_INVDEFINE	src/bjc/dicelang/v2/Errors.java	/^		EK_CONS_INVDEFINE,$/;"	e	enum:Errors.ErrorKey	file:
+EK_CONS_INVPRAG	src/bjc/dicelang/v2/Errors.java	/^		EK_CONS_INVPRAG,$/;"	e	enum:Errors.ErrorKey	file:
+EK_DFN_PREDSYN	src/bjc/dicelang/v2/Errors.java	/^		EK_DFN_PREDSYN,$/;"	e	enum:Errors.ErrorKey	file:
+EK_DFN_RECUR	src/bjc/dicelang/v2/Errors.java	/^		EK_DFN_RECUR,$/;"	e	enum:Errors.ErrorKey	file:
+EK_DFN_SRCSYN	src/bjc/dicelang/v2/Errors.java	/^		EK_DFN_SRCSYN,$/;"	e	enum:Errors.ErrorKey	file:
+EK_ENG_NOCLOSING	src/bjc/dicelang/v2/Errors.java	/^		EK_ENG_NOCLOSING,$/;"	e	enum:Errors.ErrorKey	file:
+EK_ENG_NOOPENING	src/bjc/dicelang/v2/Errors.java	/^		EK_ENG_NOOPENING,$/;"	e	enum:Errors.ErrorKey	file:
+EK_EVAL_DIVZERO	src/bjc/dicelang/v2/Errors.java	/^		EK_EVAL_DIVZERO,$/;"	e	enum:Errors.ErrorKey	file:
+EK_EVAL_INVBIN	src/bjc/dicelang/v2/Errors.java	/^		EK_EVAL_INVBIN,$/;"	e	enum:Errors.ErrorKey	file:
+EK_EVAL_INVDGROUP	src/bjc/dicelang/v2/Errors.java	/^		EK_EVAL_INVDGROUP,$/;"	e	enum:Errors.ErrorKey	file:
+EK_EVAL_INVDICE	src/bjc/dicelang/v2/Errors.java	/^		EK_EVAL_INVDICE,$/;"	e	enum:Errors.ErrorKey	file:
+EK_EVAL_INVNODE	src/bjc/dicelang/v2/Errors.java	/^		EK_EVAL_INVNODE,$/;"	e	enum:Errors.ErrorKey	file:
+EK_EVAL_STRINGMATH	src/bjc/dicelang/v2/Errors.java	/^		EK_EVAL_STRINGMATH,$/;"	e	enum:Errors.ErrorKey	file:
+EK_EVAL_UNBIN	src/bjc/dicelang/v2/Errors.java	/^		EK_EVAL_UNBIN,$/;"	e	enum:Errors.ErrorKey	file:
+EK_EVAL_UNDICE	src/bjc/dicelang/v2/Errors.java	/^		EK_EVAL_UNDICE,$/;"	e	enum:Errors.ErrorKey	file:
+EK_EVAL_UNMATH	src/bjc/dicelang/v2/Errors.java	/^		EK_EVAL_UNMATH,$/;"	e	enum:Errors.ErrorKey	file:
+EK_EVAL_UNTOK	src/bjc/dicelang/v2/Errors.java	/^		EK_EVAL_UNTOK,$/;"	e	enum:Errors.ErrorKey	file:
+EK_PARSE_BINARY	src/bjc/dicelang/v2/Errors.java	/^		EK_PARSE_BINARY,$/;"	e	enum:Errors.ErrorKey	file:
+EK_PARSE_INVTOKEN	src/bjc/dicelang/v2/Errors.java	/^		EK_PARSE_INVTOKEN,$/;"	e	enum:Errors.ErrorKey	file:
+EK_PARSE_NOCLOSE	src/bjc/dicelang/v2/Errors.java	/^		EK_PARSE_NOCLOSE,$/;"	e	enum:Errors.ErrorKey	file:
+EK_PARSE_UNCLOSE	src/bjc/dicelang/v2/Errors.java	/^		EK_PARSE_UNCLOSE,$/;"	e	enum:Errors.ErrorKey	file:
+EK_PARSE_UNOPERAND	src/bjc/dicelang/v2/Errors.java	/^		EK_PARSE_UNOPERAND,$/;"	e	enum:Errors.ErrorKey	file:
+EK_SHUNT_INVSEP	src/bjc/dicelang/v2/Errors.java	/^		EK_SHUNT_INVSEP,$/;"	e	enum:Errors.ErrorKey	file:
+EK_SHUNT_NOGROUP	src/bjc/dicelang/v2/Errors.java	/^		EK_SHUNT_NOGROUP,$/;"	e	enum:Errors.ErrorKey	file:
+EK_SHUNT_NOOP	src/bjc/dicelang/v2/Errors.java	/^		EK_SHUNT_NOOP,$/;"	e	enum:Errors.ErrorKey	file:
+EK_SHUNT_NOTADJ	src/bjc/dicelang/v2/Errors.java	/^		EK_SHUNT_NOTADJ,$/;"	e	enum:Errors.ErrorKey	file:
+EK_SHUNT_NOTADV	src/bjc/dicelang/v2/Errors.java	/^		EK_SHUNT_NOTADV,$/;"	e	enum:Errors.ErrorKey	file:
+EK_STRM_INVCOM	src/bjc/dicelang/v2/Errors.java	/^		EK_STRM_INVCOM,$/;"	e	enum:Errors.ErrorKey	file:
+EK_STRM_LAST	src/bjc/dicelang/v2/Errors.java	/^		EK_STRM_LAST,$/;"	e	enum:Errors.ErrorKey	file:
+EK_STRM_NONEX	src/bjc/dicelang/v2/Errors.java	/^		EK_STRM_NONEX,$/;"	e	enum:Errors.ErrorKey	file:
+EK_TOK_INVBASE	src/bjc/dicelang/v2/Errors.java	/^		EK_TOK_INVBASE,$/;"	e	enum:Errors.ErrorKey	file:
+EK_TOK_INVFLEX	src/bjc/dicelang/v2/Errors.java	/^		EK_TOK_INVFLEX,$/;"	e	enum:Errors.ErrorKey	file:
+EK_TOK_UNGROUP	src/bjc/dicelang/v2/Errors.java	/^		EK_TOK_UNGROUP,$/;"	e	enum:Errors.ErrorKey	file:
 EXPRESSION	src/bjc/dicelang/ast/nodes/DiceOperatorType.java	/^	EXPRESSION;$/;"	e	enum:DiceOperatorType	file:
 EXPR_PREC	src/bjc/dicelang/examples/DiceExpressionPreparer.java	/^	private static final int			EXPR_PREC	= 0;$/;"	f	class:DiceExpressionPreparer	file:
 EXPR_PREC	src/bjc/dicelang/v2/DiceLangEngine.java	/^	private final int EXPR_PREC = 0;$/;"	f	class:DiceLangEngine	file:
 EXPR_PREC	src/bjc/dicelang/v2/Shunter.java	/^	private final int EXPR_PREC	 = 0;$/;"	f	class:Shunter	file:
+ErrorKey	src/bjc/dicelang/v2/Errors.java	/^	public static enum ErrorKey {$/;"	g	class:Errors
+ErrorMode	src/bjc/dicelang/v2/Errors.java	/^	public static enum ErrorMode {$/;"	g	class:Errors
+Errors	src/bjc/dicelang/v2/Errors.java	/^public class Errors {$/;"	c
 Evaluator	src/bjc/dicelang/v2/Evaluator.java	/^	public Evaluator(DiceLangEngine en) {$/;"	m	class:Evaluator
 Evaluator	src/bjc/dicelang/v2/Evaluator.java	/^public class Evaluator {$/;"	c
 Exp	src/bjc/dicelang/v2/DoubleMatcher.java	/^	private static final String Exp =$/;"	f	class:DoubleMatcher	file:
+ExplodingDice	src/bjc/dicelang/v2/DiceBox.java	/^		public ExplodingDice(Die src, Predicate<Long> explode) {$/;"	m	class:DiceBox.ExplodingDice
+ExplodingDice	src/bjc/dicelang/v2/DiceBox.java	/^		public ExplodingDice(Die src, Predicate<Long> explode, String patt, boolean penetrate) {$/;"	m	class:DiceBox.ExplodingDice
+ExplodingDice	src/bjc/dicelang/v2/DiceBox.java	/^		public ExplodingDice(Die src, Predicate<Long> explode, boolean penetrate) {$/;"	m	class:DiceBox.ExplodingDice
+ExplodingDice	src/bjc/dicelang/v2/DiceBox.java	/^		public ExplodingDice(Die src, String patt) {$/;"	m	class:DiceBox.ExplodingDice
+ExplodingDice	src/bjc/dicelang/v2/DiceBox.java	/^		public ExplodingDice(Die src, String patt, boolean penetrate) {$/;"	m	class:DiceBox.ExplodingDice
+ExplodingDice	src/bjc/dicelang/v2/DiceBox.java	/^	public class ExplodingDice implements DieList {$/;"	c	class:DiceBox
+FAIL	src/bjc/dicelang/v2/Evaluator.java	/^	private final static Node FAIL = new Node(Node.Type.RESULT, new Result(Result.Type.FAILURE));$/;"	f	class:Evaluator	file:
 FAILURE	src/bjc/dicelang/v2/Evaluator.java	/^			FAILURE,$/;"	e	enum:Evaluator.Result.Type	file:
-FLOAT	src/bjc/dicelang/v2/Evaluator.java	/^			INT, FLOAT, DICE$/;"	e	enum:Evaluator.Result.Type	file:
+FLOAT	src/bjc/dicelang/v2/Evaluator.java	/^			INT, FLOAT, DICE, STRING$/;"	e	enum:Evaluator.Result.Type	file:
 FLOAT_LIT	src/bjc/dicelang/v2/Token.java	/^		INT_LIT,  FLOAT_LIT, STRING_LIT,$/;"	e	enum:Token.Type	file:
+FudgeDie	src/bjc/dicelang/v2/DiceBox.java	/^		public FudgeDie(long nDice) {$/;"	m	class:DiceBox.FudgeDie
+FudgeDie	src/bjc/dicelang/v2/DiceBox.java	/^	public static class FudgeDie implements Die {$/;"	c	class:DiceBox
 GROUP	src/bjc/dicelang/ast/nodes/OperatorDiceNode.java	/^	GROUP(DICE),$/;"	e	enum:OperatorDiceNode	file:
 GROUP	src/bjc/dicelang/v2/Node.java	/^		 GROUP,   OGROUP,$/;"	e	enum:Node.Type	file:
 GROUPSEP	src/bjc/dicelang/v2/Token.java	/^		NIL,      PRESHUNT,  GROUPSEP,$/;"	e	enum:Token.Type	file:
@@ -116,7 +162,7 @@ IDIVIDE	src/bjc/dicelang/v2/Token.java	/^		DIVIDE,   IDIVIDE,$/;"	e	enum:Token.T
 IDiceASTNode	src/bjc/dicelang/ast/nodes/IDiceASTNode.java	/^public interface IDiceASTNode {$/;"	i
 IDiceExpression	src/bjc/dicelang/IDiceExpression.java	/^public interface IDiceExpression {$/;"	i
 ILiteralDiceNode	src/bjc/dicelang/ast/nodes/ILiteralDiceNode.java	/^public interface ILiteralDiceNode extends IDiceASTNode {$/;"	i
-INT	src/bjc/dicelang/v2/Evaluator.java	/^			INT, FLOAT, DICE$/;"	e	enum:Evaluator.Result.Type	file:
+INT	src/bjc/dicelang/v2/Evaluator.java	/^			INT, FLOAT, DICE, STRING$/;"	e	enum:Evaluator.Result.Type	file:
 INTEGER	src/bjc/dicelang/ast/ResultType.java	/^	INTEGER,$/;"	e	enum:ResultType	file:
 INTEGER	src/bjc/dicelang/ast/nodes/DiceLiteralType.java	/^	INTEGER,$/;"	e	enum:DiceLiteralType	file:
 INT_LIT	src/bjc/dicelang/v2/Token.java	/^		INT_LIT,  FLOAT_LIT, STRING_LIT,$/;"	e	enum:Token.Type	file:
@@ -135,6 +181,7 @@ MATH	src/bjc/dicelang/ast/nodes/DiceOperatorType.java	/^	MATH,$/;"	e	enum:DiceOp
 MATH_PREC	src/bjc/dicelang/examples/DiceExpressionPreparer.java	/^	private static final int			MATH_PREC	= 20;$/;"	f	class:DiceExpressionPreparer	file:
 MATH_PREC	src/bjc/dicelang/v2/DiceLangEngine.java	/^	private final int MATH_PREC = 20;$/;"	f	class:DiceLangEngine	file:
 MATH_PREC	src/bjc/dicelang/v2/Shunter.java	/^	private final int MATH_PREC	 = 20;$/;"	f	class:Shunter	file:
+MAX_RECURS	src/bjc/dicelang/v2/Define.java	/^	public static final int MAX_RECURS = 10;$/;"	f	class:Define
 MULTIPLY	src/bjc/dicelang/DiceExpressionType.java	/^	MULTIPLY,$/;"	e	enum:DiceExpressionType	file:
 MULTIPLY	src/bjc/dicelang/ast/nodes/OperatorDiceNode.java	/^	MULTIPLY(MATH),$/;"	e	enum:OperatorDiceNode	file:
 MULTIPLY	src/bjc/dicelang/v2/Token.java	/^		MULTIPLY,$/;"	e	enum:Token.Type	file:
@@ -165,11 +212,15 @@ ROOT	src/bjc/dicelang/v2/Node.java	/^		 ROOT,    TOKREF,$/;"	e	enum:Node.Type	fi
 ReferenceDiceExpression	src/bjc/dicelang/ReferenceDiceExpression.java	/^	public ReferenceDiceExpression(String nme,$/;"	m	class:ReferenceDiceExpression
 ReferenceDiceExpression	src/bjc/dicelang/ReferenceDiceExpression.java	/^public class ReferenceDiceExpression implements IDiceExpression {$/;"	c
 Result	src/bjc/dicelang/v2/Evaluator.java	/^		public Result(Type typ) {$/;"	m	class:Evaluator.Result
+Result	src/bjc/dicelang/v2/Evaluator.java	/^		public Result(Type typ, DiceBox.Die dVal) {$/;"	m	class:Evaluator.Result
 Result	src/bjc/dicelang/v2/Evaluator.java	/^		public Result(Type typ, DiceBox.DieExpression dVal) {$/;"	m	class:Evaluator.Result
+Result	src/bjc/dicelang/v2/Evaluator.java	/^		public Result(Type typ, DiceBox.DieList dVal) {$/;"	m	class:Evaluator.Result
+Result	src/bjc/dicelang/v2/Evaluator.java	/^		public Result(Type typ, String strang) {$/;"	m	class:Evaluator.Result
 Result	src/bjc/dicelang/v2/Evaluator.java	/^		public Result(Type typ, double dVal) {$/;"	m	class:Evaluator.Result
 Result	src/bjc/dicelang/v2/Evaluator.java	/^		public Result(Type typ, long iVal) {$/;"	m	class:Evaluator.Result
 Result	src/bjc/dicelang/v2/Evaluator.java	/^	public static class Result {$/;"	c	class:Evaluator
 ResultType	src/bjc/dicelang/ast/ResultType.java	/^public enum ResultType {$/;"	g
+STRING	src/bjc/dicelang/v2/Evaluator.java	/^			INT, FLOAT, DICE, STRING$/;"	e	enum:Evaluator.Result.Type	file:
 STRING_LIT	src/bjc/dicelang/v2/Token.java	/^		INT_LIT,  FLOAT_LIT, STRING_LIT,$/;"	e	enum:Token.Type	file:
 SUBTRACT	src/bjc/dicelang/DiceExpressionType.java	/^	SUBTRACT;$/;"	e	enum:DiceExpressionType	file:
 SUBTRACT	src/bjc/dicelang/ast/nodes/OperatorDiceNode.java	/^	SUBTRACT(MATH),$/;"	e	enum:OperatorDiceNode	file:
@@ -177,13 +228,16 @@ SUBTRACT	src/bjc/dicelang/v2/Token.java	/^		ADD,      SUBTRACT,$/;"	e	enum:Token
 ScalarDie	src/bjc/dicelang/ScalarDie.java	/^	public ScalarDie(int num) {$/;"	m	class:ScalarDie
 ScalarDie	src/bjc/dicelang/ScalarDie.java	/^public class ScalarDie implements IDiceExpression {$/;"	c
 ScalarDie	src/bjc/dicelang/v2/DiceBox.java	/^		public ScalarDie(long vl) {$/;"	m	class:DiceBox.ScalarDie
-ScalarDie	src/bjc/dicelang/v2/DiceBox.java	/^	private static class ScalarDie implements Die {$/;"	c	class:DiceBox
+ScalarDie	src/bjc/dicelang/v2/DiceBox.java	/^	public static class ScalarDie implements Die {$/;"	c	class:DiceBox
 Shunter	src/bjc/dicelang/v2/Shunter.java	/^	public Shunter() {$/;"	m	class:Shunter
 Shunter	src/bjc/dicelang/v2/Shunter.java	/^public class Shunter {$/;"	c
+SimpleDie	src/bjc/dicelang/v2/DiceBox.java	/^		public SimpleDie(Die nDice, Die size) {$/;"	m	class:DiceBox.SimpleDie
+SimpleDie	src/bjc/dicelang/v2/DiceBox.java	/^		public SimpleDie(Die nDice, long size) {$/;"	m	class:DiceBox.SimpleDie
+SimpleDie	src/bjc/dicelang/v2/DiceBox.java	/^		public SimpleDie(long nDice, Die size) {$/;"	m	class:DiceBox.SimpleDie
 SimpleDie	src/bjc/dicelang/v2/DiceBox.java	/^		public SimpleDie(long nDice, long size) {$/;"	m	class:DiceBox.SimpleDie
-SimpleDie	src/bjc/dicelang/v2/DiceBox.java	/^	private static class SimpleDie implements Die {$/;"	c	class:DiceBox
+SimpleDie	src/bjc/dicelang/v2/DiceBox.java	/^	public static class SimpleDie implements Die {$/;"	c	class:DiceBox
 SimpleDieList	src/bjc/dicelang/v2/DiceBox.java	/^		public SimpleDieList(Die nDice, Die sze) {$/;"	m	class:DiceBox.SimpleDieList
-SimpleDieList	src/bjc/dicelang/v2/DiceBox.java	/^	private static class SimpleDieList implements DieList {$/;"	c	class:DiceBox
+SimpleDieList	src/bjc/dicelang/v2/DiceBox.java	/^	public static class SimpleDieList implements DieList {$/;"	c	class:DiceBox
 StreamEngine	src/bjc/dicelang/v2/StreamEngine.java	/^	public StreamEngine(DiceLangEngine engine) {$/;"	m	class:StreamEngine
 StreamEngine	src/bjc/dicelang/v2/StreamEngine.java	/^public class StreamEngine {$/;"	c
 TOKEN	src/bjc/dicelang/v2/Define.java	/^		LINE, TOKEN$/;"	e	enum:Define.Type	file:
@@ -205,6 +259,7 @@ VARIABLE	src/bjc/dicelang/ast/nodes/DiceASTType.java	/^	VARIABLE;$/;"	e	enum:Dic
 VREF	src/bjc/dicelang/v2/Token.java	/^		VREF,$/;"	e	enum:Token.Type	file:
 VariableDiceNode	src/bjc/dicelang/ast/nodes/VariableDiceNode.java	/^	public VariableDiceNode(String varName) {$/;"	m	class:VariableDiceNode
 VariableDiceNode	src/bjc/dicelang/ast/nodes/VariableDiceNode.java	/^public class VariableDiceNode implements IDiceASTNode {$/;"	c
+WIZARD	src/bjc/dicelang/v2/Errors.java	/^		WIZARD, DEV$/;"	e	enum:Errors.ErrorMode	file:
 accept	src/bjc/dicelang/ast/DiceASTReferenceChecker.java	/^	public void accept(IDiceASTNode astNode) {$/;"	m	class:DiceASTReferenceChecker
 actions	src/bjc/dicelang/examples/DiceASTLanguageTest.java	/^	private static IMap<String, DiceASTPragma>	actions;$/;"	f	class:DiceASTLanguageTest	file:
 acts	src/bjc/dicelang/examples/DiceLanguageTest.java	/^	private static Map<String, BiConsumer<String, DiceLanguageState>> acts;$/;"	f	class:DiceLanguageTest	file:
@@ -273,6 +328,7 @@ bjc.dicelang.v2	src/bjc/dicelang/v2/DiceBox.java	/^package bjc.dicelang.v2;$/;"	
 bjc.dicelang.v2	src/bjc/dicelang/v2/DiceLangConsole.java	/^package bjc.dicelang.v2;$/;"	p
 bjc.dicelang.v2	src/bjc/dicelang/v2/DiceLangEngine.java	/^package bjc.dicelang.v2;$/;"	p
 bjc.dicelang.v2	src/bjc/dicelang/v2/DoubleMatcher.java	/^package bjc.dicelang.v2;$/;"	p
+bjc.dicelang.v2	src/bjc/dicelang/v2/Errors.java	/^package bjc.dicelang.v2;$/;"	p
 bjc.dicelang.v2	src/bjc/dicelang/v2/Evaluator.java	/^package bjc.dicelang.v2;$/;"	p
 bjc.dicelang.v2	src/bjc/dicelang/v2/Node.java	/^package bjc.dicelang.v2;$/;"	p
 bjc.dicelang.v2	src/bjc/dicelang/v2/Parser.java	/^package bjc.dicelang.v2;$/;"	p
@@ -291,16 +347,19 @@ canOptimize	src/bjc/dicelang/ast/nodes/IntegerLiteralNode.java	/^	public boolean
 canOptimize	src/bjc/dicelang/v2/DiceBox.java	/^		boolean canOptimize();$/;"	m	interface:DiceBox.Die
 canOptimize	src/bjc/dicelang/v2/DiceBox.java	/^		boolean canOptimize();$/;"	m	interface:DiceBox.DieList
 canOptimize	src/bjc/dicelang/v2/DiceBox.java	/^		public boolean canOptimize() {$/;"	m	class:DiceBox.CompoundDie
+canOptimize	src/bjc/dicelang/v2/DiceBox.java	/^		public boolean canOptimize() {$/;"	m	class:DiceBox.ExplodingDice
+canOptimize	src/bjc/dicelang/v2/DiceBox.java	/^		public boolean canOptimize() {$/;"	m	class:DiceBox.FudgeDie
 canOptimize	src/bjc/dicelang/v2/DiceBox.java	/^		public boolean canOptimize() {$/;"	m	class:DiceBox.ScalarDie
 canOptimize	src/bjc/dicelang/v2/DiceBox.java	/^		public boolean canOptimize() {$/;"	m	class:DiceBox.SimpleDie
 canOptimize	src/bjc/dicelang/v2/DiceBox.java	/^		public boolean canOptimize() {$/;"	m	class:DiceBox.SimpleDieList
 collapse	src/bjc/dicelang/ast/optimization/ArithmeticCollapser.java	/^	public ITree<IDiceASTNode> collapse($/;"	m	class:ArithmeticCollapser
 combineArrayResults	src/bjc/dicelang/ast/ArithmeticCollapser.java	/^	private IList<IResult> combineArrayResults(IResult accumulatedValue,$/;"	m	class:ArithmeticCollapser	file:
 commandNumber	src/bjc/dicelang/v2/DiceLangConsole.java	/^	private int commandNumber;$/;"	f	class:DiceLangConsole	file:
+comparePoint	src/bjc/dicelang/v2/DiceBox.java	/^	private static final String comparePoint         = "[<>=]\\\\d+";$/;"	f	class:DiceBox	file:
 compoundCollapser	src/bjc/dicelang/ast/optimization/ConstantCollapser.java	/^	private static final ArithmeticCollapser	compoundCollapser	= new ArithmeticCollapser($/;"	f	class:ConstantCollapser	file:
-compoundDie	src/bjc/dicelang/v2/DiceBox.java	/^	private static final String  compoundDie        = simpleDie + "c(?:(?:" + simpleDie + ")|(?:\\\\d+))";$/;"	f	class:DiceBox	file:
-compoundDiePattern	src/bjc/dicelang/v2/DiceBox.java	/^	private static final Pattern compoundDiePattern = Pattern.compile("\\\\A" + compoundDie + "\\\\Z");$/;"	f	class:DiceBox	file:
-compoundGroup	src/bjc/dicelang/v2/DiceBox.java	/^	private static final String  compoundGroup      = "(?:(?:" + scalarDie + ")|(?:" + simpleDie + ")|(?:"$/;"	f	class:DiceBox	file:
+compoundDie	src/bjc/dicelang/v2/DiceBox.java	/^	private static final String  compoundDie         = simpleDie + "c(?:(?:" + simpleDie + ")|(?:\\\\d+))";$/;"	f	class:DiceBox	file:
+compoundDiePattern	src/bjc/dicelang/v2/DiceBox.java	/^	private static final Pattern compoundDiePattern  = Pattern.compile("\\\\A" + compoundDie + "\\\\Z");$/;"	f	class:DiceBox	file:
+compoundGroup	src/bjc/dicelang/v2/DiceBox.java	/^	private static final String  compoundGroup       = "(?:(?:\\\\d+)|(?:" + simpleDie + ")|(?:"$/;"	f	class:DiceBox	file:
 condense	src/bjc/dicelang/ast/optimization/OperationCondenser.java	/^	public static ITree<IDiceASTNode> condense(ITree<IDiceASTNode> ast) {$/;"	m	class:OperationCondenser
 containsSimpleVariable	src/bjc/dicelang/ast/DiceASTUtils.java	/^	public static boolean containsSimpleVariable($/;"	m	class:DiceASTUtils
 convertLeafNode	src/bjc/dicelang/ast/DiceASTParser.java	/^		private static IDiceASTNode convertLeafNode(String leafNode) {$/;"	m	class:DiceASTParser	file:
@@ -326,9 +385,11 @@ deaffixationList	src/bjc/dicelang/v2/DiceLangEngine.java	/^	private List<IPair<S
 debugMode	src/bjc/dicelang/v2/DiceLangEngine.java	/^	private boolean debugMode;$/;"	f	class:DiceLangEngine	file:
 defineMode	src/bjc/dicelang/v2/DiceLangConsole.java	/^	private boolean defineMode(String defineText) {$/;"	m	class:DiceLangConsole	file:
 defnsSorted	src/bjc/dicelang/v2/DiceLangEngine.java	/^	private boolean defnsSorted;$/;"	f	class:DiceLangEngine	file:
-diceList	src/bjc/dicelang/v2/DiceBox.java	/^	private static final String  diceList           = compoundGroup + "dl" + compoundGroup;$/;"	f	class:DiceBox	file:
-diceListPattern	src/bjc/dicelang/v2/DiceBox.java	/^	private static final Pattern diceListPattern    = Pattern.compile("\\\\A" + diceList + "\\\\Z");$/;"	f	class:DiceBox	file:
-diceSize	src/bjc/dicelang/v2/DiceBox.java	/^		private long diceSize;$/;"	f	class:DiceBox.SimpleDie	file:
+deriveCond	src/bjc/dicelang/v2/DiceBox.java	/^		private Predicate<Long> deriveCond(String patt) {$/;"	m	class:DiceBox.ExplodingDice	file:
+devError	src/bjc/dicelang/v2/Errors.java	/^	private void devError(ErrorKey key, String[] args) {$/;"	m	class:Errors	file:
+diceList	src/bjc/dicelang/v2/DiceBox.java	/^	private static final String  diceList            = compoundGroup + "dl" + compoundGroup;$/;"	f	class:DiceBox	file:
+diceListPattern	src/bjc/dicelang/v2/DiceBox.java	/^	private static final Pattern diceListPattern     = Pattern.compile("\\\\A" + diceList + "\\\\Z");$/;"	f	class:DiceBox	file:
+diceSize	src/bjc/dicelang/v2/DiceBox.java	/^		private Die diceSize;$/;"	f	class:DiceBox.SimpleDie	file:
 diceVal	src/bjc/dicelang/v2/Evaluator.java	/^		public DiceBox.DieExpression diceVal;$/;"	f	class:Evaluator.Result
 diceValue	src/bjc/dicelang/v2/Token.java	/^	public DiceBox.DieExpression diceValue;$/;"	f	class:Token
 die	src/bjc/dicelang/ComplexDice.java	/^	private IDiceExpression	die;$/;"	f	class:ComplexDice	file:
@@ -355,10 +416,15 @@ eval	src/bjc/dicelang/v2/DiceLangEngine.java	/^	private Evaluator eval;$/;"	f	cl
 evaluate	src/bjc/dicelang/v2/Evaluator.java	/^	public Result evaluate(ITree<Node> comm) {$/;"	m	class:Evaluator
 evaluateAST	src/bjc/dicelang/ast/DiceASTEvaluator.java	/^	public static IResult evaluateAST(ITree<IDiceASTNode> expression,$/;"	m	class:DiceASTEvaluator
 evaluateBinaryOp	src/bjc/dicelang/v2/Evaluator.java	/^	private ITree<Node> evaluateBinaryOp(ITree<Node> ast) {$/;"	m	class:Evaluator	file:
+evaluateDiceBinary	src/bjc/dicelang/v2/Evaluator.java	/^	private ITree<Node> evaluateDiceBinary(Token.Type op, Result left, Result right) {$/;"	m	class:Evaluator	file:
 evaluateLeaf	src/bjc/dicelang/ast/DiceASTEvaluator.java	/^	private static IPair<IResult, ITree<IDiceASTNode>> evaluateLeaf($/;"	m	class:DiceASTEvaluator	file:
 evaluateLiteral	src/bjc/dicelang/ast/DiceASTEvaluator.java	/^	private static IResult evaluateLiteral(IDiceASTNode leafNode) {$/;"	m	class:DiceASTEvaluator	file:
+evaluateMathBinary	src/bjc/dicelang/v2/Evaluator.java	/^	private ITree<Node> evaluateMathBinary(Token.Type op, Result left, Result right) {$/;"	m	class:Evaluator	file:
 evaluateNode	src/bjc/dicelang/v2/Evaluator.java	/^	private ITree<Node> evaluateNode(ITree<Node> ast) {$/;"	m	class:Evaluator	file:
 evaluateTokenRef	src/bjc/dicelang/v2/Evaluator.java	/^	private ITree<Node> evaluateTokenRef(Token tk) {$/;"	m	class:Evaluator	file:
+explodeOn	src/bjc/dicelang/v2/DiceBox.java	/^		private Predicate<Long> explodeOn;$/;"	f	class:DiceBox.ExplodingDice	file:
+explodePattern	src/bjc/dicelang/v2/DiceBox.java	/^		private String          explodePattern;$/;"	f	class:DiceBox.ExplodingDice	file:
+explodePenetrates	src/bjc/dicelang/v2/DiceBox.java	/^		private boolean         explodePenetrates;$/;"	f	class:DiceBox.ExplodingDice	file:
 expression	src/bjc/dicelang/BindingDiceExpression.java	/^	private IDiceExpression	expression;$/;"	f	class:BindingDiceExpression	file:
 expression	src/bjc/dicelang/ast/nodes/DiceLiteralNode.java	/^	private IDiceExpression expression;$/;"	f	class:DiceLiteralNode	file:
 flexadecimalMatcher	src/bjc/dicelang/v2/DiceLangEngine.java	/^	private Pattern flexadecimalMatcher = Pattern.compile("\\\\A[\\\\-\\\\+]?[0-9][0-9A-Za-z]+B\\\\d{1,2}\\\\Z");$/;"	f	class:DiceLangEngine	file:
@@ -368,6 +434,8 @@ floatingLiteral	src/bjc/dicelang/v2/DoubleMatcher.java	/^	public static final Pa
 fpRegex	src/bjc/dicelang/v2/DoubleMatcher.java	/^	private static final String fpRegex    =$/;"	f	class:DoubleMatcher	file:
 fromString	src/bjc/dicelang/ComplexDice.java	/^	public static IDiceExpression fromString(String expression) {$/;"	m	class:ComplexDice
 fromString	src/bjc/dicelang/ast/nodes/OperatorDiceNode.java	/^	public static OperatorDiceNode fromString(String s) {$/;"	m	class:OperatorDiceNode
+fudgeDie	src/bjc/dicelang/v2/DiceBox.java	/^	private static final String  fudgeDie            = "(?:\\\\d+)?dF";$/;"	f	class:DiceBox	file:
+fudgeDiePattern	src/bjc/dicelang/v2/DiceBox.java	/^	private static final Pattern fudgeDiePattern     = Pattern.compile("\\\\A" + fudgeDie + "\\\\Z");$/;"	f	class:DiceBox	file:
 getData	src/bjc/dicelang/ast/DummyResult.java	/^	public String getData() {$/;"	m	class:DummyResult
 getLiteralType	src/bjc/dicelang/ast/nodes/DiceLiteralNode.java	/^	public DiceLiteralType getLiteralType() {$/;"	m	class:DiceLiteralNode
 getLiteralType	src/bjc/dicelang/ast/nodes/ILiteralDiceNode.java	/^	DiceLiteralType getLiteralType();$/;"	m	interface:ILiteralDiceNode
@@ -395,11 +463,13 @@ handlePragma	src/bjc/dicelang/v2/DiceLangConsole.java	/^	private boolean handleP
 hashCode	src/bjc/dicelang/ast/nodes/VariableDiceNode.java	/^	public int hashCode() {$/;"	m	class:VariableDiceNode
 helpMode	src/bjc/dicelang/v2/DiceLangConsole.java	/^	private boolean helpMode(String pragma) {$/;"	m	class:DiceLangConsole	file:
 hexadecimalMatcher	src/bjc/dicelang/v2/DiceLangEngine.java	/^	private Pattern hexadecimalMatcher  = Pattern.compile("\\\\A[\\\\-\\\\+]?0x[0-9A-Fa-f]+\\\\Z");$/;"	f	class:DiceLangEngine	file:
+inError	src/bjc/dicelang/v2/Define.java	/^	public final boolean inError;$/;"	f	class:Define
 init	src/bjc/dicelang/v2/StreamEngine.java	/^	private void init() {$/;"	m	class:StreamEngine	file:
 initialValue	src/bjc/dicelang/ast/ArithmeticCollapser.java	/^	private int						initialValue;$/;"	f	class:ArithmeticCollapser	file:
 initialize	src/bjc/dicelang/BindingDiceExpression.java	/^	private void initialize(String name, IDiceExpression expr,$/;"	m	class:BindingDiceExpression	file:
 inlineAll	src/bjc/dicelang/ast/DiceASTInliner.java	/^	public static ITree<IDiceASTNode> inlineAll(ITree<IDiceASTNode> ast,$/;"	m	class:DiceASTInliner
 inlineNode	src/bjc/dicelang/ast/DiceASTInliner.java	/^	private static ITree<IDiceASTNode> inlineNode(IDiceASTNode node,$/;"	m	class:DiceASTInliner	file:
+inst	src/bjc/dicelang/v2/Errors.java	/^	public final static Errors inst;$/;"	f	class:Errors
 intMatcher	src/bjc/dicelang/v2/DiceLangEngine.java	/^	private Pattern intMatcher          = Pattern.compile("\\\\A[\\\\-\\\\+]?\\\\d+\\\\Z");$/;"	f	class:DiceLangEngine	file:
 intVal	src/bjc/dicelang/v2/Evaluator.java	/^		public long intVal;$/;"	f	class:Evaluator.Result
 intValue	src/bjc/dicelang/v2/Token.java	/^	public long 				 intValue;$/;"	f	class:Token
@@ -426,6 +496,7 @@ main	src/bjc/dicelang/examples/DiceASTLanguageTest.java	/^	public static void ma
 main	src/bjc/dicelang/examples/DiceExpressionParserTest.java	/^	public static void main(String[] args) {$/;"	m	class:DiceExpressionParserTest
 main	src/bjc/dicelang/examples/DiceLanguageTest.java	/^	public static void main(String[] args) {$/;"	m	class:DiceLanguageTest
 main	src/bjc/dicelang/v2/DiceLangConsole.java	/^	public static void main(String[] args) {$/;"	m	class:DiceLangConsole
+mode	src/bjc/dicelang/v2/Errors.java	/^	private ErrorMode mode;$/;"	f	class:Errors	file:
 multiply	src/bjc/dicelang/DiceExpressionBuilder.java	/^	public DiceExpressionBuilder multiply(IDiceExpression exp) {$/;"	m	class:DiceExpressionBuilder
 multiply	src/bjc/dicelang/DiceExpressionBuilder.java	/^	public DiceExpressionBuilder multiply(int num) {$/;"	m	class:DiceExpressionBuilder
 multiplyCollapser	src/bjc/dicelang/ast/optimization/ConstantCollapser.java	/^	private static final ArithmeticCollapser	multiplyCollapser	= new ArithmeticCollapser($/;"	f	class:ConstantCollapser	file:
@@ -436,8 +507,9 @@ name	src/bjc/dicelang/ReferenceDiceExpression.java	/^	private String							name;
 nextLiteral	src/bjc/dicelang/v2/DiceLangEngine.java	/^	private int nextLiteral;$/;"	f	class:DiceLangEngine	file:
 nextSym	src/bjc/dicelang/v2/DiceLangEngine.java	/^	private int nextSym;$/;"	f	class:DiceLangEngine	file:
 nonExpandPattern	src/bjc/dicelang/v2/DiceLangEngine.java	/^	private Pattern nonExpandPattern = Pattern.compile("<([^\\\\>&&[^\\\\s]]*(?:\\\\>(?:[^\\\\>&&[^\\\\s]])*)*)>");$/;"	f	class:DiceLangEngine	file:
+numDice	src/bjc/dicelang/v2/DiceBox.java	/^		private Die numDice;$/;"	f	class:DiceBox.FudgeDie	file:
+numDice	src/bjc/dicelang/v2/DiceBox.java	/^		private Die numDice;$/;"	f	class:DiceBox.SimpleDie	file:
 numDice	src/bjc/dicelang/v2/DiceBox.java	/^		private Die numDice;$/;"	f	class:DiceBox.SimpleDieList	file:
-numDice	src/bjc/dicelang/v2/DiceBox.java	/^		private long numDice;$/;"	f	class:DiceBox.SimpleDie	file:
 number	src/bjc/dicelang/ScalarDie.java	/^	private int number;$/;"	f	class:ScalarDie	file:
 opExpansionList	src/bjc/dicelang/v2/DiceLangEngine.java	/^	private List<IPair<String, String>> opExpansionList;$/;"	f	class:DiceLangEngine	file:
 operatorType	src/bjc/dicelang/v2/Node.java	/^	public Token.Type 		operatorType;$/;"	f	class:Node
@@ -453,8 +525,10 @@ optimize	src/bjc/dicelang/ast/nodes/IntegerLiteralNode.java	/^	public int optimi
 optimize	src/bjc/dicelang/v2/DiceBox.java	/^		long optimize();$/;"	m	interface:DiceBox.Die
 optimize	src/bjc/dicelang/v2/DiceBox.java	/^		long[] optimize();$/;"	m	interface:DiceBox.DieList
 optimize	src/bjc/dicelang/v2/DiceBox.java	/^		public long optimize() {$/;"	m	class:DiceBox.CompoundDie
+optimize	src/bjc/dicelang/v2/DiceBox.java	/^		public long optimize() {$/;"	m	class:DiceBox.FudgeDie
 optimize	src/bjc/dicelang/v2/DiceBox.java	/^		public long optimize() {$/;"	m	class:DiceBox.ScalarDie
 optimize	src/bjc/dicelang/v2/DiceBox.java	/^		public long optimize() {$/;"	m	class:DiceBox.SimpleDie
+optimize	src/bjc/dicelang/v2/DiceBox.java	/^		public long[] optimize() {$/;"	m	class:DiceBox.ExplodingDice
 optimize	src/bjc/dicelang/v2/DiceBox.java	/^		public long[] optimize() {$/;"	m	class:DiceBox.SimpleDieList
 optimizeLeaf	src/bjc/dicelang/ast/optimization/ConstantCollapser.java	/^	public ITree<IDiceASTNode> optimizeLeaf(IDiceASTNode leafNode) {$/;"	m	class:ConstantCollapser
 optimizeLeaf	src/bjc/dicelang/ast/optimization/IOptimizationPass.java	/^	public ITree<IDiceASTNode> optimizeLeaf(IDiceASTNode leafNode);$/;"	m	interface:IOptimizationPass
@@ -479,6 +553,7 @@ predicate	src/bjc/dicelang/v2/Define.java	/^	private Pattern predicate;$/;"	f	cl
 prefixMode	src/bjc/dicelang/v2/DiceLangEngine.java	/^	private boolean prefixMode;$/;"	f	class:DiceLangEngine	file:
 prepareCommand	src/bjc/dicelang/examples/DiceExpressionPreparer.java	/^	public static IList<String> prepareCommand(String currentLine) {$/;"	m	class:DiceExpressionPreparer
 printEnv	src/bjc/dicelang/examples/DiceLanguageTest.java	/^	private static void printEnv(String ln, DiceLanguageState stat) {$/;"	m	class:DiceLanguageTest	file:
+printError	src/bjc/dicelang/v2/Errors.java	/^	public void printError(ErrorKey key, String... args) {$/;"	m	class:Errors
 priority	src/bjc/dicelang/v2/Define.java	/^	public final int priority;$/;"	f	class:Define
 processCommand	src/bjc/dicelang/v2/StreamEngine.java	/^	private boolean processCommand(String tk) {$/;"	m	class:StreamEngine	file:
 quotePattern	src/bjc/dicelang/v2/DiceLangEngine.java	/^	private Pattern quotePattern = Pattern.compile("\\"([^\\\\\\"]*(?:\\\\\\"(?:[^\\\\\\"])*)*)\\"");$/;"	f	class:DiceLangEngine	file:
@@ -504,15 +579,22 @@ roll	src/bjc/dicelang/ScalarDie.java	/^	public int roll() {$/;"	m	class:ScalarDi
 roll	src/bjc/dicelang/v2/DiceBox.java	/^		long roll();$/;"	m	interface:DiceBox.Die
 roll	src/bjc/dicelang/v2/DiceBox.java	/^		long[] roll();$/;"	m	interface:DiceBox.DieList
 roll	src/bjc/dicelang/v2/DiceBox.java	/^		public long roll() {$/;"	m	class:DiceBox.CompoundDie
+roll	src/bjc/dicelang/v2/DiceBox.java	/^		public long roll() {$/;"	m	class:DiceBox.FudgeDie
 roll	src/bjc/dicelang/v2/DiceBox.java	/^		public long roll() {$/;"	m	class:DiceBox.ScalarDie
 roll	src/bjc/dicelang/v2/DiceBox.java	/^		public long roll() {$/;"	m	class:DiceBox.SimpleDie
+roll	src/bjc/dicelang/v2/DiceBox.java	/^		public long[] roll() {$/;"	m	class:DiceBox.ExplodingDice
 roll	src/bjc/dicelang/v2/DiceBox.java	/^		public long[] roll() {$/;"	m	class:DiceBox.SimpleDieList
 rollReference	src/bjc/dicelang/examples/DiceLanguageTest.java	/^	private static void rollReference(String ln, DiceLanguageState stat) {$/;"	m	class:DiceLanguageTest	file:
+rollSingle	src/bjc/dicelang/v2/DiceBox.java	/^		long rollSingle();$/;"	m	interface:DiceBox.Die
+rollSingle	src/bjc/dicelang/v2/DiceBox.java	/^		public long rollSingle() {$/;"	m	class:DiceBox.CompoundDie
+rollSingle	src/bjc/dicelang/v2/DiceBox.java	/^		public long rollSingle() {$/;"	m	class:DiceBox.FudgeDie
+rollSingle	src/bjc/dicelang/v2/DiceBox.java	/^		public long rollSingle() {$/;"	m	class:DiceBox.ScalarDie
+rollSingle	src/bjc/dicelang/v2/DiceBox.java	/^		public long rollSingle() {$/;"	m	class:DiceBox.SimpleDie
 run	src/bjc/dicelang/v2/DiceLangConsole.java	/^	public void run() {$/;"	m	class:DiceLangConsole
 runCommand	src/bjc/dicelang/v2/DiceLangEngine.java	/^	public boolean runCommand(String command) {$/;"	m	class:DiceLangEngine
 sanitize	src/bjc/dicelang/ast/DiceASTReferenceSanitizer.java	/^	public static ITree<IDiceASTNode> sanitize(ITree<IDiceASTNode> ast,$/;"	m	class:DiceASTReferenceSanitizer
 scalar	src/bjc/dicelang/v2/DiceBox.java	/^		public Die     scalar;$/;"	f	class:DiceBox.DieExpression
-scalarDie	src/bjc/dicelang/v2/DiceBox.java	/^	private static final String  scalarDie          = "[\\\\+\\\\-]?\\\\d+";$/;"	f	class:DiceBox	file:
+scalarDie	src/bjc/dicelang/v2/DiceBox.java	/^	private static final String  scalarDie          = "[\\\\+\\\\-]?\\\\d+sd";$/;"	f	class:DiceBox	file:
 scalarDiePattern	src/bjc/dicelang/v2/DiceBox.java	/^	private static final Pattern scalarDiePattern   = Pattern.compile("\\\\A" + scalarDie + "\\\\Z");$/;"	f	class:DiceBox	file:
 searcher	src/bjc/dicelang/v2/Define.java	/^	private Pattern searcher;$/;"	f	class:Define	file:
 selectiveInline	src/bjc/dicelang/ast/DiceASTInliner.java	/^	public static ITree<IDiceASTNode> selectiveInline($/;"	m	class:DiceASTInliner
@@ -520,21 +602,23 @@ shouldContinuePopping	src/bjc/dicelang/ast/DiceASTParser.java	/^		private static
 shouldSanitize	src/bjc/dicelang/ast/DiceASTReferenceSanitizer.java	/^	private static TopDownTransformResult shouldSanitize($/;"	m	class:DiceASTReferenceSanitizer	file:
 shunt	src/bjc/dicelang/v2/DiceLangEngine.java	/^	private Shunter shunt;$/;"	f	class:DiceLangEngine	file:
 shuntTokens	src/bjc/dicelang/v2/Shunter.java	/^	public boolean shuntTokens(IList<Token> tks, IList<Token> returned) {$/;"	m	class:Shunter
-simpleDie	src/bjc/dicelang/v2/DiceBox.java	/^	private static final String  simpleDie          = "(?:\\\\d+)?d\\\\d+";$/;"	f	class:DiceBox	file:
-simpleDiePattern	src/bjc/dicelang/v2/DiceBox.java	/^	private static final Pattern simpleDiePattern   = Pattern.compile("\\\\A" + simpleDie + "\\\\Z");$/;"	f	class:DiceBox	file:
+simpleDie	src/bjc/dicelang/v2/DiceBox.java	/^	private static final String  simpleDie           = "(?:\\\\d+)?d\\\\d+";$/;"	f	class:DiceBox	file:
+simpleDiePattern	src/bjc/dicelang/v2/DiceBox.java	/^	private static final Pattern simpleDiePattern    = Pattern.compile("\\\\A" + simpleDie + "\\\\Z");$/;"	f	class:DiceBox	file:
 size	src/bjc/dicelang/v2/DiceBox.java	/^		private Die size;$/;"	f	class:DiceBox.SimpleDieList	file:
 slashPattern	src/bjc/dicelang/v2/DiceLangConsole.java	/^	private Pattern slashPattern = Pattern.compile("\/((?:\\\\\\\\.|[^\/\\\\\\\\])*)\/");$/;"	f	class:DiceLangConsole	file:
 sortDefns	src/bjc/dicelang/v2/DiceLangEngine.java	/^	public void sortDefns() {$/;"	m	class:DiceLangEngine
+source	src/bjc/dicelang/v2/DiceBox.java	/^		private Die             source;$/;"	f	class:DiceBox.ExplodingDice	file:
 streamEng	src/bjc/dicelang/v2/DiceLangEngine.java	/^	private StreamEngine streamEng;$/;"	f	class:DiceLangEngine	file:
 streams	src/bjc/dicelang/v2/StreamEngine.java	/^	private Tape<IList<String>> streams;$/;"	f	class:StreamEngine	file:
 stringLitMatcher	src/bjc/dicelang/v2/DiceLangEngine.java	/^	private Pattern stringLitMatcher    = Pattern.compile("\\\\AstringLiteral(\\\\d+)\\\\Z");$/;"	f	class:DiceLangEngine	file:
-stringLits	src/bjc/dicelang/v2/DiceLangEngine.java	/^	private IMap<Integer, String> stringLits;$/;"	f	class:DiceLangEngine	file:
+stringLits	src/bjc/dicelang/v2/DiceLangEngine.java	/^	public final IMap<Integer, String> stringLits;$/;"	f	class:DiceLangEngine
+stringVal	src/bjc/dicelang/v2/Evaluator.java	/^		public String stringVal;$/;"	f	class:Evaluator.Result
 stringValue	src/bjc/dicelang/v2/Token.java	/^	public String 				 stringValue;$/;"	f	class:Token
 subType	src/bjc/dicelang/v2/Define.java	/^	private boolean subType;$/;"	f	class:Define	file:
 subtract	src/bjc/dicelang/DiceExpressionBuilder.java	/^	public DiceExpressionBuilder subtract(IDiceExpression exp) {$/;"	m	class:DiceExpressionBuilder
 subtract	src/bjc/dicelang/DiceExpressionBuilder.java	/^	public DiceExpressionBuilder subtract(int num) {$/;"	m	class:DiceExpressionBuilder
 subtractCollapser	src/bjc/dicelang/ast/optimization/ConstantCollapser.java	/^	private static final ArithmeticCollapser	subtractCollapser	= new ArithmeticCollapser($/;"	f	class:ConstantCollapser	file:
-symTable	src/bjc/dicelang/v2/DiceLangEngine.java	/^	private IMap<Integer, String> symTable;$/;"	f	class:DiceLangEngine	file:
+symTable	src/bjc/dicelang/v2/DiceLangEngine.java	/^	public final IMap<Integer, String> symTable;$/;"	f	class:DiceLangEngine
 toExpression	src/bjc/dicelang/IDiceExpression.java	/^	static IDiceExpression toExpression(String expression) {$/;"	m	interface:IDiceExpression
 toString	src/bjc/dicelang/BindingDiceExpression.java	/^	public String toString() {$/;"	m	class:BindingDiceExpression
 toString	src/bjc/dicelang/ComplexDice.java	/^	public String toString() {$/;"	m	class:ComplexDice
@@ -553,6 +637,8 @@ toString	src/bjc/dicelang/ast/nodes/IntegerLiteralNode.java	/^	public String toS
 toString	src/bjc/dicelang/ast/nodes/VariableDiceNode.java	/^	public String toString() {$/;"	m	class:VariableDiceNode
 toString	src/bjc/dicelang/v2/DiceBox.java	/^		public String toString() {$/;"	m	class:DiceBox.CompoundDie
 toString	src/bjc/dicelang/v2/DiceBox.java	/^		public String toString() {$/;"	m	class:DiceBox.DieExpression
+toString	src/bjc/dicelang/v2/DiceBox.java	/^		public String toString() {$/;"	m	class:DiceBox.ExplodingDice
+toString	src/bjc/dicelang/v2/DiceBox.java	/^		public String toString() {$/;"	m	class:DiceBox.FudgeDie
 toString	src/bjc/dicelang/v2/DiceBox.java	/^		public String toString() {$/;"	m	class:DiceBox.ScalarDie
 toString	src/bjc/dicelang/v2/DiceBox.java	/^		public String toString() {$/;"	m	class:DiceBox.SimpleDie
 toString	src/bjc/dicelang/v2/DiceBox.java	/^		public String toString() {$/;"	m	class:DiceBox.SimpleDieList

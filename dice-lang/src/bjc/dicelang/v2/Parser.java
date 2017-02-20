@@ -7,6 +7,7 @@ import bjc.utils.data.ITree;
 import bjc.utils.data.Tree;
 import bjc.utils.funcdata.IList;
 
+import static bjc.dicelang.v2.Errors.ErrorKey.*;
 import static bjc.dicelang.v2.Node.Type.*;
 import static bjc.dicelang.v2.Token.Type.*;
 
@@ -28,7 +29,7 @@ public class Parser {
 				case CBRACKET:
 				case CBRACE:
 					if(working.size() == 0) {
-						System.out.println("\tERROR: Group closing with no possible group opener");
+						Errors.inst.printError(EK_PARSE_NOCLOSE);
 						return false;
 					}
 					
@@ -54,8 +55,7 @@ public class Parser {
 					ITree<Node> matchNode = new Tree<>(new Node(OGROUP, matching));
 
 					if(!working.contains(matchNode)) {
-						System.out.println("\tERROR: Found group closing without group opener: (closing was " + tk + ", matcher was "
-								+ matchNode + ")");
+						Errors.inst.printError(EK_PARSE_UNCLOSE, tk.toString(), matchNode.toString());
 
 						System.out.println("\tCurrent forest is: ");
 
@@ -63,6 +63,7 @@ public class Parser {
 						for(ITree<Node> ast : working) {
 							System.out.println("Tree " + treeNo++ + ": " + ast.toString());
 						}
+
 						return false;
 					} else {
 						Deque<ITree<Node>> childs = new LinkedList<>();
@@ -84,7 +85,8 @@ public class Parser {
 				case LET:
 				case BIND:
 					if(working.size() < 2) {
-						System.out.println("\tERROR: Let and bind require at least two operands");
+						Errors.inst.printError(EK_PARSE_BINARY);
+						return false;
 					} else {
 						ITree<Node> right = working.pop();
 						ITree<Node> left  = working.pop();
@@ -103,7 +105,7 @@ public class Parser {
 				case DICECONCAT:
 				case DICELIST:
 					if(working.size() == 0) {
-						System.out.println("\tERROR: Binary operator " + tk.type + " requires more operands than provided.");
+						Errors.inst.printError(EK_PARSE_UNOPERAND, tk.toString());
 						return false;
 					} else if(working.size() == 1) {
 						ITree<Node> operand = working.pop();
@@ -133,7 +135,7 @@ public class Parser {
 					working.push(new Tree<>(new Node(TOKREF, tk)));
 					break;
 				default:
-					System.out.println("\tERROR: Unrecognized token type in parsing: " + tk.type);
+					Errors.inst.printError(EK_PARSE_INVTOKEN, tk.type.toString());
 					return false;
 			}
 		}

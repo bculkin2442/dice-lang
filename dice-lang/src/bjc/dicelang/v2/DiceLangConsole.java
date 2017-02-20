@@ -6,6 +6,8 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static bjc.dicelang.v2.Errors.ErrorKey.*;
+
 public class DiceLangConsole {
 	private int commandNumber;
 
@@ -13,7 +15,6 @@ public class DiceLangConsole {
 
 	public DiceLangConsole(String[] args) {
 		// @TODO do something with the args
-		
 		commandNumber = 0;
 
 		eng = new DiceLangEngine();
@@ -31,19 +32,15 @@ public class DiceLangConsole {
 			if(comm.startsWith("pragma")) {
 				boolean success = handlePragma(comm.substring(7));
 
-				if(success) 
-					System.out.println("Pragma completed succesfully");
-				else
-					System.out.println("Pragma execution failed");
+				if(success) System.out.println("Pragma completed succesfully");
+				else        System.out.println("Pragma execution failed");
 			} else {
 				System.out.printf("\tRaw command: %s\n", comm);
 
 				boolean success = eng.runCommand(comm);
 
-				if(success) 
-					System.out.println("Command completed succesfully");
-				else
-					System.out.println("Command execution failed");
+				if(success) System.out.println("Command completed succesfully");
+				else        System.out.println("Command execution failed");
 
 				commandNumber += 1;
 			}
@@ -81,7 +78,7 @@ public class DiceLangConsole {
 			case "help":
 				return helpMode(pragma.substring(5));
 			default:
-				System.out.println("\tERROR: Unknown pragma: " + pragma);
+				Errors.inst.printError(EK_CONS_INVPRAG, pragma);
 				return false;
 		}
 
@@ -90,7 +87,20 @@ public class DiceLangConsole {
 	
 	private boolean helpMode(String pragma) {
 		switch(pragma.trim()) {
+			case "help":
+				System.out.println("\tGet help on pragmas");
+				break;
+			case "debug":
+				System.out.println("\tToggle debug mode. (Output stage results)");
+				break;
+			case "postfix":
+				System.out.println("\tToggle postfix mode. (Don't shunt tokens)");
+				break;
+			case "prefix":
+				System.out.println("\tToggle prefix mode. (Reverse token order instead of shunting)");
+				break;
 			case "define":
+				System.out.println("\tAdd a macro rewrite directive.");
 				System.out.println("\tdefine <priority> <type> <recursion> <guard> <circular> <patterns>...");
 				break;
 			default:
@@ -124,22 +134,22 @@ public class DiceLangConsole {
 		int sixthIndex    = defineText.indexOf(' ', fifthIndex + 1);
 
 		if(firstIndex == -1) {
-			System.out.println("\tERROR: Improperly formatted define (no priority)");
+			Errors.inst.printError(EK_CONS_INVDEFINE, "(no priority)");
 			return false;
 		} else if(secondIndex == -1) {
-			System.out.println("\tERROR: Improperly formatted define (no define type)");
+			Errors.inst.printError(EK_CONS_INVDEFINE, "(no define type)");
 			return false;
 		} else if(thirdIndex == -1) {
-			System.out.println("\tERROR: Improperly formatted define (no recursion type)");
+			Errors.inst.printError(EK_CONS_INVDEFINE, "(no recursion type)");
 			return false;
 		} else if(fourthIndex == -1) {
-			System.out.println("\tERROR: Improperly formatted define (no guard type)");
+			Errors.inst.printError(EK_CONS_INVDEFINE, "(no guard type)");
 			return false;
 		} else if(fifthIndex == -1) {
-			System.out.println("\tERROR: Improperly formatted define (no circularity)");
+			Errors.inst.printError(EK_CONS_INVDEFINE, "(no circularity)");
 			return false;
 		} else if(sixthIndex == -1) {
-			System.out.println("\tERROR: Improperly formatted define (no patterns)");
+			Errors.inst.printError(EK_CONS_INVDEFINE, "(no patterns)");
 			return false;
 		}
 
@@ -166,8 +176,7 @@ public class DiceLangConsole {
 				subMode = true;
 				break;
 			default:
-				System.out.println("\tERROR: Unknown define type "
-						+ defineType);
+				Errors.inst.printError(EK_CONS_INVDEFINE, "(unknown type)");
 				return false;
 		}
 
@@ -185,14 +194,16 @@ public class DiceLangConsole {
 
 		if(hasGuard) {
 			if(!patMatcher.find()) {
-				System.out.println("\tERROR: Improperly formatted define (no guard pattern)");
+				Errors.inst.printError(EK_CONS_INVDEFINE, "(no guard pattern)");
+				return false;
 			}
 
 			guardPattern = patMatcher.group(1);
 		}
 
 		if(!patMatcher.find()) {
-			System.out.println("\tERROR: Improperly formatted define (no search pattern)");
+			Errors.inst.printError(EK_CONS_INVDEFINE, "(no search pattern)");
+			return false;
 		}
 
 		String searchPattern = patMatcher.group(1);
@@ -205,6 +216,8 @@ public class DiceLangConsole {
 		Define dfn = new Define(priority, subMode, doRecur, isCircular,
 				guardPattern, searchPattern, replacePatterns);
 		
+		if(dfn.inError) return false;
+
 		if(type == Define.Type.LINE) {
 			eng.addLineDefine(dfn);
 		} else {

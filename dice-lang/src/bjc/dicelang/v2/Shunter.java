@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
 
+import static bjc.dicelang.v2.Errors.ErrorKey.*;
 import static bjc.dicelang.v2.Token.Type.*;
 
 public class Shunter {
@@ -73,10 +74,7 @@ public class Shunter {
 						|| unaryAdjectives.contains(tk.type);
 
 					if(isOp) {
-						System.out.printf("\tError: Unary operator %s is an"
-								+ " adjective, not an adverb (can't be applied"
-								+ " to operator %s)\n", currOperator, tk );
-						
+						Errors.inst.printError(EK_SHUNT_NOTADV, currOperator.toString(), tk.toString());
 						return false;
 					}
 
@@ -84,8 +82,8 @@ public class Shunter {
 					currReturned.addLast(unaryOps.pop());
 				} else if (unaryAdverbs.contains(currOperator.type)) {
 					if(opStack.size() < 1) {
-						System.out.printf("\tError: Unary operators %s is an adverb,"
-								+ " but there is no operator to apply it to\n");
+						Errors.inst.printError(EK_SHUNT_NOOP, currOperator.toString());
+						return false;
 					}
 
 					Token currOperand = opStack.peek();
@@ -95,9 +93,9 @@ public class Shunter {
 						|| unaryAdjectives.contains(currOperand.type);
 
 					if(!isOp) {
-						System.out.printf("\tError: Unary operator %s is an adverb,"
-								+ " not an  adjective (can't be applied to operand %s)\n",
-								currOperator, tk);
+						Errors.inst.printError(EK_SHUNT_NOTADJ,
+								currOperator.toString(),
+								tk.toString());
 						
 						return false;
 					}
@@ -140,9 +138,8 @@ public class Shunter {
 					}
 
 					if(!opStack.contains(matching)) {
-						System.out.printf("\tError: Could not find matching grouping "
-								+ tk.type);
-
+						Errors.inst.printError(EK_SHUNT_NOGROUP,
+								tk.toString(), matching.toString());
 						return false;
 					}
 
@@ -167,7 +164,7 @@ public class Shunter {
 					}
 
 					if(currReturned.size() == 0) {
-						System.out.println("\tERROR: Didn't find grouper for group seperator to attach to");
+						Errors.inst.printError(EK_SHUNT_INVSEP);
 						return false;
 					}
 

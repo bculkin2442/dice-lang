@@ -2,8 +2,11 @@ package bjc.dicelang.v2;
 
 import bjc.utils.funcdata.FunctionalList;
 import bjc.utils.funcdata.IList;
+import bjc.utils.funcutils.ListUtils;
 import bjc.utils.esodata.SingleTape;
 import bjc.utils.esodata.Tape;
+
+import static bjc.dicelang.v2.Errors.ErrorKey.*;
 
 public class StreamEngine {
 	private DiceLangEngine eng;
@@ -25,11 +28,24 @@ public class StreamEngine {
 	public boolean doStreams(String[] toks, IList<String> dest) {
 		init();
 
+		boolean quoteMode = false;
+
 		for(String tk : toks) {
-			if(tk.startsWith("{@S")) {
-				if(!processCommand(tk)) return false;
+			if(tk.startsWith("{@S") && !quoteMode) {
+				if(tk.equals("{@SQ}")) {
+					quoteMode = true;
+				} else if(!processCommand(tk)) {
+					return false;
+				}
+				// Command ran correctly, continue
 			} else {
-				currStream.add(tk);
+				if(tk.equals("{@SU}")) {
+					quoteMode = false;
+				} else if(tk.equals("\\{@SU}")) {
+					currStream.add("{@SU}");
+				} else {
+					currStream.add(tk);
+				}
 			}
 		}
 
@@ -57,7 +73,7 @@ public class StreamEngine {
 					break;
 				case '>':
 					if(!streams.right()) {
-						System.out.println("\tERROR: Attempted to switch to non-existent stream");
+						Errors.inst.printError(EK_STRM_NONEX);
 						return false;
 					}
 
@@ -65,7 +81,7 @@ public class StreamEngine {
 					break;
 				case '<':
 					if(!streams.left()) {
-						System.out.println("\tERROR: Attempted to switch to non-existent stream");
+						Errors.inst.printError(EK_STRM_NONEX);
 						return false;
 					}
 
@@ -73,15 +89,25 @@ public class StreamEngine {
 					break;
 				case '-':
 					if(streams.size() == 1) {
-						System.out.println("\tERROR: Cannot delete last stream");
+						Errors.inst.printError(EK_STRM_LAST);
 						return false;
 					} else {
 						streams.remove();
 						currStream = streams.item();
 					}
 					break;
+				case 'S':
+					if(streams.size() == 1) {
+						Errors.inst.printError(EK_STRM_LAST);
+						return false;
+					} else {
+						IList<String> stringLit = streams.remove();
+						currStream = streams.item();
+						currStream.add(ListUtils.collapseTokens(stringLit, " "));
+					}
+					break;
 				default:
-					System.out.println("\tERROR: Unknown stream control command: " + tk);
+					Errors.inst.printError(EK_STRM_INVCOM, tk);
 					return false;
 			}
 		}

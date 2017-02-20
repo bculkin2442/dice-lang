@@ -20,6 +20,7 @@ import java.util.LinkedList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static bjc.dicelang.v2.Errors.ErrorKey.*;
 import static bjc.dicelang.v2.Token.Type.*;
 
 public class DiceLangEngine {
@@ -46,8 +47,8 @@ public class DiceLangEngine {
 	private Evaluator eval;
 
 	// Tables for symbols
-	private IMap<Integer, String> symTable;
-	private IMap<Integer, String> stringLits;
+	public final IMap<Integer, String> symTable;
+	public final IMap<Integer, String> stringLits;
 
 	// Literal tokens for tokenization
 	private IMap<String, Token.Type> litTokens;
@@ -302,7 +303,7 @@ public class DiceLangEngine {
 				curBracedTokens = new FunctionalList<>();
 			} else if(tk.type == Token.Type.CBRACE && tk.intValue == 2) {
 				if(curBraceCount == 0) {
-					System.out.println("\tERROR: Encountered closing brace without matching open brace");
+					Errors.inst.printError(EK_ENG_NOOPENING);
 					return false;
 				}
 
@@ -331,6 +332,11 @@ public class DiceLangEngine {
 					preparedTokens.add(tk);
 				}
 			}
+		}
+
+		if(curBraceCount > 0) {
+			Errors.inst.printError(EK_ENG_NOCLOSING);
+			return false;
 		}
 
 		if(debugMode && !postfixMode)
@@ -388,7 +394,13 @@ public class DiceLangEngine {
 			for(ITree<Node> ast : astForest) {
 				System.out.println("\t\tTree " + treeNo + " in forest:\n\t\t    " + ast);
 
-				System.out.println("\t\tEvaluates to " + eval.evaluate(ast));
+				Evaluator.Result res = eval.evaluate(ast);
+				System.out.printf("\t\tEvaluates to %s", res);
+
+				if(res.type == Evaluator.Result.Type.DICE) {
+					System.out.println(" (sample roll " + res.diceVal.value() + ")");
+				}
+
 				treeNo += 1;
 			}
 		}
@@ -445,7 +457,7 @@ public class DiceLangEngine {
 					tk = new Token(CBRACE, token.length());
 					break;
 				default:
-					System.out.println("\tERROR: Unrecognized grouping token " + token);
+					Errors.inst.printError(EK_TOK_UNGROUP, token);
 					break;
 			}
 		}
@@ -468,8 +480,21 @@ public class DiceLangEngine {
 
 			tk = new Token(INT_LIT, Long.parseLong(newToken.substring(2).toUpperCase(), 16));
 		} else if(flexadecimalMatcher.matcher(token).matches()) {
-			tk = new Token(INT_LIT, Long.parseLong(token.substring(0, token.lastIndexOf('B')),
-						Integer.parseInt(token.substring(token.lastIndexOf('B') + 1))));
+			int parseBase = Integer.parseInt(token.substring(token.lastIndexOf('B') + 1));
+
+			if(parseBase < Character.MIN_RADIX || parseBase > Character.MAX_RADIX) {
+				Errors.inst.printError(EK_TOK_INVBASE, Integer.toString(parseBase));
+				return Token.NIL_TOKEN;
+			}
+
+			String flexNum = token.substring(0, token.lastIndexOf('B'));
+
+			try {
+				tk = new Token(INT_LIT, Long.parseLong(flexNum, parseBase));
+			} catch (NumberFormatException nfex) {
+				Errors.inst.printError(EK_TOK_INVFLEX, flexNum, Integer.toString(parseBase));
+				return Token.NIL_TOKEN;
+			}
 		} else if(DoubleMatcher.floatingLiteral.matcher(token).matches()) {
 			tk = new Token(FLOAT_LIT, Double.parseDouble(token));
 		} else if(DiceBox.isValidExpression(token)) {

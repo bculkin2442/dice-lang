@@ -1,8 +1,13 @@
 package bjc.dicelang.v2;
 
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
+import java.util.function.Predicate;
 import java.util.regex.Pattern;
+
+import static bjc.dicelang.v2.Errors.ErrorKey.*;
 
 public class DiceBox {
 	private static final Random rng = new Random();
@@ -12,6 +17,7 @@ public class DiceBox {
 		long optimize();
 
 		long roll();
+		long rollSingle();
 	}
 
 	public interface DieList {
@@ -50,7 +56,7 @@ public class DiceBox {
 		}
 	}
 
-	private static class ScalarDie implements Die {
+	public static class ScalarDie implements Die {
 		private long val;
 
 		public ScalarDie(long vl) {
@@ -69,37 +75,63 @@ public class DiceBox {
 			return val;
 		}
 
+		public long rollSingle() {
+			return val;
+		}
+
 		public String toString() {
 			return Long.toString(val);
 		}
 	}
 
-	private static class SimpleDie implements Die {
-		private long numDice;
-		private long diceSize;
+	public static class SimpleDie implements Die {
+		private Die numDice;
+		private Die diceSize;
 
 		public SimpleDie(long nDice, long size) {
-			numDice = nDice;
+			numDice  = new ScalarDie(nDice);
+			diceSize = new ScalarDie(size);
+		}
+
+		public SimpleDie(Die nDice, long size) {
+			numDice  = nDice;
+			diceSize = new ScalarDie(size);
+		}
+
+		public SimpleDie(long nDice, Die size) {
+			numDice  = new ScalarDie(nDice);
+			diceSize = size;
+		}
+
+		public SimpleDie(Die nDice, Die size) {
+			numDice  = nDice;
 			diceSize = size;
 		}
 
 		public boolean canOptimize() {
-			if(diceSize == 1) return true;
+			if(diceSize.canOptimize() && diceSize.optimize() == 1) return numDice.canOptimize();
 			else return false;
 		}
 
 		public long optimize() {
-			return numDice;
+			return numDice.optimize();
 		}
 
 		public long roll() {
 			long total = 0;
 
-			for(int i = 0; i < numDice; i++) {
-				total += (rng.nextLong() % numDice) + 1;
+			long nDice = numDice.roll();
+			long dSize = diceSize.roll();
+
+			for(int i = 0; i < nDice; i++) {
+				total += (Math.abs(rng.nextLong()) % dSize) + 1;
 			}
 
 			return total;
+		}
+
+		public long rollSingle() {
+			return (Math.abs(rng.nextLong()) % diceSize.roll()) + 1;
 		}
 
 		public String toString() {
@@ -107,7 +139,52 @@ public class DiceBox {
 		}
 	}
 
-	private static class CompoundDie implements Die {
+	public static class FudgeDie implements Die {
+		private Die numDice;
+
+		public FudgeDie(long nDice) {
+			numDice = new ScalarDie(nDice);
+		}
+
+		public boolean canOptimize() {
+			return false;
+		}
+
+		public long optimize() {
+			return 0;
+		}
+
+		public long roll() {
+			long nDice = numDice.roll();
+
+			long res = 0;
+
+			for(int i = 0; i < nDice; i++) {
+				res += rollSingle();
+			}
+
+			return res;
+		}
+
+		public long rollSingle() {
+			switch(rng.nextInt(3)) {
+				case 0:
+					return -1;
+				case 1:
+					return 0;
+				case 2:
+					return 1;
+				default:
+					return 0;
+			}
+		}
+
+		public String toString() {
+			return numDice + "dF";
+		}
+	}
+
+	public static class CompoundDie implements Die {
 		private Die left;
 		private Die right;
 
@@ -128,12 +205,78 @@ public class DiceBox {
 			return Long.parseLong(left.roll() + "" + right.roll());
 		}
 
+		public long rollSingle() {
+			return roll();
+		}
+
 		public String toString() {
 			return left.toString() + "c" + right.toString();
 		}
 	}
 
-	private static class SimpleDieList implements DieList {
+	public static class CompoundingDie implements Die {
+		private Die source;
+		
+		private Predicate<Long> compoundOn;
+		private String          compoundPattern;
+
+		public CompoundingDie(Die src, Predicate<Long> compound) {
+			this(src, compound, null);
+		}
+		
+		public CompoundingDie(Die src, Predicate<Long> compound, String patt) {
+			source = src;
+
+			compoundOn      = compound;
+			compoundPattern = patt;
+		}
+
+		public boolean canOptimize() {
+			return false;
+		}
+
+		public long optimize() {
+			return 0;
+		}
+
+		public long roll() {
+			long res = source.roll();
+
+			long oldRes = res;
+
+			while(compoundOn.test(oldRes)) {
+				oldRes = source.rollSingle();
+
+				res += oldRes;
+			}
+
+			return res;
+		}
+
+		public long rollSingle() {
+			long res = source.rollSingle();
+
+			long oldRes = res;
+
+			while(compoundOn.test(oldRes)) {
+				oldRes = source.rollSingle();
+
+				res += oldRes;
+			}
+
+			return res;
+		}
+
+		public String toString() {
+			if(compoundPattern == null) {
+				return source + "!!";
+			} else {
+				return source + "!!" + compoundPattern;
+			}
+		}
+	}
+
+	public static class SimpleDieList implements DieList {
 		private Die numDice;
 		private Die size;
 
@@ -179,11 +322,78 @@ public class DiceBox {
 		}
 	}
 
+	public static class ExplodingDice implements DieList {
+		private Die             source;
+
+		private Predicate<Long> explodeOn;
+		private String          explodePattern;
+		private boolean         explodePenetrates;
+
+		public ExplodingDice(Die src, Predicate<Long> explode) {
+			this(src, explode, null, false);
+		}
+
+		public ExplodingDice(Die src, Predicate<Long> explode, boolean penetrate) {
+			this(src, explode, null, penetrate);
+		}
+
+		public ExplodingDice(Die src, Predicate<Long> explode, String patt, boolean penetrate) {
+			source            = src;
+			explodeOn         = explode;
+			explodePattern    = patt;
+			explodePenetrates = penetrate;
+		}
+
+		public boolean canOptimize() {
+			return false;
+		}
+
+		public long[] optimize() {
+			return new long[0];
+		}
+
+		public long[] roll() {
+			long res = source.roll();
+
+			List<Long> resList = new LinkedList<>();
+
+			long oldRes = res;
+
+			while(explodeOn.test(oldRes)) {
+				oldRes = source.rollSingle();
+
+				if(explodePenetrates) oldRes -= 1;
+
+				resList.add(oldRes);
+			}
+
+			long[] newRes = new long[resList.size()+1];
+
+			newRes[0] = res;
+
+			int i = 1;
+			for(long rll : resList) {
+				newRes[i] = rll;
+				i         += 1;
+			}
+
+			return newRes;
+		}
+
+		public String toString() {
+			if(explodePattern == null) {
+				return source + (explodePenetrates ? "p" : "") + "!";
+			} else {
+				return source + (explodePenetrates ? "p" : "") + "!" + explodePattern;
+			}
+		}
+	}
+
 	public static DieExpression parseExpression(String exp) {
 		if(!isValidExpression(exp)) return null;
 
 		if(scalarDiePattern.matcher(exp).matches()) {
-			return new DieExpression(new ScalarDie(Long.parseLong(exp)));
+			return new DieExpression(new ScalarDie(Long.parseLong(exp.substring(0, exp.indexOf('s')))));
 		} else if(simpleDiePattern.matcher(exp).matches()) {
 			String[] dieParts = exp.split("d");
 
@@ -192,27 +402,43 @@ public class DiceBox {
 			} else {
 				return new DieExpression(new SimpleDie(Long.parseLong(dieParts[0]), Long.parseLong(dieParts[1])));
 			}
+		} else if(fudgeDiePattern.matcher(exp).matches()) {
+			String nDice = exp.substring(0, exp.indexOf('d'));
+
+			return new DieExpression(new FudgeDie(Long.parseLong(nDice)));
 		} else if(compoundDiePattern.matcher(exp).matches()) {
 			String[] dieParts = exp.split("c");
 
 			DieExpression left  = parseExpression(dieParts[0]);
 			DieExpression right = parseExpression(dieParts[1]);
 
-			if(left.isList || right.isList) {
-				// @TODO give a specific error message
-				return null;
-			}
-
 			return new DieExpression(new CompoundDie(left.scalar, right.scalar));
+		} else if(compoundingDiePattern.matcher(exp).matches()) {
+			String[] dieParts = exp.split("!!");
+
+			DieExpression   left  = parseExpression(dieParts[0]);
+			Predicate<Long> right = deriveCond(dieParts[1]);
+
+			return new DieExpression(new CompoundingDie(left.scalar, right, dieParts[1]));
+		} else if(explodingDiePattern.matcher(exp).matches()) {
+			String[] dieParts = exp.split("!");
+
+			DieExpression   left  = parseExpression(dieParts[0]);
+			Predicate<Long> right = deriveCond(dieParts[1]);
+
+			return new DieExpression(new ExplodingDice(left.scalar, right, dieParts[1], false));
+		} else if(penetratingDiePattern.matcher(exp).matches()) {
+			String[] dieParts = exp.split("p!");
+
+			DieExpression   left  = parseExpression(dieParts[0]);
+			Predicate<Long> right = deriveCond(dieParts[1]);
+
+			return new DieExpression(new ExplodingDice(left.scalar, right, dieParts[1], true));
 		} else if(diceListPattern.matcher(exp).matches()) {
 			String[] dieParts = exp.split("dl");
 
 			DieExpression left  = parseExpression(dieParts[0]);
 			DieExpression right = parseExpression(dieParts[1]);
-
-			if(left.isList || right.isList) {
-				return null;
-			}
 
 			return new DieExpression(new SimpleDieList(left.scalar, right.scalar));
 		}
@@ -221,32 +447,70 @@ public class DiceBox {
 		return null;
 	}
 
-	private static final String  scalarDie          = "[\\+\\-]?\\d+";
+	private static final String comparePoint         = "[<>=]\\d+";
+
+	private static final String  scalarDie          = "[\\+\\-]?\\d+sd";
 	private static final Pattern scalarDiePattern   = Pattern.compile("\\A" + scalarDie + "\\Z");
 
-	private static final String  simpleDie          = "(?:\\d+)?d\\d+";
-	private static final Pattern simpleDiePattern   = Pattern.compile("\\A" + simpleDie + "\\Z");
+	private static final String  simpleDie           = "(?:\\d+)?d\\d+";
+	private static final Pattern simpleDiePattern    = Pattern.compile("\\A" + simpleDie + "\\Z");
 
-	private static final String  compoundDie        = simpleDie + "c(?:(?:" + simpleDie + ")|(?:\\d+))";
-	private static final Pattern compoundDiePattern = Pattern.compile("\\A" + compoundDie + "\\Z");
+	private static final String  fudgeDie            = "(?:\\d+)?dF";
+	private static final Pattern fudgeDiePattern     = Pattern.compile("\\A" + fudgeDie + "\\Z");
 
-	private static final String  compoundGroup      = "(?:(?:" + scalarDie + ")|(?:" + simpleDie + ")|(?:"
-		+ compoundDie + "))";
+	private static final String  compoundDie         = simpleDie + "c(?:(?:" + simpleDie + ")|(?:\\d+))";
+	private static final Pattern compoundDiePattern  = Pattern.compile("\\A" + compoundDie + "\\Z");
 
-	private static final String  diceList           = compoundGroup + "dl" + compoundGroup;
-	private static final Pattern diceListPattern    = Pattern.compile("\\A" + diceList + "\\Z");
+	private static final String  compoundGroup       = "(?:(?:\\d+)|(?:" + simpleDie + ")|(?:"
+		+ compoundDie + ")|(?:" + fudgeDie +"))";
+
+	private static final String  compoundingDie        = compoundGroup + "!!" + comparePoint;
+	private static final Pattern compoundingDiePattern = Pattern.compile("\\A" + compoundingDie + "\\Z");
+
+	private static final String  explodingDie        = compoundGroup + "!" + comparePoint;
+	private static final Pattern explodingDiePattern = Pattern.compile("\\A" + explodingDie + "\\Z");
+
+	private static final String  penetratingDie        = compoundGroup + "!" + comparePoint;
+	private static final Pattern penetratingDiePattern = Pattern.compile("\\A" + penetratingDie + "\\Z");
+
+	private static final String  diceList            = compoundGroup + "dl" + compoundGroup;
+	private static final Pattern diceListPattern     = Pattern.compile("\\A" + diceList + "\\Z");
+
 
 	public static boolean isValidExpression(String exp) {
 		if(scalarDiePattern.matcher(exp).matches()) {
 			return true;
 		} else if(simpleDiePattern.matcher(exp).matches()) {
 			return true;
-		} else if (compoundDiePattern.matcher(exp).matches()) {
+		} else if(fudgeDiePattern.matcher(exp).matches()) {
+			return true;
+		} else if(compoundDiePattern.matcher(exp).matches()) {
+			return true;
+		} else if(compoundingDiePattern.matcher(exp).matches()) {
+			return true;
+		} else if(explodingDiePattern.matcher(exp).matches()) {
+			return true;
+		} else if(penetratingDiePattern.matcher(exp).matches()) {
 			return true;
 		} else if (diceListPattern.matcher(exp).matches()) {
 			return true;
 		} else {
 			return false;
+		}
+	}
+
+	private static Predicate<Long> deriveCond(String patt) {
+		long            num  = Long.parseLong(patt.substring(1));
+
+		switch(patt.charAt(0)) {
+			case '<':
+				return (roll) -> roll < num;
+			case '=':
+				return (roll) -> roll == num;
+			case '>':
+				return (roll) -> roll > num;
+			default:
+				return (roll) -> false;
 		}
 	}
 }
