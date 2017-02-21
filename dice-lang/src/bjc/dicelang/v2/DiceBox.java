@@ -461,7 +461,7 @@ public class DiceBox {
 	private static final String  compoundDie         = simpleDie + "c(?:(?:" + simpleDie + ")|(?:\\d+))";
 	private static final Pattern compoundDiePattern  = Pattern.compile("\\A" + compoundDie + "\\Z");
 
-	private static final String  compoundGroup       = "(?:(?:\\d+)|(?:" + simpleDie + ")|(?:"
+	private static final String  compoundGroup       = "(?:(?:" + scalarDie + ")|(?:" + simpleDie + ")|(?:"
 		+ compoundDie + ")|(?:" + fudgeDie +"))";
 
 	private static final String  compoundingDie        = compoundGroup + "!!" + comparePoint;
@@ -475,7 +475,6 @@ public class DiceBox {
 
 	private static final String  diceList            = compoundGroup + "dl" + compoundGroup;
 	private static final Pattern diceListPattern     = Pattern.compile("\\A" + diceList + "\\Z");
-
 
 	public static boolean isValidExpression(String exp) {
 		if(scalarDiePattern.matcher(exp).matches()) {
