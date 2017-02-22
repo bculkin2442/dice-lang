@@ -53,6 +53,8 @@ public class Errors {
 		EK_EVAL_INVDGROUP,
 		// Incorrect type to other dice operator
 		EK_EVAL_INVDICE,
+		// Mismatched types to math operator
+		EK_EVAL_MISMATH,
 
 		// Parser Error
 		// Group closing where there couldn't be an opener
@@ -172,6 +174,9 @@ public class Errors {
 				break;
 			case EK_EVAL_INVDICE:
 				System.out.printf("\tERROR: Dice operators expect scalar dice, not %s\n", args[0]);
+				break;
+			case EK_EVAL_MISMATH:
+				System.out.printf("\tERROR: Math operators expect two operands of the same type\n");
 				break;
 			case EK_PARSE_NOCLOSE:
 				System.out.printf("\tERROR: Group closing with no possible group opener\n");

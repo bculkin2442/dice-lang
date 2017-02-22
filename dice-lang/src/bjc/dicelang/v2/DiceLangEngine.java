@@ -15,6 +15,7 @@ import bjc.utils.funcutils.StringUtils;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Deque;
+import java.util.Iterator;
 import java.util.List;
 import java.util.LinkedList;
 import java.util.regex.Matcher;
@@ -38,6 +39,8 @@ public class DiceLangEngine {
 	private boolean postfixMode;
 	// Should we reverse the token stream
 	private boolean prefixMode;
+	// Should we do step-by-step evaluation
+	private boolean stepEval;
 
 	// Shunter for token postfixing
 	private Shunter shunt;
@@ -114,6 +117,7 @@ public class DiceLangEngine {
 		debugMode   = true;
 		postfixMode = false;
 		prefixMode  = false;
+		stepEval    = true;
 
 		streamEng = new StreamEngine(this);
 
@@ -394,12 +398,44 @@ public class DiceLangEngine {
 			for(ITree<Node> ast : astForest) {
 				System.out.println("\t\tTree " + treeNo + " in forest:\n\t\t    " + ast);
 
-				Evaluator.Result res = eval.evaluate(ast);
-				System.out.printf("\t\tEvaluates to %s", res);
+				if(stepEval) {
+					int step = 1;
 
-				if(res.type == Evaluator.Result.Type.DICE) {
-					System.out.println(" (sample roll " + res.diceVal.value() + ")");
+					for(Iterator<ITree<Node>> itr = eval.stepDebug(ast); itr.hasNext();){
+						ITree<Node> nodeStep = itr.next();
+
+						System.out.printf("\t\tStep %d: Node is %s", step, nodeStep);
+
+						if(nodeStep.getHead().type == Node.Type.RESULT) {
+							Evaluator.Result res = nodeStep.getHead().resultVal;
+
+							System.out.printf(" (result is %s", res);
+
+							if(res.type == Evaluator.Result.Type.DICE) {
+								System.out.printf(" (sample roll %s)", res.diceVal.value());
+							}
+
+							if(res.origVal != null) {
+								System.out.printf(" (original tree is %s)", res.origVal);
+							}
+
+							System.out.printf(")");
+						}
+
+
+						System.out.println();
+						step += 1;
+					}
+				} else {
+					Evaluator.Result res = eval.evaluate(ast);
+					System.out.printf("\t\tEvaluates to %s", res);
+
+					if(res.type == Evaluator.Result.Type.DICE) {
+						System.out.println(" (sample roll " + res.diceVal.value() + ")");
+					}
 				}
+
+				System.out.println();
 
 				treeNo += 1;
 			}
