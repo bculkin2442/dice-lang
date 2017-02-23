@@ -27,7 +27,7 @@ public class Evaluator {
 		public DiceBox.DieExpression diceVal;
 		public String                stringVal;
 
-		// Original node this
+		// Original node data
 		public ITree<Node>           origVal;
 
 		public Result(Type typ) {
@@ -102,6 +102,12 @@ public class Evaluator {
 		}
 	}
 
+	private static class Context {
+		public Consumer<Iterator<ITree<Node>>> thunk;
+		
+		public boolean isDebug;
+	}
+
 	private static Node FAIL() {
 		return new Node(Node.Type.RESULT, new Result(Result.Type.FAILURE));
 	}
@@ -125,17 +131,29 @@ public class Evaluator {
 	}
 
 	public Result evaluate(ITree<Node> comm) {
-		Consumer<Iterator<ITree<Node>>> thunk = (itr) -> {
+		Context ctx = new Context();
+
+		ctx.isDebug = false;
+		ctx.thunk = (itr) -> {
 			// Deliberately finish the iterator, but ignore results. It's only for stepwise evaluation
 			// but we don't know if stepping the iterator causes something to happen
 			while(itr.hasNext()) itr.next();
 		};
 
-		return comm.topDownTransform(this::pickEvaluationType, (node) -> this.evaluateNode(node, thunk)).getHead().resultVal;
+		return comm.topDownTransform(this::pickEvaluationType,
+				(node) -> this.evaluateNode(node, ctx)).getHead().resultVal;
 	}
 
 	public Iterator<ITree<Node>> stepDebug(ITree<Node> comm) {
-		return new TopDownTransformIterator<>(this::pickEvaluationType, this::evaluateNode, comm);
+		Context ctx = new Context();
+
+		ctx.isDebug = true;
+
+		return new TopDownTransformIterator<>(this::pickEvaluationType, (node, thnk) -> {
+			ctx.thunk = thnk;
+
+			return this.evaluateNode(node, ctx);	
+		}, comm);
 	}
 
 	private TopDownTransformResult pickEvaluationType(Node nd) {
@@ -145,15 +163,15 @@ public class Evaluator {
 		}
 	}
 
-	private ITree<Node> evaluateNode(ITree<Node> ast, Consumer<Iterator<ITree<Node>>> thunk) {
+	private ITree<Node> evaluateNode(ITree<Node> ast, Context ctx) {
 		switch(ast.getHead().type) {
 			case UNARYOP:
 				System.out.println("\tEVALUATOR ERROR: Unary operator evaluation isn't supported yet");
 				return new Tree<>(FAIL(ast));
 			case BINOP:
-				return evaluateBinaryOp(ast, thunk);
+				return evaluateBinaryOp(ast, ctx);
 			case TOKREF:
-				return evaluateTokenRef(ast.getHead().tokenVal, thunk);
+				return evaluateTokenRef(ast.getHead().tokenVal, ctx);
 			case ROOT:
 				return ast.getChild(ast.getChildrenCount() - 1);
 			default:
@@ -162,7 +180,7 @@ public class Evaluator {
 		}
 	}
 
-	private ITree<Node> evaluateBinaryOp(ITree<Node> ast, Consumer<Iterator<ITree<Node>>> thunk) {
+	private ITree<Node> evaluateBinaryOp(ITree<Node> ast, Context ctx) {
 		Token.Type binOp = ast.getHead().operatorType;
 
 		if(ast.getChildrenCount() != 2) {
@@ -180,26 +198,31 @@ public class Evaluator {
 			case MULTIPLY:
 			case DIVIDE:
 			case IDIVIDE:
-				return evaluateMathBinary(binOp, left.getHead().resultVal, right.getHead().resultVal, thunk);
+				return evaluateMathBinary(binOp,
+						left.getHead().resultVal, right.getHead().resultVal,
+						ctx);
 			case DICEGROUP:
 			case DICECONCAT:
 			case DICELIST:
-				return evaluateDiceBinary(binOp, left.getHead().resultVal, right.getHead().resultVal, thunk);
+				return evaluateDiceBinary(binOp,
+						left.getHead().resultVal, right.getHead().resultVal,
+						ctx);
 			default:
 				Errors.inst.printError(EK_EVAL_UNBIN, binOp.toString());
 				return new Tree<>(FAIL(ast));
 		}
 	}
 
-	private ITree<Node> evaluateDiceBinary(Token.Type op, Result left, Result right, Consumer<Iterator<ITree<Node>>> thunk) {
+	private ITree<Node> evaluateDiceBinary(Token.Type op,
+			Result left, Result right, Context ctx) {
 		Result res = null;
 
 		switch(op) {
 			case DICEGROUP:
 				if(left.type == DICE && !left.diceVal.isList) {
 					if(right.type == DICE && !right.diceVal.isList) {
-						res = new Result(DICE, new DiceBox.SimpleDie(left.diceVal.scalar,
-									right.diceVal.scalar));
+						res = new Result(DICE,
+								new DiceBox.SimpleDie(left.diceVal.scalar, right.diceVal.scalar));
 					} else if (right.type == INT) {
 						res = new Result(DICE, new DiceBox.SimpleDie(left.diceVal.scalar, right.intVal));
 					} else {
@@ -227,8 +250,8 @@ public class Evaluator {
 					Errors.inst.printError(EK_EVAL_INVDICE, right.type.toString());
 					return new Tree<>(FAIL(right));
 				} else {
-					res = new Result(DICE, new DiceBox.CompoundDie(left.diceVal.scalar,
-								right.diceVal.scalar));
+					res = new Result(DICE, 
+							new DiceBox.CompoundDie(left.diceVal.scalar, right.diceVal.scalar));
 				}
 				break;
 			case DICELIST:
@@ -239,8 +262,8 @@ public class Evaluator {
 					Errors.inst.printError(EK_EVAL_INVDICE, right.type.toString());
 					return new Tree<>(FAIL(right));
 				} else {
-					res = new Result(DICE, new DiceBox.SimpleDieList(left.diceVal.scalar,
-								right.diceVal.scalar));
+					res = new Result(DICE,
+							new DiceBox.SimpleDieList(left.diceVal.scalar, right.diceVal.scalar));
 				}
 				break;
 			default:
@@ -251,7 +274,8 @@ public class Evaluator {
 		return new Tree<>(new Node(Node.Type.RESULT, res));
 	}
 
-	private ITree<Node> evaluateMathBinary(Token.Type op, Result left, Result right, Consumer<Iterator<ITree<Node>>> thunk) {
+	private ITree<Node> evaluateMathBinary(Token.Type op,
+			Result left, Result right, Context ctx) {
 		if(left.type == Result.Type.DICE || right.type == Result.Type.DICE) {
 			System.out.println("\tEVALUATOR ERROR: Math on dice isn't supported yet");
 			return new Tree<>(FAIL());
@@ -340,7 +364,7 @@ public class Evaluator {
 		return new Tree<>(new Node(Node.Type.RESULT, res));
 	}
 
-	private ITree<Node> evaluateTokenRef(Token tk, Consumer<Iterator<ITree<Node>>> thunk) {
+	private ITree<Node> evaluateTokenRef(Token tk, Context ctx) {
 		Result res = null;
 
 		switch(tk.type) {

@@ -643,7 +643,7 @@ public class DiceLangEngine {
 						newWorking.add(tk.substring(startMatcher.end()));
 					} else if(endsWith) {
 						newWorking.add(tk.substring(0, endMatcher.start()));
-						newWorking.add(tk.substring(endMatcher.end()));
+						newWorking.add(tk.substring(endMatcher.start()));
 					} else {
 						newWorking.add(tk);
 					}
