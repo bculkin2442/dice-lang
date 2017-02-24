@@ -100,17 +100,18 @@ public class DiceLangEngine {
 
 		litTokens = new FunctionalMap<>();
 
-		litTokens.put("+", ADD);
-		litTokens.put("-", SUBTRACT);
-		litTokens.put("*", MULTIPLY);
-		litTokens.put("/", DIVIDE);
-		litTokens.put("//", IDIVIDE);
-		litTokens.put("dg", DICEGROUP);
-		litTokens.put("dc", DICECONCAT);
-		litTokens.put("dl", DICELIST);
-		litTokens.put("=>", LET);
-		litTokens.put(":=", BIND);
-		litTokens.put(",",  GROUPSEP);
+		litTokens.put("+",   ADD);
+		litTokens.put("-",   SUBTRACT);
+		litTokens.put("*",   MULTIPLY);
+		litTokens.put("/",   DIVIDE);
+		litTokens.put("//",  IDIVIDE);
+		litTokens.put("dg",  DICEGROUP);
+		litTokens.put("dc",  DICECONCAT);
+		litTokens.put("dl",  DICELIST);
+		litTokens.put("=>",  LET);
+		litTokens.put(":=",  BIND);
+		litTokens.put(",",   GROUPSEP);
+		litTokens.put("crc", COERCE);  
 
 		nextLiteral = 1;
 
@@ -377,6 +378,8 @@ public class DiceLangEngine {
 
 		IList<Token> readyTokens = shuntedTokens.flatMap(tk -> {
 			if(tk.type == Token.Type.TOKGROUP) {
+				return tk.tokenValues;
+			} else if(tk.type == Token.Type.TAGOP || tk.type == Token.Type.TAGOPR) {
 				return tk.tokenValues;
 			} else {
 				return new FunctionalList<>(tk);

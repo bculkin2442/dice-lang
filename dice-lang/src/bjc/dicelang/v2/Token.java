@@ -20,24 +20,41 @@ public class Token {
 		INT_LIT,  FLOAT_LIT, STRING_LIT,
 		VREF,
 		DICE_LIT, DICEGROUP, DICECONCAT, DICELIST,
-		LET,      BIND,
+		LET,      BIND,      COERCE,
 		OPAREN,   CPAREN,
 		OBRACKET, CBRACKET,
 		OBRACE,   CBRACE,
+
 		// Synthetic tokens
 		// These are produced when needed
-		NIL,      PRESHUNT,  GROUPSEP,
-		TOKGROUP
+		NIL,      GROUPSEP, TOKGROUP,
+		TAGOP,    TAGOPR,
+
+		// Tag tokens
+		// These are used for the TAG* tokens
+
 	}
 
-	public final Type type;
+	public final Type       type;
 
-	// At most one of these is valid
-	// based on the token type
+	// This is used for the following token types
+	//		INT_LIT    (int value)
+	//		STRING_LIT (index into string table)
+	//		VREF       (index into sym table)
+	//		O* and C*  (sym-count of current token)
 	public long 				 intValue;
+
+	// This is used for the following token types
+	//		FLOAT_LIT (float value)
 	public double 				 floatValue;
-	public String 				 stringValue;
+
+	// This is used for the following token types
+	//		DICE_LIT (dice value)
 	public DiceBox.DieExpression diceValue;
+
+	// This is used for the following token types
+	//		TOKGROUP (the tokens in the group)
+	//		TAG*     (the tagged construct)
 	public IList<Token>          tokenValues;
 
 	public Token(Type typ) {
@@ -54,12 +71,6 @@ public class Token {
 		this(typ);
 
 		floatValue = val;
-	}
-
-	public Token(Type typ, String val) {
-		this(typ);
-
-		stringValue = val;
 	}
 
 	public Token(Type typ, DiceBox.DieExpression val) {

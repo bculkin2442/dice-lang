@@ -127,6 +127,18 @@ public class Parser {
 						working.push(opNode);
 					}
 					break;
+				case COERCE:
+					if(working.size() == 0) {
+						Errors.inst.printError(EK_PARSE_UNOPERAND, tk.toString());
+					} else {
+						ITree<Node> operand = working.pop();
+						ITree<Node> opNode  = new Tree<>(new Node(UNARYOP, tk.type));
+
+						opNode.addChild(operand);
+
+						working.push(opNode);
+					}
+					break;
 				case INT_LIT:
 				case FLOAT_LIT:
 				case STRING_LIT:

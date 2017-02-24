@@ -158,6 +158,13 @@ public class Evaluator {
 
 	private TopDownTransformResult pickEvaluationType(Node nd) {
 		switch(nd.type) {
+			case UNARYOP:
+				switch(nd.operatorType) {
+					case COERCE:
+						return TopDownTransformResult.PULLUP;
+					default:
+						return TopDownTransformResult.PUSHDOWN;
+				}
 			default:
 				return TopDownTransformResult.PUSHDOWN;
 		}
@@ -166,8 +173,7 @@ public class Evaluator {
 	private ITree<Node> evaluateNode(ITree<Node> ast, Context ctx) {
 		switch(ast.getHead().type) {
 			case UNARYOP:
-				System.out.println("\tEVALUATOR ERROR: Unary operator evaluation isn't supported yet");
-				return new Tree<>(FAIL(ast));
+				return evaluateUnaryOp(ast, ctx);
 			case BINOP:
 				return evaluateBinaryOp(ast, ctx);
 			case TOKREF:
@@ -176,6 +182,20 @@ public class Evaluator {
 				return ast.getChild(ast.getChildrenCount() - 1);
 			default:
 				Errors.inst.printError(EK_EVAL_INVNODE, ast.getHead().type.toString());
+				return new Tree<>(FAIL(ast));
+		}
+	}
+
+	private ITree<Node> evaluateUnaryOp(ITree<Node> ast, Context ctx) {
+		switch(ast.getHead().operatorType) {
+			case COERCE:
+				if(ast.getChildrenCount() != 1) {
+					Errors.inst.printError(EK_EVAL_NOTUNARY, ast.getChildrenCount());
+					return new Tree<>(FAIL(AST));
+				}
+				break;
+			default:
+				Errors.inst.printError(EK_EVAL_INVUNARY, ast.getHead().operatorType.toString());
 				return new Tree<>(FAIL(ast));
 		}
 	}
