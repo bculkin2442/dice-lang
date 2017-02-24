@@ -3,7 +3,6 @@ package bjc.dicelang.v2;
 import bjc.utils.data.IPair;
 import bjc.utils.data.ITree;
 import bjc.utils.data.Pair;
-import bjc.utils.data.Tree;
 import bjc.utils.funcdata.FunctionalList;
 import bjc.utils.funcdata.FunctionalMap;
 import bjc.utils.funcdata.FunctionalStringTokenizer;
@@ -12,7 +11,6 @@ import bjc.utils.funcdata.IMap;
 import bjc.utils.funcutils.ListUtils;
 import bjc.utils.funcutils.StringUtils;
 
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Deque;
 import java.util.Iterator;
@@ -65,10 +63,6 @@ public class DiceLangEngine {
 
 	// Stream engine for processing streams
 	private StreamEngine streamEng;
-
-	private final int MATH_PREC = 20;
-	private final int DICE_PREC = 10;
-	private final int EXPR_PREC = 0;
 
 	public DiceLangEngine() {
 		lineDefns   = new FunctionalList<>();
@@ -576,7 +570,6 @@ public class DiceLangEngine {
 		for(IPair<String, String> op : deaffixTokens) {
 			Deque<String> newWorking = new LinkedList<>();
 			
-			String opName  = op.getLeft();
 			String opRegex = op.getRight();
 
 			Pattern opRegexPattern  = Pattern.compile(opRegex);

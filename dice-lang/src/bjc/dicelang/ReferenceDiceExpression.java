@@ -31,7 +31,7 @@ public class ReferenceDiceExpression implements IDiceExpression {
 	 */
 	public ReferenceDiceExpression(String nme,
 			Map<String, IDiceExpression> env) {
-		this.name = name;
+		this.name = nme;
 		this.enviroment = env;
 	}
 

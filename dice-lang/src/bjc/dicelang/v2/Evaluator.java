@@ -191,7 +191,7 @@ public class Evaluator {
 			case COERCE:
 				if(ast.getChildrenCount() != 1) {
 					Errors.inst.printError(EK_EVAL_NOTUNARY, ast.getChildrenCount());
-					return new Tree<>(FAIL(AST));
+					return new Tree<>(FAIL(ast));
 				}
 				break;
 			default:

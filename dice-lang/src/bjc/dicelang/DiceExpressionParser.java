@@ -83,7 +83,7 @@ public class DiceExpressionParser {
 					 */
 					expressions.push(new ScalarDie(
 							Integer.parseInt(expressionPart)));
-				} catch (@SuppressWarnings("unused") NumberFormatException nfex) {
+				} catch (NumberFormatException nfex) {
 					// We don't care about details, just that it failed
 					if (expressions.size() >= 2) {
 						/*

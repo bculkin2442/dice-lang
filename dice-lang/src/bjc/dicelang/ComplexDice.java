@@ -31,7 +31,7 @@ public class ComplexDice implements IDiceExpression {
 			return new ComplexDice(
 					new ScalarDie(Integer.parseInt(strangs[0])),
 					new Die(Integer.parseInt(strangs[1])));
-		} catch (@SuppressWarnings("unused") NumberFormatException nfex) {
+		} catch (NumberFormatException nfex) {
 			// We don't care about details
 
 			// Tell the user the expression is invalid

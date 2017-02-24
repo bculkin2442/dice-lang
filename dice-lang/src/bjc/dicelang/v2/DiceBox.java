@@ -7,8 +7,6 @@ import java.util.Random;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
-import static bjc.dicelang.v2.Errors.ErrorKey.*;
-
 public class DiceBox {
 	private static final Random rng = new Random();
 

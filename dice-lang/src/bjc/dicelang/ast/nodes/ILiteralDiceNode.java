@@ -32,7 +32,7 @@ public interface ILiteralDiceNode extends IDiceASTNode {
 		try {
 			Integer.parseInt(tok);
 			return DiceLiteralType.INTEGER;
-		} catch (@SuppressWarnings("unused") NumberFormatException nfex) {
+		} catch (NumberFormatException nfex) {
 			// We don't care about details
 			// This probably shouldn't return null, but I believe it does so
 			// because where its called checks that. @FIXME

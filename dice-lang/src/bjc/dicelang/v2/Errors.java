@@ -1,7 +1,5 @@
 package bjc.dicelang.v2;
 
-import static bjc.dicelang.v2.Errors.ErrorKey.*;
-
 public class Errors {
 	public static enum ErrorKey {
 		// Define Errors

@@ -86,8 +86,6 @@ public class Shunter {
 		Deque<Token> currReturned = new LinkedList<>();
 
 		for(Token tk : tks.toIterable()) {
-			Token.Type tkType = tk.type;
-
 			if(unaryMode) {
 				if(isUnary(tk)) {
 					unaryOps.add(tk);

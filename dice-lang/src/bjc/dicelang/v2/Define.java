@@ -119,7 +119,7 @@ public class Define implements UnaryOperator<String> {
 				} else {
 					String replac = replacers.next();
 
-					searcherMatcher.appendReplacement(sb, replacers.next());
+					searcherMatcher.appendReplacement(sb, replac);
 				}
 			}
 			

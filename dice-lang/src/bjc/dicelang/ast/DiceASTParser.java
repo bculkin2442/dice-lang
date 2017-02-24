@@ -132,7 +132,7 @@ public class DiceASTParser {
 				try {
 						OperatorDiceNode.fromString(token);
 						return true;
-				} catch (@SuppressWarnings("unused") IllegalArgumentException iaex) {
+				} catch (IllegalArgumentException iaex) {
 						// We don't care about details
 						return false;
 				}
