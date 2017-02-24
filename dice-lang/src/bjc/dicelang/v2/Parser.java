@@ -28,59 +28,8 @@ public class Parser {
 					break;
 				case CBRACKET:
 				case CBRACE:
-					if(working.size() == 0) {
-						Errors.inst.printError(EK_PARSE_NOCLOSE);
-						return false;
-					}
-					
-					ITree<Node> groupNode = null;
-					switch(tk.type) {
-						case CBRACE:
-							groupNode = new Tree<>(new Node(GROUP, Node.GroupType.CODE));
-							break;
-						case CBRACKET:
-							groupNode = new Tree<>(new Node(GROUP, Node.GroupType.ARRAY));
-							break;
-						default:
-							break;
-					}
-					Token matching = null;
-
-					if(tk.type == CBRACKET) {
-						matching = new Token(Token.Type.OBRACKET, tk.intValue);
-					} else if(tk.type == CBRACE) {
-						matching = new Token(Token.Type.OBRACE, tk.intValue);
-					}
-
-					ITree<Node> matchNode = new Tree<>(new Node(OGROUP, matching));
-
-					if(!working.contains(matchNode)) {
-						Errors.inst.printError(EK_PARSE_UNCLOSE, tk.toString(), matchNode.toString());
-
-						System.out.println("\tCurrent forest is: ");
-
-						int treeNo = 1;
-						for(ITree<Node> ast : working) {
-							System.out.println("Tree " + treeNo++ + ": " + ast.toString());
-						}
-
-						return false;
-					} else {
-						Deque<ITree<Node>> childs = new LinkedList<>();
-
-						while(!working.peek().equals(matchNode)) {
-							childs.push(working.pop());
-						}
-
-						// Discard opener
-						working.pop();
-
-						for(ITree<Node> child : childs) {
-							groupNode.addChild(child);
-						}
-
-						working.push(groupNode);
-					}
+					boolean sc = parseClosingGrouper(working, tk);
+					if(!sc)      return false;
 					break;
 				case LET:
 				case BIND:
@@ -156,6 +105,63 @@ public class Parser {
 			results.add(ast);
 		}
 
+		return true;
+	}
+
+	private boolean parseClosingGrouper(Deque<ITree<Node>> working, Token tk) {
+		if(working.size() == 0) {
+			Errors.inst.printError(EK_PARSE_NOCLOSE);
+			return false;
+		}
+		
+		ITree<Node> groupNode = null;
+		switch(tk.type) {
+			case CBRACE:
+				groupNode = new Tree<>(new Node(GROUP, Node.GroupType.CODE));
+				break;
+			case CBRACKET:
+				groupNode = new Tree<>(new Node(GROUP, Node.GroupType.ARRAY));
+				break;
+			default:
+				break;
+		}
+		
+		Token matching = null;
+		if(tk.type == CBRACKET) {
+			matching = new Token(Token.Type.OBRACKET, tk.intValue);
+		} else if(tk.type == CBRACE) {
+			matching = new Token(Token.Type.OBRACE, tk.intValue);
+		}
+
+		ITree<Node> matchNode = new Tree<>(new Node(OGROUP, matching));
+		if(!working.contains(matchNode)) {
+			Errors.inst.printError(EK_PARSE_UNCLOSE, tk.toString(), matchNode.toString());
+
+			System.out.println("\tCurrent forest is: ");
+
+			int treeNo = 1;
+			for(ITree<Node> ast : working) {
+				System.out.println("Tree " + treeNo++ + ": " + ast.toString());
+			}
+
+			return false;
+		} else {
+			Deque<ITree<Node>> childs = new LinkedList<>();
+
+			while(!working.peek().equals(matchNode)) {
+				childs.push(working.pop());
+			}
+
+			// Discard opener
+			working.pop();
+
+			for(ITree<Node> child : childs) {
+				groupNode.addChild(child);
+			}
+
+			working.push(groupNode);
+		}
+		
 		return true;
 	}
 }

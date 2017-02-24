@@ -224,8 +224,7 @@ public class DiceLangEngine {
 				System.out.println("\tString literals in table");
 
 				stringLiterals.forEach((key, val) -> {
-					System.out.printf("\t\tName: (%s)\tValue: (%s)\n",
-						key, val);
+					System.out.printf("\t\tName: (%s)\tValue: (%s)\n", key, val);
 				});
 			}
 		}
@@ -287,57 +286,10 @@ public class DiceLangEngine {
 		IList<Token> shuntedTokens = lexedTokens;
 
 		IList<Token> preparedTokens         = new FunctionalList<>();
-		int curBraceCount                   = 0;
-		Deque<IList<Token>> bracedTokens    = new LinkedList<>();
-		IList<Token> curBracedTokens        = null;
+		boolean sc = removePreshuntTokens(lexedTokens, preparedTokens);
 
-		for(Token tk : lexedTokens) {
-			if(tk.type == Token.Type.OBRACE && tk.intValue == 2) {
-				curBraceCount += 1;
-
-				if(curBraceCount != 1) {
-					bracedTokens.push(curBracedTokens);
-				}
-
-				curBracedTokens = new FunctionalList<>();
-			} else if(tk.type == Token.Type.CBRACE && tk.intValue == 2) {
-				if(curBraceCount == 0) {
-					Errors.inst.printError(EK_ENG_NOOPENING);
-					return false;
-				}
-
-				curBraceCount -= 1;
-
-				IList<Token> preshuntTokens = new FunctionalList<>();
-
-				success = shunt.shuntTokens(curBracedTokens, preshuntTokens);
-
-				if(debugMode)
-					System.out.println("\t\tPreshunted " + curBracedTokens + " into " + preshuntTokens);
-
-				if(!success) return false;
-
-				if(curBraceCount >= 1) {
-					curBracedTokens = bracedTokens.pop();
-
-					curBracedTokens.add(new Token(Token.Type.TOKGROUP, preshuntTokens));
-				} else {
-					preparedTokens.add(new Token(Token.Type.TOKGROUP, preshuntTokens));
-				}
-			} else {
-				if(curBraceCount >= 1) {
-					curBracedTokens.add(tk);
-				} else {
-					preparedTokens.add(tk);
-				}
-			}
-		}
-
-		if(curBraceCount > 0) {
-			Errors.inst.printError(EK_ENG_NOCLOSING);
-			return false;
-		}
-
+		if(!sc) return false;
+		
 		if(debugMode && !postfixMode)
 			System.out.printf("\tCommand after pre-shunter removal: %s\n", preparedTokens.toString());
 
@@ -389,55 +341,115 @@ public class DiceLangEngine {
 		if(!success) return false;
 
 		if(debugMode) {
-			System.out.println("\tParsed forest of asts");
-			int treeNo = 1;
+			evaluateForest(astForest);
+		}
 
-			for(ITree<Node> ast : astForest) {
-				System.out.println("\t\tTree " + treeNo + " in forest:\n\t\t    " + ast);
+		return true;
+	}
 
-				if(stepEval) {
-					int step = 1;
+	private void evaluateForest(IList<ITree<Node>> astForest) {
+		System.out.println("\tParsed forest of asts");
+		int treeNo = 1;
 
-					for(Iterator<ITree<Node>> itr = eval.stepDebug(ast); itr.hasNext();){
-						ITree<Node> nodeStep = itr.next();
+		for(ITree<Node> ast : astForest) {
+			System.out.println("\t\tTree " + treeNo + " in forest:\n\t\t    " + ast);
 
-						System.out.printf("\t\tStep %d: Node is %s", step, nodeStep);
+			if(stepEval) {
+				int step = 1;
 
-						if(nodeStep.getHead().type == Node.Type.RESULT) {
-							Evaluator.Result res = nodeStep.getHead().resultVal;
+				for(Iterator<ITree<Node>> itr = eval.stepDebug(ast); itr.hasNext();){
+					ITree<Node> nodeStep = itr.next();
 
-							System.out.printf(" (result is %s", res);
+					System.out.printf("\t\tStep %d: Node is %s", step, nodeStep);
 
-							if(res.type == Evaluator.Result.Type.DICE) {
-								System.out.printf(" (sample roll %s)", res.diceVal.value());
-							}
+					if(nodeStep.getHead().type == Node.Type.RESULT) {
+						EvaluatorResult res = nodeStep.getHead().resultVal;
 
-							if(res.origVal != null) {
-								System.out.printf(" (original tree is %s)", res.origVal);
-							}
+						System.out.printf(" (result is %s", res);
 
-							System.out.printf(")");
+						if(res.type == EvaluatorResult.Type.DICE) {
+							System.out.printf(" (sample roll %s)", res.diceVal.value());
 						}
 
+						if(res.origVal != null) {
+							System.out.printf(" (original tree is %s)", res.origVal);
+						}
 
-						System.out.println();
-						step += 1;
+						System.out.printf(")");
 					}
-				} else {
-					Evaluator.Result res = eval.evaluate(ast);
-					System.out.printf("\t\tEvaluates to %s", res);
 
-					if(res.type == Evaluator.Result.Type.DICE) {
-						System.out.println(" (sample roll " + res.diceVal.value() + ")");
-					}
+
+					System.out.println();
+					step += 1;
+				}
+			} else {
+				EvaluatorResult res = eval.evaluate(ast);
+				System.out.printf("\t\tEvaluates to %s", res);
+
+				if(res.type == EvaluatorResult.Type.DICE) {
+					System.out.println(" (sample roll " + res.diceVal.value() + ")");
+				}
+			}
+
+			System.out.println();
+
+			treeNo += 1;
+		}
+	}
+
+	private boolean removePreshuntTokens(IList<Token> lexedTokens, IList<Token> preparedTokens) {
+		boolean success;
+		int curBraceCount                   = 0;
+		Deque<IList<Token>> bracedTokens    = new LinkedList<>();
+		IList<Token> curBracedTokens        = null;
+
+		for(Token tk : lexedTokens) {
+			if(tk.type == Token.Type.OBRACE && tk.intValue == 2) {
+				curBraceCount += 1;
+
+				if(curBraceCount != 1) {
+					bracedTokens.push(curBracedTokens);
 				}
 
-				System.out.println();
+				curBracedTokens = new FunctionalList<>();
+			} else if(tk.type == Token.Type.CBRACE && tk.intValue == 2) {
+				if(curBraceCount == 0) {
+					Errors.inst.printError(EK_ENG_NOOPENING);
+					return false;
+				}
 
-				treeNo += 1;
+				curBraceCount -= 1;
+
+				IList<Token> preshuntTokens = new FunctionalList<>();
+
+				success = shunt.shuntTokens(curBracedTokens, preshuntTokens);
+
+				if(debugMode)
+					System.out.println("\t\tPreshunted " + curBracedTokens + " into " + preshuntTokens);
+
+				if(!success) return false;
+
+				if(curBraceCount >= 1) {
+					curBracedTokens = bracedTokens.pop();
+
+					curBracedTokens.add(new Token(Token.Type.TOKGROUP, preshuntTokens));
+				} else {
+					preparedTokens.add(new Token(Token.Type.TOKGROUP, preshuntTokens));
+				}
+			} else {
+				if(curBraceCount >= 1) {
+					curBracedTokens.add(tk);
+				} else {
+					preparedTokens.add(tk);
+				}
 			}
 		}
 
+		if(curBraceCount > 0) {
+			Errors.inst.printError(EK_ENG_NOCLOSING);
+			return false;
+		}
+		
 		return true;
 	}
 

@@ -18,7 +18,7 @@ public class Node {
 	public Token      		tokenVal;
 	public Token.Type 		operatorType;
 	public GroupType 		groupType;
-	public Evaluator.Result resultVal;
+	public EvaluatorResult resultVal;
 
 	public Node(Type typ) {
 		type = typ;
@@ -42,7 +42,7 @@ public class Node {
 		groupType = grupType;
 	}
 
-	public Node(Type typ, Evaluator.Result res) {
+	public Node(Type typ, EvaluatorResult res) {
 		this(typ);
 
 		resultVal = res;

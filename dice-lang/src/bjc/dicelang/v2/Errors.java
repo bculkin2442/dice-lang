@@ -35,8 +35,12 @@ public class Errors {
 		EK_EVAL_INVNODE,
 		// Incorrect # of args to binary operator
 		EK_EVAL_INVBIN,
+		// Incorrect # of args to unary operator
+		EK_EVAL_INVUNARY,
 		// Unknown binary operator
 		EK_EVAL_UNBIN,
+		// Unknown unary operator
+		EK_EVAL_UNUNARY,
 		// Math on strings doesn't work
 		EK_EVAL_STRINGMATH,
 		// Attempted divide by zero

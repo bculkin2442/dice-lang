@@ -28,11 +28,7 @@ public class Token {
 		// Synthetic tokens
 		// These are produced when needed
 		NIL,      GROUPSEP, TOKGROUP,
-		TAGOP,    TAGOPR,
-
-		// Tag tokens
-		// These are used for the TAG* tokens
-
+		TAGOP,    TAGOPR
 	}
 
 	public final Type       type;
@@ -104,6 +100,8 @@ public class Token {
 			case DICE_LIT:
 				return type.toString() + "("
 					+ diceValue + ")";
+			case TAGOP:
+			case TAGOPR:
 			case TOKGROUP:
 				return type.toString() + "("
 					+ tokenValues + ")";

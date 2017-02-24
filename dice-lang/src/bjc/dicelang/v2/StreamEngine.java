@@ -41,8 +41,8 @@ public class StreamEngine {
 			} else {
 				if(tk.equals("{@SU}")) {
 					quoteMode = false;
-				} else if(tk.equals("\\{@SU}")) {
-					currStream.add("{@SU}");
+				} else if(tk.matches("\\\\+{@SU}")) {
+					currStream.add(tk.substring(1));
 				} else {
 					currStream.add(tk);
 				}
