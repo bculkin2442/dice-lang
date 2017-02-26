@@ -45,6 +45,8 @@ public class Errors {
 		EK_EVAL_STRINGMATH,
 		// Attempted divide by zero
 		EK_EVAL_DIVZERO,
+		// Attempted to divide dice
+		EK_EVAL_DIVDICE,
 		// Unknown math operator
 		EK_EVAL_UNMATH,
 		// Unknown token reference
@@ -150,7 +152,8 @@ public class Errors {
 				System.out.printf("\tERROR: Unknown node in evaluator: %s\n", args[0]);
 				break;
 			case EK_EVAL_INVBIN:
-				System.out.printf("\tERROR: Binary operators take 2 operand, not %s\n", args[0]);
+				System.out.printf("\tERROR: Binary operators take 2 operand, not %s\n"
+						+ "\tProblem node is %s\n", args[0], args[1]);
 				break;
 			case EK_EVAL_UNBIN:
 				System.out.printf("\tERROR: Unknown binary operator %s\n", args[0]);
@@ -160,6 +163,9 @@ public class Errors {
 				break;
 			case EK_EVAL_DIVZERO:
 				System.out.printf("\tERROR: Attempted divide by zero\n");
+				break;
+			case EK_EVAL_DIVDICE:
+				System.out.printf("\tERROR: Dice cannot be divided\n");
 				break;
 			case EK_EVAL_UNMATH:
 				System.out.printf("\tERROR: Unknown math binary operator: %s\n", args[0]);

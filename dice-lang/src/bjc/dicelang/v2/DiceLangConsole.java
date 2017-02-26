@@ -1,10 +1,13 @@
 package bjc.dicelang.v2;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.LinkedList;
-import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import jline.ConsoleReader;
+import jline.Terminal;
 
 import static bjc.dicelang.v2.Errors.ErrorKey.*;
 
@@ -13,20 +16,35 @@ public class DiceLangConsole {
 
 	private DiceLangEngine eng;
 
+	private ConsoleReader read;
+
 	public DiceLangConsole(String[] args) {
 		// @TODO do something with the args
 		commandNumber = 0;
 
 		eng = new DiceLangEngine();
+
+		Terminal.setupTerminal();
 	}
 
 	public void run() {
+		try {
+			read = new ConsoleReader();
+		} catch(IOException ioex) {
+			System.out.println("ERROR: Console init failed");
+			return;
+		}
+
 		System.out.println("dice-lang v0.2");
 
-		Scanner scn = new Scanner(System.in);
+		String comm = null;
 
-		System.out.printf("(%d) dice-lang> ", commandNumber);
-		String comm = scn.nextLine();
+		try {
+			comm = read.readLine(String.format("(%d) dice-lang> ", commandNumber));
+		} catch (IOException ioex) {
+			System.out.println("ERROR: I/O failed");
+			return;
+		}
 
 		while(!comm.equals("quit") && !comm.equals("exit")) {
 			if(comm.startsWith("pragma")) {
@@ -45,11 +63,13 @@ public class DiceLangConsole {
 				commandNumber += 1;
 			}
 
-			System.out.printf("(%d) dice-lang> ", commandNumber);
-			comm = scn.nextLine();
+			try {
+				comm = read.readLine(String.format("(%d) dice-lang> ", commandNumber));
+			} catch (IOException ioex) {
+				System.out.println("ERROR: I/O failed");
+				return;
+			}
 		}
-
-		scn.close();
 	}
 
 	private boolean handlePragma(String pragma) {
@@ -72,6 +92,9 @@ public class DiceLangConsole {
 				break;
 			case "prefix":
 				System.out.println("\tPrefix mode is now " + eng.togglePrefix());
+				break;
+			case "stepeval":
+				System.out.println("\tStepeval mode is now" + eng.toggleStepEval());
 				break;
 			case "define":
 				return defineMode(pragma.substring(7));
@@ -98,6 +121,9 @@ public class DiceLangConsole {
 				break;
 			case "prefix":
 				System.out.println("\tToggle prefix mode. (Reverse token order instead of shunting)");
+				break;
+			case "stepeval":
+				System.out.println("\tToggle stepeval mode. (Print out evaluation progress)");
 				break;
 			case "define":
 				System.out.println("\tAdd a macro rewrite directive.");
