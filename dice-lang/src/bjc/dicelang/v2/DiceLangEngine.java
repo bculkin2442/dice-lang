@@ -112,7 +112,7 @@ public class DiceLangEngine {
 		debugMode   = true;
 		postfixMode = false;
 		prefixMode  = false;
-		stepEval    = true;
+		stepEval    = false;
 
 		streamEng = new StreamEngine(this);
 
@@ -160,6 +160,12 @@ public class DiceLangEngine {
 		return prefixMode;
 	}
 
+	public boolean toggleStepEval() {
+		stepEval = !stepEval;
+
+		return stepEval;
+	}
+
 	/*
 	 * Matches quote-delimited strings
 	 * 		(like "text" or "text\"text")
@@ -174,8 +180,8 @@ public class DiceLangEngine {
 	 */
 	private Pattern quotePattern = Pattern.compile("\"([^\\\"]*(?:\\\"(?:[^\\\"])*)*)\"");
 
-	// Similiar to the above, but using angle brackets instead of quotes and not allowing spaces
-	private Pattern nonExpandPattern = Pattern.compile("<([^\\>&&[^\\s]]*(?:\\>(?:[^\\>&&[^\\s]])*)*)>");
+	// Similiar to the above, but using angle brackets instead of quotes
+	private Pattern nonExpandPattern = Pattern.compile("<<([^\\>]*(?:\\>(?:[^\\>])*)*)>>");
 
 	public boolean runCommand(String command) {
 		// Sort the defines if they aren't sorted
@@ -352,7 +358,7 @@ public class DiceLangEngine {
 		int treeNo = 1;
 
 		for(ITree<Node> ast : astForest) {
-			System.out.println("\t\tTree " + treeNo + " in forest:\n\t\t    " + ast);
+			System.out.println("\t\tTree " + treeNo + " in forest:\n" + ast);
 
 			if(stepEval) {
 				int step = 1;
@@ -361,6 +367,13 @@ public class DiceLangEngine {
 					ITree<Node> nodeStep = itr.next();
 
 					System.out.printf("\t\tStep %d: Node is %s", step, nodeStep);
+
+					if(nodeStep == null) {
+						System.out.println();
+
+						step += 1;
+						continue;
+					}
 
 					if(nodeStep.getHead().type == Node.Type.RESULT) {
 						EvaluatorResult res = nodeStep.getHead().resultVal;
@@ -387,7 +400,7 @@ public class DiceLangEngine {
 				System.out.printf("\t\tEvaluates to %s", res);
 
 				if(res.type == EvaluatorResult.Type.DICE) {
-					System.out.println(" (sample roll " + res.diceVal.value() + ")");
+					System.out.println("\t\t (sample roll " + res.diceVal.value() + ")");
 				}
 			}
 
@@ -544,11 +557,6 @@ public class DiceLangEngine {
 			tk = new Token(FLOAT_LIT, Double.parseDouble(token));
 		} else if(DiceBox.isValidExpression(token)) {
 			tk = new Token(DICE_LIT, DiceBox.parseExpression(token));
-
-			if(debugMode)
-				System.out.println("\tDEBUG: Parsed dice expression"
-						+ ", evaluated as: " 
-						+ tk.diceValue.value());
 		} else {
 			Matcher stringLit = stringLitMatcher.matcher(token);
 

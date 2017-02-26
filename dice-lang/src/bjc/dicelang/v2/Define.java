@@ -11,13 +11,11 @@ import java.util.regex.PatternSyntaxException;
 import static bjc.dicelang.v2.Errors.ErrorKey.*;
 
 public class Define implements UnaryOperator<String> {
-	public static enum Type {
-		LINE, TOKEN
-	}
+	public static enum Type { LINE, TOKEN }
 
 	public static final int MAX_RECURS = 10;
 
-	public final int priority;
+	public final int     priority;
 	public final boolean inError;
 
 	private boolean doRecur;
@@ -27,7 +25,7 @@ public class Define implements UnaryOperator<String> {
 	private Pattern searcher;
 
 	private Iterator<String>  replacers;
-	private String replacer;
+	private String            replacer;
 
 	public Define(int priorty,
 			boolean isSub, boolean recur, boolean isCircular,
@@ -42,7 +40,6 @@ public class Define implements UnaryOperator<String> {
 			} catch (PatternSyntaxException psex) {
 				Errors.inst.printError(EK_DFN_PREDSYN, psex.getMessage());
 				inError = true;
-
 				return;
 			}
 		}
@@ -52,7 +49,6 @@ public class Define implements UnaryOperator<String> {
 		} catch (PatternSyntaxException psex) {
 			Errors.inst.printError(EK_DFN_SRCSYN, psex.getMessage());
 			inError = true;
-
 			return;
 		}
 
@@ -93,7 +89,6 @@ public class Define implements UnaryOperator<String> {
 
 				do {
 					strang = doPass(tok);
-
 					recurCount += 1;
 				} while(!strang.equals(oldStrang) && recurCount < MAX_RECURS);
 
@@ -112,19 +107,16 @@ public class Define implements UnaryOperator<String> {
 
 		if(subType) {
 			StringBuffer sb = new StringBuffer();
-
 			while(searcherMatcher.find()) {
 				if(replacers == null) {
 					searcherMatcher.appendReplacement(sb,"");
 				} else {
 					String replac = replacers.next();
-
 					searcherMatcher.appendReplacement(sb, replac);
 				}
 			}
-			
-			searcherMatcher.appendTail(sb);
 
+			searcherMatcher.appendTail(sb);
 			return sb.toString();
 		} else {
 			return searcherMatcher.replaceAll(replacer);

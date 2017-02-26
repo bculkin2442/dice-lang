@@ -43,26 +43,29 @@ public class Shunter {
 
 		unaryAdjectives.add(COERCE);
 
-		ops.put(ADD,      0 + MATH_PREC);
-		ops.put(SUBTRACT, 0 + MATH_PREC);
+		ops.put(ADD,        0 + MATH_PREC);
+		ops.put(SUBTRACT,   0 + MATH_PREC);
 
-		ops.put(MULTIPLY, 1 + MATH_PREC);
-		ops.put(IDIVIDE,  1 + MATH_PREC);
-		ops.put(DIVIDE,   1 + MATH_PREC);
+		ops.put(MULTIPLY,   1 + MATH_PREC);
+		ops.put(IDIVIDE,    1 + MATH_PREC);
+		ops.put(DIVIDE,     1 + MATH_PREC);
 
 		ops.put(DICEGROUP,  0 + DICE_PREC);
+
 		ops.put(DICECONCAT, 1 + DICE_PREC);
+
 		ops.put(DICELIST,   2 + DICE_PREC);
 
-		ops.put(LET,  0 + EXPR_PREC);
-		ops.put(BIND, 1 + EXPR_PREC);
+		ops.put(LET,        0 + EXPR_PREC);
+		ops.put(BIND,       1 + EXPR_PREC);
 	}
 
 	private boolean isUnary(Token ty) {
-		switch(ty.type) {
-			default:
-				return false;
-		}
+		if(unaryAdjectives.contains(ty)) return true;
+		if(unaryAdverbs.contains(ty))    return true;
+		if(unaryGerunds.contains(ty))    return true;
+
+		return false;
 	}
 
 	private boolean isOp(Token tk) {
@@ -77,111 +80,119 @@ public class Shunter {
 		return false;
 	}
 
-	public boolean shuntTokens(IList<Token> tks, IList<Token> returned) {
-		Deque<Token> opStack    = new LinkedList<>();
+	private boolean shuntToken(Token tk, Deque<Token> opStack,
+			Deque<Token> unaryStack, Deque<Token> currReturned,
+			Deque<Token> feed) {
+		if(unaryStack.size() != 0) {
+			if(isUnary(tk)) {
+				unaryStack.add(tk);
+				return true;
+			}
 
-		boolean unaryMode     = false;
+			Token unaryOp = unaryStack.pop();
+
+			Token.Type unaryType = unaryOp.type;
+
+			if(unaryAdjectives.contains(unaryType)) {
+				if(isOp(tk)) {
+					Errors.inst.printError(EK_SHUNT_NOTADV, unaryOp.toString(), tk.toString());
+					return false;
+				}
+
+				Token newTok = new Token(TAGOPR);
+
+				if(tk.type == TAGOP) {
+					newTok.tokenValues = tk.tokenValues;
+				} else {
+					newTok.tokenValues = new FunctionalList<>();
+				}
+
+				newTok.tokenValues.add(unaryOp);
+				opStack.push(newTok);
+
+				return true;
+			} else if(unaryAdverbs.contains(unaryType)) {
+				
+			}
+		}
+
+		if(isUnary(tk)) {
+			unaryStack.add(tk);
+			return true;
+		} else if(isOp(tk)) {
+			while(!opStack.isEmpty() && isHigherPrec(tk, opStack.peek())) {
+				currReturned.addLast(opStack.pop());
+			}
+
+			opStack.push(tk);
+		} else if(tk.type == OPAREN || tk.type == OBRACE) {
+			opStack.push(tk);
+
+			if(tk.type == OBRACE) currReturned.addLast(tk);
+		} else if(tk.type == CPAREN || tk.type == CBRACE) {
+			Token matching = null;
+
+			switch(tk.type) {
+				case CPAREN:
+					matching = new Token(OPAREN, tk.intValue);
+					break;
+				case CBRACE:
+					matching = new Token(OBRACE, tk.intValue);
+					break;
+				default:
+					break;
+			}
+
+			if(!opStack.contains(matching)) {
+				Errors.inst.printError(EK_SHUNT_NOGROUP, tk.toString(), matching.toString());
+				return false;
+			}
+
+			while(!opStack.peek().equals(matching)) {
+				currReturned.addLast(opStack.pop());
+			}
+
+			if(tk.type == CBRACE) {
+				currReturned.addLast(tk);
+			}
+
+			opStack.pop();
+		} else if(tk.type == GROUPSEP) {
+			IList<Token> group = new FunctionalList<>();
+
+			while(currReturned.size() != 0 && !currReturned.peek().isGrouper()) {
+				group.add(currReturned.pop());
+			}
+
+			while(opStack.size() != 0 && !opStack.peek().isGrouper()) {
+				group.add(opStack.pop());
+			}
+
+			if(currReturned.size() == 0) {
+				Errors.inst.printError(EK_SHUNT_INVSEP);
+				return false;
+			}
+
+			currReturned.addLast(new Token(TOKGROUP, group));
+		} else {
+			currReturned.addLast(tk);
+		}
+
+		return true;
+	}
+
+	public boolean shuntTokens(IList<Token> tks, IList<Token> returned) {
+		Deque<Token> opStack  = new LinkedList<>();
 		Deque<Token> unaryOps = new LinkedList<>();
 
 		Deque<Token> currReturned = new LinkedList<>();
 
+		Deque<Token> feed = new LinkedList<>();
+
 		for(Token tk : tks.toIterable()) {
-			if(unaryMode) {
-				if(isUnary(tk)) {
-					unaryOps.add(tk);
-					continue;
-				}
-
-				Token unaryOp = unaryOps.pop();
-
-				Token.Type unaryType = unaryOp.type;
-
-				if(unaryAdjectives.contains(unaryType)) {
-					if(isOp(tk)) {
-						Errors.inst.printError(EK_SHUNT_NOTADV, unaryOp.toString(), tk.toString());
-						return false;
-					}
-
-					Token newTok = new Token(TAGOPR);
-					
-					if(tk.type == TAGOP) {
-						newTok.tokenValues = tk.tokenValues;
-					} else {
-						newTok.tokenValues = new FunctionalList<>();
-					}
-
-					newTok.tokenValues.add(unaryOp);
-					opStack.push(newTok);
-				} else if(unaryAdverbs.contains(unaryType)) {
-					// @TODO finish implementing unary operators
-					// 		 this will require adding a 'backfeed' to the shunter to catch
-					//		 tokens we missed while parsing unary operators
-				}
-			}
-
-			if(isUnary(tk)) {
-				unaryMode = true;
-
-				unaryOps.add(tk);
-				continue;
-			} else if(isOp(tk)) {
-				while(!opStack.isEmpty() && isHigherPrec(tk, opStack.peek())) {
-					currReturned.addLast(opStack.pop());
-				}
-
-				opStack.push(tk);
-			} else if(tk.type == OPAREN || tk.type == OBRACE) {
-				opStack.push(tk);
-
-				if(tk.type == OBRACE) currReturned.addLast(tk);
-			} else if(tk.type == CPAREN || tk.type == CBRACE) {
-				Token matching = null;
-
-				switch(tk.type) {
-					case CPAREN:
-						matching = new Token(OPAREN, tk.intValue);
-						break;
-					case CBRACE:
-						matching = new Token(OBRACE, tk.intValue);
-						break;
-					default:
-						break;
-				}
-
-				if(!opStack.contains(matching)) {
-					Errors.inst.printError(EK_SHUNT_NOGROUP, tk.toString(), matching.toString());
-					return false;
-				}
-
-				while(!opStack.peek().equals(matching)) {
-					currReturned.addLast(opStack.pop());
-				}
-
-				if(tk.type == CBRACE) {
-					currReturned.addLast(tk);
-				}
-
-				opStack.pop();
-			} else if(tk.type == GROUPSEP) {
-				IList<Token> group = new FunctionalList<>();
-
-				while(currReturned.size() != 0 && !currReturned.peek().isGrouper()) {
-					group.add(currReturned.pop());
-				}
-
-				while(opStack.size() != 0 && !opStack.peek().isGrouper()) {
-					group.add(opStack.pop());
-				}
-
-				if(currReturned.size() == 0) {
-					Errors.inst.printError(EK_SHUNT_INVSEP);
-					return false;
-				}
-
-				currReturned.addLast(new Token(TOKGROUP, group));
-			} else {
-				currReturned.addLast(tk);
-			}
+			while(feed.size() != 0)
+				shuntToken(feed.poll(), opStack, unaryOps, currReturned, feed);
+			shuntToken(tk, opStack, unaryOps, currReturned, feed);
 		}
 
 		// Flush leftover operators
@@ -202,13 +213,27 @@ public class Shunter {
 
 		boolean exists = ops.containsKey(right);
 
+		if(rght.type == TAGOPR) exists = true;
+
 		// If it doesn't, the left is higher precedence.
 		if (!exists) {
 			return false;
 		}
 
-		int rightPrecedence = ops.get(right);
-		int leftPrecedence  = ops.get(left);
+		int rightPrecedence;
+		int leftPrecedence;
+
+		if(rght.type == TAGOPR) {
+			rightPrecedence = (int)rght.intValue;
+		} else {
+			rightPrecedence = ops.get(right);
+		}
+
+		if(lft.type == TAGOPR) {
+			leftPrecedence = (int)lft.intValue;
+		} else {
+			leftPrecedence  = ops.get(left);
+		}
 
 		return rightPrecedence >= leftPrecedence;
 	}
