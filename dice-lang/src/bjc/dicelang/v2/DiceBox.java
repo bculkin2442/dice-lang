@@ -299,6 +299,7 @@ public class DiceBox {
 			return left.canOptimize() && right.canOptimize();
 		}
 
+<<<<<<< HEAD
 		private long performOp(long lft, long rght) {
 			switch(type) {
 			case ADD:
@@ -312,25 +313,68 @@ public class DiceBox {
 			}
 		}
 
+=======
+>>>>>>> 8e40356ab2e7aa79c9e4c90c0de48308506c359c
 		public long optimize() {
 			long lft  = left.optimize();
 			long rght = right.optimize();
 
+<<<<<<< HEAD
 			return performOp(lft, rght);
+=======
+			switch(type) {
+				case ADD:
+					return lft + rght;
+				case SUBTRACT:
+					return lft - rght;
+				case MULTIPLY:
+					return lft * rght;
+				default:
+					return 0;
+			}
+>>>>>>> 8e40356ab2e7aa79c9e4c90c0de48308506c359c
 		}
 
 		public long roll() {
 			long lft  = left.roll();
 			long rght = right.roll();
 
+<<<<<<< HEAD
 			return performOp(lft, rght);
 		}
 
+=======
+			switch(type) {
+				case ADD:
+					return lft + rght;
+				case SUBTRACT:
+					return lft - rght;
+				case MULTIPLY:
+					return lft * rght;
+				default:
+					return 0;
+			}
+		}
+		
+>>>>>>> 8e40356ab2e7aa79c9e4c90c0de48308506c359c
 		public long rollSingle() {
 			long lft  = left.rollSingle();
 			long rght = right.rollSingle();
 
+<<<<<<< HEAD
 			return performOp(lft, rght);
+=======
+			switch(type) {
+				case ADD:
+					return lft + rght;
+				case SUBTRACT:
+					return lft - rght;
+				case MULTIPLY:
+					return lft * rght;
+				default:
+					return 0;
+			}
+>>>>>>> 8e40356ab2e7aa79c9e4c90c0de48308506c359c
 		}
 
 		public String toString() {
