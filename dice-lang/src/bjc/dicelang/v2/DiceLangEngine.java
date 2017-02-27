@@ -1,5 +1,6 @@
 package bjc.dicelang.v2;
 
+import bjc.dicelang.v2.dice.DiceBox;
 import bjc.utils.data.IPair;
 import bjc.utils.data.ITree;
 import bjc.utils.data.Pair;

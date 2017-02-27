@@ -1,5 +1,8 @@
 package bjc.dicelang.v2;
 
+import bjc.dicelang.v2.dice.Die;
+import bjc.dicelang.v2.dice.DieExpression;
+import bjc.dicelang.v2.dice.DieList;
 import bjc.utils.data.ITree;
 import bjc.utils.data.Tree;
 
@@ -15,7 +18,7 @@ public class EvaluatorResult {
 	// off of the result type
 	public long                  intVal;
 	public double                floatVal;
-	public DiceBox.DieExpression diceVal;
+	public DieExpression diceVal;
 	public String                stringVal;
 
 	// Original node data
@@ -51,22 +54,22 @@ public class EvaluatorResult {
 		floatVal = dVal;
 	}
 
-	public EvaluatorResult(EvaluatorResult.Type typ, DiceBox.DieExpression dVal) {
+	public EvaluatorResult(EvaluatorResult.Type typ, DieExpression dVal) {
 		this(typ);
 
 		diceVal = dVal;
 	}
 
-	public EvaluatorResult(EvaluatorResult.Type typ, DiceBox.Die dVal) {
+	public EvaluatorResult(EvaluatorResult.Type typ, Die dVal) {
 		this(typ);
 
-		diceVal = new DiceBox.DieExpression(dVal);
+		diceVal = new DieExpression(dVal);
 	}
 
-	public EvaluatorResult(EvaluatorResult.Type typ, DiceBox.DieList dVal) {
+	public EvaluatorResult(EvaluatorResult.Type typ, DieList dVal) {
 		this(typ);
 
-		diceVal = new DiceBox.DieExpression(dVal);
+		diceVal = new DieExpression(dVal);
 	}
 
 	public EvaluatorResult(EvaluatorResult.Type typ, String strang) {

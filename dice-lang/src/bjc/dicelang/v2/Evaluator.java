@@ -1,5 +1,9 @@
 package bjc.dicelang.v2;
 
+import bjc.dicelang.v2.dice.CompoundDie;
+import bjc.dicelang.v2.dice.MathDie;
+import bjc.dicelang.v2.dice.SimpleDie;
+import bjc.dicelang.v2.dice.SimpleDieList;
 import bjc.utils.data.ITree;
 import bjc.utils.data.SingleIterator;
 import bjc.utils.data.Tree;
@@ -210,18 +214,18 @@ public class Evaluator {
 				if(left.type == DICE && !left.diceVal.isList) {
 					if(right.type == DICE && !right.diceVal.isList) {
 						res = new EvaluatorResult(DICE,
-								new DiceBox.SimpleDie(left.diceVal.scalar, right.diceVal.scalar));
+								new SimpleDie(left.diceVal.scalar, right.diceVal.scalar));
 					} else if (right.type == INT) {
-						res = new EvaluatorResult(DICE, new DiceBox.SimpleDie(left.diceVal.scalar, right.intVal));
+						res = new EvaluatorResult(DICE, new SimpleDie(left.diceVal.scalar, right.intVal));
 					} else {
 						Errors.inst.printError(EK_EVAL_INVDGROUP, right.type.toString());
 						return new Tree<>(FAIL(right));
 					}
 				} else if(left.type == INT) {
 					if(right.type == DICE && !right.diceVal.isList) {
-						res = new EvaluatorResult(DICE, new DiceBox.SimpleDie(left.intVal, right.diceVal.scalar));
+						res = new EvaluatorResult(DICE, new SimpleDie(left.intVal, right.diceVal.scalar));
 					} else if (right.type == INT) {
-						res = new EvaluatorResult(DICE, new DiceBox.SimpleDie(left.intVal, right.intVal));
+						res = new EvaluatorResult(DICE, new SimpleDie(left.intVal, right.intVal));
 					} else {
 						Errors.inst.printError(EK_EVAL_INVDGROUP, right.type.toString());
 						return new Tree<>(FAIL(right));
@@ -239,7 +243,7 @@ public class Evaluator {
 					return new Tree<>(FAIL(right));
 				} else {
 					res = new EvaluatorResult(DICE, 
-							new DiceBox.CompoundDie(left.diceVal.scalar, right.diceVal.scalar));
+							new CompoundDie(left.diceVal.scalar, right.diceVal.scalar));
 				}
 				break;
 			case DICELIST:
@@ -251,7 +255,7 @@ public class Evaluator {
 					return new Tree<>(FAIL(right));
 				} else {
 					res = new EvaluatorResult(DICE,
-							new DiceBox.SimpleDieList(left.diceVal.scalar, right.diceVal.scalar));
+							new SimpleDieList(left.diceVal.scalar, right.diceVal.scalar));
 				}
 				break;
 			default:
@@ -304,7 +308,7 @@ public class Evaluator {
 						return new Tree<>(FAIL(right));
 					}
 
-					res = new EvaluatorResult(DICE, new DiceBox.MathDie(DiceBox.MathDie.MathOp.ADD,
+					res = new EvaluatorResult(DICE, new MathDie(MathDie.MathOp.ADD,
 								left.diceVal.scalar, right.diceVal.scalar));
 				} else {
 					res = new EvaluatorResult(FLOAT, left.floatVal + right.floatVal);
@@ -322,7 +326,7 @@ public class Evaluator {
 						return new Tree<>(FAIL(right));
 					}
 
-					res = new EvaluatorResult(DICE, new DiceBox.MathDie(DiceBox.MathDie.MathOp.SUBTRACT,
+					res = new EvaluatorResult(DICE, new MathDie(MathDie.MathOp.SUBTRACT,
 								left.diceVal.scalar, right.diceVal.scalar));
 				} else {
 					res = new EvaluatorResult(FLOAT, left.floatVal - right.floatVal);
@@ -340,7 +344,7 @@ public class Evaluator {
 						return new Tree<>(FAIL(right));
 					}
 
-					res = new EvaluatorResult(DICE, new DiceBox.MathDie(DiceBox.MathDie.MathOp.MULTIPLY,
+					res = new EvaluatorResult(DICE, new MathDie(MathDie.MathOp.MULTIPLY,
 								left.diceVal.scalar, right.diceVal.scalar));
 				} else {
 					res = new EvaluatorResult(FLOAT, left.floatVal * right.floatVal);

@@ -1,5 +1,6 @@
 package bjc.dicelang.v2;
 
+import bjc.dicelang.v2.dice.DieExpression;
 import bjc.utils.funcdata.IList;
 
 /**
@@ -46,7 +47,7 @@ public class Token {
 
 	// This is used for the following token types
 	//		DICE_LIT (dice value)
-	public DiceBox.DieExpression diceValue;
+	public DieExpression diceValue;
 
 	// This is used for the following token types
 	//		TOKGROUP (the tokens in the group)
@@ -69,7 +70,7 @@ public class Token {
 		floatValue = val;
 	}
 
-	public Token(Type typ, DiceBox.DieExpression val) {
+	public Token(Type typ, DieExpression val) {
 		this(typ);
 
 		diceValue = val;
