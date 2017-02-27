@@ -105,7 +105,7 @@ public class DiceBox {
 		}
 
 		public boolean canOptimize() {
-			if(diceSize.canOptimize() && (diceSize.optimize() <= 1) {
+			if(diceSize.canOptimize() && (diceSize.optimize() <= 1)) {
 				return numDice.canOptimize();
 			} else return false;
 		}
@@ -454,7 +454,7 @@ public class DiceBox {
 		if(!isValidExpression(exp)) return null;
 
 		if(scalarDiePattern.matcher(exp).matches()) {
-			Die scal = new ScalarDie(Long.parseLong(exp.substring(0, exp.indexOf('s'))))
+			Die scal = new ScalarDie(Long.parseLong(exp.substring(0, exp.indexOf('s'))));
 
 			return new DieExpression(scal);
 		} else if(simpleDiePattern.matcher(exp).matches()) {
@@ -462,7 +462,7 @@ public class DiceBox {
 
 			long right = Long.parseLong(dieParts[1]);
 			if(dieParts[0].equals("")) {
-				Die scal = new SimpleDie(1, right)
+				Die scal = new SimpleDie(1, right);
 				return new DieExpression(scal);
 			} else {
 				Die scal = new SimpleDie(Long.parseLong(dieParts[0]), right);
@@ -485,7 +485,7 @@ public class DiceBox {
 			DieExpression   left  = parseExpression(dieParts[0]);
 			Predicate<Long> right = deriveCond(dieParts[1]);
 
-			Die scal = new CompoundingDie(left.scalar, right, dieParts[1])
+			Die scal = new CompoundingDie(left.scalar, right, dieParts[1]);
 			return new DieExpression(scal);
 		} else if(explodingDiePattern.matcher(exp).matches()) {
 			String[] dieParts = exp.split("!");
@@ -510,7 +510,7 @@ public class DiceBox {
 			DieExpression right = parseExpression(dieParts[1]);
 			
 			DieList lst = new SimpleDieList(left.scalar, right.scalar);
-			return new DieExpression();
+			return new DieExpression(lst);
 		}
 
 		// @TODO give a specific error message

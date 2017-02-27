@@ -1,15 +1,15 @@
 package bjc.dicelang.v2;
 
+import static bjc.dicelang.v2.Errors.ErrorKey.*;
+import static bjc.dicelang.v2.Node.Type.*;
+import static bjc.dicelang.v2.Token.Type.*;
+
 import java.util.Deque;
 import java.util.LinkedList;
 
 import bjc.utils.data.ITree;
 import bjc.utils.data.Tree;
 import bjc.utils.funcdata.IList;
-
-import static bjc.dicelang.v2.Errors.ErrorKey.*;
-import static bjc.dicelang.v2.Node.Type.*;
-import static bjc.dicelang.v2.Token.Type.*;
 
 public class Parser {
 	public Parser() {

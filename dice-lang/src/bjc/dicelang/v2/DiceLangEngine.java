@@ -11,6 +11,9 @@ import bjc.utils.funcdata.IMap;
 import bjc.utils.funcutils.ListUtils;
 import bjc.utils.funcutils.StringUtils;
 
+import static bjc.dicelang.v2.Errors.ErrorKey.*;
+import static bjc.dicelang.v2.Token.Type.*;
+
 import java.util.Comparator;
 import java.util.Deque;
 import java.util.Iterator;
@@ -18,9 +21,6 @@ import java.util.List;
 import java.util.LinkedList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static bjc.dicelang.v2.Errors.ErrorKey.*;
-import static bjc.dicelang.v2.Token.Type.*;
 
 public class DiceLangEngine {
 	// Input rules for processing tokens

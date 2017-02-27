@@ -1,5 +1,7 @@
 package bjc.dicelang.v2;
 
+import static bjc.dicelang.v2.Errors.ErrorKey.*;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.LinkedList;
@@ -8,8 +10,6 @@ import java.util.regex.Pattern;
 
 import jline.ConsoleReader;
 import jline.Terminal;
-
-import static bjc.dicelang.v2.Errors.ErrorKey.*;
 
 public class DiceLangConsole {
 	private int commandNumber;

@@ -5,13 +5,13 @@ import bjc.utils.funcdata.FunctionalMap;
 import bjc.utils.funcdata.IList;
 import bjc.utils.funcdata.IMap;
 
+import static bjc.dicelang.v2.Errors.ErrorKey.*;
+import static bjc.dicelang.v2.Token.Type.*;
+
 import java.util.Deque;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
-
-import static bjc.dicelang.v2.Errors.ErrorKey.*;
-import static bjc.dicelang.v2.Token.Type.*;
 
 public class Shunter {
 	// The binary operators and their

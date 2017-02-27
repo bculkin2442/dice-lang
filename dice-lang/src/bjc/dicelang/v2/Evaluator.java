@@ -6,13 +6,13 @@ import bjc.utils.data.Tree;
 import bjc.utils.data.TopDownTransformIterator;
 import bjc.utils.data.TopDownTransformResult;
 
+import static bjc.dicelang.v2.Errors.ErrorKey.*;
+import static bjc.dicelang.v2.EvaluatorResult.Type.*;
+
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.function.Consumer;
-
-import static bjc.dicelang.v2.Errors.ErrorKey.*;
-import static bjc.dicelang.v2.EvaluatorResult.Type.*;
 
 public class Evaluator {
 	private static enum CoerceSteps {
@@ -128,12 +128,12 @@ public class Evaluator {
 						Iterator<ITree<Node>> nd = stepDebug(child);
 
 						for(; nd.hasNext(); nChild = nd.next()) {
-							ctx.thunk.accept(new SingleIterator(child));
+							ctx.thunk.accept(new SingleIterator<>(child));
 						}
 					} else {
 						nChild = new Tree<>(new Node(Node.Type.RESULT, evaluate(child)));
 
-						if(nChild != null) ctx.thunk.accept(new SingleIterator(nChild));
+						if(nChild != null) ctx.thunk.accept(new SingleIterator<>(nChild));
 					}
 
 					Node childNode      = nChild.getHead();

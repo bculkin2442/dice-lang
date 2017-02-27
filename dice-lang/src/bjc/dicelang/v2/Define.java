@@ -2,13 +2,13 @@ package bjc.dicelang.v2;
 
 import bjc.utils.data.CircularIterator;
 
+import static bjc.dicelang.v2.Errors.ErrorKey.*;
+
 import java.util.Iterator;
 import java.util.function.UnaryOperator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
-
-import static bjc.dicelang.v2.Errors.ErrorKey.*;
 
 public class Define implements UnaryOperator<String> {
 	public static enum Type { LINE, TOKEN }
