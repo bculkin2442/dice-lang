@@ -41,7 +41,7 @@ public class Shunter {
 		unaryAdverbs    = new HashSet<>();
 		unaryGerunds    = new HashSet<>();
 
-		unaryAdjectives.add(COERCE);
+		unaryAdverbs.add(COERCE);
 
 		ops.put(ADD,        0 + MATH_PREC);
 		ops.put(SUBTRACT,   0 + MATH_PREC);
@@ -60,7 +60,9 @@ public class Shunter {
 		ops.put(BIND,       1 + EXPR_PREC);
 	}
 
-	private boolean isUnary(Token ty) {
+	private boolean isUnary(Token tk) {
+		Token.Type ty = tk.type;
+
 		if(unaryAdjectives.contains(ty)) return true;
 		if(unaryAdverbs.contains(ty))    return true;
 		if(unaryGerunds.contains(ty))    return true;
@@ -104,7 +106,7 @@ public class Shunter {
 				if(tk.type == TAGOP) {
 					newTok.tokenValues = tk.tokenValues;
 				} else {
-					newTok.tokenValues = new FunctionalList<>();
+					newTok.tokenValues = new FunctionalList<>(tk);
 				}
 
 				newTok.tokenValues.add(unaryOp);
@@ -112,7 +114,23 @@ public class Shunter {
 
 				return true;
 			} else if(unaryAdverbs.contains(unaryType)) {
-				
+				if(!isOp(tk)) {
+					Errors.inst.printError(EK_SHUNT_NOTADJ, unaryOp.toString(), tk.toString());
+					return false;
+				}
+
+				Token newTok = new Token(TAGOPR);
+
+				if(tk.type == TAGOP) {
+					newTok.tokenValues = tk.tokenValues;
+				} else {
+					newTok.tokenValues = new FunctionalList<>(tk);
+				}
+
+				newTok.tokenValues.add(unaryOp);
+				opStack.push(newTok);
+
+				return true;
 			}
 		}
 
