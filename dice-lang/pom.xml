@@ -3,6 +3,9 @@
 	<groupId>bjc</groupId>
 	<artifactId>dice-lang</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<properties>
+		<main.class>bjc.dicelang.DiceLangConsole</main.class>
+	</properties>
 	<build>
 		<sourceDirectory>src</sourceDirectory>
 		<plugins>
@@ -22,13 +25,35 @@
 					<executable>java</executable>
 					<arguments>
 						<argument>-agentlib:jdwp=transport=dt_socket,server=y,suspend=n</argument>
-
 						<argument>-classpath</argument>
 						<classpath/>
-						<argument>bjc.dicelang.v2.DiceLangConsole</argument>
+						<argument>${main.class}</argument>
 					</arguments>
-					<mainClass>bjc.dicelang.v2.DiceLangConsole</mainClass>
+					<mainClass>${main.class}</mainClass>
 				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>3.0.0</version>
+				<configuration>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependancies</descriptorRef>
+					</descriptorRefs>
+					<archive>
+						<manifest>
+							<mainClass>${main.class}</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+				<executions>
+					<execution>
+						<id>make-assembly</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
