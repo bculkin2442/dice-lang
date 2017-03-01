@@ -1,6 +1,6 @@
-package bjc.dicelang.v2;
+package bjc.dicelang;
 
-import static bjc.dicelang.v2.Errors.ErrorKey.*;
+import static bjc.dicelang.Errors.ErrorKey.*;
 
 import java.io.IOException;
 import java.util.List;

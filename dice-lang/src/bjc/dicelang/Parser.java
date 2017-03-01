@@ -1,8 +1,8 @@
-package bjc.dicelang.v2;
+package bjc.dicelang;
 
-import static bjc.dicelang.v2.Errors.ErrorKey.*;
-import static bjc.dicelang.v2.Node.Type.*;
-import static bjc.dicelang.v2.Token.Type.*;
+import static bjc.dicelang.Errors.ErrorKey.*;
+import static bjc.dicelang.Node.Type.*;
+import static bjc.dicelang.Token.Type.*;
 
 import java.util.Deque;
 import java.util.LinkedList;

@@ -1,4 +1,4 @@
-package bjc.dicelang.v2;
+package bjc.dicelang;
 
 public class Node {
 	public static enum Type {

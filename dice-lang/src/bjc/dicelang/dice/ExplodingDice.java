@@ -1,4 +1,4 @@
-package bjc.dicelang.v2.dice;
+package bjc.dicelang.dice;
 
 import java.util.LinkedList;
 import java.util.List;

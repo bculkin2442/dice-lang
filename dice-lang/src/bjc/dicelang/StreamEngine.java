@@ -1,10 +1,10 @@
-package bjc.dicelang.v2;
+package bjc.dicelang;
 
 import bjc.utils.funcdata.FunctionalList;
 import bjc.utils.funcdata.IList;
 import bjc.utils.funcutils.ListUtils;
 
-import static bjc.dicelang.v2.Errors.ErrorKey.*;
+import static bjc.dicelang.Errors.ErrorKey.*;
 
 import bjc.utils.esodata.SingleTape;
 import bjc.utils.esodata.Tape;

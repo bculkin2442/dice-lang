@@ -1,17 +1,17 @@
-package bjc.dicelang.v2;
+package bjc.dicelang;
 
-import bjc.dicelang.v2.dice.CompoundDie;
-import bjc.dicelang.v2.dice.MathDie;
-import bjc.dicelang.v2.dice.SimpleDie;
-import bjc.dicelang.v2.dice.SimpleDieList;
+import bjc.dicelang.dice.CompoundDie;
+import bjc.dicelang.dice.MathDie;
+import bjc.dicelang.dice.SimpleDie;
+import bjc.dicelang.dice.SimpleDieList;
 import bjc.utils.data.ITree;
 import bjc.utils.data.SingleIterator;
 import bjc.utils.data.Tree;
 import bjc.utils.data.TopDownTransformIterator;
 import bjc.utils.data.TopDownTransformResult;
 
-import static bjc.dicelang.v2.Errors.ErrorKey.*;
-import static bjc.dicelang.v2.EvaluatorResult.Type.*;
+import static bjc.dicelang.Errors.ErrorKey.*;
+import static bjc.dicelang.EvaluatorResult.Type.*;
 
 import java.util.Deque;
 import java.util.Iterator;

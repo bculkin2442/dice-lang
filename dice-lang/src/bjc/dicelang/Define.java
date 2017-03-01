@@ -1,8 +1,8 @@
-package bjc.dicelang.v2;
+package bjc.dicelang;
 
 import bjc.utils.data.CircularIterator;
 
-import static bjc.dicelang.v2.Errors.ErrorKey.*;
+import static bjc.dicelang.Errors.ErrorKey.*;
 
 import java.util.Iterator;
 import java.util.function.UnaryOperator;

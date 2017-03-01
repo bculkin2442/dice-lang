@@ -1,8 +1,8 @@
-package bjc.dicelang.v2;
+package bjc.dicelang;
 
-import bjc.dicelang.v2.dice.Die;
-import bjc.dicelang.v2.dice.DieExpression;
-import bjc.dicelang.v2.dice.DieList;
+import bjc.dicelang.dice.Die;
+import bjc.dicelang.dice.DieExpression;
+import bjc.dicelang.dice.DieList;
 import bjc.utils.data.ITree;
 import bjc.utils.data.Tree;
 

@@ -1,6 +1,6 @@
-package bjc.dicelang.v2;
+package bjc.dicelang;
 
-import bjc.dicelang.v2.dice.DieExpression;
+import bjc.dicelang.dice.DieExpression;
 import bjc.utils.funcdata.IList;
 
 /**

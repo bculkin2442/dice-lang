@@ -1,4 +1,4 @@
-package bjc.dicelang.v2.dice;
+package bjc.dicelang.dice;
 
 public class MathDie implements Die {
 	public static enum MathOp {

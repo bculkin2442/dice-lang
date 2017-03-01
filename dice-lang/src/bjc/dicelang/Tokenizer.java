@@ -1,12 +1,12 @@
-package bjc.dicelang.v2;
+package bjc.dicelang;
 
-import static bjc.dicelang.v2.Errors.ErrorKey.*;
-import static bjc.dicelang.v2.Token.Type.*;
+import static bjc.dicelang.Errors.ErrorKey.*;
+import static bjc.dicelang.Token.Type.*;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import bjc.dicelang.v2.dice.DiceBox;
+import bjc.dicelang.dice.DiceBox;
 import bjc.utils.funcdata.FunctionalMap;
 import bjc.utils.funcdata.IMap;
 import bjc.utils.funcutils.StringUtils;
