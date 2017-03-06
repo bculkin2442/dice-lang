@@ -34,6 +34,11 @@ public class Define implements UnaryOperator<String> {
 		doRecur  = recur;
 		subType  = isSub;
 
+		inError = false;
+
+		/*
+		 * Only try to compile non-null predicates
+		 */
 		if(predicte != null) {
 			try {
 				predicate = Pattern.compile(predicte);
@@ -44,6 +49,9 @@ public class Define implements UnaryOperator<String> {
 			}
 		}
 
+		/*
+		 * Compile the search pattern
+		 */
 		try {
 			searcher  = Pattern.compile(searchr);
 		} catch (PatternSyntaxException psex) {
@@ -52,8 +60,9 @@ public class Define implements UnaryOperator<String> {
 			return;
 		}
 
-		inError = false;
-
+		/*
+		 * Check whether or not we do sub-replacements
+		 */
 		if(subType) {
 			if(replacrs.iterator().hasNext()) {
 				replacers = new CircularIterator<>(replacrs, isCircular);

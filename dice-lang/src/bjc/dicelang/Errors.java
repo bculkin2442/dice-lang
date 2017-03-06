@@ -21,7 +21,7 @@ public class Errors {
 		EK_ENG_NOOPENING,
 		// Reached end of command w/out balanced doublebraces
 		EK_ENG_NOCLOSING,
-		
+
 		// Tokenizer Errors
 		// Found an unexpected grouping token
 		EK_TOK_UNGROUP,
@@ -29,7 +29,7 @@ public class Errors {
 		EK_TOK_INVBASE,
 		// Invalid flexadecimal number in a given base
 		EK_TOK_INVFLEX,
-		
+
 		// Evaluator Errors
 		// Unknown node type
 		EK_EVAL_INVNODE,
@@ -102,136 +102,136 @@ public class Errors {
 
 	public void printError(ErrorKey key, String... args) {
 		switch(mode) {
-			case WIZARD:
-				System.out.println("\t? " + key.ordinal());
-				break;
-			case DEV:
-				devError(key, args);
-				break;
-			default:
-				System.out.println("\tERROR ERROR: Unknown error mode " + mode);
+		case WIZARD:
+			System.out.println("\t? " + key.ordinal());
+			break;
+		case DEV:
+			devError(key, args);
+			break;
+		default:
+			System.out.println("\tERROR ERROR: Unknown error mode " + mode);
 		}
 	}
 
 	private void devError(ErrorKey key, String[] args) {
 		switch(key) {
-			case EK_DFN_PREDSYN:
-				System.out.printf("\tERROR: Incorrect define guard syntax %s\n", args[0]);
-				break;
-			case EK_DFN_SRCSYN:
-				System.out.printf("\tERROR: Incorrect define match syntax %s\n", args[0]);
-				break;
-			case EK_DFN_RECUR:
-				System.out.printf("\tERROR: Recursive define didn't converge after %s iterations."
-						+ " Original string was %s, last iteration was %s\n",
-						args[0], args[1], args[2]);
-				break;
-			case EK_CONS_INVPRAG:
-				System.out.printf("\tERROR: Unknown pragma %s\n", args[0]);
-				break;
-			case EK_CONS_INVDEFINE:
-				System.out.printf("\tERROR: Improperly formatted define %s\n", args[0]);
-				break;
-			case EK_ENG_NOOPENING:
-				System.out.printf("\tERROR: Encountered closing doublebrace without"
-						+ " matching opening doublebrace\n");
-				break;
-			case EK_ENG_NOCLOSING:
-				System.out.printf("\tERROR: Reached end of string before closing doublebrace was found\n");
-				break;
-			case EK_TOK_UNGROUP:
-				System.out.printf("\tERROR: Unrecognized grouping token %s\n", args[0]);
-				break;
-			case EK_TOK_INVBASE:
-				System.out.printf("\tERROR: Invalid flexadecimal base %s\n", args[0]);
-				break;
-			case EK_TOK_INVFLEX:
-				System.out.printf("\tERROR: Invalid flexadecimal number %s in base %s\n", args[0], args[1]);
-				break;
-			case EK_EVAL_INVNODE:
-				System.out.printf("\tERROR: Unknown node in evaluator: %s\n", args[0]);
-				break;
-			case EK_EVAL_INVBIN:
-				System.out.printf("\tERROR: Binary operators take 2 operand, not %s\n"
-						+ "\tProblem node is %s\n", args[0], args[1]);
-				break;
-			case EK_EVAL_UNBIN:
-				System.out.printf("\tERROR: Unknown binary operator %s\n", args[0]);
-				break;
-			case EK_EVAL_STRINGMATH:
-				System.out.printf("\tERROR: Math operators don't work on strings\n");
-				break;
-			case EK_EVAL_DIVZERO:
-				System.out.printf("\tERROR: Attempted divide by zero\n");
-				break;
-			case EK_EVAL_DIVDICE:
-				System.out.printf("\tERROR: Dice cannot be divided\n");
-				break;
-			case EK_EVAL_UNMATH:
-				System.out.printf("\tERROR: Unknown math binary operator: %s\n", args[0]);
-				break;
-			case EK_EVAL_UNTOK:
-				System.out.printf("\tERROR: Unknown token ref %s\n", args[0]);
-				break;
-			case EK_EVAL_UNDICE:
-				System.out.printf("\tERROR: Unknown dice operator %s\n", args[0]);
-				break;
-			case EK_EVAL_INVDGROUP:
-				System.out.printf("\tERROR: Dice group operator expects scalar dice or integers,"
-						+ " not %s\n", args[0]);
-				break;
-			case EK_EVAL_INVDICE:
-				System.out.printf("\tERROR: Dice operators expect scalar dice, not %s\n", args[0]);
-				break;
-			case EK_EVAL_MISMATH:
-				System.out.printf("\tERROR: Math operators expect two operands of the same type\n");
-				break;
-			case EK_PARSE_NOCLOSE:
-				System.out.printf("\tERROR: Group closing with no possible group opener\n");
-				break;
-			case EK_PARSE_UNCLOSE:
-				System.out.printf("\tERROR: Found group closer without opener: (closing was %s"
-						+ ", expected %s)\n", args[0], args[1]);
-				break;
-			case EK_PARSE_BINARY:
-				System.out.printf("\tERROR: Expected at least two operands\n");
-				break;
-			case EK_PARSE_UNOPERAND:
-				System.out.printf("\tERROR: Operator %s expected more operands than provided\n", args[0]);
-				break;
-			case EK_PARSE_INVTOKEN:
-				System.out.printf("\tERROR: Unrecognized token type in parsing: %s\n", args[0]);
-				break;
-			case EK_SHUNT_NOTADV:
-				System.out.printf("\tERROR: Unary operator %s is an adjective, not an adverb. It can't be"
-						+ " applied to the operator %s\n", args[0], args[1]);
-				break;
-			case EK_SHUNT_NOTADJ:
-				System.out.printf("\tERROR: Unary operator %s is an adjective, not an adverb. It can't be"
-						+ " applied to the operator %s\n", args[0], args[1]);
-				break;
-			case EK_SHUNT_NOOP:
-				System.out.printf("\tERROR: Unary operator %s is an adverb, but there is no operator"
-						+ " to apply it to\n", args[0]);
-				break;
-			case EK_SHUNT_NOGROUP:
-				System.out.printf("\tERROR: Couldn't find matching grouping %s (expected %s)\n",
-						args[0], args[1]);
-				break;
-			case EK_SHUNT_INVSEP:
-				System.out.printf("\tERROR: Couldn't find grouper for group seperator to attach to\n");
-				break;
-			case EK_STRM_NONEX:
-				System.out.printf("\tERROR: Attempted to switch to non-existent stream\n");
-				break;
-			case EK_STRM_LAST:
-				System.out.printf("\tERROR: Cannot delete last stream\n");
-				break;
-			case EK_STRM_INVCOM:
-				System.out.printf("\tERROR: Unknown stream control command %s\n", args[0]);
-				break;
-			default:
-				System.out.printf("\tERROR ERROR: Unknown error key %s\n", key);
+		case EK_DFN_PREDSYN:
+			System.out.printf("\tERROR: Incorrect define guard syntax %s\n", args[0]);
+			break;
+		case EK_DFN_SRCSYN:
+			System.out.printf("\tERROR: Incorrect define match syntax %s\n", args[0]);
+			break;
+		case EK_DFN_RECUR:
+			System.out.printf("\tERROR: Recursive define didn't converge after %s iterations."
+					+ " Original string was %s, last iteration was %s\n",
+					args[0], args[1], args[2]);
+			break;
+		case EK_CONS_INVPRAG:
+			System.out.printf("\tERROR: Unknown pragma %s\n", args[0]);
+			break;
+		case EK_CONS_INVDEFINE:
+			System.out.printf("\tERROR: Improperly formatted define %s\n", args[0]);
+			break;
+		case EK_ENG_NOOPENING:
+			System.out.printf("\tERROR: Encountered closing doublebrace without"
+					+ " matching opening doublebrace\n");
+			break;
+		case EK_ENG_NOCLOSING:
+			System.out.printf("\tERROR: Reached end of string before closing doublebrace was found\n");
+			break;
+		case EK_TOK_UNGROUP:
+			System.out.printf("\tERROR: Unrecognized grouping token %s\n", args[0]);
+			break;
+		case EK_TOK_INVBASE:
+			System.out.printf("\tERROR: Invalid flexadecimal base %s\n", args[0]);
+			break;
+		case EK_TOK_INVFLEX:
+			System.out.printf("\tERROR: Invalid flexadecimal number %s in base %s\n", args[0], args[1]);
+			break;
+		case EK_EVAL_INVNODE:
+			System.out.printf("\tERROR: Unknown node in evaluator: %s\n", args[0]);
+			break;
+		case EK_EVAL_INVBIN:
+			System.out.printf("\tERROR: Binary operators take 2 operand, not %s\n"
+					+ "\tProblem node is %s\n", args[0], args[1]);
+			break;
+		case EK_EVAL_UNBIN:
+			System.out.printf("\tERROR: Unknown binary operator %s\n", args[0]);
+			break;
+		case EK_EVAL_STRINGMATH:
+			System.out.printf("\tERROR: Math operators don't work on strings\n");
+			break;
+		case EK_EVAL_DIVZERO:
+			System.out.printf("\tERROR: Attempted divide by zero\n");
+			break;
+		case EK_EVAL_DIVDICE:
+			System.out.printf("\tERROR: Dice cannot be divided\n");
+			break;
+		case EK_EVAL_UNMATH:
+			System.out.printf("\tERROR: Unknown math binary operator: %s\n", args[0]);
+			break;
+		case EK_EVAL_UNTOK:
+			System.out.printf("\tERROR: Unknown token ref %s\n", args[0]);
+			break;
+		case EK_EVAL_UNDICE:
+			System.out.printf("\tERROR: Unknown dice operator %s\n", args[0]);
+			break;
+		case EK_EVAL_INVDGROUP:
+			System.out.printf("\tERROR: Dice group operator expects scalar dice or integers,"
+					+ " not %s\n", args[0]);
+			break;
+		case EK_EVAL_INVDICE:
+			System.out.printf("\tERROR: Dice operators expect scalar dice, not %s\n", args[0]);
+			break;
+		case EK_EVAL_MISMATH:
+			System.out.printf("\tERROR: Math operators expect two operands of the same type\n");
+			break;
+		case EK_PARSE_NOCLOSE:
+			System.out.printf("\tERROR: Group closing with no possible group opener\n");
+			break;
+		case EK_PARSE_UNCLOSE:
+			System.out.printf("\tERROR: Found group closer without opener: (closing was %s"
+					+ ", expected %s)\n", args[0], args[1]);
+			break;
+		case EK_PARSE_BINARY:
+			System.out.printf("\tERROR: Expected at least two operands\n");
+			break;
+		case EK_PARSE_UNOPERAND:
+			System.out.printf("\tERROR: Operator %s expected more operands than provided\n", args[0]);
+			break;
+		case EK_PARSE_INVTOKEN:
+			System.out.printf("\tERROR: Unrecognized token type in parsing: %s\n", args[0]);
+			break;
+		case EK_SHUNT_NOTADV:
+			System.out.printf("\tERROR: Unary operator %s is an adjective, not an adverb. It can't be"
+					+ " applied to the operator %s\n", args[0], args[1]);
+			break;
+		case EK_SHUNT_NOTADJ:
+			System.out.printf("\tERROR: Unary operator %s is an adjective, not an adverb. It can't be"
+					+ " applied to the operator %s\n", args[0], args[1]);
+			break;
+		case EK_SHUNT_NOOP:
+			System.out.printf("\tERROR: Unary operator %s is an adverb, but there is no operator"
+					+ " to apply it to\n", args[0]);
+			break;
+		case EK_SHUNT_NOGROUP:
+			System.out.printf("\tERROR: Couldn't find matching grouping %s (expected %s)\n",
+					args[0], args[1]);
+			break;
+		case EK_SHUNT_INVSEP:
+			System.out.printf("\tERROR: Couldn't find grouper for group seperator to attach to\n");
+			break;
+		case EK_STRM_NONEX:
+			System.out.printf("\tERROR: Attempted to switch to non-existent stream\n");
+			break;
+		case EK_STRM_LAST:
+			System.out.printf("\tERROR: Cannot delete last stream\n");
+			break;
+		case EK_STRM_INVCOM:
+			System.out.printf("\tERROR: Unknown stream control command %s\n", args[0]);
+			break;
+		default:
+			System.out.printf("\tERROR ERROR: Unknown error key %s\n", key);
 		}
 	}
 

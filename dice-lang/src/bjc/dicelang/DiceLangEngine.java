@@ -21,57 +21,97 @@ import java.util.LinkedList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Implements the orchestration necessary for processing DiceLang commands
+ *
+ * @author Ben Culkin
+ */
 public class DiceLangEngine {
-	// Input rules for processing tokens
+	/*
+	 * Input rules for processing tokens.
+	 */
 	private List<IPair<String, String>> opExpansionList;
-	private List<IPair<String, String>> deaffixationList;
 
-	// ID for generation
+	/*
+	 * ID for generation.
+	 */
 	private int nextLiteral;
 
-	// Debug indicator
+	/*
+	 * Debug indicator.
+	 */
 	private boolean debugMode;
-	// Should we do shunting?
+	/*
+	 * Should we do shunting?
+	 */
 	private boolean postfixMode;
-	// Should we reverse the token stream
+	/*
+	 * Should we reverse the token stream?
+	 */
 	private boolean prefixMode;
-	// Should we do step-by-step evaluation
+	/*
+	 * Should we do step-by-step evaluation?
+	 */
 	private boolean stepEval;
 
-	// Shunter for token postfixing
+	/*
+	 * Shunter for token postfixing.
+	 */
 	private Shunter shunt;
-	// Tokenizer for tokenizing
+	/*
+	 * Tokenizer for tokenizing.
+	 */
 	private Tokenizer tokenzer;
-	// Parser for tree construction
+	/*
+	 * Parser for tree construction.
+	 */
 	private Parser parsr;
-	// Evaluator for evaluating
+	/*
+	 * Evaluator for evaluating.
+	 */
 	private Evaluator eval;
 
-	// Tables for symbols
+	/*
+	 * Tables for symbols.
+	 */
 	public final IMap<Integer, String> symTable;
 	public final IMap<Integer, String> stringLits;
 
 
-	// Lists for preprocessing
+	/*
+	 * Lists for preprocessing.
+	 */
 	private IList<Define> lineDefns;
 	private IList<Define> tokenDefns;
 
-	// Are defns sorted by priority
+	/*
+	 * Are defns sorted by priority?
+	 */
 	private boolean defnsSorted;
 
-	// Stream engine for processing streams
+	/*
+	 * Stream engine for processing streams.
+	 */
 	private StreamEngine streamEng;
 
 	public DiceLangEngine() {
+		/*
+		 * Initialize defns.
+		 */
 		lineDefns   = new FunctionalList<>();
 		tokenDefns  = new FunctionalList<>();
 		defnsSorted = true;
 
+		/*
+		 * Init tables.
+		 */
 		symTable   = new FunctionalMap<>();
 		stringLits = new FunctionalMap<>();
 		
+		/*
+		 * Initialize operator expansion list.
+		 */
 		opExpansionList = new LinkedList<>();
-
 		opExpansionList.add(new Pair<>("+",  "\\+"));
 		opExpansionList.add(new Pair<>("-",  "-"));
 		opExpansionList.add(new Pair<>("*",  "\\*"));
@@ -80,30 +120,36 @@ public class DiceLangEngine {
 		opExpansionList.add(new Pair<>(":=", ":="));
 		opExpansionList.add(new Pair<>("=>", "=>"));
 		opExpansionList.add(new Pair<>(",",  ","));
-
-		deaffixationList = new LinkedList<>();
-
-		deaffixationList.add(new Pair<>("(", "\\("));
-		deaffixationList.add(new Pair<>(")", "\\)"));
-		deaffixationList.add(new Pair<>("[", "\\["));
-		deaffixationList.add(new Pair<>("]", "\\]"));
-		deaffixationList.add(new Pair<>("{", "\\{"));
-		deaffixationList.add(new Pair<>("}", "}"));  
+		opExpansionList.add(new Pair<>("(", "\\("));
+		opExpansionList.add(new Pair<>(")", "\\)"));
+		opExpansionList.add(new Pair<>("[", "\\["));
+		opExpansionList.add(new Pair<>("]", "\\]"));
+		opExpansionList.add(new Pair<>("{", "\\{"));
+		opExpansionList.add(new Pair<>("}", "}"));  
 
 		nextLiteral = 1;
 
+		/*
+		 * Initial mode settings.
+		 */
 		debugMode   = true;
 		postfixMode = false;
 		prefixMode  = false;
 		stepEval    = false;
 
+		/*
+		 * Create components.
+		 */
 		streamEng = new StreamEngine(this);
-		shunt = new Shunter();
-		tokenzer = new Tokenizer(this);
-		parsr = new Parser();
-		eval  = new Evaluator(this);
+		shunt     = new Shunter();
+		tokenzer  = new Tokenizer(this);
+		parsr     = new Parser();
+		eval      = new Evaluator(this);
 	}
 
+	/**
+	 * Sort defns by priority.
+	 */
 	public void sortDefns() {
 		Comparator<Define> defnCmp = (dfn1, dfn2) -> dfn1.priority - dfn2.priority;
 
@@ -113,36 +159,66 @@ public class DiceLangEngine {
 		defnsSorted = true;
 	}
 
+	/**
+	 * Add a defn that's applied to lines.
+	 *
+	 * @param dfn The defn to add.
+	 */
 	public void addLineDefine(Define dfn) {
 		lineDefns.add(dfn);
 
 		defnsSorted = false;
 	}
 
+	/**
+	 * Add a defn that's applied to tokens.
+	 *
+	 * @param dfn The defn to add.
+	 */
 	public void addTokenDefine(Define dfn) {
 		tokenDefns.add(dfn);
 
 		defnsSorted = false;
 	}
 
+	/**
+	 * Toggle debug mode.
+	 *
+	 * @return The current state of debug mode.
+	 */
 	public boolean toggleDebug() {
 		debugMode = !debugMode;
 
 		return debugMode;
 	}
 
+	/**
+	 * Toggle postfix mode.
+	 *
+	 * @return The current state of postfix mode.
+	 */
 	public boolean togglePostfix() {
 		postfixMode = !postfixMode;
 
 		return postfixMode;
 	}
 
+	/**
+	 * Toggle prefix mode.
+	 *
+	 * @return The current state of prefix mode
+	 */
 	public boolean togglePrefix() {
 		prefixMode = !prefixMode;
 
 		return prefixMode;
 	}
 
+	/**
+	 * Toggle step-eval mode
+	 *
+	 * @return The current state of step-eval mode
+	 */
 	public boolean toggleStepEval() {
 		stepEval = !stepEval;
 
@@ -163,34 +239,49 @@ public class DiceLangEngine {
 	 */
 	private Pattern quotePattern = Pattern.compile("\"([^\\\"]*(?:\\\"(?:[^\\\"])*)*)\"");
 
-	// Similiar to the above, but using angle brackets instead of quotes
+	/*
+	 * Similiar to the above, but using angle brackets instead of quotes
+	 */
 	private Pattern nonExpandPattern = Pattern.compile("<<([^\\>]*(?:\\>(?:[^\\>])*)*)>>");
 
+	/**
+	 * Run a command to completion.
+	 *
+	 * @param command The command to run
+	 * 
+	 * @return Whether or not the command ran succesfully
+	 */
 	public boolean runCommand(String command) {
-		// Sort the defines if they aren't sorted
+		/*
+		 * Sort the defines if they aren't sorted
+		 */
 		if(!defnsSorted) sortDefns();
 
+		/*
+		 * Run the tokens through the stream engine
+		 */
 		IList<String> streamToks = new FunctionalList<>();
 		boolean success = streamEng.doStreams(command.split(" "), streamToks);
 		if(!success) return false;
 
+		/*
+		 * Apply line defns
+		 */
 		String newComm = ListUtils.collapseTokens(streamToks, " ");
-
 		if(debugMode)
 			System.out.println("\tCommand after stream commands: " + newComm);
-
 		for(Define dfn : lineDefns.toIterable()) {
 			newComm = dfn.apply(newComm);
 		}
-
 		if(debugMode)
 			System.out.println("\tCommand after line defines: " + newComm);
 
+		/*
+		 * Destring command
+		 */
 		IMap<String, String> stringLiterals = new FunctionalMap<>();
-
 		Matcher quoteMatcher = quotePattern.matcher(newComm);
 		StringBuffer destringedCommand = new StringBuffer();
-
 		while(quoteMatcher.find()) {
 			String stringLit = quoteMatcher.group(1);
 
@@ -199,13 +290,7 @@ public class DiceLangEngine {
 
 			quoteMatcher.appendReplacement(destringedCommand, " " + litName + " ");
 		}
-
 		quoteMatcher.appendTail(destringedCommand);
-
-		// Split the command into tokens
-		IList<String> tokens = FunctionalStringTokenizer
-			.fromString(destringedCommand.toString()).toList();
-
 		if(debugMode) {
 			System.out.println("\tCommand after destringing: " + destringedCommand);
 
@@ -218,11 +303,19 @@ public class DiceLangEngine {
 			}
 		}
 
+		/*
+		 * Split the command into tokens
+		 */
+		IList<String> tokens = FunctionalStringTokenizer
+			.fromString(destringedCommand.toString()).toList();
+
+
+		/*
+		 * Temporarily remove non-expanding tokens
+		 */
 		IMap<String, String> nonExpandedTokens = new FunctionalMap<>();
-		
 		tokens = tokens.map(tk -> {
 			Matcher nonExpandMatcher = nonExpandPattern.matcher(tk);
-
 			if(nonExpandMatcher.matches()) {
 				String tkName = "nonExpandToken" + nextLiteral++;
 				nonExpandedTokens.put(tkName, nonExpandMatcher.group(1));
@@ -232,14 +325,18 @@ public class DiceLangEngine {
 				return tk;
 			}
 		});
+		if(debugMode)
+			System.out.printf("\tCommand after removal of non-expanders: %s\n", tokens.toString());
 
-		System.out.println("\tCommand after removal of non-expanders: " + tokens.toString());
-
-		IList<String> semiExpandedTokens  = deaffixTokens(tokens, deaffixationList);
-		IList<String> fullyExpandedTokens = deaffixTokens(semiExpandedTokens, opExpansionList);
-
+		/*
+		 * Expand tokens
+		 */
+		IList<String> fullyExpandedTokens = deaffixTokens(tokens, opExpansionList);
 		System.out.println("\tCommand after token expansion: " + fullyExpandedTokens.toString());
 
+		/*
+		 * Reinsert non-expanded tokens
+		 */
 		fullyExpandedTokens = fullyExpandedTokens.map(tk -> {
 			if(tk.startsWith("nonExpandToken")) {
 				return nonExpandedTokens.get(tk);
@@ -247,46 +344,61 @@ public class DiceLangEngine {
 				return tk;
 			}
 		});
-
 		if(debugMode) 
-			System.out.printf("\tCommand after non-expander reinsertion: " 
-					+ fullyExpandedTokens.toString() + "\n");
+			System.out.printf("\tCommand after non-expander reinsertion: %s\n", 
+					fullyExpandedTokens.toString());
 		
 
 		IList<Token> lexedTokens = new FunctionalList<>();
-
 		for(String token : fullyExpandedTokens) {
 			String newTok = token;
 
+			/*
+			 * Apply token defns
+			 */
 			for(Define dfn : tokenDefns.toIterable()) {
 				newTok = dfn.apply(newTok);
 			}
 
+			/*
+			 * Lex the token
+			 */
 			Token tk = tokenzer.lexToken(token, stringLiterals);
 
+			/*
+			 * Ignore blank tokens
+			 */
 			if(tk == null) continue;
+			/*
+			 * Fail on bad tokens
+			 */
 			else if(tk == Token.NIL_TOKEN) return false;
 			else lexedTokens.add(tk);
 		}
-
 		if(debugMode)
 			System.out.printf("\tCommand after tokenization: %s\n", lexedTokens.toString());
 
+		/*
+		 * Handle preshunted tokens
+		 */
 		IList<Token> shuntedTokens = lexedTokens;
-
 		IList<Token> preparedTokens         = new FunctionalList<>();
-		boolean sc = removePreshuntTokens(lexedTokens, preparedTokens);
-
+		succ = removePreshuntTokens(lexedTokens, preparedTokens);
 		if(!sc) return false;
-		
 		if(debugMode && !postfixMode)
 			System.out.printf("\tCommand after pre-shunter removal: %s\n", preparedTokens.toString());
 
 		if(!postfixMode && !prefixMode) {
+			/*
+			 * Shunt the tokens
+			 */
 			shuntedTokens = new FunctionalList<>();
 			success       = shunt.shuntTokens(preparedTokens, shuntedTokens);
 			if(!success) return false;
 		} else if(prefixMode) {
+			/*
+			 * Reverse directional tokens
+			 */
 			preparedTokens.reverse();
 			shuntedTokens = preparedTokens.map(tk -> {
 				switch(tk.type) {
@@ -307,10 +419,12 @@ public class DiceLangEngine {
 				}
 			});
 		}
-
 		if(debugMode && !postfixMode)
 			System.out.printf("\tCommand after shunting: %s\n", shuntedTokens.toString());
 
+		/*
+		 * Expand token groups
+		 */
 		IList<Token> readyTokens = shuntedTokens.flatMap(tk -> {
 			if(tk.type == Token.Type.TOKGROUP) {
 				return tk.tokenValues;
@@ -320,37 +434,47 @@ public class DiceLangEngine {
 				return new FunctionalList<>(tk);
 			}
 		});
-
 		if(debugMode && !postfixMode)
 			System.out.printf("\tCommand after re-preshunting: %s\n", readyTokens.toString());
 
+		/*
+		 * Parse the tokens
+		 */
 		IList<ITree<Node>> astForest = new FunctionalList<>();
 		success                      = parsr.parseTokens(readyTokens, astForest);
-
 		if(!success) return false;
 
-		if(debugMode) {
-			evaluateForest(astForest);
-		}
+		/*
+		 * Evaluate the tokens
+		 */
+		evaluateForest(astForest);
 
 		return true;
 	}
 
 	private void evaluateForest(IList<ITree<Node>> astForest) {
-		System.out.println("\tParsed forest of asts");
+		if(debugMode)
+			System.out.println("\tParsed forest of asts");
 		int treeNo = 1;
 
 		for(ITree<Node> ast : astForest) {
-			System.out.println("\t\tTree " + treeNo + " in forest:\n" + ast);
+			if(debugMode)
+				System.out.println("\t\tTree " + treeNo + " in forest:\n" + ast);
 
-			if(stepEval) {
+			if(debugMode && stepEval) {
 				int step = 1;
 
+				/*
+				 * Evaluate it step by step
+				 */
 				for(Iterator<ITree<Node>> itr = eval.stepDebug(ast); itr.hasNext();){
 					ITree<Node> nodeStep = itr.next();
 
 					System.out.printf("\t\tStep %d: Node is %s", step, nodeStep);
 
+					/*
+					 * Don't evaluate null steps
+					 */
 					if(nodeStep == null) {
 						System.out.println();
 
@@ -358,6 +482,9 @@ public class DiceLangEngine {
 						continue;
 					}
 
+					/*
+					 * Print out details for results
+					 */
 					if(nodeStep.getHead().type == Node.Type.RESULT) {
 						EvaluatorResult res = nodeStep.getHead().resultVal;
 
@@ -374,16 +501,24 @@ public class DiceLangEngine {
 						System.out.printf(")");
 					}
 
-
+					/*
+					 * Advance a step
+					 */
 					System.out.println();
 					step += 1;
 				}
 			} else {
+				/*
+				 * Evaluate it normally
+				 */
 				EvaluatorResult res = eval.evaluate(ast);
-				System.out.printf("\t\tEvaluates to %s", res);
 
-				if(res.type == EvaluatorResult.Type.DICE) {
-					System.out.println("\t\t (sample roll " + res.diceVal.value() + ")");
+				if(debugMode) {
+					System.out.printf("\t\tEvaluates to %s", res);
+
+					if(res.type == EvaluatorResult.Type.DICE) {
+						System.out.println("\t\t (sample roll " + res.diceVal.value() + ")");
+					}
 				}
 			}
 
@@ -470,12 +605,16 @@ public class DiceLangEngine {
 
 			for(String tk : working) {
 				if(opRegexOnly.matcher(tk).matches()) {
-					// The string contains only the operator
+					/*
+					 * The string contains only the operator
+					 */
 					newWorking.add(tk);
 				} else {
 					Matcher medianMatcher = opRegexPattern.matcher(tk);
 					
-					// Read the first match
+					/*
+					 * Read the first match
+					 */
 					boolean found = medianMatcher.find();
 
 					if(!found) {
@@ -496,7 +635,9 @@ public class DiceLangEngine {
 						String[] pieces = opRegexPattern.split(tk);
 
 						if(startsWith) {
-							// Skip the starting operator
+							/*
+							 * Skip the starting operator
+							 */
 							medianMatcher.find();
 							newWorking.add(tk.substring(0, startMatcher.end()));
 						}
@@ -504,7 +645,9 @@ public class DiceLangEngine {
 						for(int i = 0; i < pieces.length; i++) {
 							String piece = pieces[i];
 
-							// Find the next operator
+							/*
+							 * Find the next operator
+							 */
 							boolean didFind = medianMatcher.find();
 
 							if(piece.equals("")) {
