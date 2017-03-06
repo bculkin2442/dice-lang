@@ -29,6 +29,8 @@ public class Tokenizer {
 		litTokens.put("*",   MULTIPLY);
 		litTokens.put("/",   DIVIDE);
 		litTokens.put("//",  IDIVIDE);
+		litTokens.put("sd",  DICESCALAR);
+		litTokens.put("df",  DICEFUDGE);
 		litTokens.put("dg",  DICEGROUP);
 		litTokens.put("dc",  DICECONCAT);
 		litTokens.put("dl",  DICELIST);

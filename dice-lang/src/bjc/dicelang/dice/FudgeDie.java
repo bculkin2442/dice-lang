@@ -7,6 +7,10 @@ public class FudgeDie implements Die {
 		numDice = new ScalarDie(nDice);
 	}
 
+	public FudgeDie(Die nDice) {
+		numDice = nDice;
+	}
+
 	public boolean canOptimize() {
 		return numDice.canOptimize() && numDice.optimize() == 0;
 	}

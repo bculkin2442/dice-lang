@@ -15,21 +15,22 @@ public class Token {
 	public static enum Type {
 		// Natural tokens
 		// These are produced from lexemes
-		ADD,      SUBTRACT,
+		ADD,       SUBTRACT,
 		MULTIPLY,
-		DIVIDE,   IDIVIDE,
-		INT_LIT,  FLOAT_LIT, STRING_LIT,
+		DIVIDE,    IDIVIDE,
+		INT_LIT,   FLOAT_LIT, STRING_LIT,
 		VREF,
-		DICE_LIT, DICEGROUP, DICECONCAT, DICELIST,
-		LET,      BIND,      COERCE,
-		OPAREN,   CPAREN,
-		OBRACKET, CBRACKET,
-		OBRACE,   CBRACE,
+		DICE_LIT,  DICESCALAR, DICEFUDGE,
+		DICEGROUP, DICECONCAT, DICELIST,
+		LET,       BIND,      COERCE,
+		OPAREN,    CPAREN,
+		OBRACKET,  CBRACKET,
+		OBRACE,    CBRACE,
 
 		// Synthetic tokens
 		// These are produced when needed
-		NIL,      GROUPSEP, TOKGROUP,
-		TAGOP,    TAGOPR
+		NIL,       GROUPSEP, TOKGROUP,
+		TAGOP,     TAGOPR
 	}
 
 	public final Type       type;

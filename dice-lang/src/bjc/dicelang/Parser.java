@@ -77,6 +77,8 @@ public class Parser {
 					}
 					break;
 				case COERCE:
+				case DICESCALAR:
+				case DICEFUDGE:
 					if(working.size() == 0) {
 						Errors.inst.printError(EK_PARSE_UNOPERAND, tk.toString());
 					} else {
