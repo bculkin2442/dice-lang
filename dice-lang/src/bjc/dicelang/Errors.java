@@ -55,6 +55,8 @@ public class Errors {
 		EK_EVAL_UNDICE,
 		// Incorrect type to dice group operator
 		EK_EVAL_INVDGROUP,
+		// Incorrect type to dice creation operator
+		EK_EVAL_INVDCREATE,
 		// Incorrect type to other dice operator
 		EK_EVAL_INVDICE,
 		// Mismatched types to math operator
@@ -175,6 +177,10 @@ public class Errors {
 			break;
 		case EK_EVAL_UNDICE:
 			System.out.printf("\tERROR: Unknown dice operator %s\n", args[0]);
+			break;
+		case EK_EVAL_INVDCREATE:
+			System.out.printf("\tERROR: Dice creation operator expects integers,"
+					+ " not %s\n", args[0]);
 			break;
 		case EK_EVAL_INVDGROUP:
 			System.out.printf("\tERROR: Dice group operator expects scalar dice or integers,"

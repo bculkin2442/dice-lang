@@ -172,6 +172,7 @@ public class Evaluator {
 			EvaluatorResult opr = ast.getChild(0).getHead().resultVal;
 
 			if(opr.type != INT) {
+				Errors.inst.printError(EK_EVAL_INVDCREATE, opr.type);
 			}
 
 			return new Tree<>(new Node(Node.Type.RESULT,
@@ -181,6 +182,7 @@ public class Evaluator {
 			EvaluatorResult oprn = ast.getChild(0).getHead().resultVal;
 
 			if(oprn.type != INT) {
+				Errors.inst.printError(EK_EVAL_INVDCREATE, oprn.type);
 			}
 
 			return new Tree<>(new Node(Node.Type.RESULT,
