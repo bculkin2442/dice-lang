@@ -261,8 +261,8 @@ public class DiceLangEngine {
 		 * Run the tokens through the stream engine
 		 */
 		IList<String> streamToks = new FunctionalList<>();
-		boolean success = streamEng.doStreams(command.split(" "), streamToks);
-		if(!success) return false;
+		boolean succ = streamEng.doStreams(command.split(" "), streamToks);
+		if(!succ) return false;
 
 		/*
 		 * Apply line defns
@@ -384,7 +384,7 @@ public class DiceLangEngine {
 		IList<Token> shuntedTokens = lexedTokens;
 		IList<Token> preparedTokens         = new FunctionalList<>();
 		succ = removePreshuntTokens(lexedTokens, preparedTokens);
-		if(!sc) return false;
+		if(!succ) return false;
 		if(debugMode && !postfixMode)
 			System.out.printf("\tCommand after pre-shunter removal: %s\n", preparedTokens.toString());
 
@@ -393,8 +393,8 @@ public class DiceLangEngine {
 			 * Shunt the tokens
 			 */
 			shuntedTokens = new FunctionalList<>();
-			success       = shunt.shuntTokens(preparedTokens, shuntedTokens);
-			if(!success) return false;
+			succ       = shunt.shuntTokens(preparedTokens, shuntedTokens);
+			if(!succ) return false;
 		} else if(prefixMode) {
 			/*
 			 * Reverse directional tokens
@@ -441,8 +441,8 @@ public class DiceLangEngine {
 		 * Parse the tokens
 		 */
 		IList<ITree<Node>> astForest = new FunctionalList<>();
-		success                      = parsr.parseTokens(readyTokens, astForest);
-		if(!success) return false;
+		succ                         = parsr.parseTokens(readyTokens, astForest);
+		if(!succ) return false;
 
 		/*
 		 * Evaluate the tokens

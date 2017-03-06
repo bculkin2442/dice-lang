@@ -34,8 +34,6 @@ public class Define implements UnaryOperator<String> {
 		doRecur  = recur;
 		subType  = isSub;
 
-		inError = false;
-
 		/*
 		 * Only try to compile non-null predicates
 		 */
@@ -60,6 +58,7 @@ public class Define implements UnaryOperator<String> {
 			return;
 		}
 
+		inError = false;
 		/*
 		 * Check whether or not we do sub-replacements
 		 */
