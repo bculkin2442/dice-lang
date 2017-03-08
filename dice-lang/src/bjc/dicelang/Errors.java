@@ -94,6 +94,17 @@ public class Errors {
 		// Unknown stream command
 		EK_STRM_INVCOM,
 
+		// SCL Errors
+		// Unknown SCL token
+		EK_SCL_INVTOKEN,
+		// Mismatched quote in SCL command
+		EK_SCL_MMQUOTE,
+		// Stack underflow in SCL command
+		EK_SCL_SUNDERFLOW,
+		// Unknown word in SCL command
+		EK_SCL_UNWORD,
+		// Invalid argument to SCL command
+		EK_SCL_INVARG,
 	}
 
 	public static enum ErrorMode {
@@ -235,6 +246,18 @@ public class Errors {
 			break;
 		case EK_STRM_INVCOM:
 			System.out.printf("\tERROR: Unknown stream control command %s\n", args[0]);
+			break;
+		case EK_SCL_INVTOKEN:
+			System.out.printf("\tERROR: Unknown SCL token %s\n", args[0]);
+			break;
+		case EK_SCL_MMQUOTE:
+			System.out.printf("\tERROR: Mismatched delimiter in SCL command\n");
+			break;
+		case EK_SCL_SUNDERFLOW:
+			System.out.printf("\tERROR: Not enough items in stack for word %s\n", args[0]);
+			break;
+		case EK_SCL_UNWORD:
+			System.out.printf("\tERROR: Unknown word %s\n", args[0]);
 			break;
 		default:
 			System.out.printf("\tERROR ERROR: Unknown error key %s\n", key);

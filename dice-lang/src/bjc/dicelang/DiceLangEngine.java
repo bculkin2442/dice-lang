@@ -1,5 +1,7 @@
 package bjc.dicelang;
 
+import bjc.dicelang.scl.StreamEngine;
+
 import bjc.utils.data.IPair;
 import bjc.utils.data.ITree;
 import bjc.utils.data.Pair;
@@ -10,9 +12,6 @@ import bjc.utils.funcdata.IList;
 import bjc.utils.funcdata.IMap;
 import bjc.utils.funcutils.ListUtils;
 
-import static bjc.dicelang.Errors.ErrorKey.*;
-import static bjc.dicelang.Token.Type.*;
-
 import java.util.Comparator;
 import java.util.Deque;
 import java.util.Iterator;
@@ -21,6 +20,8 @@ import java.util.LinkedList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static bjc.dicelang.Errors.ErrorKey.*;
+import static bjc.dicelang.Token.Type.*;
 /**
  * Implements the orchestration necessary for processing DiceLang commands
  *

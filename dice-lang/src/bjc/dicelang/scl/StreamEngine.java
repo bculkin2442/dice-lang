@@ -1,4 +1,7 @@
-package bjc.dicelang;
+package bjc.dicelang.scl;
+
+import bjc.dicelang.DiceLangEngine;
+import bjc.dicelang.Errors;
 
 import bjc.utils.funcdata.FunctionalList;
 import bjc.utils.funcdata.IList;
@@ -23,18 +26,23 @@ public class StreamEngine {
 	/*
 	 * The engine we're attached to.
 	 */
-	private DiceLangEngine eng;
+	DiceLangEngine eng;
 
 	/*
 	 * Our streams.
 	 */
-	private Tape<IList<String>> streams;
-	private IList<String>       currStream;
+	Tape<IList<String>> streams;
+	IList<String>       currStream;
 
 	/*
 	 * Saved streams
 	 */
-	private TapeLibrary<IList<String>> savedStreams;
+	TapeLibrary<IList<String>> savedStreams;
+
+	/*
+	 * Handler for SCL programs
+	 */
+	private StreamControlEngine scleng;
 
 	/**
 	 * Create a new stream engine.
@@ -45,6 +53,7 @@ public class StreamEngine {
 		eng = engine;
 
 		savedStreams = new TapeLibrary<>();
+		scleng = new StreamControlEngine(this);
 	}
 
 	private void init() {
@@ -113,6 +122,55 @@ public class StreamEngine {
 		return true;
 	}
 
+	public void newStream() {
+		streams.insertAfter(new FunctionalList<>());
+	}
+
+	public boolean rightStream() {
+		if(!streams.right()) {
+			Errors.inst.printError(EK_STRM_NONEX);
+			return false;
+		}
+
+		currStream = streams.item();
+		return true;
+	}
+
+	public boolean leftStream() {
+		if(!streams.left()) {
+			Errors.inst.printError(EK_STRM_NONEX);
+			return false;
+		}
+
+		currStream = streams.item();
+		return true;
+	}
+
+	public boolean deleteStream() {
+		if(streams.size() == 1) {
+			Errors.inst.printError(EK_STRM_LAST);
+			return false;
+		} else {
+			streams.remove();
+			currStream = streams.item();
+		}
+
+		return true;
+	}
+
+	public boolean mergeStream() {
+		if(streams.size() == 1) {
+			Errors.inst.printError(EK_STRM_LAST);
+			return false;
+		} else {
+			IList<String> stringLit = streams.remove();
+			currStream = streams.item();
+			currStream.add(ListUtils.collapseTokens(stringLit, " "));
+		}
+
+		return true;
+	}
+
 	private boolean processCommand(String tk) {
 		char[] comms = null;
 
@@ -123,45 +181,32 @@ public class StreamEngine {
 			comms[0] = tk.charAt(3);
 		}
 
+		boolean succ;
+
 		for(char comm : comms) {
 			switch(comm) {
 			case '+':
-				streams.insertAfter(new FunctionalList<>());
+				newStream();
 				break;
 			case '>':
-				if(!streams.right()) {
-					Errors.inst.printError(EK_STRM_NONEX);
-					return false;
-				}
-
-				currStream = streams.item();
+				succ = rightStream();
+				if(!succ) return false;
 				break;
 			case '<':
-				if(!streams.left()) {
-					Errors.inst.printError(EK_STRM_NONEX);
-					return false;
-				}
-
-				currStream = streams.item();
+				succ = leftStream();
+				if(!succ) return false;
 				break;
 			case '-':
-				if(streams.size() == 1) {
-					Errors.inst.printError(EK_STRM_LAST);
-					return false;
-				} else {
-					streams.remove();
-					currStream = streams.item();
-				}
+				succ = deleteStream();
+				if(!succ) return false;
 				break;
-			case 'S':
-				if(streams.size() == 1) {
-					Errors.inst.printError(EK_STRM_LAST);
-					return false;
-				} else {
-					IList<String> stringLit = streams.remove();
-					currStream = streams.item();
-					currStream.add(ListUtils.collapseTokens(stringLit, " "));
-				}
+			case 'M':
+				succ = mergeStream();
+				if(!succ) return false;
+				break;
+			case 'L':
+				succ = scleng.runProgram(currStream.toArray(new String[0]));
+				if(!succ) return false;
 				break;
 			default:
 				Errors.inst.printError(EK_STRM_INVCOM, tk);
