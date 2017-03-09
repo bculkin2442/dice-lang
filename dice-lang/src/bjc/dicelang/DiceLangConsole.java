@@ -19,10 +19,11 @@ public class DiceLangConsole {
 	private ConsoleReader read;
 
 	public DiceLangConsole(String[] args) {
-		// @TODO do something with the args
 		commandNumber = 0;
 
 		eng = new DiceLangEngine();
+
+		if(!CLIArgsParser.parseArgs(args, eng)) System.exit(1);
 
 		Terminal.setupTerminal();
 	}

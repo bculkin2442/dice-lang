@@ -105,6 +105,18 @@ public class Errors {
 		EK_SCL_UNWORD,
 		// Invalid argument to SCL command
 		EK_SCL_INVARG,
+
+		// CLI Argument Erros
+		// Unknown CLI argument
+		EK_CLI_UNARG,
+		// Missing subargument to argument
+		EK_CLI_MISARG,
+		// Invalid define type
+		EK_CLI_INVDFNTYPE,
+		// File not found
+		EK_CLI_NOFILE,
+		// Unknown I/O problem
+		EK_CLI_IOEX,
 	}
 
 	public static enum ErrorMode {
@@ -116,7 +128,11 @@ public class Errors {
 	public void printError(ErrorKey key, String... args) {
 		switch(mode) {
 		case WIZARD:
-			System.out.println("\t? " + key.ordinal());
+			if(key == ErrorKey.EK_CLI_NOFILE) {
+				System.out.println("\t? 404");
+			} else {
+				System.out.println("\t? " + key.ordinal());
+			}
 			break;
 		case DEV:
 			devError(key, args);
@@ -258,6 +274,21 @@ public class Errors {
 			break;
 		case EK_SCL_UNWORD:
 			System.out.printf("\tERROR: Unknown word %s\n", args[0]);
+			break;
+		case EK_CLI_UNARG:
+			System.out.printf("\tERROR: Unknown argument %s\n", args[0]);
+			break;
+		case EK_CLI_MISARG:
+			System.out.printf("\tERROR: Missing subargument to command %s", args[0]);
+			break;
+		case EK_CLI_INVDFNTYPE:
+			System.out.printf("\tERROR: Invalid define type %s\n", args[0]);
+			break;
+		case EK_CLI_NOFILE:
+			System.out.printf("\tERROR: No such file %s\n", args[0]);
+			break;
+		case EK_CLI_IOEX:
+			System.out.printf("\tERROR: I/O problem with file");
 			break;
 		default:
 			System.out.printf("\tERROR ERROR: Unknown error key %s\n", key);
