@@ -11,6 +11,7 @@ import bjc.utils.funcdata.FunctionalStringTokenizer;
 import bjc.utils.funcdata.IList;
 import bjc.utils.funcdata.IMap;
 import bjc.utils.funcutils.ListUtils;
+import bjc.utils.funcutils.NeoTokenSplitter;
 
 import java.util.Comparator;
 import java.util.Deque;
@@ -29,9 +30,9 @@ import static bjc.dicelang.Token.Type.*;
  */
 public class DiceLangEngine {
 	/*
-	 * Input rules for processing tokens.
+	 * Split tokens around operators with regex
 	 */
-	private List<IPair<String, String>> opExpansionList;
+	private NeoTokenSplitter opExpander;
 
 	/*
 	 * ID for generation.
@@ -112,21 +113,22 @@ public class DiceLangEngine {
 		/*
 		 * Initialize operator expansion list.
 		 */
-		opExpansionList = new LinkedList<>();
-		opExpansionList.add(new Pair<>("+",  "\\+"));
-		opExpansionList.add(new Pair<>("-",  "-"));
-		opExpansionList.add(new Pair<>("*",  "\\*"));
-		opExpansionList.add(new Pair<>("//", "//"));
-		opExpansionList.add(new Pair<>("/",  "/"));
-		opExpansionList.add(new Pair<>(":=", ":="));
-		opExpansionList.add(new Pair<>("=>", "=>"));
-		opExpansionList.add(new Pair<>(",",  ","));
-		opExpansionList.add(new Pair<>("(", "\\("));
-		opExpansionList.add(new Pair<>(")", "\\)"));
-		opExpansionList.add(new Pair<>("[", "\\["));
-		opExpansionList.add(new Pair<>("]", "\\]"));
-		opExpansionList.add(new Pair<>("{", "\\{"));
-		opExpansionList.add(new Pair<>("}", "}"));  
+		opExpander = new NeoTokenSplitter();
+		opExpander.addMultiDelimiter("\\(");
+		opExpander.addMultiDelimiter("\\)");
+		opExpander.addMultiDelimiter("\\[");
+		opExpander.addMultiDelimiter("\\]");
+		opExpander.addMultiDelimiter("\\{");
+		opExpander.addMultiDelimiter("\\}");
+		opExpander.addDelimiter(":=");
+		opExpander.addDelimiter("=>");
+		opExpander.addDelimiter("//");
+		opExpander.addDelimiter("+");
+		opExpander.addDelimiter("-");
+		opExpander.addDelimiter("*");
+		opExpander.addDelimiter("/");
+		opExpander.addDelimiter("+");
+		opExpander.compile();
 
 		nextLiteral = 1;
 
@@ -284,6 +286,9 @@ public class DiceLangEngine {
 		Matcher quoteMatcher = quotePattern.matcher(newComm);
 		StringBuffer destringedCommand = new StringBuffer();
 		while(quoteMatcher.find()) {
+			/*
+			 * @TODO interpolate dquoted literals
+			 */
 			String stringLit = quoteMatcher.group(1);
 
 			String litName = "stringLiteral" + nextLiteral++;
@@ -332,7 +337,7 @@ public class DiceLangEngine {
 		/*
 		 * Expand tokens
 		 */
-		IList<String> fullyExpandedTokens = deaffixTokens(tokens, opExpansionList);
+		IList<String> fullyExpandedTokens = tokens.flatMap((token) -> new FunctionalList(opExpander.split(token)));
 		System.out.println("\tCommand after token expansion: " + fullyExpandedTokens.toString());
 
 		/*
@@ -583,113 +588,5 @@ public class DiceLangEngine {
 		}
 		
 		return true;
-	}
-
-	
-
-	 private IList<String> deaffixTokens(IList<String> tokens, List<IPair<String, String>> deaffixTokens) {
-		Deque<String> working = new LinkedList<>();
-
-		for(String tk : tokens) {
-			working.add(tk);
-		}
-
-		for(IPair<String, String> op : deaffixTokens) {
-			Deque<String> newWorking = new LinkedList<>();
-			
-			String opRegex = op.getRight();
-
-			Pattern opRegexPattern  = Pattern.compile(opRegex);
-			Pattern opRegexOnly     = Pattern.compile("\\A(?:" + opRegex + ")+\\Z");
-			Pattern opRegexStarting = Pattern.compile("\\A" + opRegex);
-			Pattern opRegexEnding   = Pattern.compile(opRegex + "\\Z");
-
-			for(String tk : working) {
-				if(opRegexOnly.matcher(tk).matches()) {
-					/*
-					 * The string contains only the operator
-					 */
-					newWorking.add(tk);
-				} else {
-					Matcher medianMatcher = opRegexPattern.matcher(tk);
-					
-					/*
-					 * Read the first match
-					 */
-					boolean found = medianMatcher.find();
-
-					if(!found) {
-						newWorking.add(tk);
-						continue;
-					}
-
-					Matcher startMatcher  = opRegexStarting.matcher(tk);
-					Matcher endMatcher    = opRegexEnding.matcher(tk);
-
-					boolean startsWith = startMatcher.find();
-					boolean endsWith   = endMatcher.find();
-					boolean doSplit = medianMatcher.find();
-
-					medianMatcher.reset();
-
-					if(doSplit || (!startsWith && !endsWith)) {
-						String[] pieces = opRegexPattern.split(tk);
-
-						if(startsWith) {
-							/*
-							 * Skip the starting operator
-							 */
-							medianMatcher.find();
-							newWorking.add(tk.substring(0, startMatcher.end()));
-						}
-
-						for(int i = 0; i < pieces.length; i++) {
-							String piece = pieces[i];
-
-							/*
-							 * Find the next operator
-							 */
-							boolean didFind = medianMatcher.find();
-
-							if(piece.equals("")) {
-								System.out.printf("\tWARNING: Empty token found during operator expansion"
-										+ "of token (%s). Weirdness may happen as a result\n", tk);
-								continue;
-							}
-
-							newWorking.add(piece);
-
-							if(didFind)
-								newWorking.add(tk.substring(medianMatcher.start(), medianMatcher.end()));
-						}
-
-						if(endsWith)
-							newWorking.add(tk.substring(endMatcher.start()));
-					} else if(startsWith && endsWith) {
-						newWorking.add(tk.substring(0, startMatcher.end()));
-						newWorking.add(tk.substring(startMatcher.end(), endMatcher.start()));
-						newWorking.add(tk.substring(endMatcher.start()));
-					} else if(startsWith) {
-						newWorking.add(tk.substring(0, startMatcher.end()));
-						newWorking.add(tk.substring(startMatcher.end()));
-					} else if(endsWith) {
-						newWorking.add(tk.substring(0, endMatcher.start()));
-						newWorking.add(tk.substring(endMatcher.start()));
-					} else {
-						newWorking.add(tk);
-					}
-				}
-
-			}
-
-			working = newWorking;
-		}
-
-		IList<String> returned = new FunctionalList<>();
-		for(String ent : working) {
-			returned.add(ent);
-		}
-
-		return returned;
 	}
 }
