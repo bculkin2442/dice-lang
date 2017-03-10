@@ -30,8 +30,9 @@ public class Shunter {
 	// applied to operator tokens and yield data tokens
 	private Set<Token.Type> unaryGerunds;
 
-	private final int MATH_PREC	 = 20;
-	private final int DICE_PREC	 = 10;
+	private final int MATH_PREC	 = 30;
+	private final int DICE_PREC	 = 20;
+	private final int STR_PREC       = 10;
 	private final int EXPR_PREC	 = 0;
 
 	public Shunter() {
@@ -56,6 +57,9 @@ public class Shunter {
 
 		ops.put(DICELIST,   2 + DICE_PREC);
 
+		ops.put(STRCAT,     0 + STR_PREC);
+		
+		ops.put(STRREP,     1 + STR_PREC);
 		ops.put(LET,        0 + EXPR_PREC);
 		ops.put(BIND,       1 + EXPR_PREC);
 	}

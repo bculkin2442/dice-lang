@@ -119,6 +119,9 @@ public class Evaluator {
 		}
 
 		switch(ast.getHead().operatorType) {
+		/*
+		 * @TODO move coercing to its own class
+		 */
 		case COERCE:
 			ITree<Node> toCoerce = ast.getChild(0);
 			ITree<Node> retVal   = new Tree<>(toCoerce.getHead());
@@ -221,9 +224,50 @@ public class Evaluator {
 			return evaluateDiceBinary(binOp,
 					left.getHead().resultVal, right.getHead().resultVal,
 					ctx);
+		case STRCAT:
+		case STRREP:
+			return evaluateStringBinary(binOp,
+					left.getHead().resultVal, right.getHead().resultVal,
+					ctx);
 		default:
 			Errors.inst.printError(EK_EVAL_UNBIN, binOp.toString());
 			return new Tree<>(FAIL(ast));
+		}
+	}
+
+	private ITree<Node> evaluateStringBinary(Token.Type op,
+			EvaluatorResult left, EvaluatorResult right, Context ctx) {
+		if(left.type != STRING) {
+			Errors.inst.printError(EK_EVAL_INVSTRING, left.type.toString());
+			return new Tree<>(FAIL(left));
+		}
+
+		String strang = left.stringVal;
+
+		switch(op) {
+		case STRCAT:
+			if(right.type != STRING) {
+				Errors.inst.printError(EK_EVAL_UNSTRING, right.type.toString());
+				return new Tree<>(FAIL(right));
+			} else {
+				String strung = right.stringVal;
+				return new Tree<>(new Node(Node.Type.RESULT, new EvaluatorResult(STRING, strang + strung)));
+			}
+		case STRREP:
+			if(right.type != INT) {
+				Errors.inst.printError(EK_EVAL_INVSTRING, right.type.toString());
+				return new Tree<>(FAIL(right));
+			} else {
+				String res = strang;
+				long count = right.intVal;
+				for(long i = 1; i < count; i++) {
+					res += strang;
+				}
+				return new Tree<>(new Node(Node.Type.RESULT, new EvaluatorResult(STRING, res)));
+			}
+		default:
+			Errors.inst.printError(EK_EVAL_UNSTRING, op.toString());
+			return new Tree<>(FAIL());
 		}
 	}
 
@@ -434,7 +478,7 @@ public class Evaluator {
 			res = new EvaluatorResult(DICE, tk.diceValue);
 			break;
 		case STRING_LIT:
-			res = new EvaluatorResult(STRING, eng.stringLits.get((int)(tk.intValue)));
+			res = new EvaluatorResult(STRING, eng.stringLiterals.get((int)(tk.intValue)));
 			break;
 		default:
 			Errors.inst.printError(EK_EVAL_UNTOK, tk.type.toString());

@@ -124,6 +124,8 @@ public class DiceLangEngine {
 		opExpander.addDelimiter(":=");
 		opExpander.addDelimiter("=>");
 		opExpander.addDelimiter("//");
+		opExpander.addDelimiter(".+.");
+		opExpander.addDelimiter(".*.");
 		opExpander.addDelimiter("+");
 		opExpander.addDelimiter("-");
 		opExpander.addDelimiter("*");

@@ -38,6 +38,8 @@ public class Tokenizer {
 		litTokens.put("dl",  DICELIST);
 		litTokens.put("=>",  LET);
 		litTokens.put(":=",  BIND);
+		litTokens.put(".+.", STRCAT);
+		litTokens.put(".*.", STRREP);
 		litTokens.put(",",   GROUPSEP);
 		litTokens.put("crc", COERCE);
 	}

@@ -31,6 +31,14 @@ public class Parser {
 					boolean sc = parseClosingGrouper(working, tk);
 					if(!sc)      return false;
 					break;
+				case MULTIPLY:
+				case DIVIDE:
+				case IDIVIDE:
+				case DICEGROUP:
+				case DICECONCAT:
+				case DICELIST:
+				case STRCAT:
+				case STRREP:
 				case LET:
 				case BIND:
 					if(working.size() < 2) {
@@ -42,17 +50,14 @@ public class Parser {
 
 						ITree<Node> opNode = new Tree<>(new Node(BINOP, tk.type));
 						
+						opNode.addChild(left);
+						opNode.addChild(right);
+
 						working.push(opNode);
 					}
 					break;
 				case ADD:
 				case SUBTRACT:
-				case MULTIPLY:
-				case DIVIDE:
-				case IDIVIDE:
-				case DICEGROUP:
-				case DICECONCAT:
-				case DICELIST:
 					if(working.size() == 0) {
 						Errors.inst.printError(EK_PARSE_UNOPERAND, tk.toString());
 						return false;

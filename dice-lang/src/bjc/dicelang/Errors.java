@@ -61,6 +61,10 @@ public class Errors {
 		EK_EVAL_INVDICE,
 		// Mismatched types to math operator
 		EK_EVAL_MISMATH,
+		// Incorrect type to string operator
+		EK_EVAL_INVSTRING,
+		// Unknown string operator
+		EK_EVAL_UNSTRING,
 
 		// Parser Error
 		// Group closing where there couldn't be an opener
@@ -181,7 +185,7 @@ public class Errors {
 			System.out.printf("\tERROR: Unknown node in evaluator: %s\n", args[0]);
 			break;
 		case EK_EVAL_INVBIN:
-			System.out.printf("\tERROR: Binary operators take 2 operand, not %s\n"
+			System.out.printf("\tERROR: Binary operators take 2 operands, not %s\n"
 					+ "\tProblem node is %s\n", args[0], args[1]);
 			break;
 		case EK_EVAL_UNBIN:
@@ -218,6 +222,12 @@ public class Errors {
 			break;
 		case EK_EVAL_MISMATH:
 			System.out.printf("\tERROR: Math operators expect two operands of the same type\n");
+			break;
+		case EK_EVAL_INVSTRING:
+			System.out.printf("\tERROR: Incorrect type %s to string operator\n", args[0]);
+			break;
+		case EK_EVAL_UNSTRING:
+			System.out.printf("\tERROR: Unknown string operator %s\n", args[0]);
 			break;
 		case EK_PARSE_NOCLOSE:
 			System.out.printf("\tERROR: Group closing with no possible group opener\n");
