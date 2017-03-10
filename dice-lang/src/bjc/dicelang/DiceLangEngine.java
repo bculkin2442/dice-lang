@@ -12,6 +12,7 @@ import bjc.utils.funcdata.IList;
 import bjc.utils.funcdata.IMap;
 import bjc.utils.funcutils.ListUtils;
 import bjc.utils.funcutils.NeoTokenSplitter;
+import bjc.utils.funcutils.StringUtils;
 
 import java.util.Comparator;
 import java.util.Deque;
@@ -283,20 +284,20 @@ public class DiceLangEngine {
 		 * Destring command
 		 */
 		IMap<String, String> stringLiterals = new FunctionalMap<>();
-		Matcher quoteMatcher = quotePattern.matcher(newComm);
+		List<String> destringedParts = StringUtils.removeDQuotedStrings(newComm);
 		StringBuffer destringedCommand = new StringBuffer();
-		while(quoteMatcher.find()) {
-			/*
-			 * @TODO interpolate dquoted literals
-			 */
-			String stringLit = quoteMatcher.group(1);
+		for(String part : destringedParts) {
+			if(part.startsWith("\"") && part.endsWith("\"")) {
+				String litName = "stringLiteral" + nextLiteral;
+				String litVal = part.substring(1, part.length() - 1);
+				stringLiterals.put(litName, StringUtils.descapeString(litVal));
+				nextLiteral += 1;
 
-			String litName = "stringLiteral" + nextLiteral++;
-			stringLiterals.put(litName, stringLit);
-
-			quoteMatcher.appendReplacement(destringedCommand, " " + litName + " ");
+				destringedCommand.append(" " + litName + " ");
+			} else {
+				destringedCommand.append(part);
+			}
 		}
-		quoteMatcher.appendTail(destringedCommand);
 		if(debugMode) {
 			System.out.println("\tCommand after destringing: " + destringedCommand);
 
