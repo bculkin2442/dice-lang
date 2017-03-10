@@ -37,7 +37,7 @@
 				<version>3.0.0</version>
 				<configuration>
 					<descriptorRefs>
-						<descriptorRef>jar-with-dependancies</descriptorRef>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
 					</descriptorRefs>
 					<archive>
 						<manifest>
