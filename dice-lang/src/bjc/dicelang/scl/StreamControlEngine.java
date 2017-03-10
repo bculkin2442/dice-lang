@@ -1,12 +1,12 @@
 package bjc.dicelang.scl;
 
-import bjc.dicelang.DoubleMatcher;
 import bjc.dicelang.Errors;
 
 import bjc.utils.esodata.Stack;
 import bjc.utils.esodata.Tape;
 import bjc.utils.funcdata.IList;
 import bjc.utils.funcdata.FunctionalList;
+import bjc.utils.funcutils.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -157,17 +157,15 @@ public class StreamControlEngine {
 				return new Token(BLIT, true);
 			} else if(token.equals("false")) {
 				return new Token(BLIT, false);
-			} else if(intLitPattern.matcher(token).matches()) {
+			} else if(StringUtils.isInt(token)) {
 				return new Token(ILIT, Long.parseLong(token));
-			} else if(DoubleMatcher.floatingLiteral.matcher(token).matches()) {
+			} else if(StringUtils.isDouble(token)) {
 				return new Token(FLIT, Double.parseDouble(token));
 			} else {
 				Errors.inst.printError(EK_SCL_INVTOKEN, token);
 				return null;
 			}
 		}
-
-		private static final Pattern intLitPattern = Pattern.compile("\\A[+\\-]?\\d+\\Z");
 
 		private static final Map<String, Token.Type> litTokens;
 		private static final Map<String, Token.Type> builtinWords; 
@@ -494,7 +492,7 @@ public class StreamControlEngine {
 		 */
 		n += 1;
 
-		curStack.push(new Token(SLIT, sb.toString()));
+		curStack.push(new Token(SLIT, StringUtils.descapeString(sb.toString())));
 
 		return n;
 	}

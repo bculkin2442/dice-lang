@@ -1,15 +1,17 @@
 package bjc.dicelang;
 
-import static bjc.dicelang.Errors.ErrorKey.*;
-import static bjc.dicelang.Token.Type.*;
+import bjc.dicelang.dice.DiceBox;
+
+import bjc.utils.funcdata.FunctionalMap;
+import bjc.utils.funcdata.IMap;
+import bjc.utils.funcutils.StringUtils;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import bjc.dicelang.dice.DiceBox;
-import bjc.utils.funcdata.FunctionalMap;
-import bjc.utils.funcdata.IMap;
-import bjc.utils.funcutils.StringUtils;
+import static bjc.dicelang.Errors.ErrorKey.*;
+import static bjc.dicelang.Token.Type.*;
+
 
 public class Tokenizer {
 	// Literal tokens for tokenization
@@ -105,7 +107,7 @@ public class Tokenizer {
 	private Token tokenizeLiteral(String token, IMap<String, String> stringLts) {
 		Token tk = Token.NIL_TOKEN;
 
-		if(intMatcher.matcher(token).matches()) {
+		if(StringUtils.isInt(token)) {
 			tk = new Token(INT_LIT, Long.parseLong(token));
 		} else if(hexadecimalMatcher.matcher(token).matches()) {
 			String newToken = token.substring(0, 1) + token.substring(token.indexOf('x'));
@@ -127,7 +129,7 @@ public class Tokenizer {
 				Errors.inst.printError(EK_TOK_INVFLEX, flexNum, Integer.toString(parseBase));
 				return Token.NIL_TOKEN;
 			}
-		} else if(DoubleMatcher.floatingLiteral.matcher(token).matches()) {
+		} else if(StringUtils.isDouble(token)) {
 			tk = new Token(FLOAT_LIT, Double.parseDouble(token));
 		} else if(DiceBox.isValidExpression(token)) {
 			tk = new Token(DICE_LIT, DiceBox.parseExpression(token));
