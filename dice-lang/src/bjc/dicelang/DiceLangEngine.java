@@ -130,7 +130,6 @@ public class DiceLangEngine {
 		opExpander.addDelimiter("-");
 		opExpander.addDelimiter("*");
 		opExpander.addDelimiter("/");
-		opExpander.addDelimiter("+");
 		opExpander.compile();
 
 		nextLiteral = 1;
@@ -232,21 +231,7 @@ public class DiceLangEngine {
 	}
 
 	/*
-	 * Matches quote-delimited strings
-	 * 		(like "text" or "text\"text")
-	 *		Uses the "normal* (special normal*)*" pattern style
-	 *		recommended in 'Mastering regular expressions'
-	 *		Here, the normal is 'anything but a forward or backslash'
-	 *		(in regex, thats '[^\""]') and the special is 'an escaped forward slash'
-	 *		(in regex, thats '\\"')
-	 *
-	 *		Then, we just follow the pattern, escape it for java strings, and
-	 *		add the enclosing quotes
-	 */
-	private Pattern quotePattern = Pattern.compile("\"([^\\\"]*(?:\\\"(?:[^\\\"])*)*)\"");
-
-	/*
-	 * Similiar to the above, but using angle brackets instead of quotes
+	 * Matches double-angle bracketed strings.
 	 */
 	private Pattern nonExpandPattern = Pattern.compile("<<([^\\>]*(?:\\>(?:[^\\>])*)*)>>");
 

@@ -3,6 +3,7 @@ package bjc.dicelang.scl;
 import bjc.dicelang.Errors;
 
 import bjc.utils.esodata.Stack;
+import bjc.utils.esodata.SimpleStack;
 import bjc.utils.esodata.Tape;
 import bjc.utils.funcdata.IList;
 import bjc.utils.funcdata.FunctionalList;
@@ -206,7 +207,8 @@ public class StreamControlEngine {
 	public StreamControlEngine(StreamEngine eng) {
 		this.eng = eng;
 
-		words = new HashMap<>();
+		words    = new HashMap<>();
+		curStack = new SimpleStack<>();
 	}
 
 	/**
