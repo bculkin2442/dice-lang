@@ -101,7 +101,6 @@ public class Tokenizer {
 		return tk;
 	}
 
-	private Pattern intMatcher          = Pattern.compile("\\A[\\-\\+]?\\d+\\Z");
 	private Pattern hexadecimalMatcher  = Pattern.compile("\\A[\\-\\+]?0x[0-9A-Fa-f]+\\Z");
 	private Pattern flexadecimalMatcher = Pattern.compile("\\A[\\-\\+]?[0-9][0-9A-Za-z]+B\\d{1,2}\\Z");
 	private Pattern stringLitMatcher    = Pattern.compile("\\AstringLiteral(\\d+)\\Z");

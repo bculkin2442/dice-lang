@@ -4,14 +4,12 @@ import bjc.dicelang.Errors;
 
 import bjc.utils.esodata.Stack;
 import bjc.utils.esodata.SimpleStack;
-import bjc.utils.esodata.Tape;
 import bjc.utils.funcdata.IList;
 import bjc.utils.funcdata.FunctionalList;
 import bjc.utils.funcutils.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import static bjc.dicelang.Errors.ErrorKey.*;
 import static bjc.dicelang.scl.StreamControlEngine.Token.Type.*;

@@ -105,25 +105,23 @@ public class CLIArgsParser {
 		String fName = args[i + 1];
 
 		try(FileInputStream fis = new FileInputStream(fName)) {
-			Scanner scan = new Scanner(fis);
-
-			while(scan.hasNextLine()) {
-				String ln = scan.nextLine();
-
-				Define dfn = parseDefine(ln.substring(ln.indexOf(' ')));
-				if(dfn == null || dfn.inError) return -1;
-
-				if(ln.startsWith("line")) {
-					eng.addLineDefine(dfn);
-				} else if(ln.startsWith("token")) {
-					eng.addTokenDefine(dfn);
-				} else {
-					Errors.inst.printError(EK_CLI_INVDFNTYPE, ln.substring(0, ln.indexOf(' ')));
-					return -1;
+			try(Scanner scan = new Scanner(fis)) {
+				while(scan.hasNextLine()) {
+					String ln = scan.nextLine();
+	
+					Define dfn = parseDefine(ln.substring(ln.indexOf(' ')));
+					if(dfn == null || dfn.inError) return -1;
+	
+					if(ln.startsWith("line")) {
+						eng.addLineDefine(dfn);
+					} else if(ln.startsWith("token")) {
+						eng.addTokenDefine(dfn);
+					} else {
+						Errors.inst.printError(EK_CLI_INVDFNTYPE, ln.substring(0, ln.indexOf(' ')));
+						return -1;
+					}
 				}
 			}
-
-			scan.close();
 		} catch (FileNotFoundException fnfex) {
 			Errors.inst.printError(EK_CLI_NOFILE, fName);
 			return -1;
