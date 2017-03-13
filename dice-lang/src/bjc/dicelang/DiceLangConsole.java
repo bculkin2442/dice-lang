@@ -23,8 +23,9 @@ public class DiceLangConsole {
 
 		eng = new DiceLangEngine();
 
-		if (!CLIArgsParser.parseArgs(args, eng))
+		if (!CLIArgsParser.parseArgs(args, eng)) {
 			System.exit(1);
+		}
 
 		Terminal.setupTerminal();
 	}

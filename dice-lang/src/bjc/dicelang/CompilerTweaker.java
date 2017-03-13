@@ -82,4 +82,12 @@ public class CompilerTweaker {
 		opExpander.compile();
 	}
 
+	/**
+	 * Change the max no. of times defines are allowed to recur.
+	 * 
+	 * @param times The number of times to allow defines to recur.
+	 */
+	public void setDefineRecurLimit(int times) {
+		Define.MAX_RECURS = times;
+	}
 }

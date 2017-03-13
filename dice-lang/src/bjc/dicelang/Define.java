@@ -15,7 +15,7 @@ public class Define implements UnaryOperator<String>, Comparable<Define> {
 		LINE, TOKEN
 	}
 
-	public static final int MAX_RECURS = 10;
+	public static int MAX_RECURS = 10;
 
 	public final int priority;
 	public final boolean inError;
