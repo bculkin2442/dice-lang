@@ -12,6 +12,7 @@ public interface Die {
 	 * @return Whether this die can be optimized or not.
 	 */
 	boolean canOptimize();
+
 	/**
 	 * Optimize this die to a single number.
 	 *
@@ -20,7 +21,7 @@ public interface Die {
 	 *
 	 * @return The optimized form of this die
 	 */
-	long    optimize();
+	long optimize();
 
 	/**
 	 * Roll this die.
@@ -28,6 +29,7 @@ public interface Die {
 	 * @return A possible roll of this die
 	 */
 	long roll();
+
 	/**
 	 * Roll only a single portion of this die.
 	 *

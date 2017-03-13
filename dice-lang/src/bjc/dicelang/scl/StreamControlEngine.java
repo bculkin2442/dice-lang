@@ -24,42 +24,31 @@ public class StreamControlEngine {
 	static class Token {
 		public static enum Type {
 			/*
-			 * Natural tokens.
-			 * These come directly from strings
+			 * Natural tokens. These come directly from strings
 			 */
-			ILIT,     FLIT,  BLIT,
-			SQUOTE,   DQUOTE,
-			OBRACKET, OBRACE,
-			SYMBOL,   WORD,
+			ILIT, FLIT, BLIT, SQUOTE, DQUOTE, OBRACKET, OBRACE, SYMBOL, WORD,
 
 			/*
-			 * Synthetic tokens.
-			 * These are produced from special tokens.
+			 * Synthetic tokens. These are produced from special
+			 * tokens.
 			 */
-			SLIT,
-			WORDS, ARRAY,
+			SLIT, WORDS, ARRAY,
 
 			/*
-			 * Word tokens
-			 * These are subordinate to WORD tokens
+			 * Word tokens These are subordinate to WORD tokens
 			 */
 			/*
 			 * Array manipulation
 			 */
-			MAKEARRAY,
-			MAKEEXEC,   MAKEUNEXEC,
+			MAKEARRAY, MAKEEXEC, MAKEUNEXEC,
 			/*
 			 * Stream manipulation
 			 */
-			NEWSTREAM,
-			LEFTSTREAM, RIGHTSTREAM,
-			DELETESTREAM, MERGESTREAM,
+			NEWSTREAM, LEFTSTREAM, RIGHTSTREAM, DELETESTREAM, MERGESTREAM,
 			/*
 			 * Stack manipulation
 			 */
-			STACKCOUNT, STACKEMPTY,
-			DROP,       NDROP,
-			NIP,        NNIP,
+			STACKCOUNT, STACKEMPTY, DROP, NDROP, NIP, NNIP,
 		}
 
 		/*
@@ -68,35 +57,27 @@ public class StreamControlEngine {
 		public Type type;
 
 		/*
-		 * Used for
-		 * 	ILIT
+		 * Used for ILIT
 		 */
 		public long intVal;
 		/*
-		 * Used for
-		 * 	FLIT
+		 * Used for FLIT
 		 */
 		public double floatVal;
 		/*
-		 * Used for
-		 * 	BLIT
+		 * Used for BLIT
 		 */
 		public boolean boolVal;
 		/*
-		 * Used for
-		 * 	SYMBOL
-		 * 	SLIT
+		 * Used for SYMBOL SLIT
 		 */
 		public String stringVal;
 		/*
-		 * Used for
-		 * 	WORD
+		 * Used for WORD
 		 */
 		public Token tokenVal;
 		/*
-		 * Used for
-		 * 	WORDS
-		 * 	ARRAY
+		 * Used for WORDS ARRAY
 		 */
 		public IList<Token> tokenVals;
 
@@ -138,7 +119,6 @@ public class StreamControlEngine {
 			this(typ, new Token(tVal));
 		}
 
-
 		public Token(Type typ, IList<Token> tVals) {
 			this(typ);
 
@@ -146,19 +126,19 @@ public class StreamControlEngine {
 		}
 
 		public static Token tokenizeString(String token) {
-			if(litTokens.containsKey(token)) {
+			if (litTokens.containsKey(token)) {
 				return new Token(litTokens.get(token));
-			} else if(token.startsWith("\\")) {
+			} else if (token.startsWith("\\")) {
 				return new Token(SYMBOL, token.substring(1));
-			} else if(builtinWords.containsKey(token)) {
+			} else if (builtinWords.containsKey(token)) {
 				return new Token(WORD, builtinWords.get(token));
-			} else if(token.equals("true")) {
+			} else if (token.equals("true")) {
 				return new Token(BLIT, true);
-			} else if(token.equals("false")) {
+			} else if (token.equals("false")) {
 				return new Token(BLIT, false);
-			} else if(StringUtils.isInt(token)) {
+			} else if (StringUtils.isInt(token)) {
 				return new Token(ILIT, Long.parseLong(token));
-			} else if(StringUtils.isDouble(token)) {
+			} else if (StringUtils.isDouble(token)) {
 				return new Token(FLIT, Double.parseDouble(token));
 			} else {
 				Errors.inst.printError(EK_SCL_INVTOKEN, token);
@@ -167,32 +147,32 @@ public class StreamControlEngine {
 		}
 
 		private static final Map<String, Token.Type> litTokens;
-		private static final Map<String, Token.Type> builtinWords; 
+		private static final Map<String, Token.Type> builtinWords;
 
 		static {
 			litTokens = new HashMap<>();
 
-			litTokens.put("'",  SQUOTE);
+			litTokens.put("'", SQUOTE);
 			litTokens.put("\"", DQUOTE);
-			litTokens.put("[",  OBRACKET);
+			litTokens.put("[", OBRACKET);
 			litTokens.put("{", OBRACE);
 
 			builtinWords = new HashMap<>();
 
 			builtinWords.put("makearray", MAKEARRAY);
-			builtinWords.put("+stream",   NEWSTREAM);
-			builtinWords.put(">stream",   LEFTSTREAM);
-			builtinWords.put("<stream",   RIGHTSTREAM);
-			builtinWords.put("-stream",   DELETESTREAM);
-			builtinWords.put("<-stream",   MERGESTREAM);
-			builtinWords.put("cvx",       MAKEEXEC);
-			builtinWords.put("cvux",      MAKEUNEXEC);
-			builtinWords.put("#",         STACKCOUNT);
-			builtinWords.put("empty?",    STACKEMPTY);
-			builtinWords.put("drop",      DROP);
-			builtinWords.put("ndrop",     NDROP);
-			builtinWords.put("nip",       NIP);
-			builtinWords.put("nnip",      NNIP);
+			builtinWords.put("+stream", NEWSTREAM);
+			builtinWords.put(">stream", LEFTSTREAM);
+			builtinWords.put("<stream", RIGHTSTREAM);
+			builtinWords.put("-stream", DELETESTREAM);
+			builtinWords.put("<-stream", MERGESTREAM);
+			builtinWords.put("cvx", MAKEEXEC);
+			builtinWords.put("cvux", MAKEUNEXEC);
+			builtinWords.put("#", STACKCOUNT);
+			builtinWords.put("empty?", STACKEMPTY);
+			builtinWords.put("drop", DROP);
+			builtinWords.put("ndrop", NDROP);
+			builtinWords.put("nip", NIP);
+			builtinWords.put("nnip", NNIP);
 		}
 	}
 
@@ -205,38 +185,42 @@ public class StreamControlEngine {
 	public StreamControlEngine(StreamEngine eng) {
 		this.eng = eng;
 
-		words    = new HashMap<>();
+		words = new HashMap<>();
 		curStack = new SimpleStack<>();
 	}
 
 	/**
 	 * Run a SCL program.
 	 *
-	 * @param tokens The program to run
+	 * @param tokens
+	 *                The program to run
 	 *
 	 * @return Whether the program executed succesfully
 	 */
 	public boolean runProgram(String[] tokens) {
-		for(int i = 0; i < tokens.length; i++) {
+		for (int i = 0; i < tokens.length; i++) {
 			String token = tokens[i];
 			Token tok = Token.tokenizeString(token);
-			
-			if(tok == null) {
+
+			if (tok == null) {
 				return false;
 			}
 
-			switch(tok.type) {
+			switch (tok.type) {
 			case SQUOTE:
 				i = handleSingleQuote(i, tokens);
-				if(i == -1) return false;
+				if (i == -1)
+					return false;
 				break;
 			case OBRACKET:
 				i = handleDelim(i, tokens, "]");
-				if(i == -1) return false;
+				if (i == -1)
+					return false;
 				break;
 			case OBRACE:
 				i = handleDelim(i, tokens, "}");
-				if(i == -1) return false;
+				if (i == -1)
+					return false;
 				Token brak = curStack.pop();
 				curStack.push(new Token(ARRAY, brak.tokenVals));
 				break;
@@ -255,37 +239,44 @@ public class StreamControlEngine {
 	private boolean handleWord(Token tk) {
 		boolean succ = true;
 
-		switch(tk.tokenVal.type) {
+		switch (tk.tokenVal.type) {
 		case NEWSTREAM:
 			eng.newStream();
 			break;
 		case LEFTSTREAM:
 			succ = eng.leftStream();
-			if(!succ) return false;
+			if (!succ)
+				return false;
 			break;
 		case RIGHTSTREAM:
 			succ = eng.rightStream();
-			if(!succ) return false;
+			if (!succ)
+				return false;
 			break;
 		case DELETESTREAM:
 			succ = eng.deleteStream();
-			if(!succ) return false;
+			if (!succ)
+				return false;
 			break;
 		case MERGESTREAM:
 			succ = eng.mergeStream();
-			if(!succ) return false;
+			if (!succ)
+				return false;
 			break;
 		case MAKEARRAY:
 			succ = makeArray();
-			if(!succ) return false;
+			if (!succ)
+				return false;
 			break;
 		case MAKEEXEC:
 			succ = toggleExec(true);
-			if(!succ) return false;
+			if (!succ)
+				return false;
 			break;
 		case MAKEUNEXEC:
 			succ = toggleExec(false);
-			if(!succ) return false;
+			if (!succ)
+				return false;
 			break;
 		case STACKCOUNT:
 			curStack.push(new Token(ILIT, curStack.size()));
@@ -294,7 +285,7 @@ public class StreamControlEngine {
 			curStack.push(new Token(BLIT, curStack.empty()));
 			break;
 		case DROP:
-			if(curStack.size() == 0) {
+			if (curStack.size() == 0) {
 				Errors.inst.printError(EK_SCL_SUNDERFLOW, tk.tokenVal.type.toString());
 				return false;
 			}
@@ -302,19 +293,21 @@ public class StreamControlEngine {
 			break;
 		case NDROP:
 			succ = handleNDrop();
-			if(!succ) return false;
+			if (!succ)
+				return false;
 			break;
 		case NIP:
-			if(curStack.size() < 2) {
+			if (curStack.size() < 2) {
 				Errors.inst.printError(EK_SCL_SUNDERFLOW, tk.tokenVal.type.toString());
 				return false;
 			}
-			
+
 			curStack.nip();
 			break;
 		case NNIP:
 			succ = handleNNip();
-			if(!succ) return false;
+			if (!succ)
+				return false;
 			break;
 		default:
 			Errors.inst.printError(EK_SCL_UNWORD, tk.tokenVal.type.toString());
@@ -327,14 +320,14 @@ public class StreamControlEngine {
 	private boolean handleNNip() {
 		Token num = curStack.pop();
 
-		if(num.type != ILIT) {
+		if (num.type != ILIT) {
 			Errors.inst.printError(EK_SCL_INVARG, num.type.toString());
 			return false;
 		}
 
-		int n = (int)num.intVal;
-		
-		if(curStack.size() < n) {
+		int n = (int) num.intVal;
+
+		if (curStack.size() < n) {
 			Errors.inst.printError(EK_SCL_SUNDERFLOW, NNIP.toString());
 			return false;
 		}
@@ -346,14 +339,14 @@ public class StreamControlEngine {
 	private boolean handleNDrop() {
 		Token num = curStack.pop();
 
-		if(num.type != ILIT) {
+		if (num.type != ILIT) {
 			Errors.inst.printError(EK_SCL_INVARG, num.type.toString());
 			return false;
 		}
 
-		int n = (int)num.intVal;
-		
-		if(curStack.size() < n) {
+		int n = (int) num.intVal;
+
+		if (curStack.size() < n) {
 			Errors.inst.printError(EK_SCL_SUNDERFLOW, NDROP.toString());
 			return false;
 		}
@@ -365,15 +358,15 @@ public class StreamControlEngine {
 	private boolean toggleExec(boolean exec) {
 		Token top = curStack.top();
 
-		if(exec) {
-			if(top.type != ARRAY) {
+		if (exec) {
+			if (top.type != ARRAY) {
 				Errors.inst.printError(EK_SCL_INVARG, top.toString());
 				return false;
 			}
 
 			top.type = WORDS;
 		} else {
-			if(top.type != WORDS) {
+			if (top.type != WORDS) {
 				Errors.inst.printError(EK_SCL_INVARG, top.toString());
 				return false;
 			}
@@ -387,13 +380,13 @@ public class StreamControlEngine {
 	private boolean makeArray() {
 		Token num = curStack.pop();
 
-		if(num.type != ILIT) {
+		if (num.type != ILIT) {
 			Errors.inst.printError(EK_SCL_INVARG, num.type.toString());
 		}
 
 		IList<Token> arr = new FunctionalList<>();
 
-		for(int i = 0; i < num.intVal; i++) {
+		for (int i = 0; i < num.intVal; i++) {
 			arr.add(curStack.pop());
 		}
 
@@ -405,30 +398,33 @@ public class StreamControlEngine {
 	private int handleDelim(int i, String[] tokens, String delim) {
 		IList<Token> toks = new FunctionalList<>();
 
-		int n      = i + 1;
-		if(n >= tokens.length) {
+		int n = i + 1;
+		if (n >= tokens.length) {
 			Errors.inst.printError(EK_SCL_MMQUOTE);
 			return -1;
 		}
 		String tok = tokens[n];
 
-		while(!tok.equals(delim)) {
+		while (!tok.equals(delim)) {
 			Token ntok = Token.tokenizeString(tok);
 
-			switch(ntok.type) {
+			switch (ntok.type) {
 			case SQUOTE:
 				n = handleSingleQuote(n, tokens);
-				if(n == -1) return -1;
+				if (n == -1)
+					return -1;
 				toks.add(curStack.pop());
 				break;
 			case OBRACKET:
 				n = handleDelim(n, tokens, "]");
-				if(n == -1) return -1;
+				if (n == -1)
+					return -1;
 				toks.add(curStack.pop());
 				break;
 			case OBRACE:
 				i = handleDelim(i, tokens, "}");
-				if(i == -1) return -1;
+				if (i == -1)
+					return -1;
 				Token brak = curStack.pop();
 				toks.add(new Token(ARRAY, brak.tokenVals));
 				break;
@@ -438,8 +434,8 @@ public class StreamControlEngine {
 			/*
 			 * Move to the next token
 			 */
-			n  += 1;
-			if(n >= tokens.length) {
+			n += 1;
+			if (n >= tokens.length) {
 				Errors.inst.printError(EK_SCL_MMQUOTE);
 				return -1;
 			}
@@ -459,15 +455,15 @@ public class StreamControlEngine {
 	private int handleSingleQuote(int i, String[] tokens) {
 		StringBuilder sb = new StringBuilder();
 
-		int n      = i + 1;
-		if(n >= tokens.length) {
+		int n = i + 1;
+		if (n >= tokens.length) {
 			Errors.inst.printError(EK_SCL_MMQUOTE);
 			return -1;
 		}
 		String tok = tokens[n];
 
-		while(!tok.equals("'")) {
-			if(tok.matches("\\\\+'")) {
+		while (!tok.equals("'")) {
+			if (tok.matches("\\\\+'")) {
 				/*
 				 * Handle escaped quotes.
 				 */
@@ -479,8 +475,8 @@ public class StreamControlEngine {
 			/*
 			 * Move to the next token
 			 */
-			n  += 1;
-			if(n >= tokens.length) {
+			n += 1;
+			if (n >= tokens.length) {
 				Errors.inst.printError(EK_SCL_MMQUOTE);
 				return -1;
 			}

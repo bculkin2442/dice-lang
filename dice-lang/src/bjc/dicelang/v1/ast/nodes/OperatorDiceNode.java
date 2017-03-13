@@ -52,34 +52,33 @@ public enum OperatorDiceNode implements IDiceASTNode {
 	 * Create a operator node from a string
 	 * 
 	 * @param s
-	 *            The string to convert to a node
+	 *                The string to convert to a node
 	 * @return The operator corresponding to the node
 	 */
 	public static OperatorDiceNode fromString(String s) {
 		switch (s) {
-			case ":=":
-				return ASSIGN;
-			case "+":
-				return ADD;
-			case "-":
-				return SUBTRACT;
-			case "*":
-				return MULTIPLY;
-			case "/":
-				return DIVIDE;
-			case "d":
-			case "group":
-				return GROUP;
-			case "c":
-			case "compound":
-				return COMPOUND;
-			case "=>":
-				return LET;
-			case "[]":
-				return ARRAY;
-			default:
-				throw new IllegalArgumentException(
-						s + " is not a valid operator node");
+		case ":=":
+			return ASSIGN;
+		case "+":
+			return ADD;
+		case "-":
+			return SUBTRACT;
+		case "*":
+			return MULTIPLY;
+		case "/":
+			return DIVIDE;
+		case "d":
+		case "group":
+			return GROUP;
+		case "c":
+		case "compound":
+			return COMPOUND;
+		case "=>":
+			return LET;
+		case "[]":
+			return ARRAY;
+		default:
+			throw new IllegalArgumentException(s + " is not a valid operator node");
 		}
 	}
 

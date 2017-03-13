@@ -10,12 +10,12 @@ import bjc.utils.funcdata.IMap;
 /**
  * Alias for the type of a 'pragma' or special language command
  * 
- * To explain it, a pragma is a function that takes a tokenizer with the rest
- * of the line, and an enviroment that contains variable bindings
+ * To explain it, a pragma is a function that takes a tokenizer with the rest of
+ * the line, and an enviroment that contains variable bindings
+ * 
  * @author ben
  *
  */
-public interface DiceASTPragma extends
-		BiConsumer<FunctionalStringTokenizer, IMap<String, ITree<IDiceASTNode>>> {
+public interface DiceASTPragma extends BiConsumer<FunctionalStringTokenizer, IMap<String, ITree<IDiceASTNode>>> {
 	// Just an alias
 }

@@ -16,20 +16,22 @@ public class ExplodingDice implements DieList {
 	/*
 	 * The source die to use.
 	 */
-	private Die             source;
+	private Die source;
 
 	/*
 	 * The conditions for exploding.
 	 */
 	private Predicate<Long> explodeOn;
-	private String          explodePattern;
-	private boolean         explodePenetrates;
+	private String explodePattern;
+	private boolean explodePenetrates;
 
 	/**
 	 * Create a new exploding die.
 	 *
-	 * @param src The source die for exploding.
-	 * @param explode The condition to explode on.
+	 * @param src
+	 *                The source die for exploding.
+	 * @param explode
+	 *                The condition to explode on.
 	 */
 	public ExplodingDice(Die src, Predicate<Long> explode) {
 		this(src, explode, null, false);
@@ -38,10 +40,13 @@ public class ExplodingDice implements DieList {
 	/**
 	 * Create a new exploding die that may penetrate.
 	 *
-	 * @param src The source die for exploding.
-	 * @param explode The condition to explode on.
-	 * @param penetrate Whether or not for explosions to penetrate (-1 to
-	 * exploded die).
+	 * @param src
+	 *                The source die for exploding.
+	 * @param explode
+	 *                The condition to explode on.
+	 * @param penetrate
+	 *                Whether or not for explosions to penetrate (-1 to
+	 *                exploded die).
 	 */
 	public ExplodingDice(Die src, Predicate<Long> explode, boolean penetrate) {
 		this(src, explode, null, penetrate);
@@ -50,17 +55,20 @@ public class ExplodingDice implements DieList {
 	/**
 	 * Create a new exploding die that may penetrate.
 	 *
-	 * @param src The source die for exploding.
-	 * @param explode The condition to explode on.
-	 * @param penetrate Whether or not for explosions to penetrate (-1 to
-	 * exploded die).
-	 * @param patt The string the condition came from, for printing.
+	 * @param src
+	 *                The source die for exploding.
+	 * @param explode
+	 *                The condition to explode on.
+	 * @param penetrate
+	 *                Whether or not for explosions to penetrate (-1 to
+	 *                exploded die).
+	 * @param patt
+	 *                The string the condition came from, for printing.
 	 */
-	public ExplodingDice(Die src, Predicate<Long> explode, String patt,
-			boolean penetrate) {
-		source            = src;
-		explodeOn         = explode;
-		explodePattern    = patt;
+	public ExplodingDice(Die src, Predicate<Long> explode, String patt, boolean penetrate) {
+		source = src;
+		explodeOn = explode;
+		explodePattern = patt;
 		explodePenetrates = penetrate;
 	}
 
@@ -81,10 +89,11 @@ public class ExplodingDice implements DieList {
 
 		List<Long> resList = new LinkedList<>();
 
-		while(explodeOn.test(oldRes)) {
+		while (explodeOn.test(oldRes)) {
 			oldRes = source.rollSingle();
 
-			if(explodePenetrates) oldRes -= 1;
+			if (explodePenetrates)
+				oldRes -= 1;
 			resList.add(oldRes);
 		}
 
@@ -92,9 +101,9 @@ public class ExplodingDice implements DieList {
 		newRes[0] = res;
 
 		int i = 1;
-		for(long rll : resList) {
+		for (long rll : resList) {
 			newRes[i] = rll;
-			i         += 1;
+			i += 1;
 		}
 
 		return newRes;
@@ -102,7 +111,7 @@ public class ExplodingDice implements DieList {
 
 	@Override
 	public String toString() {
-		if(explodePattern == null) {
+		if (explodePattern == null) {
 			return source + (explodePenetrates ? "p" : "") + "!";
 		} else {
 			return source + (explodePenetrates ? "p" : "") + "!" + explodePattern;

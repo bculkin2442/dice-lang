@@ -16,7 +16,7 @@ public class DummyResult implements IResult {
 	 * Create a new dummy result with a reason
 	 * 
 	 * @param data
-	 *            The reason why the result is a dummy
+	 *                The reason why the result is a dummy
 	 */
 	public DummyResult(String data) {
 		dummyData = data;

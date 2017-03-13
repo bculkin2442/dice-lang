@@ -13,7 +13,7 @@ import bjc.utils.funcdata.IList;
  * @author ben
  *
  */
-public interface IOperatorCollapser extends
-		Function<IList<IPair<IResult, ITree<IDiceASTNode>>>, IPair<IResult, ITree<IDiceASTNode>>> {
+public interface IOperatorCollapser
+		extends Function<IList<IPair<IResult, ITree<IDiceASTNode>>>, IPair<IResult, ITree<IDiceASTNode>>> {
 	// Just an alias
 }

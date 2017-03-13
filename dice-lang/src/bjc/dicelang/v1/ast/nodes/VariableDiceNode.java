@@ -16,7 +16,7 @@ public class VariableDiceNode implements IDiceASTNode {
 	 * Create a new node representing the specified variable
 	 * 
 	 * @param varName
-	 *            The name of the variable being referenced
+	 *                The name of the variable being referenced
 	 */
 	public VariableDiceNode(String varName) {
 		this.variableName = varName;
@@ -74,8 +74,7 @@ public class VariableDiceNode implements IDiceASTNode {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result
-				+ ((variableName == null) ? 0 : variableName.hashCode());
+		result = prime * result + ((variableName == null) ? 0 : variableName.hashCode());
 		return result;
 	}
 

@@ -20,11 +20,11 @@ public class DiceExpressionPreparer {
 	/**
 	 * The yard to use for shunting expressions
 	 */
-	private static ShuntingYard<String>	yard;
+	private static ShuntingYard<String> yard;
 
-	private static final int			MATH_PREC	= 20;
-	private static final int			DICE_PREC	= 10;
-	private static final int			EXPR_PREC	= 0;
+	private static final int MATH_PREC = 20;
+	private static final int DICE_PREC = 10;
+	private static final int EXPR_PREC = 0;
 
 	// Do initialization for all parsers
 	static {
@@ -39,29 +39,29 @@ public class DiceExpressionPreparer {
 		yard.addOp("*", 1 + MATH_PREC);
 		yard.addOp("/", 1 + MATH_PREC);
 
-		yard.addOp("d", 0 + DICE_PREC); // dice operator: use for creating
+		yard.addOp("d", 0 + DICE_PREC); // dice operator: use for
+						// creating
 		// variable size dice groups
 		yard.addOp("c", 1 + DICE_PREC); // compound operator: use for
 		// creating compound dice from expressions
 
 		yard.addOp("=>", 0 + EXPR_PREC); // let operator: evaluate an
 		// expression in the context of another
-		yard.addOp(":=", 1 + EXPR_PREC); // binding operator: Bind a name
+		yard.addOp(":=", 1 + EXPR_PREC); // binding operator: Bind a
+							// name
 		// to a variable expression
 	}
 
 	/**
-	 * Prepare a command, turning raw tokens into input for the tree
-	 * builder
+	 * Prepare a command, turning raw tokens into input for the tree builder
 	 * 
 	 * @param currentLine
-	 *            The command to prepare
+	 *                The command to prepare
 	 * @return A stream of tokens representing the command
 	 */
 	public static IList<String> prepareCommand(String currentLine) {
 		// Split the command into tokens
-		IList<String> tokens = FunctionalStringTokenizer
-				.fromString(currentLine).toList();
+		IList<String> tokens = FunctionalStringTokenizer.fromString(currentLine).toList();
 
 		// The linked list to use for handling tokens
 		Deque<IPair<String, String>> ops = new LinkedList<>();
@@ -75,8 +75,7 @@ public class DiceExpressionPreparer {
 		ops.add(new Pair<>("=>", "=>"));
 
 		// Expand infix single tokens to multiple infix tokens
-		IList<String> semiExpandedTokens = ListUtils.splitTokens(tokens,
-				ops);
+		IList<String> semiExpandedTokens = ListUtils.splitTokens(tokens, ops);
 
 		// Reinitialize the list
 		ops = new LinkedList<>();
@@ -88,8 +87,7 @@ public class DiceExpressionPreparer {
 		ops.add(new Pair<>("]", "\\]"));
 
 		// Deaffix ('s and ['s from tokens
-		IList<String> fullyExpandedTokens = ListUtils
-				.deAffixTokens(semiExpandedTokens, ops);
+		IList<String> fullyExpandedTokens = ListUtils.deAffixTokens(semiExpandedTokens, ops);
 
 		// Remove blank tokens
 		fullyExpandedTokens.removeIf((strang) -> strang.equals(""));

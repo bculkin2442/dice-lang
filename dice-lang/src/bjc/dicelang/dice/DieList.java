@@ -12,6 +12,7 @@ public interface DieList {
 	 * @return Whether or not this list cna be optimized.
 	 */
 	boolean canOptimize();
+
 	/**
 	 * Optimize this list, if it can be done.
 	 *
@@ -19,12 +20,13 @@ public interface DieList {
 	 *
 	 * @return The optimized form of this list.
 	 */
-	long[]  optimize();
+	long[] optimize();
 
 	/**
 	 * Roll this group of dice.
 	 *
-	 * @param A possible roll of this group.
+	 * @param A
+	 *                possible roll of this group.
 	 */
 	long[] roll();
 }

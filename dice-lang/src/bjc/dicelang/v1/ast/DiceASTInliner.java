@@ -20,9 +20,9 @@ public class DiceASTInliner {
 	 * Inline all the variables in the AST
 	 * 
 	 * @param ast
-	 *            The AST to inline variables into
+	 *                The AST to inline variables into
 	 * @param enviroment
-	 *            The enviroment to inline from
+	 *                The enviroment to inline from
 	 * @return The inlined AST
 	 */
 	public static ITree<IDiceASTNode> inlineAll(ITree<IDiceASTNode> ast,
@@ -32,8 +32,7 @@ public class DiceASTInliner {
 		return selectiveInline(ast, enviroment, (String[]) null);
 	}
 
-	private static ITree<IDiceASTNode> inlineNode(IDiceASTNode node,
-			IMap<String, ITree<IDiceASTNode>> enviroment,
+	private static ITree<IDiceASTNode> inlineNode(IDiceASTNode node, IMap<String, ITree<IDiceASTNode>> enviroment,
 			boolean specificInline, IList<String> variableNames) {
 		// Only variables get inlined
 		if (node.getType() != DiceASTType.VARIABLE) {
@@ -50,8 +49,7 @@ public class DiceASTInliner {
 				// You can't inline non-existent variables
 				if (!enviroment.containsKey(variableName)) {
 					throw new UnsupportedOperationException(
-							"Attempted to inline non-existant variable "
-									+ variableName);
+							"Attempted to inline non-existant variable " + variableName);
 				}
 
 				// Return the tree for the variable
@@ -61,12 +59,11 @@ public class DiceASTInliner {
 			// We're not inlining this particular variable
 			return new Tree<>(node);
 		}
-		
+
 		// You can't inline non-existent variables
 		if (!enviroment.containsKey(variableName)) {
 			throw new UnsupportedOperationException(
-					"Attempted to inline non-existant variable "
-							+ variableName);
+					"Attempted to inline non-existant variable " + variableName);
 		}
 
 		// Return the tree for the variable
@@ -77,37 +74,32 @@ public class DiceASTInliner {
 	 * Inline the specified variables in the AST
 	 * 
 	 * @param ast
-	 *            The AST to inline variables into
+	 *                The AST to inline variables into
 	 * @param enviroment
-	 *            The enviroment to inline from
+	 *                The enviroment to inline from
 	 * @param variables
-	 *            The variables to inline
+	 *                The variables to inline
 	 * @return The inlined AST
 	 */
-	public static ITree<IDiceASTNode> selectiveInline(
-			ITree<IDiceASTNode> ast,
-			IMap<String, ITree<IDiceASTNode>> enviroment,
-			IList<String> variables) {
+	public static ITree<IDiceASTNode> selectiveInline(ITree<IDiceASTNode> ast,
+			IMap<String, ITree<IDiceASTNode>> enviroment, IList<String> variables) {
 		// Inline the specified variables
-		return selectiveInline(ast, enviroment,
-				variables.toArray(new String[0]));
+		return selectiveInline(ast, enviroment, variables.toArray(new String[0]));
 	}
 
 	/**
 	 * Inline the specified variables in the AST
 	 * 
 	 * @param ast
-	 *            The AST to inline variables into
+	 *                The AST to inline variables into
 	 * @param enviroment
-	 *            The enviroment to inline from
+	 *                The enviroment to inline from
 	 * @param variables
-	 *            The variables to inline
+	 *                The variables to inline
 	 * @return The inlined AST
 	 */
-	public static ITree<IDiceASTNode> selectiveInline(
-			ITree<IDiceASTNode> ast,
-			IMap<String, ITree<IDiceASTNode>> enviroment,
-			String... variables) {
+	public static ITree<IDiceASTNode> selectiveInline(ITree<IDiceASTNode> ast,
+			IMap<String, ITree<IDiceASTNode>> enviroment, String... variables) {
 		// If we're selectively inlining, do so
 		if (variables != null && variables.length > 0) {
 			IList<String> variableNames = new FunctionalList<>(variables);

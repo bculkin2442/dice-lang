@@ -12,8 +12,7 @@ import bjc.utils.data.Pair;
  * @author ben
  *
  */
-public class DiceLanguageState
-		extends Pair<DiceExpressionParser, Map<String, IDiceExpression>> {
+public class DiceLanguageState extends Pair<DiceExpressionParser, Map<String, IDiceExpression>> {
 
 	/**
 	 * Create a new state
@@ -25,12 +24,11 @@ public class DiceLanguageState
 	 * Create a new state with the desired parameters
 	 * 
 	 * @param left
-	 *            The parser to use
+	 *                The parser to use
 	 * @param right
-	 *            The enviroment to use
+	 *                The enviroment to use
 	 */
-	public DiceLanguageState(DiceExpressionParser left,
-			Map<String, IDiceExpression> right) {
+	public DiceLanguageState(DiceExpressionParser left, Map<String, IDiceExpression> right) {
 		super(left, right);
 	}
 }

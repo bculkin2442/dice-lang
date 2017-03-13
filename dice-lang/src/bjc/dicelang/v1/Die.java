@@ -12,23 +12,22 @@ public class Die implements IDiceExpression {
 	/*
 	 * Random # gen to use for dice
 	 */
-	private static Random	rng	= new Random();
+	private static Random rng = new Random();
 
 	/*
 	 * Number of sides this die has
 	 */
-	private int				nSides;
+	private int nSides;
 
 	/**
 	 * Create a die with the specified number of sides
 	 * 
 	 * @param nSides
-	 *            The number of sides this dice has
+	 *                The number of sides this dice has
 	 */
 	public Die(int nSides) {
 		if (nSides < 1) {
-			throw new UnsupportedOperationException(
-					"Dice with less than 1 side are not supported");
+			throw new UnsupportedOperationException("Dice with less than 1 side are not supported");
 		}
 
 		this.nSides = nSides;
@@ -42,8 +41,7 @@ public class Die implements IDiceExpression {
 	@Override
 	public int optimize() {
 		if (nSides != 1) {
-			throw new UnsupportedOperationException(
-					"Can't optimize " + nSides + "-sided dice");
+			throw new UnsupportedOperationException("Can't optimize " + nSides + "-sided dice");
 		}
 
 		return 1;

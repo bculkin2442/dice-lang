@@ -11,17 +11,15 @@ public interface ILiteralDiceNode extends IDiceASTNode {
 	 * Check if a token represents a literal, and if so, what type
 	 * 
 	 * @param tok
-	 *            The token to check
-	 * @return The type the literal would be if it is one, or null
-	 *         otherwise
+	 *                The token to check
+	 * @return The type the literal would be if it is one, or null otherwise
 	 */
 	static DiceLiteralType getLiteralType(String tok) {
 		String diceGroup = "\\d*d\\d+\\";
 
 		String diceGroupOrNumber = "[(?:" + diceGroup + ")(?:\\d+)]";
 
-		if (tok.matches("\\A" + diceGroupOrNumber + "?" + "c"
-				+ diceGroupOrNumber + "\\Z")) {
+		if (tok.matches("\\A" + diceGroupOrNumber + "?" + "c" + diceGroupOrNumber + "\\Z")) {
 			return DiceLiteralType.DICE;
 		}
 
@@ -34,7 +32,8 @@ public interface ILiteralDiceNode extends IDiceASTNode {
 			return DiceLiteralType.INTEGER;
 		} catch (NumberFormatException nfex) {
 			// We don't care about details
-			// This probably shouldn't return null, but I believe it does so
+			// This probably shouldn't return null, but I believe it
+			// does so
 			// because where its called checks that. @FIXME
 			return null;
 		}

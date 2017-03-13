@@ -13,7 +13,7 @@ public class IntegerResult implements IResult {
 	 * Create a new integer valued result
 	 * 
 	 * @param val
-	 *            The value of the result
+	 *                The value of the result
 	 */
 	public IntegerResult(int val) {
 		value = val;

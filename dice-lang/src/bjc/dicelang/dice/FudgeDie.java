@@ -21,10 +21,10 @@ public class FudgeDie implements Die {
 
 	public long roll() {
 		long res = 0;
-		
+
 		long nDice = numDice.roll();
 
-		for(int i = 0; i < nDice; i++) {
+		for (int i = 0; i < nDice; i++) {
 			res += rollSingle();
 		}
 

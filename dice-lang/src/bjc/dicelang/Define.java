@@ -11,11 +11,13 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 public class Define implements UnaryOperator<String>, Comparable<Define> {
-	public static enum Type { LINE, TOKEN }
+	public static enum Type {
+		LINE, TOKEN
+	}
 
 	public static final int MAX_RECURS = 10;
 
-	public final int     priority;
+	public final int priority;
 	public final boolean inError;
 
 	private boolean doRecur;
@@ -24,20 +26,19 @@ public class Define implements UnaryOperator<String>, Comparable<Define> {
 	private Pattern predicate;
 	private Pattern searcher;
 
-	private Iterator<String>  replacers;
-	private String            replacer;
+	private Iterator<String> replacers;
+	private String replacer;
 
-	public Define(int priorty,
-			boolean isSub, boolean recur, boolean isCircular,
-			String predicte, String searchr, Iterable<String> replacrs) {
+	public Define(int priorty, boolean isSub, boolean recur, boolean isCircular, String predicte, String searchr,
+			Iterable<String> replacrs) {
 		priority = priorty;
-		doRecur  = recur;
-		subType  = isSub;
+		doRecur = recur;
+		subType = isSub;
 
 		/*
 		 * Only try to compile non-null predicates
 		 */
-		if(predicte != null) {
+		if (predicte != null) {
 			try {
 				predicate = Pattern.compile(predicte);
 			} catch (PatternSyntaxException psex) {
@@ -51,7 +52,7 @@ public class Define implements UnaryOperator<String>, Comparable<Define> {
 		 * Compile the search pattern
 		 */
 		try {
-			searcher  = Pattern.compile(searchr);
+			searcher = Pattern.compile(searchr);
 		} catch (PatternSyntaxException psex) {
 			Errors.inst.printError(EK_DFN_SRCSYN, psex.getMessage());
 			inError = true;
@@ -62,8 +63,8 @@ public class Define implements UnaryOperator<String>, Comparable<Define> {
 		/*
 		 * Check whether or not we do sub-replacements
 		 */
-		if(subType) {
-			if(replacrs.iterator().hasNext()) {
+		if (subType) {
+			if (replacrs.iterator().hasNext()) {
 				replacers = new CircularIterator<>(replacrs, isCircular);
 			} else {
 				replacers = null;
@@ -71,26 +72,29 @@ public class Define implements UnaryOperator<String>, Comparable<Define> {
 		} else {
 			Iterator<String> itr = replacrs.iterator();
 
-			if(itr.hasNext()) replacer  = itr.next();
-			else              replacer  = "";
+			if (itr.hasNext())
+				replacer = itr.next();
+			else
+				replacer = "";
 		}
 	}
 
 	public String apply(String tok) {
-		if(inError) return tok;
+		if (inError)
+			return tok;
 
-		if(predicate != null) {
-			if(!predicate.matcher(tok).matches()) {
+		if (predicate != null) {
+			if (!predicate.matcher(tok).matches()) {
 				return tok;
 			}
 		}
 
 		String strang = doPass(tok);
 
-		if(doRecur) {
+		if (doRecur) {
 			int recurCount = 0;
 
-			if(strang.equals(tok)) {
+			if (strang.equals(tok)) {
 				return strang;
 			} else {
 				String oldStrang = strang;
@@ -98,9 +102,9 @@ public class Define implements UnaryOperator<String>, Comparable<Define> {
 				do {
 					strang = doPass(tok);
 					recurCount += 1;
-				} while(!strang.equals(oldStrang) && recurCount < MAX_RECURS);
+				} while (!strang.equals(oldStrang) && recurCount < MAX_RECURS);
 
-				if(recurCount >= MAX_RECURS) {
+				if (recurCount >= MAX_RECURS) {
 					Errors.inst.printError(EK_DFN_RECUR, Integer.toString(MAX_RECURS), tok, strang);
 					return strang;
 				}
@@ -113,11 +117,11 @@ public class Define implements UnaryOperator<String>, Comparable<Define> {
 	private String doPass(String tok) {
 		Matcher searcherMatcher = searcher.matcher(tok);
 
-		if(subType) {
+		if (subType) {
 			StringBuffer sb = new StringBuffer();
-			while(searcherMatcher.find()) {
-				if(replacers == null) {
-					searcherMatcher.appendReplacement(sb,"");
+			while (searcherMatcher.find()) {
+				if (replacers == null) {
+					searcherMatcher.appendReplacement(sb, "");
 				} else {
 					String replac = replacers.next();
 					searcherMatcher.appendReplacement(sb, replac);

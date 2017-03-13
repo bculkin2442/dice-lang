@@ -27,18 +27,17 @@ public enum DiceExpressionType {
 	@Override
 	public String toString() {
 		switch (this) {
-			case ADD:
-				return "+";
-			case DIVIDE:
-				return "/";
-			case MULTIPLY:
-				return "*";
-			case SUBTRACT:
-				return "-";
-			default:
-				throw new IllegalArgumentException(
-						"Got passed  a invalid ScalarExpressionType "
-								+ this + ". WAT");
+		case ADD:
+			return "+";
+		case DIVIDE:
+			return "/";
+		case MULTIPLY:
+			return "*";
+		case SUBTRACT:
+			return "-";
+		default:
+			throw new IllegalArgumentException(
+					"Got passed  a invalid ScalarExpressionType " + this + ". WAT");
 		}
 	};
 }

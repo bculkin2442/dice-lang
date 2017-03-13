@@ -20,18 +20,15 @@ public class OperationCondenser {
 	 * Condense chained similiar operations into a single level
 	 * 
 	 * @param ast
-	 *            The AST to condense
+	 *                The AST to condense
 	 * @return The condensed AST
 	 */
 	public static ITree<IDiceASTNode> condense(ITree<IDiceASTNode> ast) {
-		return ast.topDownTransform(OperationCondenser::pickNode,
-				OperationCondenser::doCondense);
+		return ast.topDownTransform(OperationCondenser::pickNode, OperationCondenser::doCondense);
 	}
 
-	private static ITree<IDiceASTNode> doCondense(
-			ITree<IDiceASTNode> ast) {
-		OperatorDiceNode operation = ast
-				.transformHead((node) -> (OperatorDiceNode) node);
+	private static ITree<IDiceASTNode> doCondense(ITree<IDiceASTNode> ast) {
+		OperatorDiceNode operation = ast.transformHead((node) -> (OperatorDiceNode) node);
 
 		IHolder<Boolean> canCondense = new Identity<>(true);
 
@@ -72,35 +69,32 @@ public class OperationCondenser {
 
 	private static TopDownTransformResult pickNode(IDiceASTNode node) {
 		switch (node.getType()) {
-			case LITERAL:
-				return TopDownTransformResult.SKIP;
-			case OPERATOR:
-				return pickOperator((OperatorDiceNode) node);
-			case VARIABLE:
-				return TopDownTransformResult.SKIP;
-			default:
-				throw new UnsupportedOperationException(
-						"Attempted to traverse unknown node type " + node);
+		case LITERAL:
+			return TopDownTransformResult.SKIP;
+		case OPERATOR:
+			return pickOperator((OperatorDiceNode) node);
+		case VARIABLE:
+			return TopDownTransformResult.SKIP;
+		default:
+			throw new UnsupportedOperationException("Attempted to traverse unknown node type " + node);
 		}
 	}
 
-	private static TopDownTransformResult pickOperator(
-			OperatorDiceNode node) {
+	private static TopDownTransformResult pickOperator(OperatorDiceNode node) {
 		switch (node) {
-			case ADD:
-			case MULTIPLY:
-			case SUBTRACT:
-			case DIVIDE:
-			case COMPOUND:
-				return TopDownTransformResult.PUSHDOWN;
-			case ARRAY:
-			case ASSIGN:
-			case GROUP:
-			case LET:
-				return TopDownTransformResult.PASSTHROUGH;
-			default:
-				throw new UnsupportedOperationException(
-						"Attempted to traverse unknown operator " + node);
+		case ADD:
+		case MULTIPLY:
+		case SUBTRACT:
+		case DIVIDE:
+		case COMPOUND:
+			return TopDownTransformResult.PUSHDOWN;
+		case ARRAY:
+		case ASSIGN:
+		case GROUP:
+		case LET:
+			return TopDownTransformResult.PASSTHROUGH;
+		default:
+			throw new UnsupportedOperationException("Attempted to traverse unknown operator " + node);
 		}
 	}
 }

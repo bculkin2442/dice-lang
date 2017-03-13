@@ -13,7 +13,7 @@ public class IntegerLiteralNode implements ILiteralDiceNode {
 	 * Create a new integer literal from the given number
 	 * 
 	 * @param val
-	 *            The value this node represents
+	 *                The value this node represents
 	 */
 	public IntegerLiteralNode(int val) {
 		value = val;

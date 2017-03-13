@@ -3,8 +3,7 @@ package bjc.dicelang.v1;
 import java.util.Map;
 
 /**
- * A dice expression that refers to a variable bound in a mutable
- * enviroment
+ * A dice expression that refers to a variable bound in a mutable enviroment
  * 
  * @author ben
  *
@@ -13,24 +12,23 @@ public class ReferenceDiceExpression implements IDiceExpression {
 	/*
 	 * The enviroment to do variable dereferencing against
 	 */
-	private Map<String, IDiceExpression>	enviroment;
+	private Map<String, IDiceExpression> enviroment;
 
 	/*
 	 * The name of the bound variable
 	 */
-	private String							name;
+	private String name;
 
 	/**
-	 * Create a new reference dice expression referring to the given name
-	 * in an enviroment
+	 * Create a new reference dice expression referring to the given name in
+	 * an enviroment
 	 * 
 	 * @param nme
-	 *            The name of the bound variable
+	 *                The name of the bound variable
 	 * @param env
-	 *            The enviroment to resolve the variable against
+	 *                The enviroment to resolve the variable against
 	 */
-	public ReferenceDiceExpression(String nme,
-			Map<String, IDiceExpression> env) {
+	public ReferenceDiceExpression(String nme, Map<String, IDiceExpression> env) {
 		this.name = nme;
 		this.enviroment = env;
 	}
@@ -47,9 +45,7 @@ public class ReferenceDiceExpression implements IDiceExpression {
 	@Override
 	public int roll() {
 		if (!enviroment.containsKey(name)) {
-			throw new UnsupportedOperationException(
-					"Attempted to reference undefined variable "
-							+ name);
+			throw new UnsupportedOperationException("Attempted to reference undefined variable " + name);
 		}
 
 		return enviroment.get(name).roll();

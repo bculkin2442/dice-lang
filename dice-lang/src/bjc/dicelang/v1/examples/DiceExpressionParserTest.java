@@ -17,7 +17,7 @@ public class DiceExpressionParserTest {
 	 * Run the parser test
 	 * 
 	 * @param args
-	 *            Unused CLI arguments
+	 *                Unused CLI arguments
 	 */
 	public static void main(String[] args) {
 		/*
@@ -39,8 +39,7 @@ public class DiceExpressionParserTest {
 
 		int nTimes = Integer.parseInt(scn.nextLine());
 
-		IDiceExpression dexp = DiceExpressionParser.parse(exp,
-				new HashMap<>());
+		IDiceExpression dexp = DiceExpressionParser.parse(exp, new HashMap<>());
 
 		/*
 		 * Roll the dice a specified amount of times

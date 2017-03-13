@@ -21,7 +21,7 @@ public class DiceExpressionBuilder {
 	 * Build a dice expression from a seed dice expression
 	 * 
 	 * @param seed
-	 *            The dice expression to use as a seed
+	 *                The dice expression to use as a seed
 	 */
 	public DiceExpressionBuilder(IDiceExpression seed) {
 		baking = seed;
@@ -31,9 +31,9 @@ public class DiceExpressionBuilder {
 	 * Build a dice expression from a seed dice
 	 * 
 	 * @param nSides
-	 *            The number of sides in the dice
+	 *                The number of sides in the dice
 	 * @param nDice
-	 *            The number of dice in the group
+	 *                The number of dice in the group
 	 */
 	public DiceExpressionBuilder(int nSides, int nDice) {
 		baking = new ComplexDice(nSides, nDice);
@@ -43,7 +43,7 @@ public class DiceExpressionBuilder {
 	 * Add a term to this dice expression
 	 * 
 	 * @param exp
-	 *            The expression to use on the left
+	 *                The expression to use on the left
 	 * @return A new expression adding the two dice
 	 */
 	public DiceExpressionBuilder add(IDiceExpression exp) {
@@ -55,12 +55,11 @@ public class DiceExpressionBuilder {
 	 * Add a scalar to this dice
 	 * 
 	 * @param num
-	 *            The scalar to add to the dice
+	 *                The scalar to add to the dice
 	 * @return A dice expression adding a scalar to this
 	 */
 	public DiceExpressionBuilder add(int num) {
-		baking = new OperatorDiceExpression(baking, new ScalarDie(num),
-				ADD);
+		baking = new OperatorDiceExpression(baking, new ScalarDie(num), ADD);
 		return this;
 	}
 
@@ -77,7 +76,7 @@ public class DiceExpressionBuilder {
 	 * Divide a term from dice expression
 	 * 
 	 * @param exp
-	 *            The expression to use on the left
+	 *                The expression to use on the left
 	 * @return A new expression dividing the two dice
 	 */
 	public DiceExpressionBuilder divide(IDiceExpression exp) {
@@ -89,12 +88,11 @@ public class DiceExpressionBuilder {
 	 * Divide a scalar from this dice
 	 * 
 	 * @param num
-	 *            The scalar to add to the dice
+	 *                The scalar to add to the dice
 	 * @return A dice expression dividing a scalar from this
 	 */
 	public DiceExpressionBuilder divide(int num) {
-		baking = new OperatorDiceExpression(baking, new ScalarDie(num),
-				DIVIDE);
+		baking = new OperatorDiceExpression(baking, new ScalarDie(num), DIVIDE);
 		return this;
 	}
 
@@ -102,7 +100,7 @@ public class DiceExpressionBuilder {
 	 * Multiply a term by this dice expression
 	 * 
 	 * @param exp
-	 *            The expression to use on the left
+	 *                The expression to use on the left
 	 * @return A new expression multiplying the two dice
 	 */
 	public DiceExpressionBuilder multiply(IDiceExpression exp) {
@@ -114,12 +112,11 @@ public class DiceExpressionBuilder {
 	 * Multiply a scalar by this dice
 	 * 
 	 * @param num
-	 *            The scalar to multiply to the dice
+	 *                The scalar to multiply to the dice
 	 * @return A dice expression multiplying a scalar to this
 	 */
 	public DiceExpressionBuilder multiply(int num) {
-		baking = new OperatorDiceExpression(baking, new ScalarDie(num),
-				MULTIPLY);
+		baking = new OperatorDiceExpression(baking, new ScalarDie(num), MULTIPLY);
 		return this;
 	}
 
@@ -127,7 +124,7 @@ public class DiceExpressionBuilder {
 	 * Add a term to this dice expression
 	 * 
 	 * @param exp
-	 *            The expression to use on the left
+	 *                The expression to use on the left
 	 * @return A new expression adding the two dice
 	 */
 	public DiceExpressionBuilder subtract(IDiceExpression exp) {
@@ -139,12 +136,11 @@ public class DiceExpressionBuilder {
 	 * Add a scalar to this dice
 	 * 
 	 * @param num
-	 *            The scalar to add to the dice
+	 *                The scalar to add to the dice
 	 * @return A dice expression adding a scalar to this
 	 */
 	public DiceExpressionBuilder subtract(int num) {
-		baking = new OperatorDiceExpression(baking, new ScalarDie(num),
-				SUBTRACT);
+		baking = new OperatorDiceExpression(baking, new ScalarDie(num), SUBTRACT);
 		return this;
 	}
 }

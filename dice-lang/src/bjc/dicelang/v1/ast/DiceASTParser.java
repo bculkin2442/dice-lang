@@ -29,135 +29,124 @@ import bjc.utils.parserutils.TreeConstructor;
  *
  */
 public class DiceASTParser {
-		private static IDiceASTNode convertLeafNode(String leafNode) {
-				DiceLiteralType literalType = ILiteralDiceNode
-						.getLiteralType(leafNode);
+	private static IDiceASTNode convertLeafNode(String leafNode) {
+		DiceLiteralType literalType = ILiteralDiceNode.getLiteralType(leafNode);
 
-				if (literalType != null) {
-						switch (literalType) {
-								case DICE:
-										return new DiceLiteralNode(
-														IDiceExpression.toExpression(leafNode));
-								case INTEGER:
-										return new IntegerLiteralNode(
-														Integer.parseInt(leafNode));
-								default:
-										throw new InputMismatchException(
-														"Cannot convert string '" + leafNode
-														+ "' into a literal.");
-						}
-				}
-
-				if (leafNode.matches("[+-]?\\d*\\.\\d+")) {
-						throw new InputMismatchException(
-										"Floating point literals are not supported");
-				}
-
-				return new VariableDiceNode(leafNode);
+		if (literalType != null) {
+			switch (literalType) {
+			case DICE:
+				return new DiceLiteralNode(IDiceExpression.toExpression(leafNode));
+			case INTEGER:
+				return new IntegerLiteralNode(Integer.parseInt(leafNode));
+			default:
+				throw new InputMismatchException(
+						"Cannot convert string '" + leafNode + "' into a literal.");
+			}
 		}
 
-		private static IDiceASTNode convertOperatorNode(String operatorNode) {
-				try {
-						return OperatorDiceNode.fromString(operatorNode);
-				} catch (IllegalArgumentException iaex) {
-						InputMismatchException imex = new InputMismatchException(
-										"Attempted to parse invalid operator " + operatorNode);
-
-						imex.initCause(iaex);
-
-						throw imex;
-				}
+		if (leafNode.matches("[+-]?\\d*\\.\\d+")) {
+			throw new InputMismatchException("Floating point literals are not supported");
 		}
 
-		/**
-		 * Create an AST from a list of tokens
-		 * 
-		 * @param tokens
-		 *            The list of tokens to convert
-		 * @return An AST built from the tokens
-		 */
-		public static ITree<IDiceASTNode> createFromString(
-						IList<String> tokens) {
-				// Mark arrays as special operators
-				Predicate<String> specialPicker = (operator) -> {
-						if (StringUtils.containsOnly(operator, "\\[") ||
-										StringUtils.containsOnly(operator, "\\]")) {
-								return true;
-										}
+		return new VariableDiceNode(leafNode);
+	}
 
-						return false;
-				};
+	private static IDiceASTNode convertOperatorNode(String operatorNode) {
+		try {
+			return OperatorDiceNode.fromString(operatorNode);
+		} catch (IllegalArgumentException iaex) {
+			InputMismatchException imex = new InputMismatchException(
+					"Attempted to parse invalid operator " + operatorNode);
 
-				// Here is the map for holding special operators
-				IMap<String, Function<Deque<ITree<String>>, ITree<String>>> operators = new FunctionalMap<>();
+			imex.initCause(iaex);
 
-				// Handle open [
-				operators.put("[", (queuedTrees) -> {
-						// Just put in a [
-						Tree<String> openArray = new Tree<>("[");
+			throw imex;
+		}
+	}
 
-						return openArray;
-				});
+	/**
+	 * Create an AST from a list of tokens
+	 * 
+	 * @param tokens
+	 *                The list of tokens to convert
+	 * @return An AST built from the tokens
+	 */
+	public static ITree<IDiceASTNode> createFromString(IList<String> tokens) {
+		// Mark arrays as special operators
+		Predicate<String> specialPicker = (operator) -> {
+			if (StringUtils.containsOnly(operator, "\\[") || StringUtils.containsOnly(operator, "\\]")) {
+				return true;
+			}
 
-				operators.put("]", (queuedTrees) -> {
-						// Parse closing an array
-						return parseCloseArray(queuedTrees);
-				});
+			return false;
+		};
 
-				ITree<String> rawTokens = TreeConstructor.constructTree(tokens,
-								(token) -> {
-										return isOperatorNode(token);
-								}, specialPicker, operators::get);
+		// Here is the map for holding special operators
+		IMap<String, Function<Deque<ITree<String>>, ITree<String>>> operators = new FunctionalMap<>();
 
-				ITree<IDiceASTNode> tokenizedTree = rawTokens.rebuildTree(
-								DiceASTParser::convertLeafNode,
-								DiceASTParser::convertOperatorNode);
+		// Handle open [
+		operators.put("[", (queuedTrees) -> {
+			// Just put in a [
+			Tree<String> openArray = new Tree<>("[");
 
-				return tokenizedTree;
-						}
+			return openArray;
+		});
 
-		private static boolean isOperatorNode(String token) {
-				if (StringUtils.containsOnly(token, "\\[")) {
-						return true;
-				} else if (StringUtils.containsOnly(token, "\\]")) {
-						return true;
-				}
+		operators.put("]", (queuedTrees) -> {
+			// Parse closing an array
+			return parseCloseArray(queuedTrees);
+		});
 
-				if (token.equals("[]")) {
-						// This is a synthetic operator, constructed by [ and ]
-						return true;
-				}
+		ITree<String> rawTokens = TreeConstructor.constructTree(tokens, (token) -> {
+			return isOperatorNode(token);
+		}, specialPicker, operators::get);
 
-				try {
-						OperatorDiceNode.fromString(token);
-						return true;
-				} catch (IllegalArgumentException iaex) {
-						// We don't care about details
-						return false;
-				}
+		ITree<IDiceASTNode> tokenizedTree = rawTokens.rebuildTree(DiceASTParser::convertLeafNode,
+				DiceASTParser::convertOperatorNode);
+
+		return tokenizedTree;
+	}
+
+	private static boolean isOperatorNode(String token) {
+		if (StringUtils.containsOnly(token, "\\[")) {
+			return true;
+		} else if (StringUtils.containsOnly(token, "\\]")) {
+			return true;
 		}
 
-		private static ITree<String> parseCloseArray(
-						Deque<ITree<String>> queuedTrees) {
-				IList<ITree<String>> children = new FunctionalList<>();
+		if (token.equals("[]")) {
+			// This is a synthetic operator, constructed by [ and ]
+			return true;
+		}
 
-				while (shouldContinuePopping(queuedTrees)) {
-						children.add(queuedTrees.pop());
-				}
+		try {
+			OperatorDiceNode.fromString(token);
+			return true;
+		} catch (IllegalArgumentException iaex) {
+			// We don't care about details
+			return false;
+		}
+	}
 
-				queuedTrees.pop();
+	private static ITree<String> parseCloseArray(Deque<ITree<String>> queuedTrees) {
+		IList<ITree<String>> children = new FunctionalList<>();
 
-				children.reverse();
+		while (shouldContinuePopping(queuedTrees)) {
+			children.add(queuedTrees.pop());
+		}
 
-				ITree<String> arrayTree = new Tree<>("[]", children);
+		queuedTrees.pop();
 
-				return arrayTree;
-						}
+		children.reverse();
 
-		private static boolean shouldContinuePopping(
-						Deque<ITree<String>> queuedTrees) {
-				String peekToken = queuedTrees.peek().getHead();
+		ITree<String> arrayTree = new Tree<>("[]", children);
 
-				return !peekToken.equals("[");
-						}
+		return arrayTree;
+	}
+
+	private static boolean shouldContinuePopping(Deque<ITree<String>> queuedTrees) {
+		String peekToken = queuedTrees.peek().getHead();
+
+		return !peekToken.equals("[");
+	}
 }

@@ -8,21 +8,20 @@ import bjc.utils.data.Tree;
 
 public class EvaluatorResult {
 	public static enum Type {
-		FAILURE,
-		INT, FLOAT, DICE, STRING
+		FAILURE, INT, FLOAT, DICE, STRING
 	}
 
 	public final EvaluatorResult.Type type;
 
 	// These may or may not have values based
 	// off of the result type
-	public long                  intVal;
-	public double                floatVal;
+	public long intVal;
+	public double floatVal;
 	public DieExpression diceVal;
-	public String                stringVal;
+	public String stringVal;
 
 	// Original node data
-	public ITree<Node>           origVal;
+	public ITree<Node> origVal;
 
 	public EvaluatorResult(EvaluatorResult.Type typ) {
 		type = typ;
@@ -79,19 +78,19 @@ public class EvaluatorResult {
 	}
 
 	public String toString() {
-		switch(type) {
-			case INT:
-				return type.toString() + "(" + intVal + ")";
-			case FLOAT:
-				return type.toString() + "(" + floatVal + ")";
-			case DICE:
-				return type.toString() + "(" + diceVal + ")";
-			case STRING:
-				return type.toString() + "(" + stringVal + ")";
-			case FAILURE:
-				return type.toString();
-			default:
-				return "Unknown result type " + type.toString();
+		switch (type) {
+		case INT:
+			return type.toString() + "(" + intVal + ")";
+		case FLOAT:
+			return type.toString() + "(" + floatVal + ")";
+		case DICE:
+			return type.toString() + "(" + diceVal + ")";
+		case STRING:
+			return type.toString() + "(" + stringVal + ")";
+		case FAILURE:
+			return type.toString();
+		default:
+			return "Unknown result type " + type.toString();
 		}
 	}
 }

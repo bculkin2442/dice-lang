@@ -10,7 +10,7 @@ public class SimpleDieList implements DieList {
 	}
 
 	public boolean canOptimize() {
-		if(size.canOptimize() && size.optimize() <= 1) {
+		if (size.canOptimize() && size.optimize() <= 1) {
 			return numDice.canOptimize();
 		} else {
 			return false;
@@ -18,12 +18,12 @@ public class SimpleDieList implements DieList {
 	}
 
 	public long[] optimize() {
-		int sze  = (int)numDice.optimize();
+		int sze = (int) numDice.optimize();
 		long res = size.optimize();
 
 		long[] ret = new long[sze];
 
-		for(int i = 0; i < sze; i++) {
+		for (int i = 0; i < sze; i++) {
 			ret[i] = res;
 		}
 
@@ -31,11 +31,11 @@ public class SimpleDieList implements DieList {
 	}
 
 	public long[] roll() {
-		int num = (int)numDice.roll();
+		int num = (int) numDice.roll();
 
 		long[] ret = new long[num];
 
-		for(int i = 0; i < num; i++) {
+		for (int i = 0; i < num; i++) {
 			ret[i] = size.roll();
 		}
 

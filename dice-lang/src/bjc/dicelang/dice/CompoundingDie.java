@@ -14,13 +14,15 @@ public class CompoundingDie implements Die {
 	private Die source;
 
 	private Predicate<Long> compoundOn;
-	private String          compoundPattern;
+	private String compoundPattern;
 
 	/**
 	 * Create a new compounding die with no pattern.
 	 *
-	 * @param src The die to compound from
-	 * @param compound The conditions to compound on
+	 * @param src
+	 *                The die to compound from
+	 * @param compound
+	 *                The conditions to compound on
 	 */
 	public CompoundingDie(Die src, Predicate<Long> compound) {
 		this(src, compound, null);
@@ -29,14 +31,18 @@ public class CompoundingDie implements Die {
 	/**
 	 * Create a new compounding die with a specified pattern.
 	 *
-	 * @param src The die to compound from
-	 * @param compound The conditions to compound on
-	 * @param patt The string pattern the condition came from, for printing
+	 * @param src
+	 *                The die to compound from
+	 * @param compound
+	 *                The conditions to compound on
+	 * @param patt
+	 *                The string pattern the condition came from, for
+	 *                printing
 	 */
 	public CompoundingDie(Die src, Predicate<Long> compound, String patt) {
 		source = src;
 
-		compoundOn      = compound;
+		compoundOn = compound;
 		compoundPattern = patt;
 	}
 
@@ -55,7 +61,7 @@ public class CompoundingDie implements Die {
 		long res = source.roll();
 		long oldRes = res;
 
-		while(compoundOn.test(oldRes)) {
+		while (compoundOn.test(oldRes)) {
 			oldRes = source.rollSingle();
 
 			res += oldRes;
@@ -72,7 +78,7 @@ public class CompoundingDie implements Die {
 		long res = source.rollSingle();
 		long oldRes = res;
 
-		while(compoundOn.test(oldRes)) {
+		while (compoundOn.test(oldRes)) {
 			oldRes = source.rollSingle();
 
 			res += oldRes;
@@ -83,7 +89,7 @@ public class CompoundingDie implements Die {
 
 	@Override
 	public String toString() {
-		if(compoundPattern == null) {
+		if (compoundPattern == null) {
 			return source + "!!";
 		} else {
 			return source + "!!" + compoundPattern;

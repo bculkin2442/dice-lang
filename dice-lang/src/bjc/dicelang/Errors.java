@@ -132,9 +132,9 @@ public class Errors {
 	private ErrorMode mode;
 
 	public void printError(ErrorKey key, String... args) {
-		switch(mode) {
+		switch (mode) {
 		case WIZARD:
-			if(key == ErrorKey.EK_CLI_NOFILE) {
+			if (key == ErrorKey.EK_CLI_NOFILE) {
 				System.out.println("\t? 404");
 			} else {
 				System.out.println("\t? " + key.ordinal());
@@ -149,7 +149,7 @@ public class Errors {
 	}
 
 	private void devError(ErrorKey key, String[] args) {
-		switch(key) {
+		switch (key) {
 		case EK_DFN_PREDSYN:
 			System.out.printf("\tERROR: Incorrect define guard syntax %s\n", args[0]);
 			break;
@@ -157,8 +157,9 @@ public class Errors {
 			System.out.printf("\tERROR: Incorrect define match syntax %s\n", args[0]);
 			break;
 		case EK_DFN_RECUR:
-			System.out.printf("\tERROR: Recursive define didn't converge after %s iterations."
-					+ " Original string was %s, last iteration was %s\n",
+			System.out.printf(
+					"\tERROR: Recursive define didn't converge after %s iterations."
+							+ " Original string was %s, last iteration was %s\n",
 					args[0], args[1], args[2]);
 			break;
 		case EK_CONS_INVPRAG:
@@ -212,12 +213,11 @@ public class Errors {
 			System.out.printf("\tERROR: Unknown dice operator %s\n", args[0]);
 			break;
 		case EK_EVAL_INVDCREATE:
-			System.out.printf("\tERROR: Dice creation operator expects integers,"
-					+ " not %s\n", args[0]);
+			System.out.printf("\tERROR: Dice creation operator expects integers," + " not %s\n", args[0]);
 			break;
 		case EK_EVAL_INVDGROUP:
-			System.out.printf("\tERROR: Dice group operator expects scalar dice or integers,"
-					+ " not %s\n", args[0]);
+			System.out.printf("\tERROR: Dice group operator expects scalar dice or integers," + " not %s\n",
+					args[0]);
 			break;
 		case EK_EVAL_INVDICE:
 			System.out.printf("\tERROR: Dice operators expect scalar dice, not %s\n", args[0]);
@@ -260,8 +260,8 @@ public class Errors {
 					+ " to apply it to\n", args[0]);
 			break;
 		case EK_SHUNT_NOGROUP:
-			System.out.printf("\tERROR: Couldn't find matching grouping %s (expected %s)\n",
-					args[0], args[1]);
+			System.out.printf("\tERROR: Couldn't find matching grouping %s (expected %s)\n", args[0],
+					args[1]);
 			break;
 		case EK_SHUNT_NOTASSOC:
 			System.out.printf("\tERROR: Attempted to chain non-associative operator %s\n", args[0]);

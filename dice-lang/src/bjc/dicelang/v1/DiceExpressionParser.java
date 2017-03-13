@@ -20,18 +20,16 @@ public class DiceExpressionParser {
 	 * Parse a dice expression from a string
 	 * 
 	 * @param expression
-	 *            The string to parse an expression from
+	 *                The string to parse an expression from
 	 * @param enviroment
-	 *            The enviroment to use when parsing expressions
+	 *                The enviroment to use when parsing expressions
 	 * @return The parsed dice expression
 	 */
-	public static IDiceExpression parse(String expression,
-			Map<String, IDiceExpression> enviroment) {
+	public static IDiceExpression parse(String expression, Map<String, IDiceExpression> enviroment) {
 		/*
 		 * Create a tokenizer over the strings
 		 */
-		FunctionalStringTokenizer tokenizer = new FunctionalStringTokenizer(
-				expression);
+		FunctionalStringTokenizer tokenizer = new FunctionalStringTokenizer(expression);
 
 		/*
 		 * Create a shunter to rewrite the expression
@@ -42,11 +40,13 @@ public class DiceExpressionParser {
 		 * Add our custom operators to the yard
 		 */
 		yard.addOp("d", 5); // dice operator: use for creating variable
-							// size dice groups
-		yard.addOp("c", 6); // compound operator: use for creating compound
-							// dice from expressions
-		yard.addOp(":=", 0); // binding operator: Bind a name to a variable
-								// expression
+					// size dice groups
+		yard.addOp("c", 6); // compound operator: use for creating
+					// compound
+					// dice from expressions
+		yard.addOp(":=", 0); // binding operator: Bind a name to a
+					// variable
+					// expression
 
 		/*
 		 * Shunt the expression to postfix form
@@ -81,80 +81,66 @@ public class DiceExpressionParser {
 					/*
 					 * Handle scalar numbers
 					 */
-					expressions.push(new ScalarDie(
-							Integer.parseInt(expressionPart)));
+					expressions.push(new ScalarDie(Integer.parseInt(expressionPart)));
 				} catch (NumberFormatException nfex) {
-					// We don't care about details, just that it failed
+					// We don't care about details, just
+					// that it failed
 					if (expressions.size() >= 2) {
 						/*
-						 * Apply an operation to two dice
+						 * Apply an operation to two
+						 * dice
 						 */
-						IDiceExpression right = expressions
-								.pop();
+						IDiceExpression right = expressions.pop();
 						IDiceExpression left = expressions.pop();
 
 						switch (expressionPart) {
-							case ":=":
-								expressions.push(new BindingDiceExpression(
-										left, right,
-										enviroment));
-								break;
-							case "+":
-								expressions
-										.push(new OperatorDiceExpression(
-												right,
-												left,
-												DiceExpressionType.ADD));
-								break;
-							case "-":
-								expressions
-										.push(new OperatorDiceExpression(
-												right,
-												left,
-												DiceExpressionType.SUBTRACT));
-								break;
-							case "*":
-								expressions
-										.push(new OperatorDiceExpression(
-												right,
-												left,
-												DiceExpressionType.MULTIPLY));
-								break;
-							case "/":
-								expressions
-										.push(new OperatorDiceExpression(
-												right,
-												left,
-												DiceExpressionType.DIVIDE));
-								break;
-							case "c":
-								expressions.push(new CompoundDice(
-										left, right));
-								break;
-							case "d":
-								expressions.push(new ComplexDice(
-										left, right));
-								break;
-							default:
-								/*
-								 * Parse it as a variable reference
-								 * 
-								 * Make sure to restore popped variables
-								 */
-								expressions.push(left);
-								expressions.push(right);
+						case ":=":
+							expressions.push(new BindingDiceExpression(left, right,
+									enviroment));
+							break;
+						case "+":
+							expressions.push(new OperatorDiceExpression(right, left,
+									DiceExpressionType.ADD));
+							break;
+						case "-":
+							expressions.push(new OperatorDiceExpression(right, left,
+									DiceExpressionType.SUBTRACT));
+							break;
+						case "*":
+							expressions.push(new OperatorDiceExpression(right, left,
+									DiceExpressionType.MULTIPLY));
+							break;
+						case "/":
+							expressions.push(new OperatorDiceExpression(right, left,
+									DiceExpressionType.DIVIDE));
+							break;
+						case "c":
+							expressions.push(new CompoundDice(left, right));
+							break;
+						case "d":
+							expressions.push(new ComplexDice(left, right));
+							break;
+						default:
+							/*
+							 * Parse it as a
+							 * variable reference
+							 * 
+							 * Make sure to restore
+							 * popped variables
+							 */
+							expressions.push(left);
+							expressions.push(right);
 
-								expressions
-										.push(new ReferenceDiceExpression(
-												expressionPart,
-												enviroment));
+							expressions.push(new ReferenceDiceExpression(expressionPart,
+									enviroment));
 						}
 					} else {
 						/*
-						 * Parse it as a variable reference
+						 * Parse it as a variable
+						 * reference
 						 */
-						expressions.push(new ReferenceDiceExpression(
-								expressionPart, enviroment));
+						expressions.push(new ReferenceDiceExpression(expressionPart,
+								enviroment));
 					}
 				}
 			}

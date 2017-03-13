@@ -15,7 +15,7 @@ public class DiceLiteralNode implements ILiteralDiceNode {
 	 * Create a new literal from an expression
 	 * 
 	 * @param exp
-	 *            The expression to attempt to create a literal from
+	 *                The expression to attempt to create a literal from
 	 */
 	public DiceLiteralNode(IDiceExpression exp) {
 		expression = exp;

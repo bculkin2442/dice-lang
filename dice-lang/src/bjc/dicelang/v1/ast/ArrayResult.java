@@ -16,7 +16,7 @@ public class ArrayResult implements IResult {
 	 * Create a new array-valued result
 	 * 
 	 * @param results
-	 *            The results in the array
+	 *                The results in the array
 	 */
 	public ArrayResult(IList<IResult> results) {
 		this.arrayContents = results;

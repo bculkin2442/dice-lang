@@ -22,11 +22,11 @@ public interface IDiceExpression {
 	 * <li>Dice concatenation - '1d10c1d10</li>
 	 * </ul>
 	 * 
-	 * Dice concatenation is like using 2 d10s to emulate a d100, so
-	 * instead of adding them, it reads them side by side.
+	 * Dice concatenation is like using 2 d10s to emulate a d100, so instead
+	 * of adding them, it reads them side by side.
 	 * 
 	 * @param expression
-	 *            The string to convert to an expression
+	 *                The string to convert to an expression
 	 * 
 	 * @return The string, converted into expression form
 	 */
@@ -52,8 +52,8 @@ public interface IDiceExpression {
 				return new ScalarDie(Integer.parseInt(literalData));
 			} catch (NumberFormatException nfex) {
 				UnsupportedOperationException usex = new UnsupportedOperationException(
-						"Found malformed leaf token " + expression + ". Floating point numbers " +
-						"are not supported.");
+						"Found malformed leaf token " + expression + ". Floating point numbers "
+								+ "are not supported.");
 
 				usex.initCause(nfex);
 
@@ -78,11 +78,10 @@ public interface IDiceExpression {
 	 * @return This expression, optimized to a scalar value
 	 * 
 	 * @throws UnsupportedOperationException
-	 *             if this type of expression can't be optimized
+	 *                 if this type of expression can't be optimized
 	 */
 	public default int optimize() {
-		throw new UnsupportedOperationException(
-				"Can't optimize this type of expression");
+		throw new UnsupportedOperationException("Can't optimize this type of expression");
 	}
 
 	/**

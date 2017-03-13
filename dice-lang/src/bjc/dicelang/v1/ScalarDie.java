@@ -16,7 +16,7 @@ public class ScalarDie implements IDiceExpression {
 	 * Create a dice with the specified number
 	 * 
 	 * @param num
-	 *            The number used for the dice
+	 *                The number used for the dice
 	 */
 	public ScalarDie(int num) {
 		this.number = num;

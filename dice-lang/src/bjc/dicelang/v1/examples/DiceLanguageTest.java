@@ -28,7 +28,7 @@ public class DiceLanguageTest {
 	 * Main method
 	 * 
 	 * @param args
-	 *            Unused CLI args
+	 *                Unused CLI args
 	 */
 	public static void main(String[] args) {
 		Scanner scn = new Scanner(System.in);
@@ -67,25 +67,24 @@ public class DiceLanguageTest {
 
 	/**
 	 * @param ln
-	 *            Unused parameter, kept to comply with expected type sig
+	 *                Unused parameter, kept to comply with expected type
+	 *                sig
 	 */
 	private static void printEnv(String ln, DiceLanguageState stat) {
 		System.out.println("Printing enviroment for debugging purposes.");
 
-		stat.doWith((dep, env) -> env.forEach((key, exp) -> System.out
-				.println("\tKey: " + key + "\tExp: " + exp.toString())));
+		stat.doWith((dep, env) -> env.forEach(
+				(key, exp) -> System.out.println("\tKey: " + key + "\tExp: " + exp.toString())));
 	}
 
 	private static void rollReference(String ln, DiceLanguageState stat) {
 		String[] strangs = ln.split(" ");
 
-		System.out.println("\tRolling dice expression " + strangs[1] + " "
-				+ strangs[2] + " times.");
+		System.out.println("\tRolling dice expression " + strangs[1] + " " + strangs[2] + " times.");
 
 		int nRolls = Integer.parseInt(strangs[2]);
 
-		IDiceExpression dexp = stat
-				.merge((dep, env) -> env.get(strangs[1]));
+		IDiceExpression dexp = stat.merge((dep, env) -> env.get(strangs[1]));
 
 		for (int i = 1; i <= nRolls; i++) {
 			int roll = dexp.roll();

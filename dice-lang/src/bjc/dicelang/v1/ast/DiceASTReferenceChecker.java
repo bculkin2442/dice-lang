@@ -13,25 +13,24 @@ import bjc.utils.data.IHolder;
  * @author ben
  *
  */
-public final class DiceASTReferenceChecker
-		implements Consumer<IDiceASTNode> {
+public final class DiceASTReferenceChecker implements Consumer<IDiceASTNode> {
 	/**
 	 * This is true if the specified node references the set variable
 	 */
-	private IHolder<Boolean>	referencesVariable;
+	private IHolder<Boolean> referencesVariable;
 
-	private String				varName;
+	private String varName;
 
 	/**
 	 * Create a new reference checker
 	 * 
 	 * @param referencesVar
-	 *            The holder of whether the variable is referenced or not
+	 *                The holder of whether the variable is referenced or
+	 *                not
 	 * @param varName
-	 *            The variable to check for references in
+	 *                The variable to check for references in
 	 */
-	public DiceASTReferenceChecker(IHolder<Boolean> referencesVar,
-			String varName) {
+	public DiceASTReferenceChecker(IHolder<Boolean> referencesVar, String varName) {
 		this.referencesVariable = referencesVar;
 		this.varName = varName;
 	}
@@ -45,7 +44,7 @@ public final class DiceASTReferenceChecker
 	 * Check if a given AST node directly references the specified variable
 	 * 
 	 * @param astNode
-	 *            The node to check
+	 *                The node to check
 	 * @return Whether or not the node directly the variable
 	 */
 	private boolean isDirectReference(IDiceASTNode astNode) {

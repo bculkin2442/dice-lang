@@ -13,17 +13,15 @@ import bjc.utils.funcdata.IList;
 import bjc.utils.data.Tree;
 
 class ArithmeticCollapser {
-	private BinaryOperator<Integer>	reducer;
-	private OperatorDiceNode		type;
+	private BinaryOperator<Integer> reducer;
+	private OperatorDiceNode type;
 
-	public ArithmeticCollapser(BinaryOperator<Integer> reducr,
-			OperatorDiceNode typ) {
+	public ArithmeticCollapser(BinaryOperator<Integer> reducr, OperatorDiceNode typ) {
 		reducer = reducr;
 		this.type = typ;
 	}
 
-	public ITree<IDiceASTNode> collapse(
-			IList<ITree<IDiceASTNode>> children) {
+	public ITree<IDiceASTNode> collapse(IList<ITree<IDiceASTNode>> children) {
 		boolean allConstant = children.allMatch((subtree) -> {
 			return subtree.transformHead((node) -> {
 				if (node.getType() == DiceASTType.LITERAL) {
@@ -40,10 +38,8 @@ class ArithmeticCollapser {
 
 		int initState = DiceASTUtils.literalToInteger(children.first());
 
-		return children.tail().reduceAux(initState,
-				(currentNode, state) -> {
-					return reducer.apply(state,
-							DiceASTUtils.literalToInteger(currentNode));
-				}, (state) -> new Tree<>(new IntegerLiteralNode(state)));
+		return children.tail().reduceAux(initState, (currentNode, state) -> {
+			return reducer.apply(state, DiceASTUtils.literalToInteger(currentNode));
+		}, (state) -> new Tree<>(new IntegerLiteralNode(state)));
 	}
 }
