@@ -10,7 +10,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
-public class Define implements UnaryOperator<String> {
+public class Define implements UnaryOperator<String>, Comparable<Define> {
 	public static enum Type { LINE, TOKEN }
 
 	public static final int MAX_RECURS = 10;
@@ -129,5 +129,10 @@ public class Define implements UnaryOperator<String> {
 		} else {
 			return searcherMatcher.replaceAll(replacer);
 		}
+	}
+
+	@Override
+	public int compareTo(Define o) {
+		return priority - o.priority;
 	}
 }
