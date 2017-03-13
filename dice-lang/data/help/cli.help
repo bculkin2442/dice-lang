@@ -1,0 +1,42 @@
+Help for DiceLang v0.2 CLI arguments:
+	-d or --debug   	 Turn on debug mode.
+		Turns on debug mode, which prints additional information that
+		may be useful for finding errors.
+
+	-nd or --no-debug           	 Turn off debug mode.
+		Turns off debug mode.
+
+	-po or --postfix            	 Turn on postfix mode.
+		Turns on postfix mode, which disables the shunter.
+
+	-npo or --no-postfix        	 Turn off postfix mode.
+		Turns off postfix mode.
+
+	-pr or --prefix             	 Turn on prefix mode.
+		Turns on prefix mode, which reverses the expression instead of
+		shunting it.
+
+	-npr or --no-prefix         	 Turn off prefix mode.
+		Turns off prefix mode.
+
+	-se or --step-eval          	 Turn on step-eval mode.
+		Turns on step-evaluation, which shows the evaluation process
+		step-by-step. Currently slightly broken.
+
+	-nse or --no-step-eval      	 Turn off step-eval mode.
+		Turns off step-evaluation.
+
+	-D or --define <name> [<val>]	Define a constant
+		Defines name as a textual alias for val. If val isn't provided,
+		name is deleted wherever it occurs. These constants are applied
+		once to the input lines with a priority of 5
+
+	-df or --define-file <filename>	Load defines from a file
+		Loads defines from a file. Consult 'define-file' in the DiceLang
+		help system for details on the format.
+
+	-ctf or --compiler-tweak-file <filename>	Load compiler tweaks
+	from a file
+		Loads a series of compiler tweaks from a file. Consult
+		'compiler-tweak-file' in the DiceLang helpy system for details
+		on the format.

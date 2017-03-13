@@ -118,6 +118,11 @@ public class CLIArgsParser {
 					return false;
 				}
 				break;
+			case "-ctf":
+			case "--compiler-tweak-file":
+				/*
+				 * @TODO not yet implemented
+				 */
 			default:
 				Errors.inst.printError(EK_CLI_UNARG, arg);
 				return false;
