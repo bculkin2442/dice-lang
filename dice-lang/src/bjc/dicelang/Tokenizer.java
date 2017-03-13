@@ -140,18 +140,16 @@ public class Tokenizer {
 			if(stringLit.matches()) {
 				int litNum = Integer.parseInt(stringLit.group(1));
 
-				eng.stringLits.put(litNum, stringLts.get(token));
+				eng.addStringLiteral(litNum, stringLts.get(token));
 				tk = new Token(STRING_LIT, litNum);
 			} else {
-				// @TODO define what a valid identifier is
+				/*
+				 * Everything else is a symbol
+				 */
 				eng.symTable.put(nextSym++, token);
 
 				tk = new Token(VREF, nextSym - 1);
 			}
-
-			// @TODO uncomment when we have a defn. for var names
-			// System.out.printf("\tERROR: Unrecognized token:"
-			// 		+ "%s\n", token);
 		}
 
 		return tk;

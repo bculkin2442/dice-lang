@@ -89,6 +89,8 @@ public class Errors {
 		EK_SHUNT_NOGROUP,
 		// No group for group seperator to attach to
 		EK_SHUNT_INVSEP,
+		// Attempted to chain non-associative operator
+		EK_SHUNT_NOTASSOC,
 
 		// Stream Errors
 		// Attempted to switch to a non-existant stream
@@ -260,6 +262,9 @@ public class Errors {
 		case EK_SHUNT_NOGROUP:
 			System.out.printf("\tERROR: Couldn't find matching grouping %s (expected %s)\n",
 					args[0], args[1]);
+			break;
+		case EK_SHUNT_NOTASSOC:
+			System.out.printf("\tERROR: Attempted to chain non-associative operator %s\n", args[0]);
 			break;
 		case EK_SHUNT_INVSEP:
 			System.out.printf("\tERROR: Couldn't find grouper for group seperator to attach to\n");

@@ -478,7 +478,7 @@ public class Evaluator {
 			res = new EvaluatorResult(DICE, tk.diceValue);
 			break;
 		case STRING_LIT:
-			res = new EvaluatorResult(STRING, eng.stringLits.get((int)(tk.intValue)));
+			res = new EvaluatorResult(STRING, eng.getStringLiteral((int)(tk.intValue)));
 			break;
 		default:
 			Errors.inst.printError(EK_EVAL_UNTOK, tk.type.toString());

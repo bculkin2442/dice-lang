@@ -40,7 +40,7 @@ public class DiceLangEngine {
 	/*
 	 * ID for generation.
 	 */
-	private int nextLiteral;
+	int nextLiteral;
 
 	/*
 	 * Debug indicator.
@@ -74,13 +74,14 @@ public class DiceLangEngine {
 	/*
 	 * Evaluator for evaluating.
 	 */
-	private Evaluator eval;
+	Evaluator eval;
 
 	/*
 	 * Tables for various things.
 	 */
 	public final IMap<Integer, String> symTable;
-	public final IMap<Integer, String> stringLits;
+	
+	private IMap<Integer, String> stringLits;
 	private IMap<String, String> stringLiterals;
 
 	/*
@@ -97,7 +98,7 @@ public class DiceLangEngine {
 	/*
 	 * Stream engine for processing streams.
 	 */
-	private StreamEngine streamEng;
+	StreamEngine streamEng;
 
 	public DiceLangEngine() {
 		/*
@@ -714,5 +715,13 @@ public class DiceLangEngine {
 		}
 		
 		return true;
+	}
+	
+	String getStringLiteral(int key) {
+		return stringLits.get(key);
+	}
+	
+	void addStringLiteral(int key, String val) {
+		stringLits.put(key, val);
 	}
 }
