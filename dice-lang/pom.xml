@@ -56,6 +56,15 @@
 				</executions>
 			</plugin>
 		</plugins>
+		<resources>
+			<resource>
+				<directory>data/</directory>
+				<includes>
+					<include>**/*.txt</include>
+					<include>**/*.help</include>
+				</includes>
+			</resource>
+		</resources>
 	</build>
 	<repositories>
 		<repository>
