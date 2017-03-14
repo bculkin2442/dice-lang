@@ -119,7 +119,7 @@ public class Errors {
 		EK_CLI_MISARG,
 		// Invalid define type
 		EK_CLI_INVDFNTYPE,
-		
+
 		// Misc. errors
 		// Unknown I/O problem
 		EK_MISC_IOEX,
@@ -134,9 +134,9 @@ public class Errors {
 	private ErrorMode mode;
 
 	public void printError(ErrorKey key, String... args) {
-		switch (mode) {
+		switch(mode) {
 		case WIZARD:
-			if (key == ErrorKey.EK_MISC_NOFILE) {
+			if(key == ErrorKey.EK_MISC_NOFILE) {
 				System.out.println("\t? 404");
 			} else {
 				System.out.println("\t? " + key.ordinal());
@@ -151,7 +151,7 @@ public class Errors {
 	}
 
 	private void devError(ErrorKey key, String[] args) {
-		switch (key) {
+		switch(key) {
 		case EK_DFN_PREDSYN:
 			System.out.printf("\tERROR: Incorrect define guard syntax %s\n", args[0]);
 			break;

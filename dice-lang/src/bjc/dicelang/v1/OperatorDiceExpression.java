@@ -2,7 +2,7 @@ package bjc.dicelang.v1;
 
 /**
  * Implements a class for combining two dice with an operator
- * 
+ *
  * @author ben
  *
  */
@@ -24,7 +24,7 @@ public class OperatorDiceExpression implements IDiceExpression {
 
 	/**
 	 * Create a new compound expression using the specified parameters
-	 * 
+	 *
 	 * @param rght
 	 *                The die on the right side of the expression
 	 * @param lft
@@ -43,7 +43,7 @@ public class OperatorDiceExpression implements IDiceExpression {
 		/*
 		 * Handle each operator
 		 */
-		switch (type) {
+		switch(type) {
 		case ADD:
 			return right.roll() + left.roll();
 		case SUBTRACT:
@@ -58,7 +58,7 @@ public class OperatorDiceExpression implements IDiceExpression {
 			 */
 			try {
 				return right.roll() / left.roll();
-			} catch (ArithmeticException aex) {
+			} catch(ArithmeticException aex) {
 				UnsupportedOperationException usex = new UnsupportedOperationException(
 						"Attempted to divide by zero." + " Problematic expression is " + left);
 

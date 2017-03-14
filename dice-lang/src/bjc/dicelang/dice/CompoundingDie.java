@@ -13,8 +13,8 @@ import java.util.function.Predicate;
 public class CompoundingDie implements Die {
 	private Die source;
 
-	private Predicate<Long> compoundOn;
-	private String compoundPattern;
+	private Predicate<Long>	compoundOn;
+	private String		compoundPattern;
 
 	/**
 	 * Create a new compounding die with no pattern.
@@ -61,7 +61,7 @@ public class CompoundingDie implements Die {
 		long res = source.roll();
 		long oldRes = res;
 
-		while (compoundOn.test(oldRes)) {
+		while(compoundOn.test(oldRes)) {
 			oldRes = source.rollSingle();
 
 			res += oldRes;
@@ -78,7 +78,7 @@ public class CompoundingDie implements Die {
 		long res = source.rollSingle();
 		long oldRes = res;
 
-		while (compoundOn.test(oldRes)) {
+		while(compoundOn.test(oldRes)) {
 			oldRes = source.rollSingle();
 
 			res += oldRes;
@@ -89,10 +89,9 @@ public class CompoundingDie implements Die {
 
 	@Override
 	public String toString() {
-		if (compoundPattern == null) {
+		if(compoundPattern == null)
 			return source + "!!";
-		} else {
+		else
 			return source + "!!" + compoundPattern;
-		}
 	}
 }

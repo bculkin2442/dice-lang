@@ -4,7 +4,7 @@ import java.util.Map;
 
 /**
  * A dice expression that refers to a variable bound in a mutable enviroment
- * 
+ *
  * @author ben
  *
  */
@@ -22,7 +22,7 @@ public class ReferenceDiceExpression implements IDiceExpression {
 	/**
 	 * Create a new reference dice expression referring to the given name in
 	 * an enviroment
-	 * 
+	 *
 	 * @param nme
 	 *                The name of the bound variable
 	 * @param env
@@ -35,7 +35,7 @@ public class ReferenceDiceExpression implements IDiceExpression {
 
 	/**
 	 * Get the name of the referenced variable
-	 * 
+	 *
 	 * @return the name of the referenced variable
 	 */
 	public String getName() {
@@ -44,18 +44,15 @@ public class ReferenceDiceExpression implements IDiceExpression {
 
 	@Override
 	public int roll() {
-		if (!enviroment.containsKey(name)) {
+		if(!enviroment.containsKey(name))
 			throw new UnsupportedOperationException("Attempted to reference undefined variable " + name);
-		}
 
 		return enviroment.get(name).roll();
 	}
 
 	@Override
 	public String toString() {
-		if (enviroment.containsKey(name)) {
-			return enviroment.get(name).toString() + "(bound to " + name + ")";
-		}
+		if(enviroment.containsKey(name)) return enviroment.get(name).toString() + "(bound to " + name + ")";
 
 		return name + "(unbound)";
 	}

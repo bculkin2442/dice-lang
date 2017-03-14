@@ -72,8 +72,9 @@ public class Token {
 		tokenValues = tkVals;
 	}
 
+	@Override
 	public String toString() {
-		switch (type) {
+		switch(type) {
 		case INT_LIT:
 		case STRING_LIT:
 		case VREF:
@@ -97,16 +98,15 @@ public class Token {
 		}
 	}
 
+	@Override
 	public boolean equals(Object other) {
-		if (!(other instanceof Token))
-			return false;
+		if(!(other instanceof Token)) return false;
 
 		Token otk = (Token) other;
 
-		if (otk.type != type)
-			return false;
+		if(otk.type != type) return false;
 
-		switch (type) {
+		switch(type) {
 		case OBRACE:
 		case OBRACKET:
 			return intValue == otk.intValue;
@@ -116,7 +116,7 @@ public class Token {
 	}
 
 	public boolean isGrouper() {
-		switch (type) {
+		switch(type) {
 		case OPAREN:
 		case OBRACE:
 		case OBRACKET:

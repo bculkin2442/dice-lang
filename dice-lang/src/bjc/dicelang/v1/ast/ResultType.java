@@ -2,7 +2,7 @@ package bjc.dicelang.v1.ast;
 
 /**
  * Represents the result of a computation
- * 
+ *
  * @author ben
  *
  */

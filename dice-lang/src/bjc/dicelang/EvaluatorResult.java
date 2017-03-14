@@ -15,10 +15,10 @@ public class EvaluatorResult {
 
 	// These may or may not have values based
 	// off of the result type
-	public long intVal;
-	public double floatVal;
-	public DieExpression diceVal;
-	public String stringVal;
+	public long		intVal;
+	public double		floatVal;
+	public DieExpression	diceVal;
+	public String		stringVal;
 
 	// Original node data
 	public ITree<Node> origVal;
@@ -77,8 +77,9 @@ public class EvaluatorResult {
 		stringVal = strang;
 	}
 
+	@Override
 	public String toString() {
-		switch (type) {
+		switch(type) {
 		case INT:
 			return type.toString() + "(" + intVal + ")";
 		case FLOAT:

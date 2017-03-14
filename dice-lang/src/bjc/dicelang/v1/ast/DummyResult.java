@@ -2,7 +2,7 @@ package bjc.dicelang.v1.ast;
 
 /**
  * A dummy result
- * 
+ *
  * @author ben
  *
  */
@@ -14,7 +14,7 @@ public class DummyResult implements IResult {
 
 	/**
 	 * Create a new dummy result with a reason
-	 * 
+	 *
 	 * @param data
 	 *                The reason why the result is a dummy
 	 */
@@ -24,7 +24,7 @@ public class DummyResult implements IResult {
 
 	/**
 	 * Get the data in this dummy
-	 * 
+	 *
 	 * @return The reason why this result is a dummy
 	 */
 	public String getData() {

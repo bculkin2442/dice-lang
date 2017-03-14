@@ -6,12 +6,12 @@ import bjc.dicelang.v1.ast.nodes.IDiceASTNode;
 import bjc.dicelang.v1.ast.nodes.IntegerLiteralNode;
 import bjc.dicelang.v1.ast.nodes.OperatorDiceNode;
 import bjc.utils.data.ITree;
-import bjc.utils.funcdata.IList;
 import bjc.utils.data.Tree;
+import bjc.utils.funcdata.IList;
 
 /**
  * Collapses operations with constants to constants
- * 
+ *
  * @author ben
  *
  */
@@ -40,11 +40,9 @@ public class ConstantCollapser implements IOptimizationPass {
 
 	@Override
 	public ITree<IDiceASTNode> optimizeOperator(IDiceASTNode operator, IList<ITree<IDiceASTNode>> children) {
-		if (!operator.isOperator()) {
-			return new Tree<>(operator, children);
-		}
+		if(!operator.isOperator()) return new Tree<>(operator, children);
 
-		switch ((OperatorDiceNode) operator) {
+		switch((OperatorDiceNode) operator) {
 		case ADD:
 			return additionCollapser.collapse(children);
 		case DIVIDE:
@@ -56,22 +54,16 @@ public class ConstantCollapser implements IOptimizationPass {
 		case COMPOUND:
 			return compoundCollapser.collapse(children);
 		case GROUP:
-			if (children.getSize() != 2) {
-				return new Tree<>(operator, children);
-			}
+			if(children.getSize() != 2) return new Tree<>(operator, children);
 
 			ComplexDice dice = new ComplexDice(DiceASTUtils.literalToExpression(children.getByIndex(0)),
 					DiceASTUtils.literalToExpression(children.getByIndex(1)));
 
-			if (dice.canOptimize()) {
-				return new Tree<>(new IntegerLiteralNode(dice.optimize()));
-			}
+			if(dice.canOptimize()) return new Tree<>(new IntegerLiteralNode(dice.optimize()));
 
 			return new Tree<>(operator, children);
 		case ARRAY:
-			if (children.getSize() != 1) {
-				return new Tree<>(operator, children);
-			}
+			if(children.getSize() != 1) return new Tree<>(operator, children);
 
 			return children.first();
 		case ASSIGN:

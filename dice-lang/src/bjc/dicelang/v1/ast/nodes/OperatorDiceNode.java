@@ -6,7 +6,7 @@ import static bjc.dicelang.v1.ast.nodes.DiceOperatorType.MATH;
 
 /**
  * A node that represents an operator
- * 
+ *
  * @author ben
  *
  */
@@ -50,13 +50,13 @@ public enum OperatorDiceNode implements IDiceASTNode {
 
 	/**
 	 * Create a operator node from a string
-	 * 
+	 *
 	 * @param s
 	 *                The string to convert to a node
 	 * @return The operator corresponding to the node
 	 */
 	public static OperatorDiceNode fromString(String s) {
-		switch (s) {
+		switch(s) {
 		case ":=":
 			return ASSIGN;
 		case "+":
@@ -84,7 +84,7 @@ public enum OperatorDiceNode implements IDiceASTNode {
 
 	/**
 	 * Represents the group of operator this operator is sorted into.
-	 * 
+	 *
 	 */
 	public final DiceOperatorType type;
 

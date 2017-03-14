@@ -2,7 +2,7 @@ package bjc.dicelang.v1.ast.nodes;
 
 /**
  * A node that represents a reference to a variable
- * 
+ *
  * @author ben
  *
  */
@@ -14,7 +14,7 @@ public class VariableDiceNode implements IDiceASTNode {
 
 	/**
 	 * Create a new node representing the specified variable
-	 * 
+	 *
 	 * @param varName
 	 *                The name of the variable being referenced
 	 */
@@ -24,28 +24,24 @@ public class VariableDiceNode implements IDiceASTNode {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
 	public boolean equals(Object obj) {
 		// Handle special cases
-		if (this == obj) {
+		if(this == obj)
 			return true;
-		} else if (obj == null) {
+		else if(obj == null)
 			return false;
-		} else if (getClass() != obj.getClass()) {
+		else if(getClass() != obj.getClass())
 			return false;
-		} else {
+		else {
 			VariableDiceNode other = (VariableDiceNode) obj;
 
-			if (variableName == null) {
-				if (other.variableName != null) {
-					return false;
-				}
-			} else if (!variableName.equals(other.variableName)) {
-				return false;
-			}
+			if(variableName == null) {
+				if(other.variableName != null) return false;
+			} else if(!variableName.equals(other.variableName)) return false;
 
 			return true;
 		}
@@ -58,7 +54,7 @@ public class VariableDiceNode implements IDiceASTNode {
 
 	/**
 	 * Get the variable referenced by this AST node
-	 * 
+	 *
 	 * @return the variable referenced by this AST node
 	 */
 	public String getVariable() {
@@ -67,20 +63,20 @@ public class VariableDiceNode implements IDiceASTNode {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((variableName == null) ? 0 : variableName.hashCode());
+		result = prime * result + (variableName == null ? 0 : variableName.hashCode());
 		return result;
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see bjc.utils.dice.ast.IDiceASTNode#isOperator()
 	 */
 	@Override
@@ -90,7 +86,7 @@ public class VariableDiceNode implements IDiceASTNode {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.lang.Object#toString()
 	 */
 	@Override

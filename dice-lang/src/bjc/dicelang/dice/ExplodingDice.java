@@ -21,9 +21,9 @@ public class ExplodingDice implements DieList {
 	/*
 	 * The conditions for exploding.
 	 */
-	private Predicate<Long> explodeOn;
-	private String explodePattern;
-	private boolean explodePenetrates;
+	private Predicate<Long>	explodeOn;
+	private String		explodePattern;
+	private boolean		explodePenetrates;
 
 	/**
 	 * Create a new exploding die.
@@ -89,11 +89,12 @@ public class ExplodingDice implements DieList {
 
 		List<Long> resList = new LinkedList<>();
 
-		while (explodeOn.test(oldRes)) {
+		while(explodeOn.test(oldRes)) {
 			oldRes = source.rollSingle();
 
-			if (explodePenetrates)
+			if(explodePenetrates) {
 				oldRes -= 1;
+			}
 			resList.add(oldRes);
 		}
 
@@ -101,7 +102,7 @@ public class ExplodingDice implements DieList {
 		newRes[0] = res;
 
 		int i = 1;
-		for (long rll : resList) {
+		for(long rll : resList) {
 			newRes[i] = rll;
 			i += 1;
 		}
@@ -111,10 +112,9 @@ public class ExplodingDice implements DieList {
 
 	@Override
 	public String toString() {
-		if (explodePattern == null) {
+		if(explodePattern == null)
 			return source + (explodePenetrates ? "p" : "") + "!";
-		} else {
+		else
 			return source + (explodePenetrates ? "p" : "") + "!" + explodePattern;
-		}
 	}
 }

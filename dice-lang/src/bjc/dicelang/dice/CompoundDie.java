@@ -9,8 +9,8 @@ public class CompoundDie implements Die {
 	/*
 	 * The dice that form this die
 	 */
-	private Die left;
-	private Die right;
+	private Die	left;
+	private Die	right;
 
 	/**
 	 * Create a new compound die.

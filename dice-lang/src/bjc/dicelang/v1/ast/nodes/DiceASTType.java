@@ -2,7 +2,7 @@ package bjc.dicelang.v1.ast.nodes;
 
 /**
  * An enum to represent the type of node an AST node is
- * 
+ *
  * @author ben
  *
  */

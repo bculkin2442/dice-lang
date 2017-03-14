@@ -4,8 +4,9 @@ public class MathDie implements Die {
 	public static enum MathOp {
 		ADD, SUBTRACT, MULTIPLY;
 
+		@Override
 		public String toString() {
-			switch (this) {
+			switch(this) {
 			case ADD:
 				return "+";
 			case SUBTRACT:
@@ -20,8 +21,8 @@ public class MathDie implements Die {
 
 	private MathDie.MathOp type;
 
-	private Die left;
-	private Die right;
+	private Die	left;
+	private Die	right;
 
 	public MathDie(MathDie.MathOp op, Die lft, Die rght) {
 		type = op;
@@ -30,12 +31,13 @@ public class MathDie implements Die {
 		right = rght;
 	}
 
+	@Override
 	public boolean canOptimize() {
 		return left.canOptimize() && right.canOptimize();
 	}
 
 	private long performOp(long lft, long rght) {
-		switch (type) {
+		switch(type) {
 		case ADD:
 			return lft + rght;
 		case SUBTRACT:
@@ -47,6 +49,7 @@ public class MathDie implements Die {
 		}
 	}
 
+	@Override
 	public long optimize() {
 		long lft = left.optimize();
 		long rght = right.optimize();
@@ -54,6 +57,7 @@ public class MathDie implements Die {
 		return performOp(lft, rght);
 	}
 
+	@Override
 	public long roll() {
 		long lft = left.roll();
 		long rght = right.roll();
@@ -61,6 +65,7 @@ public class MathDie implements Die {
 		return performOp(lft, rght);
 	}
 
+	@Override
 	public long rollSingle() {
 		long lft = left.rollSingle();
 		long rght = right.rollSingle();
@@ -68,6 +73,7 @@ public class MathDie implements Die {
 		return performOp(lft, rght);
 	}
 
+	@Override
 	public String toString() {
 		return left.toString() + " " + type.toString() + " " + right.toString();
 	}

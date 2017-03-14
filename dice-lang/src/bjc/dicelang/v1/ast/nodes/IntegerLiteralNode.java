@@ -2,7 +2,7 @@ package bjc.dicelang.v1.ast.nodes;
 
 /**
  * Represents an integer literal of some kind
- * 
+ *
  * @author ben
  *
  */
@@ -11,7 +11,7 @@ public class IntegerLiteralNode implements ILiteralDiceNode {
 
 	/**
 	 * Create a new integer literal from the given number
-	 * 
+	 *
 	 * @param val
 	 *                The value this node represents
 	 */
@@ -31,7 +31,7 @@ public class IntegerLiteralNode implements ILiteralDiceNode {
 
 	/**
 	 * Get the value this node represents
-	 * 
+	 *
 	 * @return The integer value of this node
 	 */
 	public int getValue() {

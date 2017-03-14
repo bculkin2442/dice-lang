@@ -1,24 +1,24 @@
 package bjc.dicelang.v1;
 
-import java.util.Map;
-import java.util.Stack;
-
 import bjc.utils.funcdata.FunctionalStringTokenizer;
 import bjc.utils.funcdata.IList;
 import bjc.utils.parserutils.ShuntingYard;
+
+import java.util.Map;
+import java.util.Stack;
 
 import org.apache.commons.lang3.StringUtils;
 
 /**
  * Parse a dice expression from a string
- * 
+ *
  * @author ben
  *
  */
 public class DiceExpressionParser {
 	/**
 	 * Parse a dice expression from a string
-	 * 
+	 *
 	 * @param expression
 	 *                The string to parse an expression from
 	 * @param enviroment
@@ -65,12 +65,12 @@ public class DiceExpressionParser {
 			/*
 			 * Handle compound dice
 			 */
-			if (StringUtils.countMatches(expressionPart, 'c') == 1
+			if(StringUtils.countMatches(expressionPart, 'c') == 1
 					&& !expressionPart.equalsIgnoreCase("c")) {
 				String[] strangs = expressionPart.split("c");
 
 				expressions.push(new CompoundDice(strangs));
-			} else if (StringUtils.countMatches(expressionPart, 'd') == 1
+			} else if(StringUtils.countMatches(expressionPart, 'd') == 1
 					&& !expressionPart.equalsIgnoreCase("d")) {
 				/*
 				 * Handle dice groups
@@ -82,10 +82,10 @@ public class DiceExpressionParser {
 					 * Handle scalar numbers
 					 */
 					expressions.push(new ScalarDie(Integer.parseInt(expressionPart)));
-				} catch (NumberFormatException nfex) {
+				} catch(NumberFormatException nfex) {
 					// We don't care about details, just
 					// that it failed
-					if (expressions.size() >= 2) {
+					if(expressions.size() >= 2) {
 						/*
 						 * Apply an operation to two
 						 * dice
@@ -93,7 +93,7 @@ public class DiceExpressionParser {
 						IDiceExpression right = expressions.pop();
 						IDiceExpression left = expressions.pop();
 
-						switch (expressionPart) {
+						switch(expressionPart) {
 						case ":=":
 							expressions.push(new BindingDiceExpression(left, right,
 									enviroment));
@@ -124,7 +124,7 @@ public class DiceExpressionParser {
 							/*
 							 * Parse it as a
 							 * variable reference
-							 * 
+							 *
 							 * Make sure to restore
 							 * popped variables
 							 */
@@ -146,7 +146,7 @@ public class DiceExpressionParser {
 			}
 		});
 
-		if (expressions.size() != 1) {
+		if(expressions.size() != 1) {
 			System.err.println(
 					"WARNING: Leftovers found on dice expression stack. Remember, := is assignment.");
 		}

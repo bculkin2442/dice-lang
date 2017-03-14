@@ -1,21 +1,21 @@
 package bjc.dicelang.v1.examples;
 
-import java.util.HashMap;
-import java.util.Scanner;
-
 import bjc.dicelang.v1.DiceExpressionParser;
 import bjc.dicelang.v1.IDiceExpression;
 
+import java.util.HashMap;
+import java.util.Scanner;
+
 /**
  * Driver class for testing expression parser
- * 
+ *
  * @author ben
  *
  */
 public class DiceExpressionParserTest {
 	/**
 	 * Run the parser test
-	 * 
+	 *
 	 * @param args
 	 *                Unused CLI arguments
 	 */
@@ -44,7 +44,7 @@ public class DiceExpressionParserTest {
 		/*
 		 * Roll the dice a specified amount of times
 		 */
-		for (int i = 1; i <= nTimes; i++) {
+		for(int i = 1; i <= nTimes; i++) {
 			int roll = dexp.roll();
 
 			System.out.println("Rolled " + roll);

@@ -1,10 +1,5 @@
 package bjc.dicelang.v1.ast;
 
-import java.util.Deque;
-import java.util.InputMismatchException;
-import java.util.function.Function;
-import java.util.function.Predicate;
-
 import bjc.dicelang.v1.IDiceExpression;
 import bjc.dicelang.v1.ast.nodes.DiceLiteralNode;
 import bjc.dicelang.v1.ast.nodes.DiceLiteralType;
@@ -14,17 +9,22 @@ import bjc.dicelang.v1.ast.nodes.IntegerLiteralNode;
 import bjc.dicelang.v1.ast.nodes.OperatorDiceNode;
 import bjc.dicelang.v1.ast.nodes.VariableDiceNode;
 import bjc.utils.data.ITree;
+import bjc.utils.data.Tree;
 import bjc.utils.funcdata.FunctionalList;
 import bjc.utils.funcdata.FunctionalMap;
 import bjc.utils.funcdata.IList;
 import bjc.utils.funcdata.IMap;
-import bjc.utils.data.Tree;
 import bjc.utils.funcutils.StringUtils;
 import bjc.utils.parserutils.TreeConstructor;
 
+import java.util.Deque;
+import java.util.InputMismatchException;
+import java.util.function.Function;
+import java.util.function.Predicate;
+
 /**
  * Parse a string expression into AST form. Doesn't do anything else
- * 
+ *
  * @author ben
  *
  */
@@ -32,8 +32,8 @@ public class DiceASTParser {
 	private static IDiceASTNode convertLeafNode(String leafNode) {
 		DiceLiteralType literalType = ILiteralDiceNode.getLiteralType(leafNode);
 
-		if (literalType != null) {
-			switch (literalType) {
+		if(literalType != null) {
+			switch(literalType) {
 			case DICE:
 				return new DiceLiteralNode(IDiceExpression.toExpression(leafNode));
 			case INTEGER:
@@ -44,9 +44,8 @@ public class DiceASTParser {
 			}
 		}
 
-		if (leafNode.matches("[+-]?\\d*\\.\\d+")) {
+		if(leafNode.matches("[+-]?\\d*\\.\\d+"))
 			throw new InputMismatchException("Floating point literals are not supported");
-		}
 
 		return new VariableDiceNode(leafNode);
 	}
@@ -54,7 +53,7 @@ public class DiceASTParser {
 	private static IDiceASTNode convertOperatorNode(String operatorNode) {
 		try {
 			return OperatorDiceNode.fromString(operatorNode);
-		} catch (IllegalArgumentException iaex) {
+		} catch(IllegalArgumentException iaex) {
 			InputMismatchException imex = new InputMismatchException(
 					"Attempted to parse invalid operator " + operatorNode);
 
@@ -66,7 +65,7 @@ public class DiceASTParser {
 
 	/**
 	 * Create an AST from a list of tokens
-	 * 
+	 *
 	 * @param tokens
 	 *                The list of tokens to convert
 	 * @return An AST built from the tokens
@@ -74,9 +73,8 @@ public class DiceASTParser {
 	public static ITree<IDiceASTNode> createFromString(IList<String> tokens) {
 		// Mark arrays as special operators
 		Predicate<String> specialPicker = (operator) -> {
-			if (StringUtils.containsOnly(operator, "\\[") || StringUtils.containsOnly(operator, "\\]")) {
+			if(StringUtils.containsOnly(operator, "\\[") || StringUtils.containsOnly(operator, "\\]"))
 				return true;
-			}
 
 			return false;
 		};
@@ -108,21 +106,18 @@ public class DiceASTParser {
 	}
 
 	private static boolean isOperatorNode(String token) {
-		if (StringUtils.containsOnly(token, "\\[")) {
+		if(StringUtils.containsOnly(token, "\\["))
 			return true;
-		} else if (StringUtils.containsOnly(token, "\\]")) {
-			return true;
-		}
+		else if(StringUtils.containsOnly(token, "\\]")) return true;
 
-		if (token.equals("[]")) {
-			// This is a synthetic operator, constructed by [ and ]
+		if(token.equals("[]")) // This is a synthetic operator,
+					// constructed by [ and ]
 			return true;
-		}
 
 		try {
 			OperatorDiceNode.fromString(token);
 			return true;
-		} catch (IllegalArgumentException iaex) {
+		} catch(IllegalArgumentException iaex) {
 			// We don't care about details
 			return false;
 		}
@@ -131,7 +126,7 @@ public class DiceASTParser {
 	private static ITree<String> parseCloseArray(Deque<ITree<String>> queuedTrees) {
 		IList<ITree<String>> children = new FunctionalList<>();
 
-		while (shouldContinuePopping(queuedTrees)) {
+		while(shouldContinuePopping(queuedTrees)) {
 			children.add(queuedTrees.pop());
 		}
 

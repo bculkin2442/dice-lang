@@ -4,7 +4,7 @@ import java.util.Random;
 
 /**
  * A single polyhedral dice
- * 
+ *
  * @author ben
  *
  */
@@ -21,14 +21,12 @@ public class Die implements IDiceExpression {
 
 	/**
 	 * Create a die with the specified number of sides
-	 * 
+	 *
 	 * @param nSides
 	 *                The number of sides this dice has
 	 */
 	public Die(int nSides) {
-		if (nSides < 1) {
-			throw new UnsupportedOperationException("Dice with less than 1 side are not supported");
-		}
+		if(nSides < 1) throw new UnsupportedOperationException("Dice with less than 1 side are not supported");
 
 		this.nSides = nSides;
 	}
@@ -40,9 +38,7 @@ public class Die implements IDiceExpression {
 
 	@Override
 	public int optimize() {
-		if (nSides != 1) {
-			throw new UnsupportedOperationException("Can't optimize " + nSides + "-sided dice");
-		}
+		if(nSides != 1) throw new UnsupportedOperationException("Can't optimize " + nSides + "-sided dice");
 
 		return 1;
 	}

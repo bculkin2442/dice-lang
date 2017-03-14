@@ -1,15 +1,15 @@
 package bjc.dicelang.v1.ast;
 
-import java.util.function.Consumer;
-
 import bjc.dicelang.v1.ast.nodes.DiceASTType;
 import bjc.dicelang.v1.ast.nodes.IDiceASTNode;
 import bjc.dicelang.v1.ast.nodes.VariableDiceNode;
 import bjc.utils.data.IHolder;
 
+import java.util.function.Consumer;
+
 /**
  * Check if the specified node references a particular variable
- * 
+ *
  * @author ben
  *
  */
@@ -23,7 +23,7 @@ public final class DiceASTReferenceChecker implements Consumer<IDiceASTNode> {
 
 	/**
 	 * Create a new reference checker
-	 * 
+	 *
 	 * @param referencesVar
 	 *                The holder of whether the variable is referenced or
 	 *                not
@@ -42,13 +42,13 @@ public final class DiceASTReferenceChecker implements Consumer<IDiceASTNode> {
 
 	/**
 	 * Check if a given AST node directly references the specified variable
-	 * 
+	 *
 	 * @param astNode
 	 *                The node to check
 	 * @return Whether or not the node directly the variable
 	 */
 	private boolean isDirectReference(IDiceASTNode astNode) {
-		if (astNode.getType() == DiceASTType.VARIABLE) {
+		if(astNode.getType() == DiceASTType.VARIABLE) {
 			VariableDiceNode node = (VariableDiceNode) astNode;
 
 			return node.getVariable().equals(varName);

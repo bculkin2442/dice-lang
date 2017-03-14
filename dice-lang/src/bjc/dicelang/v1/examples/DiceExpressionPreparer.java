@@ -1,8 +1,5 @@
 package bjc.dicelang.v1.examples;
 
-import java.util.Deque;
-import java.util.LinkedList;
-
 import bjc.utils.data.IPair;
 import bjc.utils.data.Pair;
 import bjc.utils.funcdata.FunctionalStringTokenizer;
@@ -10,9 +7,12 @@ import bjc.utils.funcdata.IList;
 import bjc.utils.funcutils.ListUtils;
 import bjc.utils.parserutils.ShuntingYard;
 
+import java.util.Deque;
+import java.util.LinkedList;
+
 /**
  * Prepare a dice expression to be parsed
- * 
+ *
  * @author ben
  *
  */
@@ -22,9 +22,9 @@ public class DiceExpressionPreparer {
 	 */
 	private static ShuntingYard<String> yard;
 
-	private static final int MATH_PREC = 20;
-	private static final int DICE_PREC = 10;
-	private static final int EXPR_PREC = 0;
+	private static final int	MATH_PREC	= 20;
+	private static final int	DICE_PREC	= 10;
+	private static final int	EXPR_PREC	= 0;
 
 	// Do initialization for all parsers
 	static {
@@ -54,7 +54,7 @@ public class DiceExpressionPreparer {
 
 	/**
 	 * Prepare a command, turning raw tokens into input for the tree builder
-	 * 
+	 *
 	 * @param currentLine
 	 *                The command to prepare
 	 * @return A stream of tokens representing the command

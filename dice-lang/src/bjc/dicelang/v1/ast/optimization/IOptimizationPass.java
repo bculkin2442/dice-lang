@@ -6,14 +6,14 @@ import bjc.utils.funcdata.IList;
 
 /**
  * Represents a pass of optimizations over a dice AST
- * 
+ *
  * @author ben
  *
  */
 public interface IOptimizationPass {
 	/**
 	 * Optimize a leaf in the tree
-	 * 
+	 *
 	 * @param leafNode
 	 *                The node to optimize
 	 * @return The optimized node
@@ -22,7 +22,7 @@ public interface IOptimizationPass {
 
 	/**
 	 * Optimize an operator in an AST node
-	 * 
+	 *
 	 * @param operator
 	 *                The operator being optimized
 	 * @param children

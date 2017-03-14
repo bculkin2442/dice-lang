@@ -2,10 +2,10 @@ package bjc.dicelang.v1.ast.nodes;
 
 /**
  * Represents the different type of operators.
- * 
+ *
  * Mostly, what distinguishes groups is that all the operators in a group have
  * similiar precedence, and operate on similiar things
- * 
+ *
  * @author ben
  *
  */

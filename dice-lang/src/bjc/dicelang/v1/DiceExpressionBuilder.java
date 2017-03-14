@@ -7,7 +7,7 @@ import static bjc.dicelang.v1.DiceExpressionType.SUBTRACT;
 
 /**
  * Build a dice expression piece by piece
- * 
+ *
  * @author ben
  *
  */
@@ -19,7 +19,7 @@ public class DiceExpressionBuilder {
 
 	/**
 	 * Build a dice expression from a seed dice expression
-	 * 
+	 *
 	 * @param seed
 	 *                The dice expression to use as a seed
 	 */
@@ -29,7 +29,7 @@ public class DiceExpressionBuilder {
 
 	/**
 	 * Build a dice expression from a seed dice
-	 * 
+	 *
 	 * @param nSides
 	 *                The number of sides in the dice
 	 * @param nDice
@@ -41,7 +41,7 @@ public class DiceExpressionBuilder {
 
 	/**
 	 * Add a term to this dice expression
-	 * 
+	 *
 	 * @param exp
 	 *                The expression to use on the left
 	 * @return A new expression adding the two dice
@@ -53,7 +53,7 @@ public class DiceExpressionBuilder {
 
 	/**
 	 * Add a scalar to this dice
-	 * 
+	 *
 	 * @param num
 	 *                The scalar to add to the dice
 	 * @return A dice expression adding a scalar to this
@@ -65,7 +65,7 @@ public class DiceExpressionBuilder {
 
 	/**
 	 * Bake the expression being built to completion
-	 * 
+	 *
 	 * @return A usable dice expression
 	 */
 	public IDiceExpression bake() {
@@ -74,7 +74,7 @@ public class DiceExpressionBuilder {
 
 	/**
 	 * Divide a term from dice expression
-	 * 
+	 *
 	 * @param exp
 	 *                The expression to use on the left
 	 * @return A new expression dividing the two dice
@@ -86,7 +86,7 @@ public class DiceExpressionBuilder {
 
 	/**
 	 * Divide a scalar from this dice
-	 * 
+	 *
 	 * @param num
 	 *                The scalar to add to the dice
 	 * @return A dice expression dividing a scalar from this
@@ -98,7 +98,7 @@ public class DiceExpressionBuilder {
 
 	/**
 	 * Multiply a term by this dice expression
-	 * 
+	 *
 	 * @param exp
 	 *                The expression to use on the left
 	 * @return A new expression multiplying the two dice
@@ -110,7 +110,7 @@ public class DiceExpressionBuilder {
 
 	/**
 	 * Multiply a scalar by this dice
-	 * 
+	 *
 	 * @param num
 	 *                The scalar to multiply to the dice
 	 * @return A dice expression multiplying a scalar to this
@@ -122,7 +122,7 @@ public class DiceExpressionBuilder {
 
 	/**
 	 * Add a term to this dice expression
-	 * 
+	 *
 	 * @param exp
 	 *                The expression to use on the left
 	 * @return A new expression adding the two dice
@@ -134,7 +134,7 @@ public class DiceExpressionBuilder {
 
 	/**
 	 * Add a scalar to this dice
-	 * 
+	 *
 	 * @param num
 	 *                The scalar to add to the dice
 	 * @return A dice expression adding a scalar to this

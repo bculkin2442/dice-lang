@@ -1,16 +1,16 @@
 package bjc.dicelang.v1.examples;
 
+import bjc.dicelang.v1.DiceExpressionParser;
+import bjc.dicelang.v1.IDiceExpression;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.function.BiConsumer;
 
-import bjc.dicelang.v1.DiceExpressionParser;
-import bjc.dicelang.v1.IDiceExpression;
-
 /**
  * Test of dice language
- * 
+ *
  * @author ben
  *
  */
@@ -26,7 +26,7 @@ public class DiceLanguageTest {
 
 	/**
 	 * Main method
-	 * 
+	 *
 	 * @param args
 	 *                Unused CLI args
 	 */
@@ -41,10 +41,10 @@ public class DiceLanguageTest {
 		Map<String, IDiceExpression> env = new HashMap<>();
 		DiceLanguageState state = new DiceLanguageState(dep, env);
 
-		while (!ln.equalsIgnoreCase("quit")) {
+		while(!ln.equalsIgnoreCase("quit")) {
 			String header = ln.split(" ")[0];
 
-			if (acts.containsKey(header)) {
+			if(acts.containsKey(header)) {
 				acts.get(header).accept(ln, state);
 			} else {
 				IDiceExpression exp = DiceExpressionParser.parse(ln, env);
@@ -86,7 +86,7 @@ public class DiceLanguageTest {
 
 		IDiceExpression dexp = stat.merge((dep, env) -> env.get(strangs[1]));
 
-		for (int i = 1; i <= nRolls; i++) {
+		for(int i = 1; i <= nRolls; i++) {
 			int roll = dexp.roll();
 
 			System.out.println("\tRolled " + roll);

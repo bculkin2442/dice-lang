@@ -1,7 +1,5 @@
 package bjc.dicelang.v1.ast;
 
-import java.util.function.Supplier;
-
 import bjc.dicelang.v1.ComplexDice;
 import bjc.dicelang.v1.ast.nodes.DiceASTType;
 import bjc.dicelang.v1.ast.nodes.DiceLiteralNode;
@@ -17,15 +15,17 @@ import bjc.utils.data.ITree;
 import bjc.utils.data.Identity;
 import bjc.utils.data.LazyPair;
 import bjc.utils.data.Pair;
+import bjc.utils.data.Tree;
 import bjc.utils.funcdata.FunctionalList;
 import bjc.utils.funcdata.FunctionalMap;
 import bjc.utils.funcdata.IList;
 import bjc.utils.funcdata.IMap;
-import bjc.utils.data.Tree;
+
+import java.util.function.Supplier;
 
 /**
  * Evaluate a dice AST to an integer value
- * 
+ *
  * @author ben
  *
  */
@@ -33,7 +33,7 @@ public class DiceASTEvaluator {
 	private static IResult bindLiteralValue(IDiceASTNode leafNode, IMap<String, ITree<IDiceASTNode>> enviroment) {
 		String variableName = ((VariableDiceNode) leafNode).getVariable();
 
-		if (enviroment.containsKey(variableName)) {
+		if(enviroment.containsKey(variableName)) {
 			IResult result = evaluateAST(enviroment.get(variableName), enviroment);
 
 			return result;
@@ -45,7 +45,7 @@ public class DiceASTEvaluator {
 
 	/**
 	 * Build the map of operations to use when collapsing the AST
-	 * 
+	 *
 	 * @param enviroment
 	 *                The enviroment to evaluate bindings and such against
 	 * @return The operations to use when collapsing the AST
@@ -114,11 +114,9 @@ public class DiceASTEvaluator {
 	private static void doArrayAssign(IMap<String, ITree<IDiceASTNode>> enviroment,
 			IPair<IResult, ITree<IDiceASTNode>> nameNode, ITree<IDiceASTNode> nameTree,
 			ITree<IDiceASTNode> valueTree, IHolder<Integer> childCount, ITree<IDiceASTNode> child) {
-		if (nameTree.getHead().getType() != DiceASTType.VARIABLE) {
-			throw new UnsupportedOperationException(
-					"Assigning to complex variables isn't supported. Problem node is "
-							+ nameNode.getRight());
-		}
+		if(nameTree.getHead().getType() != DiceASTType.VARIABLE) throw new UnsupportedOperationException(
+				"Assigning to complex variables isn't supported. Problem node is "
+						+ nameNode.getRight());
 
 		String varName = child.transformHead((nameNod) -> {
 			return ((VariableDiceNode) nameNod).getVariable();
@@ -131,7 +129,7 @@ public class DiceASTEvaluator {
 
 	/**
 	 * Evaluate the provided AST to a numeric value
-	 * 
+	 *
 	 * @param expression
 	 *                The expression to evaluate
 	 * @param enviroment
@@ -150,7 +148,7 @@ public class DiceASTEvaluator {
 			IMap<String, ITree<IDiceASTNode>> enviroment) {
 		ITree<IDiceASTNode> returnedAST = new Tree<>(leafNode);
 
-		switch (leafNode.getType()) {
+		switch(leafNode.getType()) {
 		case LITERAL:
 			return new Pair<>(evaluateLiteral(leafNode), returnedAST);
 
@@ -168,7 +166,7 @@ public class DiceASTEvaluator {
 	private static IResult evaluateLiteral(IDiceASTNode leafNode) {
 		DiceLiteralType literalType = ((ILiteralDiceNode) leafNode).getLiteralType();
 
-		switch (literalType) {
+		switch(literalType) {
 		case DICE:
 			int diceRoll = ((DiceLiteralNode) leafNode).getValue().roll();
 
@@ -185,17 +183,15 @@ public class DiceASTEvaluator {
 
 	private static IPair<IResult, ITree<IDiceASTNode>> parseBinding(IMap<String, ITree<IDiceASTNode>> enviroment,
 			IList<IPair<IResult, ITree<IDiceASTNode>>> nodes) {
-		if (nodes.getSize() != 2) {
-			throw new UnsupportedOperationException(
-					"Can only bind nodes with two children. Problem children are " + nodes);
-		}
+		if(nodes.getSize() != 2) throw new UnsupportedOperationException(
+				"Can only bind nodes with two children. Problem children are " + nodes);
 
 		IPair<IResult, ITree<IDiceASTNode>> nameNode = nodes.getByIndex(0);
 		IPair<IResult, ITree<IDiceASTNode>> valueNode = nodes.getByIndex(1);
 
 		return nameNode.bindRight((nameTree) -> {
 			return valueNode.bind((valueValue, valueTree) -> {
-				if (DiceASTUtils.containsSimpleVariable(nameTree)) {
+				if(DiceASTUtils.containsSimpleVariable(nameTree)) {
 					String varName = nameTree.transformHead((nameNod) -> {
 						return ((VariableDiceNode) nameNod).getVariable();
 					});
@@ -203,12 +199,11 @@ public class DiceASTEvaluator {
 					enviroment.put(varName, valueTree);
 
 					return new Pair<>(valueValue, nameTree);
-				} else if (nameTree.getHead() == OperatorDiceNode.ARRAY) {
-					if (valueTree.getHead() == OperatorDiceNode.ARRAY) {
-						if (nameTree.getChildrenCount() != valueTree.getChildrenCount()) {
+				} else if(nameTree.getHead() == OperatorDiceNode.ARRAY) {
+					if(valueTree.getHead() == OperatorDiceNode.ARRAY) {
+						if(nameTree.getChildrenCount() != valueTree.getChildrenCount())
 							throw new UnsupportedOperationException(
 									"Array assignment must be between two equal length arrays");
-						}
 
 						IHolder<Integer> childCount = new Identity<>(0);
 
@@ -242,9 +237,7 @@ public class DiceASTEvaluator {
 
 	private static IPair<IResult, ITree<IDiceASTNode>> parseGroup(
 			IList<IPair<IResult, ITree<IDiceASTNode>>> nodes) {
-		if (nodes.getSize() != 2) {
-			throw new UnsupportedOperationException("Can only form a group from two dice");
-		}
+		if(nodes.getSize() != 2) throw new UnsupportedOperationException("Can only form a group from two dice");
 
 		IPair<IResult, ITree<IDiceASTNode>> numberDiceNode = nodes.getByIndex(0);
 		IPair<IResult, ITree<IDiceASTNode>> diceTypeNode = nodes.getByIndex(1);
@@ -262,9 +255,8 @@ public class DiceASTEvaluator {
 
 	private static IPair<IResult, ITree<IDiceASTNode>> parseLet(IMap<String, ITree<IDiceASTNode>> enviroment,
 			IList<IPair<IResult, ITree<IDiceASTNode>>> nodes) {
-		if (nodes.getSize() != 2) {
+		if(nodes.getSize() != 2)
 			throw new UnsupportedOperationException("Can only use let with two expressions.");
-		}
 
 		ITree<IDiceASTNode> bindTree = nodes.getByIndex(0).getRight();
 		ITree<IDiceASTNode> expressionTree = nodes.getByIndex(1).getRight();

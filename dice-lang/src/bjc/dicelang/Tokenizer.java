@@ -1,7 +1,6 @@
 package bjc.dicelang;
 
 import bjc.dicelang.dice.DiceBox;
-
 import bjc.utils.funcdata.FunctionalMap;
 import bjc.utils.funcdata.IMap;
 import bjc.utils.funcutils.StringUtils;
@@ -9,7 +8,9 @@ import bjc.utils.funcutils.StringUtils;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static bjc.dicelang.Errors.ErrorKey.*;
+import static bjc.dicelang.Errors.ErrorKey.EK_TOK_INVBASE;
+import static bjc.dicelang.Errors.ErrorKey.EK_TOK_INVFLEX;
+import static bjc.dicelang.Errors.ErrorKey.EK_TOK_UNGROUP;
 import static bjc.dicelang.Token.Type.*;
 
 public class Tokenizer {
@@ -44,15 +45,14 @@ public class Tokenizer {
 	}
 
 	public Token lexToken(String token, IMap<String, String> stringLts) {
-		if (token.equals(""))
-			return null;
+		if(token.equals("")) return null;
 
 		Token tk = Token.NIL_TOKEN;
 
-		if (litTokens.containsKey(token)) {
+		if(litTokens.containsKey(token)) {
 			tk = new Token(litTokens.get(token));
 		} else {
-			switch (token.charAt(0)) {
+			switch(token.charAt(0)) {
 			case '(':
 			case ')':
 			case '[':
@@ -72,8 +72,8 @@ public class Tokenizer {
 	private Token tokenizeGrouping(String token) {
 		Token tk = Token.NIL_TOKEN;
 
-		if (StringUtils.containsOnly(token, "\\" + token.charAt(0))) {
-			switch (token.charAt(0)) {
+		if(StringUtils.containsOnly(token, "\\" + token.charAt(0))) {
+			switch(token.charAt(0)) {
 			case '(':
 				tk = new Token(OPAREN, token.length());
 				break;
@@ -101,23 +101,23 @@ public class Tokenizer {
 		return tk;
 	}
 
-	private Pattern hexadecimalMatcher = Pattern.compile("\\A[\\-\\+]?0x[0-9A-Fa-f]+\\Z");
-	private Pattern flexadecimalMatcher = Pattern.compile("\\A[\\-\\+]?[0-9][0-9A-Za-z]+B\\d{1,2}\\Z");
-	private Pattern stringLitMatcher = Pattern.compile("\\AstringLiteral(\\d+)\\Z");
+	private Pattern	hexadecimalMatcher	= Pattern.compile("\\A[\\-\\+]?0x[0-9A-Fa-f]+\\Z");
+	private Pattern	flexadecimalMatcher	= Pattern.compile("\\A[\\-\\+]?[0-9][0-9A-Za-z]+B\\d{1,2}\\Z");
+	private Pattern	stringLitMatcher	= Pattern.compile("\\AstringLiteral(\\d+)\\Z");
 
 	private Token tokenizeLiteral(String token, IMap<String, String> stringLts) {
 		Token tk = Token.NIL_TOKEN;
 
-		if (StringUtils.isInt(token)) {
+		if(StringUtils.isInt(token)) {
 			tk = new Token(INT_LIT, Long.parseLong(token));
-		} else if (hexadecimalMatcher.matcher(token).matches()) {
+		} else if(hexadecimalMatcher.matcher(token).matches()) {
 			String newToken = token.substring(0, 1) + token.substring(token.indexOf('x'));
 
 			tk = new Token(INT_LIT, Long.parseLong(newToken.substring(2).toUpperCase(), 16));
-		} else if (flexadecimalMatcher.matcher(token).matches()) {
+		} else if(flexadecimalMatcher.matcher(token).matches()) {
 			int parseBase = Integer.parseInt(token.substring(token.lastIndexOf('B') + 1));
 
-			if (parseBase < Character.MIN_RADIX || parseBase > Character.MAX_RADIX) {
+			if(parseBase < Character.MIN_RADIX || parseBase > Character.MAX_RADIX) {
 				Errors.inst.printError(EK_TOK_INVBASE, Integer.toString(parseBase));
 				return Token.NIL_TOKEN;
 			}
@@ -126,18 +126,18 @@ public class Tokenizer {
 
 			try {
 				tk = new Token(INT_LIT, Long.parseLong(flexNum, parseBase));
-			} catch (NumberFormatException nfex) {
+			} catch(NumberFormatException nfex) {
 				Errors.inst.printError(EK_TOK_INVFLEX, flexNum, Integer.toString(parseBase));
 				return Token.NIL_TOKEN;
 			}
-		} else if (StringUtils.isDouble(token)) {
+		} else if(StringUtils.isDouble(token)) {
 			tk = new Token(FLOAT_LIT, Double.parseDouble(token));
-		} else if (DiceBox.isValidExpression(token)) {
+		} else if(DiceBox.isValidExpression(token)) {
 			tk = new Token(DICE_LIT, DiceBox.parseExpression(token));
 		} else {
 			Matcher stringLit = stringLitMatcher.matcher(token);
 
-			if (stringLit.matches()) {
+			if(stringLit.matches()) {
 				int litNum = Integer.parseInt(stringLit.group(1));
 
 				eng.addStringLiteral(litNum, stringLts.get(token));

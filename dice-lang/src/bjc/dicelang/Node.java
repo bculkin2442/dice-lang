@@ -12,10 +12,10 @@ public class Node {
 	public final Type type;
 
 	// These can have or not have values based of the node type
-	public Token tokenVal;
-	public Token.Type operatorType;
-	public GroupType groupType;
-	public EvaluatorResult resultVal;
+	public Token		tokenVal;
+	public Token.Type	operatorType;
+	public GroupType	groupType;
+	public EvaluatorResult	resultVal;
 
 	public Node(Type typ) {
 		type = typ;
@@ -45,8 +45,9 @@ public class Node {
 		resultVal = res;
 	}
 
+	@Override
 	public String toString() {
-		switch (type) {
+		switch(type) {
 		case UNARYOP:
 		case BINOP:
 			return "(" + type.name() + " : " + operatorType + ")";
@@ -62,16 +63,15 @@ public class Node {
 		}
 	}
 
+	@Override
 	public boolean equals(Object other) {
-		if (!(other instanceof Node))
-			return false;
+		if(!(other instanceof Node)) return false;
 
 		Node otk = (Node) other;
 
-		if (otk.type != type)
-			return false;
+		if(otk.type != type) return false;
 
-		switch (type) {
+		switch(type) {
 		case OGROUP:
 			return tokenVal.equals(otk.tokenVal);
 		default:

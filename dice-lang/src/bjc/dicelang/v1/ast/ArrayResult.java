@@ -4,7 +4,7 @@ import bjc.utils.funcdata.IList;
 
 /**
  * Represents a result that is an array of other results
- * 
+ *
  * @author ben
  *
  *         TODO finish implementing me
@@ -14,7 +14,7 @@ public class ArrayResult implements IResult {
 
 	/**
 	 * Create a new array-valued result
-	 * 
+	 *
 	 * @param results
 	 *                The results in the array
 	 */
@@ -29,7 +29,7 @@ public class ArrayResult implements IResult {
 
 	/**
 	 * Get the value of this result
-	 * 
+	 *
 	 * @return The value of this result
 	 */
 	public IList<IResult> getValue() {

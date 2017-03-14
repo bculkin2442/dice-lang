@@ -26,7 +26,7 @@ public enum DiceExpressionType {
 
 	@Override
 	public String toString() {
-		switch (this) {
+		switch(this) {
 		case ADD:
 			return "+";
 		case DIVIDE:

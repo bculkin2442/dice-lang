@@ -11,14 +11,14 @@ import bjc.utils.data.Tree;
 
 /**
  * Condenses chained operations into a single level
- * 
+ *
  * @author ben
  *
  */
 public class OperationCondenser {
 	/**
 	 * Condense chained similiar operations into a single level
-	 * 
+	 *
 	 * @param ast
 	 *                The AST to condense
 	 * @return The condensed AST
@@ -33,12 +33,10 @@ public class OperationCondenser {
 		IHolder<Boolean> canCondense = new Identity<>(true);
 
 		ast.doForChildren((child) -> {
-			if (canCondense.getValue()) {
+			if(canCondense.getValue()) {
 				canCondense.replace(child.transformHead((node) -> {
-					if (node.getType() == DiceASTType.OPERATOR) {
-						if (operation.equals(node)) {
-							return true;
-						}
+					if(node.getType() == DiceASTType.OPERATOR) {
+						if(operation.equals(node)) return true;
 
 						return false;
 					}
@@ -48,14 +46,12 @@ public class OperationCondenser {
 			}
 		});
 
-		if (!canCondense.getValue()) {
-			return ast;
-		}
+		if(!canCondense.getValue()) return ast;
 
 		ITree<IDiceASTNode> condensedAST = new Tree<>(operation);
 
 		ast.doForChildren((child) -> {
-			if (child.getHead().getType() == DiceASTType.OPERATOR) {
+			if(child.getHead().getType() == DiceASTType.OPERATOR) {
 				child.doForChildren((subChild) -> {
 					condensedAST.addChild(subChild);
 				});
@@ -68,7 +64,7 @@ public class OperationCondenser {
 	}
 
 	private static TopDownTransformResult pickNode(IDiceASTNode node) {
-		switch (node.getType()) {
+		switch(node.getType()) {
 		case LITERAL:
 			return TopDownTransformResult.SKIP;
 		case OPERATOR:
@@ -81,7 +77,7 @@ public class OperationCondenser {
 	}
 
 	private static TopDownTransformResult pickOperator(OperatorDiceNode node) {
-		switch (node) {
+		switch(node) {
 		case ADD:
 		case MULTIPLY:
 		case SUBTRACT:

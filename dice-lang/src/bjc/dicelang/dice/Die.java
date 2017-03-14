@@ -2,7 +2,7 @@ package bjc.dicelang.dice;
 
 /**
  * Represents one or more dice that produce a scalar result.
- * 
+ *
  * @author Ben Culkin
  */
 public interface Die {

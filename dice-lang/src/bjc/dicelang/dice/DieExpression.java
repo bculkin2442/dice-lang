@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 /**
  * Represents either a die or a die list
- * 
+ *
  * @author Ben Culkin
  */
 public class DieExpression {
@@ -16,11 +16,11 @@ public class DieExpression {
 	/**
 	 * The scalar value in this expression, if there is one.
 	 */
-	public Die scalar;
+	public Die	scalar;
 	/**
 	 * The list value in this expression, if there is one.
 	 */
-	public DieList list;
+	public DieList	list;
 
 	/**
 	 * Create a scalar die expression.
@@ -46,7 +46,7 @@ public class DieExpression {
 
 	@Override
 	public String toString() {
-		if (isList)
+		if(isList)
 			return list.toString();
 		else
 			return scalar.toString();
@@ -56,7 +56,7 @@ public class DieExpression {
 	 * Get the value of this expression as a string.
 	 */
 	public String value() {
-		if (isList)
+		if(isList)
 			return Arrays.toString(list.roll());
 		else
 			return Long.toString(scalar.roll());

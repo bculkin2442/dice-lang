@@ -4,15 +4,15 @@ import bjc.utils.funcutils.NeoTokenSplitter;
 
 /**
  * Contains methods for customizing the DiceLang and SCL compilers.
- * 
+ *
  * @author Ben Culkin
  */
 public class CompilerTweaker {
 	/*
 	 * Bits of the compiler necessary
 	 */
-	private DiceLangEngine eng;
-	private NeoTokenSplitter opExpander;
+	private DiceLangEngine		eng;
+	private NeoTokenSplitter	opExpander;
 
 	public CompilerTweaker(DiceLangEngine eng) {
 		this.eng = eng;
@@ -22,10 +22,10 @@ public class CompilerTweaker {
 
 	/**
 	 * Add a string literal to the compiler's internal banks.
-	 * 
+	 *
 	 * @param val
 	 *                The string literal to add.
-	 * 
+	 *
 	 * @return The key into the string literal table for this string.
 	 */
 	public int addStringLiteral(String val) {
@@ -37,7 +37,7 @@ public class CompilerTweaker {
 
 	/**
 	 * Add a line defn to the compiler.
-	 * 
+	 *
 	 * @param dfn
 	 *                The defn to add.
 	 */
@@ -47,7 +47,7 @@ public class CompilerTweaker {
 
 	/**
 	 * Add a token defn to the compiler.
-	 * 
+	 *
 	 * @param dfn
 	 *                The defn to add.
 	 */
@@ -57,7 +57,7 @@ public class CompilerTweaker {
 
 	/**
 	 * Adds a delimiter that is expanded from tokens.
-	 * 
+	 *
 	 * @param delim
 	 *                The delimiter to expand on.
 	 */
@@ -67,7 +67,7 @@ public class CompilerTweaker {
 
 	/**
 	 * Adds a multi-character delimiter that is expanded from tokens.
-	 * 
+	 *
 	 * @param delim
 	 *                The multi-character delimiter to expand on.
 	 */
@@ -84,8 +84,9 @@ public class CompilerTweaker {
 
 	/**
 	 * Change the max no. of times defines are allowed to recur.
-	 * 
-	 * @param times The number of times to allow defines to recur.
+	 *
+	 * @param times
+	 *                The number of times to allow defines to recur.
 	 */
 	public void setDefineRecurLimit(int times) {
 		Define.MAX_RECURS = times;

@@ -4,7 +4,7 @@ import bjc.dicelang.v1.IDiceExpression;
 
 /**
  * Represents a literal backed by a dice expression
- * 
+ *
  * @author ben
  *
  */
@@ -13,7 +13,7 @@ public class DiceLiteralNode implements ILiteralDiceNode {
 
 	/**
 	 * Create a new literal from an expression
-	 * 
+	 *
 	 * @param exp
 	 *                The expression to attempt to create a literal from
 	 */
@@ -33,7 +33,7 @@ public class DiceLiteralNode implements ILiteralDiceNode {
 
 	/**
 	 * Return the expression being represented
-	 * 
+	 *
 	 * @return The expression being represented
 	 */
 	public IDiceExpression getValue() {

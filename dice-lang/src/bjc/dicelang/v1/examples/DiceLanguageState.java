@@ -1,14 +1,14 @@
 package bjc.dicelang.v1.examples;
 
-import java.util.Map;
-
 import bjc.dicelang.v1.DiceExpressionParser;
 import bjc.dicelang.v1.IDiceExpression;
 import bjc.utils.data.Pair;
 
+import java.util.Map;
+
 /**
  * Internal state of dice language
- * 
+ *
  * @author ben
  *
  */
@@ -22,7 +22,7 @@ public class DiceLanguageState extends Pair<DiceExpressionParser, Map<String, ID
 
 	/**
 	 * Create a new state with the desired parameters
-	 * 
+	 *
 	 * @param left
 	 *                The parser to use
 	 * @param right

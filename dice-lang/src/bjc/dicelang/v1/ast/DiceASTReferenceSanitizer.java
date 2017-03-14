@@ -6,61 +6,55 @@ import bjc.dicelang.v1.ast.nodes.VariableDiceNode;
 import bjc.utils.data.IHolder;
 import bjc.utils.data.ITree;
 import bjc.utils.data.Identity;
-
-import bjc.utils.funcdata.IMap;
 import bjc.utils.data.TopDownTransformResult;
 import bjc.utils.data.Tree;
+import bjc.utils.funcdata.IMap;
 
 /**
  * Sanitize the references in an AST so that a variable that refers to itself in
  * its definition has the occurance of it replaced with its previous definition
- * 
+ *
  * @author ben
  *
  */
 public class DiceASTReferenceSanitizer {
 	private static ITree<IDiceASTNode> doSanitize(ITree<IDiceASTNode> ast,
 			IMap<String, ITree<IDiceASTNode>> enviroment) {
-		if (ast.getChildrenCount() != 2) {
+		if(ast.getChildrenCount() != 2)
 			throw new UnsupportedOperationException("Assignment must have two arguments.");
-		}
 
 		ITree<IDiceASTNode> nameTree = ast.getChild(0);
 		ITree<IDiceASTNode> valueTree = ast.getChild(1);
 
-		if (!DiceASTUtils.containsSimpleVariable(nameTree)) {
-			if (nameTree.getHead() == OperatorDiceNode.ARRAY) {
+		if(!DiceASTUtils.containsSimpleVariable(nameTree)) {
+			if(nameTree.getHead() == OperatorDiceNode.ARRAY) {
 				IHolder<Boolean> allSimpleVariables = new Identity<>(true);
 
 				nameTree.doForChildren((child) -> {
-					if (allSimpleVariables.getValue()) {
+					if(allSimpleVariables.getValue()) {
 						boolean isSimple = DiceASTUtils.containsSimpleVariable(child);
 
 						allSimpleVariables.replace(isSimple);
 					}
 				});
 
-				if (!allSimpleVariables.getValue()) {
-					throw new UnsupportedOperationException(
-							"Array assignment must be between variables and"
-									+ " a expression/array of expressions");
-				}
+				if(!allSimpleVariables.getValue()) throw new UnsupportedOperationException(
+						"Array assignment must be between variables and"
+								+ " a expression/array of expressions");
 
-				if (valueTree.getHead() == OperatorDiceNode.ARRAY) {
-					if (nameTree.getChildrenCount() != valueTree.getChildrenCount()) {
+				if(valueTree.getHead() == OperatorDiceNode.ARRAY) {
+					if(nameTree.getChildrenCount() != valueTree.getChildrenCount())
 						throw new UnsupportedOperationException(
 								"Array assignment between arrays must be"
 										+ " between two arrays of equal length");
-					}
 				}
-			} else {
+			} else
 				throw new UnsupportedOperationException(
 						"Assignment must be between a variable and a expression");
-			}
 		}
 
-		if (nameTree.getHead() == OperatorDiceNode.ARRAY) {
-			if (valueTree.getHead() == OperatorDiceNode.ARRAY) {
+		if(nameTree.getHead() == OperatorDiceNode.ARRAY) {
+			if(valueTree.getHead() == OperatorDiceNode.ARRAY) {
 				IHolder<Integer> childCounter = new Identity<>(0);
 
 				ITree<IDiceASTNode> returnTree = new Tree<>(OperatorDiceNode.ARRAY);
@@ -75,7 +69,7 @@ public class DiceASTReferenceSanitizer {
 					ITree<IDiceASTNode> sanitizedSubtree = doSingleSanitize(ast, enviroment, child,
 							currentValue, variableName);
 
-					if (sanitizedSubtree == null) {
+					if(sanitizedSubtree == null) {
 						ITree<IDiceASTNode> oldTree = new Tree<>(ast.getHead(), child,
 								currentValue);
 
@@ -98,7 +92,7 @@ public class DiceASTReferenceSanitizer {
 
 				ITree<IDiceASTNode> sanitizedChild = doSingleSanitize(ast, enviroment, child, valueTree,
 						variableName);
-				if (sanitizedChild == null) {
+				if(sanitizedChild == null) {
 					ITree<IDiceASTNode> oldTree = new Tree<>(ast.getHead(), child, valueTree);
 
 					returnTree.addChild(oldTree);
@@ -115,9 +109,7 @@ public class DiceASTReferenceSanitizer {
 		ITree<IDiceASTNode> sanitizedTree = doSingleSanitize(ast, enviroment, nameTree, valueTree,
 				variableName);
 
-		if (sanitizedTree == null) {
-			return ast;
-		}
+		if(sanitizedTree == null) return ast;
 
 		return sanitizedTree;
 	}
@@ -125,7 +117,7 @@ public class DiceASTReferenceSanitizer {
 	private static ITree<IDiceASTNode> doSingleSanitize(ITree<IDiceASTNode> ast,
 			IMap<String, ITree<IDiceASTNode>> enviroment, ITree<IDiceASTNode> nameTree,
 			ITree<IDiceASTNode> valueTree, String variableName) {
-		if (enviroment.containsKey(variableName)) {
+		if(enviroment.containsKey(variableName)) {
 			// @ is a meta-variable standing for the left side of an
 			// assignment
 			ITree<IDiceASTNode> oldVal = enviroment.put("@", enviroment.get(variableName));
@@ -136,7 +128,7 @@ public class DiceASTReferenceSanitizer {
 			ITree<IDiceASTNode> inlinedValue = DiceASTInliner.selectiveInline(valueTree, enviroment,
 					variableName, "last", "@");
 
-			if (oldVal != null) {
+			if(oldVal != null) {
 				enviroment.put("@", oldVal);
 			} else {
 				enviroment.remove("@");
@@ -150,7 +142,7 @@ public class DiceASTReferenceSanitizer {
 
 	/**
 	 * Sanitize the references in an AST
-	 * 
+	 *
 	 * @param ast
 	 * @param enviroment
 	 * @return The sanitized AST
@@ -163,11 +155,9 @@ public class DiceASTReferenceSanitizer {
 	}
 
 	private static TopDownTransformResult shouldSanitize(IDiceASTNode node) {
-		if (!node.isOperator()) {
-			return TopDownTransformResult.SKIP;
-		}
+		if(!node.isOperator()) return TopDownTransformResult.SKIP;
 
-		switch (((OperatorDiceNode) node)) {
+		switch((OperatorDiceNode) node) {
 		case ASSIGN:
 			return TopDownTransformResult.TRANSFORM;
 		case ARRAY:

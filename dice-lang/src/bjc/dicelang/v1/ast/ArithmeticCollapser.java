@@ -1,18 +1,18 @@
 package bjc.dicelang.v1.ast;
 
-import java.util.function.BinaryOperator;
-
 import bjc.dicelang.v1.ast.nodes.IDiceASTNode;
 import bjc.dicelang.v1.ast.nodes.OperatorDiceNode;
 import bjc.utils.data.IPair;
 import bjc.utils.data.ITree;
 import bjc.utils.data.Pair;
-import bjc.utils.funcdata.IList;
 import bjc.utils.data.Tree;
+import bjc.utils.funcdata.IList;
+
+import java.util.function.BinaryOperator;
 
 /**
  * Responsible for collapsing arithmetic operators
- * 
+ *
  * @author ben
  *
  */
@@ -54,17 +54,15 @@ final class ArithmeticCollapser implements IOperatorCollapser {
 		IList<IResult> currentList = ((ArrayResult) currentValue).getValue();
 		IList<IResult> accumulatedList = ((ArrayResult) accumulatedValue).getValue();
 
-		if (currentList.getSize() != accumulatedList.getSize()) {
+		if(currentList.getSize() != accumulatedList.getSize())
 			throw new UnsupportedOperationException("Can only apply operations to equal-length arrays");
-		}
 
 		IList<IResult> resultList = currentList.combineWith(accumulatedList, (currentNode, accumulatedNode) -> {
 			boolean currentNotInt = currentNode.getType() != ResultType.INTEGER;
 			boolean accumulatedNotInt = accumulatedNode.getType() != ResultType.INTEGER;
 
-			if (currentNotInt || accumulatedNotInt) {
+			if(currentNotInt || accumulatedNotInt)
 				throw new UnsupportedOperationException("Nesting of array operations isn't allowed");
-			}
 
 			int accumulatedInt = ((IntegerResult) accumulatedNode).getValue();
 			int currentInt = ((IntegerResult) currentNode).getValue();
@@ -77,7 +75,7 @@ final class ArithmeticCollapser implements IOperatorCollapser {
 
 	private IPair<IResult, ITree<IDiceASTNode>> doArithmeticCollapse(IResult accumulatedValue,
 			ITree<IDiceASTNode> accumulatedTree, IResult currentValue) {
-		if (accumulatedValue.getType() == ResultType.DUMMY || currentValue.getType() == ResultType.DUMMY) {
+		if(accumulatedValue.getType() == ResultType.DUMMY || currentValue.getType() == ResultType.DUMMY) {
 			DummyResult result = new DummyResult("Found dummy result with either accumulated dummy ("
 					+ ((DummyResult) accumulatedValue).getData() + ") or current dummy ("
 					+ ((DummyResult) currentValue).getData() + ").");
@@ -88,8 +86,8 @@ final class ArithmeticCollapser implements IOperatorCollapser {
 		boolean currentIsInt = currentValue.getType() == ResultType.INTEGER;
 		boolean accumulatedIsInt = accumulatedValue.getType() == ResultType.INTEGER;
 
-		if (!currentIsInt) {
-			if (!accumulatedIsInt) {
+		if(!currentIsInt) {
+			if(!accumulatedIsInt) {
 				IList<IResult> resultList = combineArrayResults(accumulatedValue, currentValue);
 
 				return new Pair<>(new ArrayResult(resultList), accumulatedTree);
@@ -99,7 +97,7 @@ final class ArithmeticCollapser implements IOperatorCollapser {
 					accumulatedValue, true);
 
 			return new Pair<>(new ArrayResult(resultList), accumulatedTree);
-		} else if (!accumulatedIsInt) {
+		} else if(!accumulatedIsInt) {
 			IList<IResult> resultList = halfCombineLists(((ArrayResult) accumulatedValue).getValue(),
 					currentValue, false);
 
@@ -115,22 +113,20 @@ final class ArithmeticCollapser implements IOperatorCollapser {
 	}
 
 	private IList<IResult> halfCombineLists(IList<IResult> list, IResult scalar, boolean scalarLeft) {
-		if (scalar.getType() != ResultType.INTEGER) {
+		if(scalar.getType() != ResultType.INTEGER)
 			throw new UnsupportedOperationException("Nested array operations not supported");
-		}
 
 		int scalarInt = ((IntegerResult) scalar).getValue();
 
 		return list.map((element) -> {
-			if (element.getType() != ResultType.INTEGER) {
+			if(element.getType() != ResultType.INTEGER)
 				throw new UnsupportedOperationException("Nested array operations not supported");
-			}
 
 			int elementInt = ((IntegerResult) element).getValue();
 
 			IResult combinedValue;
 
-			if (scalarLeft) {
+			if(scalarLeft) {
 				combinedValue = new IntegerResult(valueOp.apply(scalarInt, elementInt));
 			} else {
 				combinedValue = new IntegerResult(valueOp.apply(elementInt, scalarInt));

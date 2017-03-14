@@ -1,8 +1,5 @@
 package bjc.dicelang.v1.examples;
 
-import java.util.InputMismatchException;
-import java.util.Scanner;
-
 import bjc.dicelang.v1.ast.DiceASTEvaluator;
 import bjc.dicelang.v1.ast.DiceASTInliner;
 import bjc.dicelang.v1.ast.DiceASTOptimizer;
@@ -18,9 +15,12 @@ import bjc.utils.funcdata.FunctionalStringTokenizer;
 import bjc.utils.funcdata.IList;
 import bjc.utils.funcdata.IMap;
 
+import java.util.InputMismatchException;
+import java.util.Scanner;
+
 /**
  * Test interface for AST-based dice language
- * 
+ *
  * @author ben
  *
  */
@@ -66,7 +66,7 @@ public class DiceASTLanguageTest {
 		// Get the pragma arguments
 		IList<String> pragmaArgs = tokenizer.toList();
 
-		if (pragmaArgs.getSize() < 3) {
+		if(pragmaArgs.getSize() < 3) {
 			// Complain about pragma arguments not being valid
 			System.err.println("ERROR: Inline requires at least 3 parameters. They are:"
 					+ "\n\t1. The name of the expression to inline."
@@ -91,7 +91,7 @@ public class DiceASTLanguageTest {
 
 	/**
 	 * Main method of class
-	 * 
+	 *
 	 * @param args
 	 *                Unused CLI args
 	 */
@@ -107,12 +107,12 @@ public class DiceASTLanguageTest {
 		IMap<String, ITree<IDiceASTNode>> enviroment = new FunctionalMap<>();
 
 		// Handle commands
-		while (!currentLine.equalsIgnoreCase("quit")) {
+		while(!currentLine.equalsIgnoreCase("quit")) {
 			// Get the name of a possible action
 			String possibleActionName = currentLine.split(" ")[0];
 
 			// Check and see if we're executing an action
-			if (actions.containsKey(possibleActionName)) {
+			if(actions.containsKey(possibleActionName)) {
 				// Execute action
 				FunctionalStringTokenizer tokenizer = new FunctionalStringTokenizer(currentLine);
 
@@ -146,7 +146,7 @@ public class DiceASTLanguageTest {
 
 				System.out.println("Command parsed in "
 						+ (double) (System.nanoTime() - time) / 1000000000 + " s");
-			} catch (InputMismatchException | IllegalStateException | UnsupportedOperationException ex) {
+			} catch(InputMismatchException | IllegalStateException | UnsupportedOperationException ex) {
 				// Tell the user there was an error in parsing
 				System.out.println("PARSING ERROR: " + ex.getLocalizedMessage());
 
@@ -187,7 +187,7 @@ public class DiceASTLanguageTest {
 
 				// Update the 'last' meta-variable
 				enviroment.put("last", transformedAST);
-			} catch (UnsupportedOperationException usex) {
+			} catch(UnsupportedOperationException usex) {
 				// Tell the user there was an error in
 				// evaluation
 				System.out.println("EVALUATION ERROR: " + usex.getLocalizedMessage());

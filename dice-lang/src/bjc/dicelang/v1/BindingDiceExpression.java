@@ -5,7 +5,7 @@ import java.util.Map;
 /**
  * A variable expression that represents binding a variable to a name in an
  * enviroment
- * 
+ *
  * @author ben
  *
  */
@@ -23,7 +23,7 @@ public class BindingDiceExpression implements IDiceExpression {
 	/**
 	 * Create a new dice expression binder from two expressions and an
 	 * enviroment
-	 * 
+	 *
 	 * @param left
 	 *                The left side expression to get a name from. Must be a
 	 *                ReferenceDiceExpression
@@ -34,12 +34,10 @@ public class BindingDiceExpression implements IDiceExpression {
 	 */
 	public BindingDiceExpression(IDiceExpression left, IDiceExpression right,
 			Map<String, IDiceExpression> enviroment) {
-		if (!(left instanceof ReferenceDiceExpression)) {
-			throw new UnsupportedOperationException(
-					"Error: Binding an expression to something that is not a variable reference,"
-							+ " or array thereof. is unsupported."
-							+ " Problematic expression is " + left);
-		}
+		if(!(left instanceof ReferenceDiceExpression)) throw new UnsupportedOperationException(
+				"Error: Binding an expression to something that is not a variable reference,"
+						+ " or array thereof. is unsupported." + " Problematic expression is "
+						+ left);
 
 		String varName = ((ReferenceDiceExpression) left).getName();
 
@@ -48,7 +46,7 @@ public class BindingDiceExpression implements IDiceExpression {
 
 	/**
 	 * Create a new dice expression binder
-	 * 
+	 *
 	 * @param name
 	 *                The name of the variable to bind
 	 * @param expression
@@ -69,7 +67,7 @@ public class BindingDiceExpression implements IDiceExpression {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see bjc.utils.dice.IDiceExpression#roll()
 	 */
 	@Override
@@ -79,7 +77,7 @@ public class BindingDiceExpression implements IDiceExpression {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.lang.Object#toString()
 	 */
 	@Override

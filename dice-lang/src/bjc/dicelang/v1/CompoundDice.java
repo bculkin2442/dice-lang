@@ -2,10 +2,10 @@ package bjc.dicelang.v1;
 
 /**
  * Implements a "compound dice"
- * 
+ *
  * To explain, a compound dice is something like a d100 composed from two d10s
  * instead of a hundred sided die.
- * 
+ *
  * @author ben
  *
  */
@@ -22,7 +22,7 @@ public class CompoundDice implements IDiceExpression {
 
 	/**
 	 * Create a new compound dice using the specified dice
-	 * 
+	 *
 	 * @param lft
 	 *                The die to use on the left
 	 * @param rght
@@ -35,7 +35,7 @@ public class CompoundDice implements IDiceExpression {
 
 	/**
 	 * Create a new compound dice from two dice strings
-	 * 
+	 *
 	 * @param lft
 	 *                The left side dice as a string
 	 * @param rght
@@ -47,7 +47,7 @@ public class CompoundDice implements IDiceExpression {
 
 	/**
 	 * Create a new compound dice from an array of dice strings
-	 * 
+	 *
 	 * @param exps
 	 *                An array of two dice strings
 	 */
@@ -62,10 +62,8 @@ public class CompoundDice implements IDiceExpression {
 
 	@Override
 	public int optimize() {
-		if (!canOptimize()) {
-			throw new UnsupportedOperationException("Cannot optimize this compound dice. "
-					+ "Both component dice must be optimizable" + " to optimize a compound dice");
-		}
+		if(!canOptimize()) throw new UnsupportedOperationException("Cannot optimize this compound dice. "
+				+ "Both component dice must be optimizable" + " to optimize a compound dice");
 
 		return Integer.parseInt(left.optimize() + "" + right.optimize());
 	}

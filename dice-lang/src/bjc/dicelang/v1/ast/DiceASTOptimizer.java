@@ -9,7 +9,7 @@ import bjc.utils.funcdata.IMap;
 
 /**
  * Contains optimizations appliable to a dice AST
- * 
+ *
  * @author ben
  *
  */
@@ -25,7 +25,7 @@ public class DiceASTOptimizer {
 
 	/**
 	 * Add a pass to the list of optimization passes
-	 * 
+	 *
 	 * @param pass
 	 *                The pass to add
 	 */
@@ -35,7 +35,7 @@ public class DiceASTOptimizer {
 
 	/**
 	 * Optimize the passed in tree
-	 * 
+	 *
 	 * @param ast
 	 *                The tree to optimize
 	 * @param enviroment
