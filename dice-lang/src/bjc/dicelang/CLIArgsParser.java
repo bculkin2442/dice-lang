@@ -1,5 +1,7 @@
 package bjc.dicelang;
 
+import bjc.dicelang.util.ResourceLoader;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -29,27 +31,10 @@ public class CLIArgsParser {
 		if(args.length < 0) return true;
 
 		if(args.length == 1 && (args[0].equals("--help") || args[0].equals("-h"))) {
-			System.out.println("Help for DiceLang v0.2 CLI arguments:");
-			System.out.println("\t-d or --debug\tTurn on debug mode.");
-			System.out.println(
-					"\t\tTurns on debug mode, which prints additional information that may be useful.");
-			System.out.println("\t-nd or --no-debug\tTurn off debug mode.");
-			System.out.println("\t\tTurns off debug mode.");
-			System.out.println("\t-po or --postfix\tTurn on postfix mode.");
-			System.out.println("\t\tTurns on postfix mode, which disables the shunter.");
-			System.out.println("\t-npo or --no-postfix\tTurn off postfix mode.");
-			System.out.println("\t\tTurns off postfix mode.");
-			System.out.println("\t-pr or --prefix\tTurn on prefix mode.");
-			System.out.println(
-					"\t\tTurns on prefix mode, which reverses the expression instead of shunting it.");
-			System.out.println("\t-npr or --no-prefix\tTurn off prefix mode.");
-			System.out.println("\t\tTurns off prefix mode.");
-			System.out.println("\t-se or --step-eval\tTurn on step-eval mode.");
-			System.out.println(
-					"\t\tTurns on step-evaluation, which shows the evaluation process step-by-step. Currently slightly broken.");
-			System.out.println("\t-nse or --no-step-eval\tTurn off step-eval mode.");
-			System.out.println("\t\tTurns off step-evaluation.");
-			System.out.println("\t-D or ");
+			for(String lne : ResourceLoader.loadHelpFile("cli")) {
+				System.out.println(lne);
+			}
+			
 			System.exit(0);
 		}
 

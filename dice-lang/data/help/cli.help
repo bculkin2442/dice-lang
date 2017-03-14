@@ -1,4 +1,7 @@
 Help for DiceLang v0.2 CLI arguments:
+	-h or --help	Show help
+		Shows this help message
+		
 	-d or --debug   	 Turn on debug mode.
 		Turns on debug mode, which prints additional information that
 		may be useful for finding errors.

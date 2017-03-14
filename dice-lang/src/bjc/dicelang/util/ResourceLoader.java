@@ -26,8 +26,8 @@ public class ResourceLoader {
 	 * @return The contents of the help file, or null if it could not be
 	 *         opened
 	 */
-	public String[] loadHelpFile(String name) {
-		URL fle = this.getClass().getResource("/data/help/" + name + ".help");
+	public static String[] loadHelpFile(String name) {
+		URL fle = ResourceLoader.class.getResource("/data/help/" + name + ".help");
 
 		try {
 			return Files.lines(Paths.get(fle.toURI())).toArray(sze -> new String[sze]);
