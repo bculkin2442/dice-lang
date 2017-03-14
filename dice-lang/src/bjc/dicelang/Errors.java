@@ -119,10 +119,12 @@ public class Errors {
 		EK_CLI_MISARG,
 		// Invalid define type
 		EK_CLI_INVDFNTYPE,
-		// File not found
-		EK_CLI_NOFILE,
+		
+		// Misc. errors
 		// Unknown I/O problem
-		EK_CLI_IOEX,
+		EK_MISC_IOEX,
+		// File not found
+		EK_MISC_NOFILE,
 	}
 
 	public static enum ErrorMode {
@@ -134,7 +136,7 @@ public class Errors {
 	public void printError(ErrorKey key, String... args) {
 		switch (mode) {
 		case WIZARD:
-			if (key == ErrorKey.EK_CLI_NOFILE) {
+			if (key == ErrorKey.EK_MISC_NOFILE) {
 				System.out.println("\t? 404");
 			} else {
 				System.out.println("\t? " + key.ordinal());
@@ -299,11 +301,11 @@ public class Errors {
 		case EK_CLI_INVDFNTYPE:
 			System.out.printf("\tERROR: Invalid define type %s\n", args[0]);
 			break;
-		case EK_CLI_NOFILE:
-			System.out.printf("\tERROR: No such file %s\n", args[0]);
+		case EK_MISC_IOEX:
+			System.out.printf("\tERROR: I/O problem with file\n");
 			break;
-		case EK_CLI_IOEX:
-			System.out.printf("\tERROR: I/O problem with file");
+		case EK_MISC_NOFILE:
+			System.out.printf("\tERROR: No such file %s\n", args[0]);
 			break;
 		default:
 			System.out.printf("\tERROR ERROR: Unknown error key %s\n", key);

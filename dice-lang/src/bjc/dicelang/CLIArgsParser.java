@@ -190,10 +190,10 @@ public class CLIArgsParser {
 				}
 			}
 		} catch (FileNotFoundException fnfex) {
-			Errors.inst.printError(EK_CLI_NOFILE, fName);
+			Errors.inst.printError(EK_MISC_NOFILE, fName);
 			return -1;
 		} catch (IOException ioex) {
-			Errors.inst.printError(EK_CLI_IOEX);
+			Errors.inst.printError(EK_MISC_IOEX, fName);
 			return -1;
 		}
 
