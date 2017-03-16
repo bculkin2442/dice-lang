@@ -8,7 +8,7 @@ import bjc.utils.funcdata.FunctionalStringTokenizer;
 import bjc.utils.funcdata.IList;
 import bjc.utils.funcdata.IMap;
 import bjc.utils.funcutils.ListUtils;
-import bjc.utils.funcutils.NeoTokenSplitter;
+import bjc.utils.funcutils.TokenSplitter;
 import bjc.utils.funcutils.StringUtils;
 
 import java.util.Deque;
@@ -37,7 +37,7 @@ public class DiceLangEngine {
 	/*
 	 * Split tokens around operators with regex
 	 */
-	NeoTokenSplitter opExpander;
+	TokenSplitter opExpander;
 
 	/*
 	 * ID for generation.
@@ -120,7 +120,7 @@ public class DiceLangEngine {
 		/*
 		 * Initialize operator expansion list.
 		 */
-		opExpander = new NeoTokenSplitter();
+		opExpander = new TokenSplitter();
 		opExpander.addMultiDelimiter("\\(");
 		opExpander.addMultiDelimiter("\\)");
 		opExpander.addMultiDelimiter("\\[");

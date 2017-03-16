@@ -1,6 +1,6 @@
 package bjc.dicelang;
 
-import bjc.utils.funcutils.NeoTokenSplitter;
+import bjc.utils.funcutils.TokenSplitter;
 
 /**
  * Contains methods for customizing the DiceLang and SCL compilers.
@@ -12,7 +12,7 @@ public class CompilerTweaker {
 	 * Bits of the compiler necessary
 	 */
 	private DiceLangEngine		eng;
-	private NeoTokenSplitter	opExpander;
+	private TokenSplitter	opExpander;
 
 	public CompilerTweaker(DiceLangEngine eng) {
 		this.eng = eng;
