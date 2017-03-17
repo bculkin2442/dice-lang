@@ -8,8 +8,8 @@ import bjc.utils.funcdata.FunctionalStringTokenizer;
 import bjc.utils.funcdata.IList;
 import bjc.utils.funcdata.IMap;
 import bjc.utils.funcutils.ListUtils;
-import bjc.utils.funcutils.TokenSplitter;
-import bjc.utils.funcutils.StringUtils;
+import bjc.utils.parserutils.TokenSplitter;
+import bjc.utils.parserutils.TokenUtils;
 
 import java.util.Deque;
 import java.util.Iterator;
@@ -439,7 +439,7 @@ public class DiceLangEngine {
 		/*
 		 * Remove string literals.
 		 */
-		List<String> destringedParts = StringUtils.removeDQuotedStrings(newComm);
+		List<String> destringedParts = TokenUtils.removeDQuotedStrings(newComm);
 		StringBuffer destringedCommand = new StringBuffer();
 
 		for(String part : destringedParts) {
@@ -457,7 +457,7 @@ public class DiceLangEngine {
 				 * Insert the string with its escape sequences
 				 * interpreted.
 				 */
-				stringLiterals.put(litName, StringUtils.descapeString(litVal));
+				stringLiterals.put(litName, TokenUtils.descapeString(litVal));
 				nextLiteral += 1;
 
 				/*

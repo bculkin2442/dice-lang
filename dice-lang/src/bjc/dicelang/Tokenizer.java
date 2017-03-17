@@ -4,6 +4,7 @@ import bjc.dicelang.dice.DiceBox;
 import bjc.utils.funcdata.FunctionalMap;
 import bjc.utils.funcdata.IMap;
 import bjc.utils.funcutils.StringUtils;
+import bjc.utils.parserutils.TokenUtils;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -108,7 +109,7 @@ public class Tokenizer {
 	private Token tokenizeLiteral(String token, IMap<String, String> stringLts) {
 		Token tk = Token.NIL_TOKEN;
 
-		if(StringUtils.isInt(token)) {
+		if(TokenUtils.isInt(token)) {
 			tk = new Token(INT_LIT, Long.parseLong(token));
 		} else if(hexadecimalMatcher.matcher(token).matches()) {
 			String newToken = token.substring(0, 1) + token.substring(token.indexOf('x'));
@@ -130,7 +131,7 @@ public class Tokenizer {
 				Errors.inst.printError(EK_TOK_INVFLEX, flexNum, Integer.toString(parseBase));
 				return Token.NIL_TOKEN;
 			}
-		} else if(StringUtils.isDouble(token)) {
+		} else if(TokenUtils.isDouble(token)) {
 			tk = new Token(FLOAT_LIT, Double.parseDouble(token));
 		} else if(DiceBox.isValidExpression(token)) {
 			tk = new Token(DICE_LIT, DiceBox.parseExpression(token));

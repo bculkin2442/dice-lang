@@ -1,6 +1,6 @@
 package bjc.dicelang.v1;
 
-import bjc.utils.funcutils.StringUtils;
+import bjc.utils.parserutils.TokenUtils;
 
 /**
  * An expression for something that can be rolled like a polyhedral die
@@ -35,12 +35,12 @@ public interface IDiceExpression {
 
 		String diceMatcher = "\\Ad\\d+\\Z";
 
-		if(StringUtils.containsInfixOperator(literalData, "c")) {
+		if(TokenUtils.containsInfixOperator(literalData, "c")) {
 			// Parse a compound die
 			String[] strangs = literalData.split("c");
 
 			return new CompoundDice(strangs);
-		} else if(StringUtils.containsInfixOperator(literalData, "d"))
+		} else if(TokenUtils.containsInfixOperator(literalData, "d"))
 			// Handle groups of similiar dice
 			return ComplexDice.fromString(literalData);
 		else if(literalData.matches(diceMatcher))

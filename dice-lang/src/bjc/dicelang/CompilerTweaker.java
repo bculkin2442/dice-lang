@@ -1,6 +1,6 @@
 package bjc.dicelang;
 
-import bjc.utils.funcutils.TokenSplitter;
+import bjc.utils.parserutils.TokenSplitter;
 
 /**
  * Contains methods for customizing the DiceLang and SCL compilers.

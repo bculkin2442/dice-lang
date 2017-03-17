@@ -5,7 +5,7 @@ import bjc.utils.esodata.SimpleStack;
 import bjc.utils.esodata.Stack;
 import bjc.utils.funcdata.FunctionalList;
 import bjc.utils.funcdata.IList;
-import bjc.utils.funcutils.StringUtils;
+import bjc.utils.parserutils.TokenUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -135,9 +135,9 @@ public class StreamControlEngine {
 				return new Token(BLIT, true);
 			else if(token.equals("false"))
 				return new Token(BLIT, false);
-			else if(StringUtils.isInt(token))
+			else if(TokenUtils.isInt(token))
 				return new Token(ILIT, Long.parseLong(token));
-			else if(StringUtils.isDouble(token))
+			else if(TokenUtils.isDouble(token))
 				return new Token(FLIT, Double.parseDouble(token));
 			else {
 				Errors.inst.printError(EK_SCL_INVTOKEN, token);
@@ -470,7 +470,7 @@ public class StreamControlEngine {
 		 */
 		n += 1;
 
-		curStack.push(new Token(SLIT, StringUtils.descapeString(sb.toString())));
+		curStack.push(new Token(SLIT, TokenUtils.descapeString(sb.toString())));
 
 		return n;
 	}

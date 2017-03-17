@@ -1,6 +1,6 @@
 package bjc.dicelang.expr;
 
-import bjc.utils.funcutils.TokenSplitter;
+import bjc.utils.parserutils.TokenSplitter;
 
 import java.util.LinkedList;
 import java.util.List;
