@@ -8,8 +8,8 @@ import bjc.utils.funcdata.FunctionalStringTokenizer;
 import bjc.utils.funcdata.IList;
 import bjc.utils.funcdata.IMap;
 import bjc.utils.funcutils.ListUtils;
-import bjc.utils.parserutils.TokenSplitter;
 import bjc.utils.parserutils.TokenUtils;
+import bjc.utils.parserutils.splitter.SimpleTokenSplitter;
 
 import java.util.Deque;
 import java.util.Iterator;
@@ -37,7 +37,7 @@ public class DiceLangEngine {
 	/*
 	 * Split tokens around operators with regex
 	 */
-	TokenSplitter opExpander;
+	SimpleTokenSplitter opExpander;
 
 	/*
 	 * ID for generation.
@@ -120,7 +120,7 @@ public class DiceLangEngine {
 		/*
 		 * Initialize operator expansion list.
 		 */
-		opExpander = new TokenSplitter();
+		opExpander = new SimpleTokenSplitter();
 		opExpander.addMultiDelimiter("\\(");
 		opExpander.addMultiDelimiter("\\)");
 		opExpander.addMultiDelimiter("\\[");
@@ -475,7 +475,7 @@ public class DiceLangEngine {
 			/*
 			 * Print the string table if it exists.
 			 */
-			if(stringLiterals.getSize() > 0) {
+			if(stringLiterals.size() > 0) {
 				System.out.println("\tString literals in table");
 
 				stringLiterals.forEach((key, val) -> {

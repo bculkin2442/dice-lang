@@ -1,9 +1,9 @@
 package bjc.dicelang.expr;
 
-import bjc.utils.parserutils.TokenSplitter;
-
 import java.util.LinkedList;
 import java.util.List;
+
+import bjc.utils.parserutils.splitter.SimpleTokenSplitter;
 
 /**
  * Implements the lexer for simple expression operations.
@@ -14,13 +14,13 @@ public class Lexer {
 	/*
 	 * Spliter we use
 	 */
-	private TokenSplitter split;
+	private SimpleTokenSplitter split;
 
 	/**
 	 * Create a new expression lexer.
 	 */
 	public Lexer() {
-		split = new TokenSplitter();
+		split = new SimpleTokenSplitter();
 
 		split.addDelimiter("(", ")");
 		split.addDelimiter("+", "-", "*", "/");

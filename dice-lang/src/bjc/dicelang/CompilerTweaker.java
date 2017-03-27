@@ -1,6 +1,6 @@
 package bjc.dicelang;
 
-import bjc.utils.parserutils.TokenSplitter;
+import bjc.utils.parserutils.splitter.SimpleTokenSplitter;
 
 /**
  * Contains methods for customizing the DiceLang and SCL compilers.
@@ -12,7 +12,7 @@ public class CompilerTweaker {
 	 * Bits of the compiler necessary
 	 */
 	private DiceLangEngine		eng;
-	private TokenSplitter	opExpander;
+	private SimpleTokenSplitter	opExpander;
 
 	public CompilerTweaker(DiceLangEngine eng) {
 		this.eng = eng;
@@ -88,7 +88,7 @@ public class CompilerTweaker {
 	 * @param times
 	 *                The number of times to allow defines to recur.
 	 */
-	public void setDefineRecurLimit(int times) {
+	public static void setDefineRecurLimit(int times) {
 		Define.MAX_RECURS = times;
 	}
 }
