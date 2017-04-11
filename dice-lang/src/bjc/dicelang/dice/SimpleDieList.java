@@ -1,9 +1,24 @@
 package bjc.dicelang.dice;
 
+/**
+ * A simple list of dice.
+ * 
+ * @author EVE
+ *
+ */
 public class SimpleDieList implements DieList {
 	private Die	numDice;
 	private Die	size;
 
+	/**
+	 * Create a new list of dice.
+	 * 
+	 * @param nDice
+	 *                The number of dice in the list.
+	 * 
+	 * @param sze
+	 *                The size of dice in the list.
+	 */
 	public SimpleDieList(Die nDice, Die sze) {
 		numDice = nDice;
 		size = sze;

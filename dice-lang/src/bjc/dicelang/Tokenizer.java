@@ -14,6 +14,7 @@ import static bjc.dicelang.Errors.ErrorKey.EK_TOK_INVFLEX;
 import static bjc.dicelang.Errors.ErrorKey.EK_TOK_UNGROUP;
 import static bjc.dicelang.Token.Type.*;
 
+@SuppressWarnings("javadoc")
 public class Tokenizer {
 	// Literal tokens for tokenization
 	private IMap<String, Token.Type> litTokens;
@@ -127,7 +128,7 @@ public class Tokenizer {
 
 			try {
 				tk = new Token(INT_LIT, Long.parseLong(flexNum, parseBase));
-			} catch(NumberFormatException nfex) {
+			} catch(@SuppressWarnings("unused") NumberFormatException nfex) {
 				Errors.inst.printError(EK_TOK_INVFLEX, flexNum, Integer.toString(parseBase));
 				return Token.NIL_TOKEN;
 			}

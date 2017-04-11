@@ -9,7 +9,7 @@ public interface DieList {
 	/**
 	 * Can this list be optimized?
 	 *
-	 * @return Whether or not this list cna be optimized.
+	 * @return Whether or not this list can be optimized.
 	 */
 	boolean canOptimize();
 
@@ -25,8 +25,7 @@ public interface DieList {
 	/**
 	 * Roll this group of dice.
 	 *
-	 * @param A
-	 *                possible roll of this group.
+	 * @return A possible roll of this group.
 	 */
 	long[] roll();
 }

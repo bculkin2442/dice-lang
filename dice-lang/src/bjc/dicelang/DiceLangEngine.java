@@ -9,7 +9,7 @@ import bjc.utils.funcdata.IList;
 import bjc.utils.funcdata.IMap;
 import bjc.utils.funcutils.ListUtils;
 import bjc.utils.parserutils.TokenUtils;
-import bjc.utils.parserutils.splitter.SimpleTokenSplitter;
+import bjc.utils.parserutils.splitter.ConfigurableTokenSplitter;
 
 import java.util.Deque;
 import java.util.Iterator;
@@ -37,7 +37,7 @@ public class DiceLangEngine {
 	/*
 	 * Split tokens around operators with regex
 	 */
-	SimpleTokenSplitter opExpander;
+	ConfigurableTokenSplitter opExpander;
 
 	/*
 	 * ID for generation.
@@ -81,6 +81,9 @@ public class DiceLangEngine {
 	/*
 	 * Tables for various things.
 	 */
+	/**
+	 * The symbol table.
+	 */
 	public final IMap<Integer, String> symTable;
 
 	private IMap<Integer, String>	stringLits;
@@ -102,6 +105,9 @@ public class DiceLangEngine {
 	 */
 	StreamEngine streamEng;
 
+	/**
+	 * Create a new DiceLang engine.
+	 */
 	public DiceLangEngine() {
 		/*
 		 * Initialize defns.
@@ -111,7 +117,7 @@ public class DiceLangEngine {
 		defnsSorted = true;
 
 		/*
-		 * Init tables.
+		 * Initialize tables.
 		 */
 		symTable = new FunctionalMap<>();
 		stringLits = new FunctionalMap<>();
@@ -120,22 +126,21 @@ public class DiceLangEngine {
 		/*
 		 * Initialize operator expansion list.
 		 */
-		opExpander = new SimpleTokenSplitter();
-		opExpander.addMultiDelimiter("\\(");
-		opExpander.addMultiDelimiter("\\)");
-		opExpander.addMultiDelimiter("\\[");
-		opExpander.addMultiDelimiter("\\]");
-		opExpander.addMultiDelimiter("\\{");
-		opExpander.addMultiDelimiter("\\}");
-		opExpander.addDelimiter(":=");
-		opExpander.addDelimiter("=>");
-		opExpander.addDelimiter("//");
-		opExpander.addDelimiter(".+.");
-		opExpander.addDelimiter(".*.");
-		opExpander.addDelimiter("+");
-		opExpander.addDelimiter("-");
-		opExpander.addDelimiter("*");
-		opExpander.addDelimiter("/");
+		opExpander = new ConfigurableTokenSplitter(true);
+
+		opExpander.addMultiDelimiters("(", ")");
+		opExpander.addMultiDelimiters("[", "]");
+		opExpander.addMultiDelimiters("{", "}");
+
+		opExpander.addSimpleDelimiters(":=");
+		opExpander.addSimpleDelimiters("=>");
+		opExpander.addSimpleDelimiters("//");
+		opExpander.addSimpleDelimiters(".+.");
+		opExpander.addSimpleDelimiters(".*.");
+		opExpander.addSimpleDelimiters("+");
+		opExpander.addSimpleDelimiters("-");
+		opExpander.addSimpleDelimiters("*");
+		opExpander.addSimpleDelimiters("/");
 		opExpander.compile();
 
 		/*
@@ -513,8 +518,7 @@ public class DiceLangEngine {
 		/*
 		 * Expand tokens
 		 */
-		IList<String> fullyExpandedTokens = tokens
-				.flatMap((token) -> new FunctionalList<>(opExpander.split(token)));
+		IList<String> fullyExpandedTokens = tokens.flatMap(opExpander::split);
 		System.out.println("\tCommand after token expansion: " + fullyExpandedTokens.toString());
 
 		/*
@@ -627,7 +631,7 @@ public class DiceLangEngine {
 		 * Data storage.
 		 */
 		Deque<IList<Token>> bracedTokens = new LinkedList<>();
-		IList<Token> curBracedTokens = null;
+		IList<Token> curBracedTokens = new FunctionalList<>();
 
 		for(Token tk : lexedTokens) {
 			if(tk.type == Token.Type.OBRACE && tk.intValue == 2) {

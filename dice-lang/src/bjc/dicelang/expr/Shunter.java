@@ -39,7 +39,12 @@ public class Shunter {
 				 * respecting their left associativity.
 				 */
 				int leftPriority = tok.type.operatorPriority;
-				int rightPriority = curOp == null ? 0 : curOp.type.operatorPriority;
+
+				int rightPriority;
+				if(curOp == null)
+					rightPriority = 0;
+				else
+					rightPriority = curOp.type.operatorPriority;
 
 				boolean isHigherPrec = leftPriority >= rightPriority;
 
@@ -53,7 +58,11 @@ public class Shunter {
 					curOp = opStack.peek();
 
 					leftPriority = tok.type.operatorPriority;
-					rightPriority = curOp == null ? 0 : curOp.type.operatorPriority;
+
+					if(curOp == null)
+						rightPriority = 0;
+					else
+						rightPriority = curOp.type.operatorPriority;
 
 					isHigherPrec = leftPriority >= rightPriority;
 				}
@@ -65,7 +74,8 @@ public class Shunter {
 				Token curOp = opStack.peek();
 
 				/*
-				 * Pop things until we find the matching paren.
+				 * Pop things until we find the matching
+				 * parenthesis.
 				 */
 				while(curOp.type != TokenType.OPAREN) {
 					Token tk = opStack.pop();

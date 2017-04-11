@@ -11,7 +11,7 @@ import java.nio.file.Paths;
 import static bjc.dicelang.Errors.ErrorKey.EK_MISC_IOEX;
 
 /**
- * Load resources bundled with DiceLang
+ * Load resources bundled with DiceLang.
  *
  * @author EVE
  *
@@ -24,16 +24,15 @@ public class ResourceLoader {
 	 *                The name of the help file to load.
 	 *
 	 * @return The contents of the help file, or null if it could not be
-	 *         opened
+	 *         opened.
 	 */
+	@SuppressWarnings("unused")
 	public static String[] loadHelpFile(String name) {
 		URL fle = ResourceLoader.class.getResource("/data/help/" + name + ".help");
 
 		try {
 			return Files.lines(Paths.get(fle.toURI())).toArray(sze -> new String[sze]);
-		} catch(IOException ioex) {
-			Errors.inst.printError(EK_MISC_IOEX, fle.toString());
-		} catch(URISyntaxException usex) {
+		} catch(IOException | URISyntaxException ioex) {
 			Errors.inst.printError(EK_MISC_IOEX, fle.toString());
 		}
 

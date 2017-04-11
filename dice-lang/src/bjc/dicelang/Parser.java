@@ -12,11 +12,31 @@ import static bjc.dicelang.Node.Type.*;
 import static bjc.dicelang.Token.Type.CBRACE;
 import static bjc.dicelang.Token.Type.CBRACKET;
 
+/**
+ * Parse a series of tree into tokens.
+ * 
+ * @author EVE
+ *
+ */
 public class Parser {
+	/**
+	 * Create a new parser.
+	 */
 	public Parser() {
 
 	}
 
+	/**
+	 * Parse a series of tokens to a forest of ASTs.
+	 * 
+	 * @param tokens
+	 *                The list of tokens to parse.
+	 * 
+	 * @param results
+	 *                The place to set results.
+	 * 
+	 * @return Whether or not the parse was successful.
+	 */
 	public boolean parseTokens(IList<Token> tokens, IList<ITree<Node>> results) {
 		Deque<ITree<Node>> working = new LinkedList<>();
 
@@ -130,7 +150,8 @@ public class Parser {
 			groupNode = new Tree<>(new Node(GROUP, Node.GroupType.ARRAY));
 			break;
 		default:
-			break;
+			Errors.inst.printError(EK_PARSE_UNCLOSE, tk.type.toString());
+			return false;
 		}
 
 		Token matching = null;

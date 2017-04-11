@@ -12,14 +12,42 @@ import static bjc.dicelang.Errors.ErrorKey.EK_DFN_PREDSYN;
 import static bjc.dicelang.Errors.ErrorKey.EK_DFN_RECUR;
 import static bjc.dicelang.Errors.ErrorKey.EK_DFN_SRCSYN;
 
+/**
+ * A regular expression based pre-processor define.
+ * 
+ * @author EVE
+ *
+ */
 public class Define implements UnaryOperator<String>, Comparable<Define> {
+	/**
+	 * The define type.
+	 * 
+	 * @author EVE
+	 *
+	 */
 	public static enum Type {
-		LINE, TOKEN
+		/**
+		 * Match on lines.
+		 */
+		LINE,
+		/**
+		 * Match on tokens.
+		 */
+		TOKEN
 	}
 
+	/**
+	 * The max amount of times to recur on expansions.
+	 */
 	public static int MAX_RECURS = 10;
 
+	/**
+	 * The priority of this definition.
+	 */
 	public final int	priority;
+	/**
+	 * Whether or not this definition is in error.
+	 */
 	public final boolean	inError;
 
 	private boolean	doRecur;
@@ -31,6 +59,30 @@ public class Define implements UnaryOperator<String>, Comparable<Define> {
 	private Iterator<String>	replacers;
 	private String			replacer;
 
+	/**
+	 * Create a new define.
+	 * 
+	 * @param priorty
+	 *                The priority of the define.
+	 * 
+	 * @param isSub
+	 *                Whether or not this is a 'sub-define'
+	 * 
+	 * @param recur
+	 *                Whether this define is recursive or not.
+	 * 
+	 * @param isCircular
+	 *                Whether this define is circular or not.
+	 * 
+	 * @param predicte
+	 *                The string to use as a predicate.
+	 * 
+	 * @param searchr
+	 *                The string to use as a search.
+	 * 
+	 * @param replacrs
+	 *                The source for replacement strings.
+	 */
 	public Define(int priorty, boolean isSub, boolean recur, boolean isCircular, String predicte, String searchr,
 			Iterable<String> replacrs) {
 		priority = priorty;

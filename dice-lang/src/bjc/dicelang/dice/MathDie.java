@@ -1,8 +1,31 @@
 package bjc.dicelang.dice;
 
+/**
+ * A die that represents two dice with an applied math operator.
+ * 
+ * @author EVE
+ *
+ */
 public class MathDie implements Die {
+	/**
+	 * The types of a math operator.
+	 * 
+	 * @author EVE
+	 *
+	 */
 	public static enum MathOp {
-		ADD, SUBTRACT, MULTIPLY;
+		/**
+		 * Add two dice.
+		 */
+		ADD,
+		/**
+		 * Subtract two dice.
+		 */
+		SUBTRACT,
+		/**
+		 * Multiply two dice.
+		 */
+		MULTIPLY;
 
 		@Override
 		public String toString() {
@@ -24,6 +47,18 @@ public class MathDie implements Die {
 	private Die	left;
 	private Die	right;
 
+	/**
+	 * Create a new math die.
+	 * 
+	 * @param op
+	 *                The operator to apply.
+	 * 
+	 * @param lft
+	 *                The left operand.
+	 * 
+	 * @param rght
+	 *                The right operand.
+	 */
 	public MathDie(MathDie.MathOp op, Die lft, Die rght) {
 		type = op;
 

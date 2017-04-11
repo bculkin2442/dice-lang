@@ -3,7 +3,8 @@ package bjc.dicelang.expr;
 import java.util.LinkedList;
 import java.util.List;
 
-import bjc.utils.parserutils.splitter.SimpleTokenSplitter;
+import bjc.utils.funcdata.IList;
+import bjc.utils.parserutils.splitter.ConfigurableTokenSplitter;
 
 /**
  * Implements the lexer for simple expression operations.
@@ -12,18 +13,18 @@ import bjc.utils.parserutils.splitter.SimpleTokenSplitter;
  */
 public class Lexer {
 	/*
-	 * Spliter we use
+	 * Splitter we use.
 	 */
-	private SimpleTokenSplitter split;
+	private ConfigurableTokenSplitter split;
 
 	/**
 	 * Create a new expression lexer.
 	 */
 	public Lexer() {
-		split = new SimpleTokenSplitter();
+		split = new ConfigurableTokenSplitter(true);
 
-		split.addDelimiter("(", ")");
-		split.addDelimiter("+", "-", "*", "/");
+		split.addSimpleDelimiters("(", ")");
+		split.addSimpleDelimiters("+", "-", "*", "/");
 	}
 
 	/**
@@ -31,8 +32,9 @@ public class Lexer {
 	 *
 	 * @param inp
 	 *                The input command.
+	 * 
 	 * @param tks
-	 *                The token state
+	 *                The token state.
 	 *
 	 * @return A series of infix tokens representing the command.
 	 */
@@ -42,11 +44,10 @@ public class Lexer {
 		List<Token> tokens = new LinkedList<>();
 
 		for(String spacedToken : spacedTokens) {
-			String[] rawTokens = split.split(spacedToken);
+			IList<String> splitTokens = split.split(spacedToken);
+			IList<Token> rawTokens = splitTokens.map(tok -> tks.lexToken(tok, spacedToken));
 
-			for(String tok : rawTokens) {
-				tokens.add(tks.lexToken(tok, spacedToken));
-			}
+			rawTokens.forEach(tokens::add);
 		}
 
 		return tokens.toArray(new Token[0]);

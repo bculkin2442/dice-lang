@@ -13,6 +13,12 @@ import java.util.Set;
 import static bjc.dicelang.Errors.ErrorKey.*;
 import static bjc.dicelang.Token.Type.*;
 
+/**
+ * Shunt a set of infix tokens to postfix tokens.
+ * 
+ * @author EVE
+ *
+ */
 public class Shunter {
 	// The binary operators and their
 	// priorities
@@ -40,11 +46,26 @@ public class Shunter {
 	// applied to operator tokens and yield data tokens
 	Set<Token.Type> unaryGerunds;
 
+	/**
+	 * Precedence for math operators.
+	 */
 	public final int	MATH_PREC	= 30;
+	/**
+	 * Precedence for dice operators.
+	 */
 	public final int	DICE_PREC	= 20;
+	/**
+	 * Precedence for string operators.
+	 */
 	public final int	STR_PREC	= 10;
+	/**
+	 * Precedence for expression operators.
+	 */
 	public final int	EXPR_PREC	= 0;
 
+	/**
+	 * Create a new shunter.
+	 */
 	public Shunter() {
 		ops = new FunctionalMap<>();
 
@@ -78,6 +99,17 @@ public class Shunter {
 		ops.put(BIND, 1 + EXPR_PREC);
 	}
 
+	/**
+	 * Shunt a set of tokens from infix to postfix.
+	 * 
+	 * @param tks
+	 *                The tokens to input.
+	 * 
+	 * @param returned
+	 *                The postfix tokens.
+	 * 
+	 * @return Whether or not the shunt succeeded.
+	 */
 	public boolean shuntTokens(IList<Token> tks, IList<Token> returned) {
 		Deque<Token> opStack = new LinkedList<>();
 		Deque<Token> unaryOps = new LinkedList<>();
@@ -113,7 +145,7 @@ public class Shunter {
 	}
 
 	private boolean shuntToken(Token tk, Deque<Token> opStack, Deque<Token> unaryStack, Deque<Token> currReturned,
-			Deque<Token> feed) {
+			@SuppressWarnings("unused") Deque<Token> feed) {
 		if(unaryStack.size() != 0) {
 			if(isUnary(tk)) {
 				unaryStack.add(tk);
@@ -195,7 +227,8 @@ public class Shunter {
 				matching = new Token(OBRACE, tk.intValue);
 				break;
 			default:
-				break;
+				Errors.inst.printError(EK_SHUNT_NOGROUP);
+				return false;
 			}
 
 			if(!opStack.contains(matching)) {

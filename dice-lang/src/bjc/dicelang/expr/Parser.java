@@ -119,7 +119,7 @@ public class Parser {
 
 		if(ast.getChildrenCount() == 0)
 			/*
-			 * Handle leaf nodes
+			 * Handle leaf nodes.
 			 */
 			return data.toExpr();
 		else {

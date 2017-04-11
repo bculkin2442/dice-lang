@@ -20,6 +20,12 @@ import java.util.function.Consumer;
 import static bjc.dicelang.Errors.ErrorKey.*;
 import static bjc.dicelang.EvaluatorResult.Type.*;
 
+/**
+ * Evaluate DiceLang ASTs
+ * 
+ * @author EVE
+ *
+ */
 public class Evaluator {
 	private static enum CoerceSteps {
 		INTEGER, FLOAT;
@@ -39,6 +45,7 @@ public class Evaluator {
 		return new Node(Node.Type.RESULT, new EvaluatorResult(FAILURE, orig));
 	}
 
+	@SuppressWarnings("unused")
 	private static Node FAIL(Node orig) {
 		return new Node(Node.Type.RESULT, new EvaluatorResult(FAILURE, orig));
 	}
@@ -49,29 +56,48 @@ public class Evaluator {
 
 	private DiceLangEngine eng;
 
+	/**
+	 * Create a new evaluator.
+	 * 
+	 * @param en
+	 *                The engine.
+	 */
 	public Evaluator(DiceLangEngine en) {
 		eng = en;
 	}
 
+	/**
+	 * Evaluate a AST.
+	 * 
+	 * @param comm
+	 *                The AST to evaluate.
+	 * 
+	 * @return The result of the tree.
+	 */
 	public EvaluatorResult evaluate(ITree<Node> comm) {
 		Context ctx = new Context();
 
 		ctx.isDebug = false;
 		ctx.thunk = (itr) -> {
-			// Deliberately finish the iterator, but ignore results.
-			// It's only for stepwise evaluation
-			// but we don't know if stepping the iterator causes
-			// something to happen
+			/**
+			 * Deliberately finish the iterator, but ignore results.
+			 * It's only for stepwise evaluation but we don't know
+			 * if stepping the iterator causes something to happen.
+			 *
+			 */
 			while(itr.hasNext()) {
 				itr.next();
 			}
 		};
 
-		return comm.topDownTransform(this::pickEvaluationType, (node) -> this.evaluateNode(node, ctx))
-				.getHead().resultVal;
+		ITree<Node> res = comm.topDownTransform(this::pickEvaluationType,
+				(node) -> this.evaluateNode(node, ctx));
+
+		return res.getHead().resultVal;
 	}
 
-	// @FIXME Something's broken with step evaluation
+	// FIXME Something's broken with step evaluation
+	@SuppressWarnings("javadoc")
 	public Iterator<ITree<Node>> stepDebug(ITree<Node> comm) {
 		Context ctx = new Context();
 
@@ -124,7 +150,7 @@ public class Evaluator {
 
 		switch(ast.getHead().operatorType) {
 		/*
-		 * @TODO move coercing to its own class
+		 * TODO move coercing to its own class
 		 */
 		case COERCE:
 			ITree<Node> toCoerce = ast.getChild(0);
@@ -146,9 +172,12 @@ public class Evaluator {
 				} else {
 					nChild = new Tree<>(new Node(Node.Type.RESULT, evaluate(child)));
 
-					if(nChild != null) {
-						ctx.thunk.accept(new SingleIterator<>(nChild));
-					}
+					ctx.thunk.accept(new SingleIterator<>(nChild));
+				}
+
+				if(nChild == null) {
+					Errors.inst.printError(EK_EVAL_INVNODE);
+					return new Tree<>(FAIL(ast));
 				}
 
 				Node childNode = nChild.getHead();
@@ -171,7 +200,9 @@ public class Evaluator {
 						nd.resultVal = new EvaluatorResult(FLOAT, (double) res.intVal);
 					}
 				default:
-					// Do nothing
+					/*
+					 *  Do nothing
+					 */
 					break;
 				}
 
@@ -237,7 +268,7 @@ public class Evaluator {
 	}
 
 	private ITree<Node> evaluateStringBinary(Token.Type op, EvaluatorResult left, EvaluatorResult right,
-			Context ctx) {
+			@SuppressWarnings("unused") Context ctx) {
 		if(left.type != STRING) {
 			Errors.inst.printError(EK_EVAL_INVSTRING, left.type.toString());
 			return new Tree<>(FAIL(left));
@@ -274,7 +305,7 @@ public class Evaluator {
 	}
 
 	private ITree<Node> evaluateDiceBinary(Token.Type op, EvaluatorResult left, EvaluatorResult right,
-			Context ctx) {
+			@SuppressWarnings("unused") Context ctx) {
 		EvaluatorResult res = null;
 
 		switch(op) {
@@ -337,7 +368,7 @@ public class Evaluator {
 	}
 
 	private ITree<Node> evaluateMathBinary(Token.Type op, EvaluatorResult left, EvaluatorResult right,
-			Context ctx) {
+			@SuppressWarnings("unused") Context ctx) {
 		if(left.type == STRING || right.type == STRING) {
 			Errors.inst.printError(EK_EVAL_STRINGMATH);
 			return new Tree<>(FAIL());
@@ -468,7 +499,7 @@ public class Evaluator {
 		return new Tree<>(new Node(Node.Type.RESULT, res));
 	}
 
-	private ITree<Node> evaluateTokenRef(Token tk, Context ctx) {
+	private ITree<Node> evaluateTokenRef(Token tk, @SuppressWarnings("unused") Context ctx) {
 		EvaluatorResult res = null;
 
 		switch(tk.type) {

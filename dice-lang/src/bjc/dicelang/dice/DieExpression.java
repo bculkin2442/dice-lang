@@ -3,7 +3,7 @@ package bjc.dicelang.dice;
 import java.util.Arrays;
 
 /**
- * Represents either a die or a die list
+ * Represents either a die or a die list.
  *
  * @author Ben Culkin
  */
@@ -54,6 +54,8 @@ public class DieExpression {
 
 	/**
 	 * Get the value of this expression as a string.
+	 * 
+	 * @return The value of the expression as a string.
 	 */
 	public String value() {
 		if(isList)

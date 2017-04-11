@@ -12,6 +12,12 @@ import static bjc.dicelang.Errors.ErrorKey.EK_CONS_INVPRAG;
 import jline.ConsoleReader;
 import jline.Terminal;
 
+/**
+ * CLI interface to DiceLang
+ * 
+ * @author EVE
+ *
+ */
 public class DiceLangConsole {
 	private int commandNumber;
 
@@ -19,6 +25,12 @@ public class DiceLangConsole {
 
 	private ConsoleReader read;
 
+	/**
+	 * Create a new console.
+	 * 
+	 * @param args
+	 *                The CLI args for the console.
+	 */
 	public DiceLangConsole(String[] args) {
 		commandNumber = 0;
 
@@ -31,10 +43,13 @@ public class DiceLangConsole {
 		Terminal.setupTerminal();
 	}
 
+	/**
+	 * Run the console.
+	 */
 	public void run() {
 		try {
 			read = new ConsoleReader();
-		} catch(IOException ioex) {
+		} catch(@SuppressWarnings("unused") IOException ioex) {
 			System.out.println("ERROR: Console init failed");
 			return;
 		}
@@ -45,7 +60,7 @@ public class DiceLangConsole {
 
 		try {
 			comm = read.readLine(String.format("(%d) dice-lang> ", commandNumber));
-		} catch(IOException ioex) {
+		} catch(@SuppressWarnings("unused") IOException ioex) {
 			System.out.println("ERROR: I/O failed");
 			return;
 		}
@@ -75,7 +90,7 @@ public class DiceLangConsole {
 
 			try {
 				comm = read.readLine(String.format("(%d) dice-lang> ", commandNumber));
-			} catch(IOException ioex) {
+			} catch(@SuppressWarnings("unused") IOException ioex) {
 				System.out.println("ERROR: I/O failed");
 				return;
 			}
@@ -258,6 +273,12 @@ public class DiceLangConsole {
 		return true;
 	}
 
+	/**
+	 * Main method.
+	 * 
+	 * @param args
+	 *                CLI arguments.
+	 */
 	public static void main(String[] args) {
 		DiceLangConsole console = new DiceLangConsole(args);
 

@@ -4,8 +4,9 @@ import bjc.dicelang.dice.DieExpression;
 import bjc.utils.funcdata.IList;
 
 /**
- * Lexer token
+ * Lexer token.
  */
+@SuppressWarnings("javadoc")
 public class Token {
 	public final static Token NIL_TOKEN = new Token(Type.NIL);
 
@@ -124,5 +125,11 @@ public class Token {
 		default:
 			return false;
 		}
+	}
+
+	@Override
+	public int hashCode() {
+		// TODO Auto-generated method stub
+		return super.hashCode();
 	}
 }

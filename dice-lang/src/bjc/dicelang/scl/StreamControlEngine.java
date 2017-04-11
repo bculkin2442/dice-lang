@@ -179,8 +179,15 @@ public class StreamControlEngine {
 
 	private Stack<Token> curStack;
 
+	@SuppressWarnings("unused")
 	private Map<String, Token> words;
 
+	/**
+	 * Create a new stream control engine.
+	 * 
+	 * @param eng
+	 *                The engine to control.
+	 */
 	public StreamControlEngine(StreamEngine eng) {
 		this.eng = eng;
 
@@ -192,9 +199,9 @@ public class StreamControlEngine {
 	 * Run a SCL program.
 	 *
 	 * @param tokens
-	 *                The program to run
+	 *                The program to run.
 	 *
-	 * @return Whether the program executed succesfully
+	 * @return Whether the program executed successfully.
 	 */
 	public boolean runProgram(String[] tokens) {
 		for(int i = 0; i < tokens.length; i++) {

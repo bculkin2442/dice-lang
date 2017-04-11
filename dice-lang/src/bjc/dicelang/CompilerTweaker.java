@@ -1,6 +1,6 @@
 package bjc.dicelang;
 
-import bjc.utils.parserutils.splitter.SimpleTokenSplitter;
+import bjc.utils.parserutils.splitter.ConfigurableTokenSplitter;
 
 /**
  * Contains methods for customizing the DiceLang and SCL compilers.
@@ -11,9 +11,15 @@ public class CompilerTweaker {
 	/*
 	 * Bits of the compiler necessary
 	 */
-	private DiceLangEngine		eng;
-	private SimpleTokenSplitter	opExpander;
+	private DiceLangEngine			eng;
+	private ConfigurableTokenSplitter	opExpander;
 
+	/**
+	 * Create a new compiler tweaker.
+	 * 
+	 * @param eng
+	 *                The engine to tweak.
+	 */
 	public CompilerTweaker(DiceLangEngine eng) {
 		this.eng = eng;
 
@@ -56,23 +62,23 @@ public class CompilerTweaker {
 	}
 
 	/**
-	 * Adds a delimiter that is expanded from tokens.
+	 * Adds delimiters that are expanded from tokens.
 	 *
-	 * @param delim
-	 *                The delimiter to expand on.
+	 * @param delims
+	 *                The delimiters to expand on.
 	 */
-	public void addDelimiter(String delim) {
-		opExpander.addDelimiter(delim);
+	public void addDelimiter(String... delims) {
+		opExpander.addSimpleDelimiters(delims);
 	}
 
 	/**
-	 * Adds a multi-character delimiter that is expanded from tokens.
+	 * Adds multi-character delimiters that are expanded from tokens.
 	 *
-	 * @param delim
-	 *                The multi-character delimiter to expand on.
+	 * @param delims
+	 *                The multi-character delimiters to expand on.
 	 */
-	public void addMultiDelimiter(String delim) {
-		opExpander.addMultiDelimiter(delim);
+	public void addMultiDelimiter(String... delims) {
+		opExpander.addMultiDelimiters(delims);
 	}
 
 	/**

@@ -71,10 +71,11 @@ public class StreamEngine {
 	}
 
 	/**
-	 * Process a possibly interleaved set of streams from toks into dest.
+	 * Process a possibly interleaved set of streams.
 	 *
 	 * @param toks
 	 *                The raw token to read streams from.
+	 * 
 	 * @param dest
 	 *                The list to write the final stream to.
 	 *
@@ -120,10 +121,18 @@ public class StreamEngine {
 		return true;
 	}
 
+	/**
+	 * Create a new stream.
+	 */
 	public void newStream() {
 		streams.insertAfter(new FunctionalList<>());
 	}
 
+	/**
+	 * Move to a stream to the right.
+	 * 
+	 * @return Whether or not the move was successful.
+	 */
 	public boolean rightStream() {
 		if(!streams.right()) {
 			Errors.inst.printError(EK_STRM_NONEX);
@@ -134,6 +143,11 @@ public class StreamEngine {
 		return true;
 	}
 
+	/**
+	 * Move to a stream to the left.
+	 * 
+	 * @return Whether or not the move was successful.
+	 */
 	public boolean leftStream() {
 		if(!streams.left()) {
 			Errors.inst.printError(EK_STRM_NONEX);
@@ -144,6 +158,11 @@ public class StreamEngine {
 		return true;
 	}
 
+	/**
+	 * Delete the current stream.
+	 * 
+	 * @return Whether or not the delete succeeded.
+	 */
 	public boolean deleteStream() {
 		if(streams.size() == 1) {
 			Errors.inst.printError(EK_STRM_LAST);
@@ -156,6 +175,11 @@ public class StreamEngine {
 		return true;
 	}
 
+	/**
+	 * Merge the current stream into the previous stream.
+	 * 
+	 * @return Whether or not the merge succeded.
+	 */
 	public boolean mergeStream() {
 		if(streams.size() == 1) {
 			Errors.inst.printError(EK_STRM_LAST);

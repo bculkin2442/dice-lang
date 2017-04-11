@@ -34,14 +34,12 @@ public class CLIArgsParser {
 			for(String lne : ResourceLoader.loadHelpFile("cli")) {
 				System.out.println(lne);
 			}
-			
+
 			System.exit(0);
 		}
 
 		for(int i = 0; i < args.length; i++) {
 			String arg = args[i];
-
-			boolean succ = true;
 
 			switch(arg) {
 			case "-d":
@@ -139,6 +137,7 @@ public class CLIArgsParser {
 		return i + 2;
 	}
 
+	@SuppressWarnings("unused")
 	private static int defineFile(int i, String[] args, DiceLangEngine eng) {
 		if(i >= args.length - 1) {
 			Errors.inst.printError(EK_CLI_MISARG, "define-file");
@@ -178,7 +177,7 @@ public class CLIArgsParser {
 		return i + 1;
 	}
 
-	private static Define parseDefine(String ln) {
+	private static Define parseDefine(@SuppressWarnings("unused") String ln) {
 		Define res = null;
 
 		// @TODO move this functionality from DiceLangConsole to some

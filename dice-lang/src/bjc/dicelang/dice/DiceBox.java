@@ -15,26 +15,30 @@ public class DiceBox {
 	/**
 	 * Parse a die expression from a string.
 	 *
+	 * @param expString
+	 *                The string to parse.
+	 * 
 	 * @return The die expression from the string, or null if it wasn't one
 	 */
-	public static DieExpression parseExpression(String exp) {
+	public static DieExpression parseExpression(String expString) {
 		/*
-		 * Only bother will valid expressions
+		 * Only bother with valid expressions.
 		 */
-		if(!isValidExpression(exp)) return null;
+		if(!isValidExpression(expString)) return null;
 
-		if(scalarDiePattern.matcher(exp).matches()) {
+		if(scalarDiePattern.matcher(expString).matches()) {
 			/*
-			 * Parse scalar die
+			 * Parse scalar die.
 			 */
-			Die scal = new ScalarDie(Long.parseLong(exp.substring(0, exp.indexOf('s'))));
+			String dieString = expString.substring(0, expString.indexOf('s'));
+			Die scal = new ScalarDie(Long.parseLong(dieString));
 
 			return new DieExpression(scal);
-		} else if(simpleDiePattern.matcher(exp).matches()) {
+		} else if(simpleDiePattern.matcher(expString).matches()) {
 			/*
-			 * Parse simple die groups
+			 * Parse simple die groups.
 			 */
-			String[] dieParts = exp.split("d");
+			String[] dieParts = expString.split("d");
 
 			long right = Long.parseLong(dieParts[1]);
 			if(dieParts[0].equals("")) {
@@ -47,61 +51,61 @@ public class DiceBox {
 				Die scal = new SimpleDie(Long.parseLong(dieParts[0]), right);
 				return new DieExpression(scal);
 			}
-		} else if(fudgeDiePattern.matcher(exp).matches()) {
+		} else if(fudgeDiePattern.matcher(expString).matches()) {
 			/*
-			 * Parse fudge dice
+			 * Parse fudge dice.
 			 */
-			String nDice = exp.substring(0, exp.indexOf('d'));
+			String nDice = expString.substring(0, expString.indexOf('d'));
 
 			return new DieExpression(new FudgeDie(Long.parseLong(nDice)));
-		} else if(compoundDiePattern.matcher(exp).matches()) {
+		} else if(compoundDiePattern.matcher(expString).matches()) {
 			/*
-			 * Parse compound die expressions
+			 * Parse compound die expressions.
 			 */
-			String[] dieParts = exp.split("c");
+			String[] dieParts = expString.split("c");
 
 			DieExpression left = parseExpression(dieParts[0]);
 			DieExpression right = parseExpression(dieParts[1]);
 
 			return new DieExpression(new CompoundDie(left.scalar, right.scalar));
-		} else if(compoundingDiePattern.matcher(exp).matches()) {
+		} else if(compoundingDiePattern.matcher(expString).matches()) {
 			/*
-			 * Parse compounding die expressions
+			 * Parse compounding die expressions.
 			 */
-			String[] dieParts = exp.split("!!");
+			String[] dieParts = expString.split("!!");
 
 			DieExpression left = parseExpression(dieParts[0]);
 			Predicate<Long> right = deriveCond(dieParts[1]);
 
 			Die scal = new CompoundingDie(left.scalar, right, dieParts[1]);
 			return new DieExpression(scal);
-		} else if(explodingDiePattern.matcher(exp).matches()) {
+		} else if(explodingDiePattern.matcher(expString).matches()) {
 			/*
-			 * Parse exploding die expressions
+			 * Parse exploding die expressions.
 			 */
-			String[] dieParts = exp.split("!");
+			String[] dieParts = expString.split("!");
 
 			DieExpression left = parseExpression(dieParts[0]);
 			Predicate<Long> right = deriveCond(dieParts[1]);
 
 			DieList lst = new ExplodingDice(left.scalar, right, dieParts[1], false);
 			return new DieExpression(lst);
-		} else if(penetratingDiePattern.matcher(exp).matches()) {
+		} else if(penetratingDiePattern.matcher(expString).matches()) {
 			/*
-			 * Parse penetrating die expressions
+			 * Parse penetrating die expressions.
 			 */
-			String[] dieParts = exp.split("p!");
+			String[] dieParts = expString.split("p!");
 
 			DieExpression left = parseExpression(dieParts[0]);
 			Predicate<Long> right = deriveCond(dieParts[1]);
 
 			DieList lst = new ExplodingDice(left.scalar, right, dieParts[1], true);
 			return new DieExpression(lst);
-		} else if(diceListPattern.matcher(exp).matches()) {
+		} else if(diceListPattern.matcher(expString).matches()) {
 			/*
-			 * Parse simple die lists
+			 * Parse simple die lists.
 			 */
-			String[] dieParts = exp.split("dl");
+			String[] dieParts = expString.split("dl");
 
 			DieExpression left = parseExpression(dieParts[0]);
 			DieExpression right = parseExpression(dieParts[1]);
@@ -114,11 +118,11 @@ public class DiceBox {
 	}
 
 	/*
-	 * The strings and patterns used for matching
+	 * The strings and patterns used for matching.
 	 */
 
 	/*
-	 * Defines a comparison predicate
+	 * Defines a comparison predicate.
 	 */
 	private static final String comparePoint = "[<>=]\\d+";
 
@@ -193,7 +197,7 @@ public class DiceBox {
 	/*
 	 * Defines a die list.
 	 *
-	 * This is an array of dice of the specified size
+	 * This is an array of dice of the specified size.
 	 */
 	private static final String	diceList	= compoundGroup + "dl" + compoundGroup;
 	private static final Pattern	diceListPattern	= Pattern.compile("\\A" + diceList + "\\Z");
@@ -204,7 +208,7 @@ public class DiceBox {
 	 * @param exp
 	 *                The string to check validity of.
 	 *
-	 * @return Whether or not the string is a valid command
+	 * @return Whether or not the string is a valid command.
 	 */
 	public static boolean isValidExpression(String exp) {
 		if(scalarDiePattern.matcher(exp).matches())

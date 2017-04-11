@@ -26,7 +26,7 @@ public class Tokens {
 	public final Map<Integer, String> symbolTable;
 
 	/*
-	 * Next index into the symbol table
+	 * Next index into the symbol table.
 	 */
 	private int nextSym;
 
@@ -60,7 +60,7 @@ public class Tokens {
 	 * Convert the string representation of a token into a token.
 	 *
 	 * @param tok
-	 *                The string repr. of the token.
+	 *                The string representation of the token.
 	 * @param raw
 	 *                The original string the token came from.
 	 *

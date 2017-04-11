@@ -1,5 +1,6 @@
 package bjc.dicelang;
 
+@SuppressWarnings("javadoc")
 public class Node {
 	public static enum Type {
 		ROOT, TOKREF, UNARYOP, BINOP, GROUP, OGROUP, RESULT
@@ -77,5 +78,10 @@ public class Node {
 		default:
 			return true;
 		}
+	}
+
+	@Override
+	public int hashCode() {
+		return super.hashCode();
 	}
 }
