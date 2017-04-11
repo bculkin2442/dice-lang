@@ -2,14 +2,14 @@ package bjc.dicelang;
 
 /**
  * Repository for error messages.
- * 
+ *
  * @author EVE
  *
  */
 public class Errors {
 	/**
 	 * The types of error message.
-	 * 
+	 *
 	 * @author EVE
 	 *
 	 */
@@ -243,7 +243,7 @@ public class Errors {
 
 	/**
 	 * The mode for the type of error messages to print out.
-	 * 
+	 *
 	 * @author EVE
 	 *
 	 */
@@ -262,10 +262,10 @@ public class Errors {
 
 	/**
 	 * Print an error.
-	 * 
+	 *
 	 * @param key
 	 *                The key of the error.
-	 * 
+	 *
 	 * @param args
 	 *                The arguments for the error.
 	 */

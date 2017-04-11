@@ -1,10 +1,10 @@
 package bjc.dicelang.expr;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import bjc.utils.funcdata.IList;
 import bjc.utils.parserutils.splitter.ConfigurableTokenSplitter;
+
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Implements the lexer for simple expression operations.
@@ -32,7 +32,7 @@ public class Lexer {
 	 *
 	 * @param inp
 	 *                The input command.
-	 * 
+	 *
 	 * @param tks
 	 *                The token state.
 	 *

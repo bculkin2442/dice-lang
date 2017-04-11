@@ -16,7 +16,7 @@ public class CompilerTweaker {
 
 	/**
 	 * Create a new compiler tweaker.
-	 * 
+	 *
 	 * @param eng
 	 *                The engine to tweak.
 	 */

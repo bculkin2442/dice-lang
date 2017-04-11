@@ -184,7 +184,7 @@ public class StreamControlEngine {
 
 	/**
 	 * Create a new stream control engine.
-	 * 
+	 *
 	 * @param eng
 	 *                The engine to control.
 	 */

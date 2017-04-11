@@ -14,7 +14,7 @@ import jline.Terminal;
 
 /**
  * CLI interface to DiceLang
- * 
+ *
  * @author EVE
  *
  */
@@ -27,7 +27,7 @@ public class DiceLangConsole {
 
 	/**
 	 * Create a new console.
-	 * 
+	 *
 	 * @param args
 	 *                The CLI args for the console.
 	 */
@@ -275,7 +275,7 @@ public class DiceLangConsole {
 
 	/**
 	 * Main method.
-	 * 
+	 *
 	 * @param args
 	 *                CLI arguments.
 	 */

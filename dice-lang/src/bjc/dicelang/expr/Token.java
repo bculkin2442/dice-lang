@@ -33,10 +33,10 @@ public class Token {
 	 *
 	 * @param type
 	 *                The type of this token.
-	 * 
+	 *
 	 * @param raw
 	 *                The string this token came from.
-	 * 
+	 *
 	 * @param toks
 	 *                The state for this token
 	 */

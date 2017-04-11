@@ -41,10 +41,11 @@ public class Shunter {
 				int leftPriority = tok.type.operatorPriority;
 
 				int rightPriority;
-				if(curOp == null)
+				if(curOp == null) {
 					rightPriority = 0;
-				else
+				} else {
 					rightPriority = curOp.type.operatorPriority;
+				}
 
 				boolean isHigherPrec = leftPriority >= rightPriority;
 
@@ -59,10 +60,11 @@ public class Shunter {
 
 					leftPriority = tok.type.operatorPriority;
 
-					if(curOp == null)
+					if(curOp == null) {
 						rightPriority = 0;
-					else
+					} else {
 						rightPriority = curOp.type.operatorPriority;
+					}
 
 					isHigherPrec = leftPriority >= rightPriority;
 				}

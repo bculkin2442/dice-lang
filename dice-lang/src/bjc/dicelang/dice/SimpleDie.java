@@ -2,7 +2,7 @@ package bjc.dicelang.dice;
 
 /**
  * A simple group of dice.
- * 
+ *
  * @author EVE
  *
  */
@@ -12,10 +12,10 @@ public class SimpleDie implements Die {
 
 	/**
 	 * Create a new dice group.
-	 * 
+	 *
 	 * @param nDice
 	 *                The number of dice.
-	 * 
+	 *
 	 * @param size
 	 *                The size of the dice.
 	 */
@@ -25,10 +25,10 @@ public class SimpleDie implements Die {
 
 	/**
 	 * Create a new dice group.
-	 * 
+	 *
 	 * @param nDice
 	 *                The number of dice.
-	 * 
+	 *
 	 * @param size
 	 *                The size of the dice.
 	 */
@@ -38,10 +38,10 @@ public class SimpleDie implements Die {
 
 	/**
 	 * Create a new dice group.
-	 * 
+	 *
 	 * @param nDice
 	 *                The number of dice.
-	 * 
+	 *
 	 * @param size
 	 *                The size of the dice.
 	 */
@@ -51,10 +51,10 @@ public class SimpleDie implements Die {
 
 	/**
 	 * Create a new dice group.
-	 * 
+	 *
 	 * @param nDice
 	 *                The number of dice.
-	 * 
+	 *
 	 * @param size
 	 *                The size of the dice.
 	 */

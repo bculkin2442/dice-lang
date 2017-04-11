@@ -22,7 +22,7 @@ import static bjc.dicelang.EvaluatorResult.Type.*;
 
 /**
  * Evaluate DiceLang ASTs
- * 
+ *
  * @author EVE
  *
  */
@@ -58,7 +58,7 @@ public class Evaluator {
 
 	/**
 	 * Create a new evaluator.
-	 * 
+	 *
 	 * @param en
 	 *                The engine.
 	 */
@@ -68,10 +68,10 @@ public class Evaluator {
 
 	/**
 	 * Evaluate a AST.
-	 * 
+	 *
 	 * @param comm
 	 *                The AST to evaluate.
-	 * 
+	 *
 	 * @return The result of the tree.
 	 */
 	public EvaluatorResult evaluate(ITree<Node> comm) {
@@ -201,7 +201,7 @@ public class Evaluator {
 					}
 				default:
 					/*
-					 *  Do nothing
+					 * Do nothing
 					 */
 					break;
 				}

@@ -15,7 +15,7 @@ import static bjc.dicelang.Token.Type.*;
 
 /**
  * Shunt a set of infix tokens to postfix tokens.
- * 
+ *
  * @author EVE
  *
  */
@@ -101,13 +101,13 @@ public class Shunter {
 
 	/**
 	 * Shunt a set of tokens from infix to postfix.
-	 * 
+	 *
 	 * @param tks
 	 *                The tokens to input.
-	 * 
+	 *
 	 * @param returned
 	 *                The postfix tokens.
-	 * 
+	 *
 	 * @return Whether or not the shunt succeeded.
 	 */
 	public boolean shuntTokens(IList<Token> tks, IList<Token> returned) {

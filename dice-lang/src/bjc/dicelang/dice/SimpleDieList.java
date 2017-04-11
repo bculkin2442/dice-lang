@@ -2,7 +2,7 @@ package bjc.dicelang.dice;
 
 /**
  * A simple list of dice.
- * 
+ *
  * @author EVE
  *
  */
@@ -12,10 +12,10 @@ public class SimpleDieList implements DieList {
 
 	/**
 	 * Create a new list of dice.
-	 * 
+	 *
 	 * @param nDice
 	 *                The number of dice in the list.
-	 * 
+	 *
 	 * @param sze
 	 *                The size of dice in the list.
 	 */

@@ -17,7 +17,7 @@ public class DiceBox {
 	 *
 	 * @param expString
 	 *                The string to parse.
-	 * 
+	 *
 	 * @return The die expression from the string, or null if it wasn't one
 	 */
 	public static DieExpression parseExpression(String expString) {

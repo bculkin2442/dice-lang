@@ -2,14 +2,14 @@ package bjc.dicelang.dice;
 
 /**
  * A die that represents two dice with an applied math operator.
- * 
+ *
  * @author EVE
  *
  */
 public class MathDie implements Die {
 	/**
 	 * The types of a math operator.
-	 * 
+	 *
 	 * @author EVE
 	 *
 	 */
@@ -49,13 +49,13 @@ public class MathDie implements Die {
 
 	/**
 	 * Create a new math die.
-	 * 
+	 *
 	 * @param op
 	 *                The operator to apply.
-	 * 
+	 *
 	 * @param lft
 	 *                The left operand.
-	 * 
+	 *
 	 * @param rght
 	 *                The right operand.
 	 */

@@ -8,14 +8,14 @@ import bjc.utils.data.Tree;
 
 /**
  * The result from the evaluator.
- * 
+ *
  * @author EVE
  *
  */
 public class EvaluatorResult {
 	/**
 	 * The type of the result.
-	 * 
+	 *
 	 * @author EVE
 	 *
 	 */
@@ -73,7 +73,7 @@ public class EvaluatorResult {
 
 	/**
 	 * Create a new result.
-	 * 
+	 *
 	 * @param typ
 	 *                The type of the result.
 	 */
@@ -83,10 +83,10 @@ public class EvaluatorResult {
 
 	/**
 	 * Create a new result.
-	 * 
+	 *
 	 * @param typ
 	 *                The type of the result.
-	 * 
+	 *
 	 * @param orig
 	 *                The original value of the result.
 	 */
@@ -98,10 +98,10 @@ public class EvaluatorResult {
 
 	/**
 	 * Create a new result.
-	 * 
+	 *
 	 * @param typ
 	 *                The type of the result.
-	 * 
+	 *
 	 * @param orig
 	 *                The original value of the result.
 	 */
@@ -111,7 +111,7 @@ public class EvaluatorResult {
 
 	/**
 	 * Create a new result.
-	 * 
+	 *
 	 * @param typ
 	 * @param orig
 	 */
@@ -121,7 +121,7 @@ public class EvaluatorResult {
 
 	/**
 	 * Create a new result.
-	 * 
+	 *
 	 * @param typ
 	 * @param iVal
 	 */
@@ -133,7 +133,7 @@ public class EvaluatorResult {
 
 	/**
 	 * Create a new result.
-	 * 
+	 *
 	 * @param typ
 	 * @param dVal
 	 */
@@ -145,7 +145,7 @@ public class EvaluatorResult {
 
 	/**
 	 * Create a new result.
-	 * 
+	 *
 	 * @param typ
 	 * @param dVal
 	 */
@@ -157,7 +157,7 @@ public class EvaluatorResult {
 
 	/**
 	 * Create a new result.
-	 * 
+	 *
 	 * @param typ
 	 * @param dVal
 	 */
@@ -169,7 +169,7 @@ public class EvaluatorResult {
 
 	/**
 	 * Create a new result.
-	 * 
+	 *
 	 * @param typ
 	 * @param dVal
 	 */
@@ -181,7 +181,7 @@ public class EvaluatorResult {
 
 	/**
 	 * Create a new result.
-	 * 
+	 *
 	 * @param typ
 	 * @param strang
 	 */

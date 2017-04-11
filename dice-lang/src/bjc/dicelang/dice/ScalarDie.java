@@ -2,7 +2,7 @@ package bjc.dicelang.dice;
 
 /**
  * A scalar die, that always returns a given number.
- * 
+ *
  * @author EVE
  *
  */
@@ -11,7 +11,7 @@ public class ScalarDie implements Die {
 
 	/**
 	 * Create a new scalar die with a set value.
-	 * 
+	 *
 	 * @param vl
 	 *                The value to use.
 	 */

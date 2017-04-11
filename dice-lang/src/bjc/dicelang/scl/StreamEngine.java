@@ -75,7 +75,7 @@ public class StreamEngine {
 	 *
 	 * @param toks
 	 *                The raw token to read streams from.
-	 * 
+	 *
 	 * @param dest
 	 *                The list to write the final stream to.
 	 *
@@ -130,7 +130,7 @@ public class StreamEngine {
 
 	/**
 	 * Move to a stream to the right.
-	 * 
+	 *
 	 * @return Whether or not the move was successful.
 	 */
 	public boolean rightStream() {
@@ -145,7 +145,7 @@ public class StreamEngine {
 
 	/**
 	 * Move to a stream to the left.
-	 * 
+	 *
 	 * @return Whether or not the move was successful.
 	 */
 	public boolean leftStream() {
@@ -160,7 +160,7 @@ public class StreamEngine {
 
 	/**
 	 * Delete the current stream.
-	 * 
+	 *
 	 * @return Whether or not the delete succeeded.
 	 */
 	public boolean deleteStream() {
@@ -177,7 +177,7 @@ public class StreamEngine {
 
 	/**
 	 * Merge the current stream into the previous stream.
-	 * 
+	 *
 	 * @return Whether or not the merge succeded.
 	 */
 	public boolean mergeStream() {

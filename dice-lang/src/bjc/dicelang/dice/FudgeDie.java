@@ -2,7 +2,7 @@ package bjc.dicelang.dice;
 
 /**
  * A fudge die, one that has -1, 0 and 1 as its sides.
- * 
+ *
  * @author EVE
  *
  */
@@ -11,7 +11,7 @@ public class FudgeDie implements Die {
 
 	/**
 	 * Create a new fudge die.
-	 * 
+	 *
 	 * @param nDice
 	 *                The number of dice to roll.
 	 */
@@ -21,7 +21,7 @@ public class FudgeDie implements Die {
 
 	/**
 	 * Create a new fudge die.
-	 * 
+	 *
 	 * @param nDice
 	 *                The number of dice to roll.
 	 */

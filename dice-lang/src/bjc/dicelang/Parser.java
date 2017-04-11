@@ -14,7 +14,7 @@ import static bjc.dicelang.Token.Type.CBRACKET;
 
 /**
  * Parse a series of tree into tokens.
- * 
+ *
  * @author EVE
  *
  */
@@ -28,13 +28,13 @@ public class Parser {
 
 	/**
 	 * Parse a series of tokens to a forest of ASTs.
-	 * 
+	 *
 	 * @param tokens
 	 *                The list of tokens to parse.
-	 * 
+	 *
 	 * @param results
 	 *                The place to set results.
-	 * 
+	 *
 	 * @return Whether or not the parse was successful.
 	 */
 	public boolean parseTokens(IList<Token> tokens, IList<ITree<Node>> results) {
