@@ -11,10 +11,10 @@ import java.util.function.Predicate;
  * @author Ben Culkin
  */
 public class CompoundingDie implements Die {
-	private Die source;
+	private final Die source;
 
-	private Predicate<Long>	compoundOn;
-	private String		compoundPattern;
+	private final Predicate<Long>	compoundOn;
+	private final String		compoundPattern;
 
 	/**
 	 * Create a new compounding die with no pattern.
@@ -24,7 +24,7 @@ public class CompoundingDie implements Die {
 	 * @param compound
 	 *                The conditions to compound on
 	 */
-	public CompoundingDie(Die src, Predicate<Long> compound) {
+	public CompoundingDie(final Die src, final Predicate<Long> compound) {
 		this(src, compound, null);
 	}
 
@@ -39,7 +39,7 @@ public class CompoundingDie implements Die {
 	 *                The string pattern the condition came from, for
 	 *                printing
 	 */
-	public CompoundingDie(Die src, Predicate<Long> compound, String patt) {
+	public CompoundingDie(final Die src, final Predicate<Long> compound, final String patt) {
 		source = src;
 
 		compoundOn = compound;
@@ -61,7 +61,7 @@ public class CompoundingDie implements Die {
 		long res = source.roll();
 		long oldRes = res;
 
-		while(compoundOn.test(oldRes)) {
+		while (compoundOn.test(oldRes)) {
 			oldRes = source.rollSingle();
 
 			res += oldRes;
@@ -78,7 +78,7 @@ public class CompoundingDie implements Die {
 		long res = source.rollSingle();
 		long oldRes = res;
 
-		while(compoundOn.test(oldRes)) {
+		while (compoundOn.test(oldRes)) {
 			oldRes = source.rollSingle();
 
 			res += oldRes;
@@ -89,9 +89,8 @@ public class CompoundingDie implements Die {
 
 	@Override
 	public String toString() {
-		if(compoundPattern == null)
-			return source + "!!";
-		else
-			return source + "!!" + compoundPattern;
+		if (compoundPattern == null) return source + "!!";
+
+		return source + "!!" + compoundPattern;
 	}
 }

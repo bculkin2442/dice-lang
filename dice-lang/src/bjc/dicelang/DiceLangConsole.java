@@ -1,13 +1,13 @@
 package bjc.dicelang;
 
+import static bjc.dicelang.Errors.ErrorKey.EK_CONS_INVDEFINE;
+import static bjc.dicelang.Errors.ErrorKey.EK_CONS_INVPRAG;
+
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static bjc.dicelang.Errors.ErrorKey.EK_CONS_INVDEFINE;
-import static bjc.dicelang.Errors.ErrorKey.EK_CONS_INVPRAG;
 
 import jline.ConsoleReader;
 import jline.Terminal;
@@ -21,7 +21,7 @@ import jline.Terminal;
 public class DiceLangConsole {
 	private int commandNumber;
 
-	private DiceLangEngine eng;
+	private final DiceLangEngine eng;
 
 	private ConsoleReader read;
 
@@ -31,12 +31,12 @@ public class DiceLangConsole {
 	 * @param args
 	 *                The CLI args for the console.
 	 */
-	public DiceLangConsole(String[] args) {
+	public DiceLangConsole(final String[] args) {
 		commandNumber = 0;
 
 		eng = new DiceLangEngine();
 
-		if(!CLIArgsParser.parseArgs(args, eng)) {
+		if (!CLIArgsParser.parseArgs(args, eng)) {
 			System.exit(1);
 		}
 
@@ -49,7 +49,7 @@ public class DiceLangConsole {
 	public void run() {
 		try {
 			read = new ConsoleReader();
-		} catch(@SuppressWarnings("unused") IOException ioex) {
+		} catch (final IOException ioex) {
 			System.out.println("ERROR: Console init failed");
 			return;
 		}
@@ -60,16 +60,16 @@ public class DiceLangConsole {
 
 		try {
 			comm = read.readLine(String.format("(%d) dice-lang> ", commandNumber));
-		} catch(@SuppressWarnings("unused") IOException ioex) {
+		} catch (final IOException ioex) {
 			System.out.println("ERROR: I/O failed");
 			return;
 		}
 
-		while(!comm.equals("quit") && !comm.equals("exit")) {
-			if(comm.startsWith("pragma")) {
-				boolean success = handlePragma(comm.substring(7));
+		while (!comm.equals("quit") && !comm.equals("exit")) {
+			if (comm.startsWith("pragma")) {
+				final boolean success = handlePragma(comm.substring(7));
 
-				if(success) {
+				if (success) {
 					System.out.println("Pragma completed succesfully");
 				} else {
 					System.out.println("Pragma execution failed");
@@ -77,9 +77,9 @@ public class DiceLangConsole {
 			} else {
 				System.out.printf("\tRaw command: %s\n", comm);
 
-				boolean success = eng.runCommand(comm);
+				final boolean success = eng.runCommand(comm);
 
-				if(success) {
+				if (success) {
 					System.out.println("Command completed succesfully");
 				} else {
 					System.out.println("Command execution failed");
@@ -90,25 +90,25 @@ public class DiceLangConsole {
 
 			try {
 				comm = read.readLine(String.format("(%d) dice-lang> ", commandNumber));
-			} catch(@SuppressWarnings("unused") IOException ioex) {
+			} catch (final IOException ioex) {
 				System.out.println("ERROR: I/O failed");
 				return;
 			}
 		}
 	}
 
-	private boolean handlePragma(String pragma) {
+	private boolean handlePragma(final String pragma) {
 		System.out.println("\tRaw pragma: " + pragma);
 
 		String pragmaName = null;
-		int firstIndex = pragma.indexOf(' ');
-		if(firstIndex == -1) {
+		final int firstIndex = pragma.indexOf(' ');
+		if (firstIndex == -1) {
 			pragmaName = pragma;
 		} else {
 			pragmaName = pragma.substring(0, firstIndex);
 		}
 
-		switch(pragmaName) {
+		switch (pragmaName) {
 		case "debug":
 			System.out.println("\tDebug mode is now " + eng.toggleDebug());
 			break;
@@ -133,8 +133,8 @@ public class DiceLangConsole {
 		return true;
 	}
 
-	private boolean helpMode(String pragma) {
-		switch(pragma.trim()) {
+	private static boolean helpMode(final String pragma) {
+		switch (pragma.trim()) {
 		case "help":
 			System.out.println("\tGet help on pragmas");
 			break;
@@ -172,44 +172,44 @@ public class DiceLangConsole {
 	 * Then, we just follow the pattern, escape it for java strings, and add
 	 * the enclosing slashes
 	 */
-	private Pattern slashPattern = Pattern.compile("/((?:\\\\.|[^/\\\\])*)/");
+	private final Pattern slashPattern = Pattern.compile("/((?:\\\\.|[^/\\\\])*)/");
 
-	private boolean defineMode(String defineText) {
-		int firstIndex = defineText.indexOf(' ');
-		int secondIndex = defineText.indexOf(' ', firstIndex + 1);
-		int thirdIndex = defineText.indexOf(' ', secondIndex + 1);
-		int fourthIndex = defineText.indexOf(' ', thirdIndex + 1);
-		int fifthIndex = defineText.indexOf(' ', fourthIndex + 1);
-		int sixthIndex = defineText.indexOf(' ', fifthIndex + 1);
+	private boolean defineMode(final String defineText) {
+		final int firstIndex = defineText.indexOf(' ');
+		final int secondIndex = defineText.indexOf(' ', firstIndex + 1);
+		final int thirdIndex = defineText.indexOf(' ', secondIndex + 1);
+		final int fourthIndex = defineText.indexOf(' ', thirdIndex + 1);
+		final int fifthIndex = defineText.indexOf(' ', fourthIndex + 1);
+		final int sixthIndex = defineText.indexOf(' ', fifthIndex + 1);
 
-		if(firstIndex == -1) {
+		if (firstIndex == -1) {
 			Errors.inst.printError(EK_CONS_INVDEFINE, "(no priority)");
 			return false;
-		} else if(secondIndex == -1) {
+		} else if (secondIndex == -1) {
 			Errors.inst.printError(EK_CONS_INVDEFINE, "(no define type)");
 			return false;
-		} else if(thirdIndex == -1) {
+		} else if (thirdIndex == -1) {
 			Errors.inst.printError(EK_CONS_INVDEFINE, "(no recursion type)");
 			return false;
-		} else if(fourthIndex == -1) {
+		} else if (fourthIndex == -1) {
 			Errors.inst.printError(EK_CONS_INVDEFINE, "(no guard type)");
 			return false;
-		} else if(fifthIndex == -1) {
+		} else if (fifthIndex == -1) {
 			Errors.inst.printError(EK_CONS_INVDEFINE, "(no circularity)");
 			return false;
-		} else if(sixthIndex == -1) {
+		} else if (sixthIndex == -1) {
 			Errors.inst.printError(EK_CONS_INVDEFINE, "(no patterns)");
 			return false;
 		}
 
-		int priority = Integer.parseInt(defineText.substring(0, firstIndex));
+		final int priority = Integer.parseInt(defineText.substring(0, firstIndex));
 
-		String defineType = defineText.substring(firstIndex + 1, secondIndex);
+		final String defineType = defineText.substring(firstIndex + 1, secondIndex);
 
 		Define.Type type;
 		boolean subMode = false;
 
-		switch(defineType) {
+		switch (defineType) {
 		case "line":
 			type = Define.Type.LINE;
 			break;
@@ -229,17 +229,17 @@ public class DiceLangConsole {
 			return false;
 		}
 
-		boolean doRecur = defineText.substring(secondIndex + 1, thirdIndex).equalsIgnoreCase("true");
-		boolean hasGuard = defineText.substring(thirdIndex + 1, fourthIndex).equalsIgnoreCase("true");
-		boolean isCircular = defineText.substring(thirdIndex + 1, fourthIndex).equalsIgnoreCase("true");
+		final boolean doRecur = defineText.substring(secondIndex + 1, thirdIndex).equalsIgnoreCase("true");
+		final boolean hasGuard = defineText.substring(thirdIndex + 1, fourthIndex).equalsIgnoreCase("true");
+		final boolean isCircular = defineText.substring(thirdIndex + 1, fourthIndex).equalsIgnoreCase("true");
 
-		String pats = defineText.substring(fifthIndex + 1).trim();
-		Matcher patMatcher = slashPattern.matcher(pats);
+		final String pats = defineText.substring(fifthIndex + 1).trim();
+		final Matcher patMatcher = slashPattern.matcher(pats);
 
 		String guardPattern = null;
 
-		if(hasGuard) {
-			if(!patMatcher.find()) {
+		if (hasGuard) {
+			if (!patMatcher.find()) {
 				Errors.inst.printError(EK_CONS_INVDEFINE, "(no guard pattern)");
 				return false;
 			}
@@ -247,24 +247,24 @@ public class DiceLangConsole {
 			guardPattern = patMatcher.group(1);
 		}
 
-		if(!patMatcher.find()) {
+		if (!patMatcher.find()) {
 			Errors.inst.printError(EK_CONS_INVDEFINE, "(no search pattern)");
 			return false;
 		}
 
-		String searchPattern = patMatcher.group(1);
-		List<String> replacePatterns = new LinkedList<>();
+		final String searchPattern = patMatcher.group(1);
+		final List<String> replacePatterns = new LinkedList<>();
 
-		while(patMatcher.find()) {
+		while (patMatcher.find()) {
 			replacePatterns.add(patMatcher.group(1));
 		}
 
-		Define dfn = new Define(priority, subMode, doRecur, isCircular, guardPattern, searchPattern,
+		final Define dfn = new Define(priority, subMode, doRecur, isCircular, guardPattern, searchPattern,
 				replacePatterns);
 
-		if(dfn.inError) return false;
+		if (dfn.inError) return false;
 
-		if(type == Define.Type.LINE) {
+		if (type == Define.Type.LINE) {
 			eng.addLineDefine(dfn);
 		} else {
 			eng.addTokenDefine(dfn);
@@ -279,8 +279,8 @@ public class DiceLangConsole {
 	 * @param args
 	 *                CLI arguments.
 	 */
-	public static void main(String[] args) {
-		DiceLangConsole console = new DiceLangConsole(args);
+	public static void main(final String[] args) {
+		final DiceLangConsole console = new DiceLangConsole(args);
 
 		console.run();
 	}

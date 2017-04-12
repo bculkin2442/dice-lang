@@ -269,10 +269,10 @@ public class Errors {
 	 * @param args
 	 *                The arguments for the error.
 	 */
-	public void printError(ErrorKey key, String... args) {
-		switch(mode) {
+	public void printError(final ErrorKey key, final String... args) {
+		switch (mode) {
 		case WIZARD:
-			if(key == ErrorKey.EK_MISC_NOFILE) {
+			if (key == ErrorKey.EK_MISC_NOFILE) {
 				System.out.println("\t? 404");
 			} else {
 				System.out.println("\t? " + key.ordinal());
@@ -286,8 +286,8 @@ public class Errors {
 		}
 	}
 
-	private void devError(ErrorKey key, String[] args) {
-		switch(key) {
+	private static void devError(final ErrorKey key, final String[] args) {
+		switch (key) {
 		case EK_DFN_PREDSYN:
 			System.out.printf("\tERROR: Incorrect define guard syntax %s\n", args[0]);
 			break;

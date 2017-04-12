@@ -29,7 +29,7 @@ public class MathDie implements Die {
 
 		@Override
 		public String toString() {
-			switch(this) {
+			switch (this) {
 			case ADD:
 				return "+";
 			case SUBTRACT:
@@ -42,10 +42,10 @@ public class MathDie implements Die {
 		}
 	}
 
-	private MathDie.MathOp type;
+	private final MathDie.MathOp type;
 
-	private Die	left;
-	private Die	right;
+	private final Die	left;
+	private final Die	right;
 
 	/**
 	 * Create a new math die.
@@ -59,7 +59,7 @@ public class MathDie implements Die {
 	 * @param rght
 	 *                The right operand.
 	 */
-	public MathDie(MathDie.MathOp op, Die lft, Die rght) {
+	public MathDie(final MathDie.MathOp op, final Die lft, final Die rght) {
 		type = op;
 
 		left = lft;
@@ -71,8 +71,8 @@ public class MathDie implements Die {
 		return left.canOptimize() && right.canOptimize();
 	}
 
-	private long performOp(long lft, long rght) {
-		switch(type) {
+	private long performOp(final long lft, final long rght) {
+		switch (type) {
 		case ADD:
 			return lft + rght;
 		case SUBTRACT:
@@ -86,24 +86,24 @@ public class MathDie implements Die {
 
 	@Override
 	public long optimize() {
-		long lft = left.optimize();
-		long rght = right.optimize();
+		final long lft = left.optimize();
+		final long rght = right.optimize();
 
 		return performOp(lft, rght);
 	}
 
 	@Override
 	public long roll() {
-		long lft = left.roll();
-		long rght = right.roll();
+		final long lft = left.roll();
+		final long rght = right.roll();
 
 		return performOp(lft, rght);
 	}
 
 	@Override
 	public long rollSingle() {
-		long lft = left.rollSingle();
-		long rght = right.rollSingle();
+		final long lft = left.rollSingle();
+		final long rght = right.rollSingle();
 
 		return performOp(lft, rght);
 	}

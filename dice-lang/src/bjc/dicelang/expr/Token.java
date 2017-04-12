@@ -9,14 +9,14 @@ public class Token {
 	/*
 	 * The state for this token.
 	 */
-	private Tokens tks;
+	private final Tokens tks;
 
 	/**
 	 * The type of the token.
 	 *
 	 * Determines which fields have a value.
 	 */
-	public final TokenType type;
+	public final TokenType typ;
 
 	/**
 	 * The integer value attached to this token.
@@ -40,8 +40,8 @@ public class Token {
 	 * @param toks
 	 *                The state for this token
 	 */
-	public Token(TokenType type, String raw, Tokens toks) {
-		this.type = type;
+	public Token(final TokenType type, final String raw, final Tokens toks) {
+		this.typ = type;
 
 		rawValue = raw;
 
@@ -50,10 +50,10 @@ public class Token {
 
 	@Override
 	public String toString() {
-		String typeStr = type.toString();
-		typeStr += " (" + type.name() + ")";
+		String typeStr = typ.toString();
+		typeStr += " (" + typ.name() + ")";
 
-		if(type == TokenType.VREF) {
+		if (typ == TokenType.VREF) {
 			typeStr += " (ind. " + intValue;
 			typeStr += ", sym. \"" + tks.symbolTable.get(intValue) + "\")";
 		}
@@ -67,7 +67,7 @@ public class Token {
 	 * @return The string representation of it.
 	 */
 	public String toExpr() {
-		switch(type) {
+		switch (typ) {
 		case ADD:
 			return "+";
 		case SUBTRACT:

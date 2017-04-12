@@ -1,10 +1,10 @@
 package bjc.dicelang.expr;
 
-import bjc.utils.funcdata.IList;
-import bjc.utils.parserutils.splitter.ConfigurableTokenSplitter;
-
 import java.util.LinkedList;
 import java.util.List;
+
+import bjc.utils.funcdata.IList;
+import bjc.utils.parserutils.splitter.ConfigurableTokenSplitter;
 
 /**
  * Implements the lexer for simple expression operations.
@@ -15,7 +15,7 @@ public class Lexer {
 	/*
 	 * Splitter we use.
 	 */
-	private ConfigurableTokenSplitter split;
+	private final ConfigurableTokenSplitter split;
 
 	/**
 	 * Create a new expression lexer.
@@ -38,14 +38,14 @@ public class Lexer {
 	 *
 	 * @return A series of infix tokens representing the command.
 	 */
-	public Token[] lexString(String inp, Tokens tks) {
-		String[] spacedTokens = inp.split("[ \t]");
+	public Token[] lexString(final String inp, final Tokens tks) {
+		final String[] spacedTokens = inp.split("[ \t]");
 
-		List<Token> tokens = new LinkedList<>();
+		final List<Token> tokens = new LinkedList<>();
 
-		for(String spacedToken : spacedTokens) {
-			IList<String> splitTokens = split.split(spacedToken);
-			IList<Token> rawTokens = splitTokens.map(tok -> tks.lexToken(tok, spacedToken));
+		for (final String spacedToken : spacedTokens) {
+			final IList<String> splitTokens = split.split(spacedToken);
+			final IList<Token> rawTokens = splitTokens.map(tok -> tks.lexToken(tok, spacedToken));
 
 			rawTokens.forEach(tokens::add);
 		}

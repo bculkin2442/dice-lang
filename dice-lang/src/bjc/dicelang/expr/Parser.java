@@ -1,11 +1,11 @@
 package bjc.dicelang.expr;
 
+import java.util.Arrays;
+import java.util.Scanner;
+
 import bjc.utils.data.ITree;
 import bjc.utils.funcdata.FunctionalList;
 import bjc.utils.parserutils.TreeConstructor;
-
-import java.util.Arrays;
-import java.util.Scanner;
 
 /**
  * Parser for simple math expressions.
@@ -19,17 +19,17 @@ public class Parser {
 	 * @param args
 	 *                Unused CLI args.
 	 */
-	public static void main(String[] args) {
+	public static void main(final String[] args) {
 		/*
 		 * Create our objects.
 		 */
-		Tokens toks = new Tokens();
-		Lexer lex = new Lexer();
+		final Tokens toks = new Tokens();
+		final Lexer lex = new Lexer();
 
 		/*
 		 * Prepare our input.
 		 */
-		Scanner scan = new Scanner(System.in);
+		final Scanner scan = new Scanner(System.in);
 
 		/*
 		 * Read initial command.
@@ -40,7 +40,7 @@ public class Parser {
 		/*
 		 * Enter REPL loop.
 		 */
-		while(!ln.equals("")) {
+		while (!ln.equals("")) {
 			/*
 			 * Print raw command.
 			 */
@@ -50,9 +50,9 @@ public class Parser {
 			/*
 			 * Lex command to infix tokens.
 			 */
-			Token[] infixTokens = lex.lexString(ln, toks);
+			final Token[] infixTokens = lex.lexString(ln, toks);
 			System.out.println("Lexed tokens: ");
-			for(Token tok : infixTokens) {
+			for (final Token tok : infixTokens) {
 				System.out.println("\t" + tok);
 			}
 
@@ -60,7 +60,7 @@ public class Parser {
 			 * Print out infix expression.
 			 */
 			System.out.print("Lexed expression: ");
-			for(Token tok : infixTokens) {
+			for (final Token tok : infixTokens) {
 				System.out.print(tok.toExpr() + " ");
 			}
 			System.out.println();
@@ -69,9 +69,9 @@ public class Parser {
 			/*
 			 * Shunt infix tokens to postfix tokens.
 			 */
-			Token[] postfixTokens = Shunter.shuntTokens(infixTokens);
+			final Token[] postfixTokens = Shunter.shuntTokens(infixTokens);
 			System.out.println("Lexed tokens: ");
-			for(Token tok : postfixTokens) {
+			for (final Token tok : postfixTokens) {
 				System.out.println("\t" + tok);
 			}
 
@@ -79,14 +79,14 @@ public class Parser {
 			 * Print out postfix tokens.
 			 */
 			System.out.print("Shunted expression: ");
-			for(Token tok : postfixTokens) {
+			for (final Token tok : postfixTokens) {
 				System.out.print(tok.toExpr() + " ");
 			}
 			System.out.println();
 			System.out.println();
 
-			FunctionalList<Token> tokList = new FunctionalList<>(Arrays.asList(postfixTokens));
-			ITree<Token> ast = TreeConstructor.constructTree(tokList, tok -> tok.type.isOperator);
+			final FunctionalList<Token> tokList = new FunctionalList<>(Arrays.asList(postfixTokens));
+			final ITree<Token> ast = TreeConstructor.constructTree(tokList, tok -> tok.typ.isOperator);
 
 			/*
 			 * Print the tree, then the canonical expression for it.
@@ -114,40 +114,39 @@ public class Parser {
 	 * Convert an expression to one that uses the smallest necessary amount
 	 * of parens.
 	 */
-	private static String toCanonicalExpr(ITree<Token> ast) {
-		Token data = ast.getHead();
+	private static String toCanonicalExpr(final ITree<Token> ast) {
+		final Token data = ast.getHead();
 
-		if(ast.getChildrenCount() == 0)
+		if (ast.getChildrenCount() == 0)
 			/*
 			 * Handle leaf nodes.
 			 */
 			return data.toExpr();
-		else {
-			ITree<Token> left = ast.getChild(0);
-			ITree<Token> right = ast.getChild(1);
 
-			String leftExpr = toCanonicalExpr(left);
-			String rightExpr = toCanonicalExpr(right);
+		final ITree<Token> left = ast.getChild(0);
+		final ITree<Token> right = ast.getChild(1);
 
-			/*
-			 * Add parens if the left was higher priority.
-			 */
-			if(left.getChildrenCount() == 0) {
-				if(left.getHead().type.operatorPriority >= data.type.operatorPriority) {
-					leftExpr = "(" + leftExpr + ")";
-				}
+		String leftExpr = toCanonicalExpr(left);
+		String rightExpr = toCanonicalExpr(right);
+
+		/*
+		 * Add parens if the left was higher priority.
+		 */
+		if (left.getChildrenCount() == 0) {
+			if (left.getHead().typ.operatorPriority >= data.typ.operatorPriority) {
+				leftExpr = "(" + leftExpr + ")";
 			}
-
-			/*
-			 * Add parens if the right was higher priority.
-			 */
-			if(right.getChildrenCount() == 0) {
-				if(right.getHead().type.operatorPriority >= data.type.operatorPriority) {
-					rightExpr = "(" + rightExpr + ")";
-				}
-			}
-
-			return leftExpr + " " + data.toExpr() + " " + rightExpr;
 		}
+
+		/*
+		 * Add parens if the right was higher priority.
+		 */
+		if (right.getChildrenCount() == 0) {
+			if (right.getHead().typ.operatorPriority >= data.typ.operatorPriority) {
+				rightExpr = "(" + rightExpr + ")";
+			}
+		}
+
+		return leftExpr + " " + data.toExpr() + " " + rightExpr;
 	}
 }

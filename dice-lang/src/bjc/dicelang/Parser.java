@@ -1,16 +1,24 @@
 package bjc.dicelang;
 
-import bjc.utils.data.ITree;
-import bjc.utils.data.Tree;
-import bjc.utils.funcdata.IList;
+import static bjc.dicelang.Errors.ErrorKey.EK_PARSE_BINARY;
+import static bjc.dicelang.Errors.ErrorKey.EK_PARSE_INVTOKEN;
+import static bjc.dicelang.Errors.ErrorKey.EK_PARSE_NOCLOSE;
+import static bjc.dicelang.Errors.ErrorKey.EK_PARSE_UNCLOSE;
+import static bjc.dicelang.Errors.ErrorKey.EK_PARSE_UNOPERAND;
+import static bjc.dicelang.Node.Type.BINOP;
+import static bjc.dicelang.Node.Type.GROUP;
+import static bjc.dicelang.Node.Type.OGROUP;
+import static bjc.dicelang.Node.Type.TOKREF;
+import static bjc.dicelang.Node.Type.UNARYOP;
+import static bjc.dicelang.Token.Type.CBRACE;
+import static bjc.dicelang.Token.Type.CBRACKET;
 
 import java.util.Deque;
 import java.util.LinkedList;
 
-import static bjc.dicelang.Errors.ErrorKey.*;
-import static bjc.dicelang.Node.Type.*;
-import static bjc.dicelang.Token.Type.CBRACE;
-import static bjc.dicelang.Token.Type.CBRACKET;
+import bjc.utils.data.ITree;
+import bjc.utils.data.Tree;
+import bjc.utils.funcdata.IList;
 
 /**
  * Parse a series of tree into tokens.
@@ -37,19 +45,19 @@ public class Parser {
 	 *
 	 * @return Whether or not the parse was successful.
 	 */
-	public boolean parseTokens(IList<Token> tokens, IList<ITree<Node>> results) {
-		Deque<ITree<Node>> working = new LinkedList<>();
+	public static boolean parseTokens(final IList<Token> tokens, final IList<ITree<Node>> results) {
+		final Deque<ITree<Node>> working = new LinkedList<>();
 
-		for(Token tk : tokens) {
-			switch(tk.type) {
+		for (final Token tk : tokens) {
+			switch (tk.type) {
 			case OBRACKET:
 			case OBRACE:
 				working.push(new Tree<>(new Node(OGROUP, tk)));
 				break;
 			case CBRACKET:
 			case CBRACE:
-				boolean sc = parseClosingGrouper(working, tk);
-				if(!sc) return false;
+				final boolean sc = parseClosingGrouper(working, tk);
+				if (!sc) return false;
 				break;
 			case MULTIPLY:
 			case DIVIDE:
@@ -61,54 +69,38 @@ public class Parser {
 			case STRREP:
 			case LET:
 			case BIND:
-				if(working.size() < 2) {
+				if (working.size() < 2) {
 					Errors.inst.printError(EK_PARSE_BINARY);
 					return false;
-				} else {
-					ITree<Node> right = working.pop();
-					ITree<Node> left = working.pop();
-
-					ITree<Node> opNode = new Tree<>(new Node(BINOP, tk.type));
-
-					opNode.addChild(left);
-					opNode.addChild(right);
-
-					working.push(opNode);
 				}
+
+				handleBinaryNode(working, tk);
 				break;
 			case ADD:
 			case SUBTRACT:
-				if(working.size() == 0) {
+				if (working.size() == 0) {
 					Errors.inst.printError(EK_PARSE_UNOPERAND, tk.toString());
 					return false;
-				} else if(working.size() == 1) {
-					ITree<Node> operand = working.pop();
+				} else if (working.size() == 1) {
+					final ITree<Node> operand = working.pop();
 
-					ITree<Node> opNode = new Tree<>(new Node(UNARYOP, tk.type));
+					final ITree<Node> opNode = new Tree<>(new Node(UNARYOP, tk.type));
 
 					opNode.addChild(operand);
 
 					working.push(opNode);
 				} else {
-					ITree<Node> right = working.pop();
-					ITree<Node> left = working.pop();
-
-					ITree<Node> opNode = new Tree<>(new Node(BINOP, tk.type));
-
-					opNode.addChild(left);
-					opNode.addChild(right);
-
-					working.push(opNode);
+					handleBinaryNode(working, tk);
 				}
 				break;
 			case COERCE:
 			case DICESCALAR:
 			case DICEFUDGE:
-				if(working.size() == 0) {
+				if (working.size() == 0) {
 					Errors.inst.printError(EK_PARSE_UNOPERAND, tk.toString());
 				} else {
-					ITree<Node> operand = working.pop();
-					ITree<Node> opNode = new Tree<>(new Node(UNARYOP, tk.type));
+					final ITree<Node> operand = working.pop();
+					final ITree<Node> opNode = new Tree<>(new Node(UNARYOP, tk.type));
 
 					opNode.addChild(operand);
 
@@ -128,21 +120,33 @@ public class Parser {
 			}
 		}
 
-		for(ITree<Node> ast : working) {
+		for (final ITree<Node> ast : working) {
 			results.add(ast);
 		}
 
 		return true;
 	}
 
-	private boolean parseClosingGrouper(Deque<ITree<Node>> working, Token tk) {
-		if(working.size() == 0) {
+	private static void handleBinaryNode(final Deque<ITree<Node>> working, final Token tk) {
+		final ITree<Node> right = working.pop();
+		final ITree<Node> left = working.pop();
+
+		final ITree<Node> opNode = new Tree<>(new Node(BINOP, tk.type));
+
+		opNode.addChild(left);
+		opNode.addChild(right);
+
+		working.push(opNode);
+	}
+
+	private static boolean parseClosingGrouper(final Deque<ITree<Node>> working, final Token tk) {
+		if (working.size() == 0) {
 			Errors.inst.printError(EK_PARSE_NOCLOSE);
 			return false;
 		}
 
 		ITree<Node> groupNode = null;
-		switch(tk.type) {
+		switch (tk.type) {
 		case CBRACE:
 			groupNode = new Tree<>(new Node(GROUP, Node.GroupType.CODE));
 			break;
@@ -155,40 +159,40 @@ public class Parser {
 		}
 
 		Token matching = null;
-		if(tk.type == CBRACKET) {
+		if (tk.type == CBRACKET) {
 			matching = new Token(Token.Type.OBRACKET, tk.intValue);
-		} else if(tk.type == CBRACE) {
+		} else if (tk.type == CBRACE) {
 			matching = new Token(Token.Type.OBRACE, tk.intValue);
 		}
 
-		ITree<Node> matchNode = new Tree<>(new Node(OGROUP, matching));
-		if(!working.contains(matchNode)) {
+		final ITree<Node> matchNode = new Tree<>(new Node(OGROUP, matching));
+		if (!working.contains(matchNode)) {
 			Errors.inst.printError(EK_PARSE_UNCLOSE, tk.toString(), matchNode.toString());
 
 			System.out.println("\tCurrent forest is: ");
 
 			int treeNo = 1;
-			for(ITree<Node> ast : working) {
+			for (final ITree<Node> ast : working) {
 				System.out.println("Tree " + treeNo++ + ": " + ast.toString());
 			}
 
 			return false;
-		} else {
-			Deque<ITree<Node>> childs = new LinkedList<>();
-
-			while(!working.peek().equals(matchNode)) {
-				childs.push(working.pop());
-			}
-
-			// Discard opener
-			working.pop();
-
-			for(ITree<Node> child : childs) {
-				groupNode.addChild(child);
-			}
-
-			working.push(groupNode);
 		}
+
+		final Deque<ITree<Node>> childs = new LinkedList<>();
+
+		while (!working.peek().equals(matchNode)) {
+			childs.push(working.pop());
+		}
+
+		// Discard opener
+		working.pop();
+
+		for (final ITree<Node> child : childs) {
+			groupNode.addChild(child);
+		}
+
+		working.push(groupNode);
 
 		return true;
 	}

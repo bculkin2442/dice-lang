@@ -9,8 +9,8 @@ public class CompoundDie implements Die {
 	/*
 	 * The dice that form this die
 	 */
-	private Die	left;
-	private Die	right;
+	private final Die	left;
+	private final Die	right;
 
 	/**
 	 * Create a new compound die.
@@ -20,7 +20,7 @@ public class CompoundDie implements Die {
 	 * @param rght
 	 *                The right die
 	 */
-	public CompoundDie(Die lft, Die rght) {
+	public CompoundDie(final Die lft, final Die rght) {
 		left = lft;
 		right = rght;
 	}

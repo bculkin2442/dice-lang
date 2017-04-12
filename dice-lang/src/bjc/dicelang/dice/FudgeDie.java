@@ -7,7 +7,7 @@ package bjc.dicelang.dice;
  *
  */
 public class FudgeDie implements Die {
-	private Die numDice;
+	private final Die numDice;
 
 	/**
 	 * Create a new fudge die.
@@ -15,7 +15,7 @@ public class FudgeDie implements Die {
 	 * @param nDice
 	 *                The number of dice to roll.
 	 */
-	public FudgeDie(long nDice) {
+	public FudgeDie(final long nDice) {
 		numDice = new ScalarDie(nDice);
 	}
 
@@ -25,7 +25,7 @@ public class FudgeDie implements Die {
 	 * @param nDice
 	 *                The number of dice to roll.
 	 */
-	public FudgeDie(Die nDice) {
+	public FudgeDie(final Die nDice) {
 		numDice = nDice;
 	}
 
@@ -43,9 +43,9 @@ public class FudgeDie implements Die {
 	public long roll() {
 		long res = 0;
 
-		long nDice = numDice.roll();
+		final long nDice = numDice.roll();
 
-		for(int i = 0; i < nDice; i++) {
+		for (int i = 0; i < nDice; i++) {
 			res += rollSingle();
 		}
 

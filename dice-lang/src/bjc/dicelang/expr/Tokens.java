@@ -66,20 +66,19 @@ public class Tokens {
 	 *
 	 * @return The token the string represents.
 	 */
-	public Token lexToken(String tok, String raw) {
-		if(litTokens.containsKey(tok))
-			return new Token(litTokens.get(tok), raw, this);
-		else
-			return parseVRef(tok, raw);
+	public Token lexToken(final String tok, final String raw) {
+		if (litTokens.containsKey(tok)) return new Token(litTokens.get(tok), raw, this);
+
+		return parseVRef(tok, raw);
 	}
 
 	/*
 	 * Parse a variable reference.
 	 */
-	private Token parseVRef(String tok, String raw) {
-		Token tk = new Token(TokenType.VREF, raw, this);
+	private Token parseVRef(final String tok, final String raw) {
+		final Token tk = new Token(TokenType.VREF, raw, this);
 
-		if(revSymTab.containsKey(tok)) {
+		if (revSymTab.containsKey(tok)) {
 			/*
 			 * Reuse the entry if it exists.
 			 */

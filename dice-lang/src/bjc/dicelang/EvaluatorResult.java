@@ -77,7 +77,7 @@ public class EvaluatorResult {
 	 * @param typ
 	 *                The type of the result.
 	 */
-	public EvaluatorResult(EvaluatorResult.Type typ) {
+	public EvaluatorResult(final EvaluatorResult.Type typ) {
 		type = typ;
 	}
 
@@ -90,7 +90,7 @@ public class EvaluatorResult {
 	 * @param orig
 	 *                The original value of the result.
 	 */
-	public EvaluatorResult(EvaluatorResult.Type typ, ITree<Node> orig) {
+	public EvaluatorResult(final EvaluatorResult.Type typ, final ITree<Node> orig) {
 		this(typ);
 
 		origVal = orig;
@@ -105,7 +105,7 @@ public class EvaluatorResult {
 	 * @param orig
 	 *                The original value of the result.
 	 */
-	public EvaluatorResult(EvaluatorResult.Type typ, Node orig) {
+	public EvaluatorResult(final EvaluatorResult.Type typ, final Node orig) {
 		this(typ, new Tree<>(orig));
 	}
 
@@ -115,7 +115,7 @@ public class EvaluatorResult {
 	 * @param typ
 	 * @param orig
 	 */
-	public EvaluatorResult(EvaluatorResult.Type typ, EvaluatorResult orig) {
+	public EvaluatorResult(final EvaluatorResult.Type typ, final EvaluatorResult orig) {
 		this(typ, new Node(Node.Type.RESULT, orig));
 	}
 
@@ -125,7 +125,7 @@ public class EvaluatorResult {
 	 * @param typ
 	 * @param iVal
 	 */
-	public EvaluatorResult(EvaluatorResult.Type typ, long iVal) {
+	public EvaluatorResult(final EvaluatorResult.Type typ, final long iVal) {
 		this(typ);
 
 		intVal = iVal;
@@ -137,7 +137,7 @@ public class EvaluatorResult {
 	 * @param typ
 	 * @param dVal
 	 */
-	public EvaluatorResult(EvaluatorResult.Type typ, double dVal) {
+	public EvaluatorResult(final EvaluatorResult.Type typ, final double dVal) {
 		this(typ);
 
 		floatVal = dVal;
@@ -149,7 +149,7 @@ public class EvaluatorResult {
 	 * @param typ
 	 * @param dVal
 	 */
-	public EvaluatorResult(EvaluatorResult.Type typ, DieExpression dVal) {
+	public EvaluatorResult(final EvaluatorResult.Type typ, final DieExpression dVal) {
 		this(typ);
 
 		diceVal = dVal;
@@ -161,7 +161,7 @@ public class EvaluatorResult {
 	 * @param typ
 	 * @param dVal
 	 */
-	public EvaluatorResult(EvaluatorResult.Type typ, Die dVal) {
+	public EvaluatorResult(final EvaluatorResult.Type typ, final Die dVal) {
 		this(typ);
 
 		diceVal = new DieExpression(dVal);
@@ -173,7 +173,7 @@ public class EvaluatorResult {
 	 * @param typ
 	 * @param dVal
 	 */
-	public EvaluatorResult(EvaluatorResult.Type typ, DieList dVal) {
+	public EvaluatorResult(final EvaluatorResult.Type typ, final DieList dVal) {
 		this(typ);
 
 		diceVal = new DieExpression(dVal);
@@ -185,7 +185,7 @@ public class EvaluatorResult {
 	 * @param typ
 	 * @param strang
 	 */
-	public EvaluatorResult(EvaluatorResult.Type typ, String strang) {
+	public EvaluatorResult(final EvaluatorResult.Type typ, final String strang) {
 		this(typ);
 
 		stringVal = strang;
@@ -193,7 +193,7 @@ public class EvaluatorResult {
 
 	@Override
 	public String toString() {
-		switch(type) {
+		switch (type) {
 		case INT:
 			return type.toString() + "(" + intVal + ")";
 		case FLOAT:

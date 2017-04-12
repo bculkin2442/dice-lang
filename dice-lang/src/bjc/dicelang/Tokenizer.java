@@ -1,29 +1,55 @@
 package bjc.dicelang;
 
+import static bjc.dicelang.Errors.ErrorKey.EK_TOK_INVBASE;
+import static bjc.dicelang.Errors.ErrorKey.EK_TOK_INVFLEX;
+import static bjc.dicelang.Errors.ErrorKey.EK_TOK_UNGROUP;
+import static bjc.dicelang.Token.Type.ADD;
+import static bjc.dicelang.Token.Type.BIND;
+import static bjc.dicelang.Token.Type.CBRACE;
+import static bjc.dicelang.Token.Type.CBRACKET;
+import static bjc.dicelang.Token.Type.COERCE;
+import static bjc.dicelang.Token.Type.CPAREN;
+import static bjc.dicelang.Token.Type.DICECONCAT;
+import static bjc.dicelang.Token.Type.DICEFUDGE;
+import static bjc.dicelang.Token.Type.DICEGROUP;
+import static bjc.dicelang.Token.Type.DICELIST;
+import static bjc.dicelang.Token.Type.DICESCALAR;
+import static bjc.dicelang.Token.Type.DICE_LIT;
+import static bjc.dicelang.Token.Type.DIVIDE;
+import static bjc.dicelang.Token.Type.FLOAT_LIT;
+import static bjc.dicelang.Token.Type.GROUPSEP;
+import static bjc.dicelang.Token.Type.IDIVIDE;
+import static bjc.dicelang.Token.Type.INT_LIT;
+import static bjc.dicelang.Token.Type.LET;
+import static bjc.dicelang.Token.Type.MULTIPLY;
+import static bjc.dicelang.Token.Type.OBRACE;
+import static bjc.dicelang.Token.Type.OBRACKET;
+import static bjc.dicelang.Token.Type.OPAREN;
+import static bjc.dicelang.Token.Type.STRCAT;
+import static bjc.dicelang.Token.Type.STRING_LIT;
+import static bjc.dicelang.Token.Type.STRREP;
+import static bjc.dicelang.Token.Type.SUBTRACT;
+import static bjc.dicelang.Token.Type.VREF;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import bjc.dicelang.dice.DiceBox;
 import bjc.utils.funcdata.FunctionalMap;
 import bjc.utils.funcdata.IMap;
 import bjc.utils.funcutils.StringUtils;
 import bjc.utils.parserutils.TokenUtils;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import static bjc.dicelang.Errors.ErrorKey.EK_TOK_INVBASE;
-import static bjc.dicelang.Errors.ErrorKey.EK_TOK_INVFLEX;
-import static bjc.dicelang.Errors.ErrorKey.EK_TOK_UNGROUP;
-import static bjc.dicelang.Token.Type.*;
-
 @SuppressWarnings("javadoc")
 public class Tokenizer {
 	// Literal tokens for tokenization
-	private IMap<String, Token.Type> litTokens;
+	private final IMap<String, Token.Type> litTokens;
 
-	private DiceLangEngine eng;
+	private final DiceLangEngine eng;
 
 	private int nextSym = 0;
 
-	public Tokenizer(DiceLangEngine engine) {
+	public Tokenizer(final DiceLangEngine engine) {
 		eng = engine;
 
 		litTokens = new FunctionalMap<>();
@@ -46,15 +72,15 @@ public class Tokenizer {
 		litTokens.put("crc", COERCE);
 	}
 
-	public Token lexToken(String token, IMap<String, String> stringLts) {
-		if(token.equals("")) return null;
+	public Token lexToken(final String token, final IMap<String, String> stringLts) {
+		if (token.equals("")) return null;
 
 		Token tk = Token.NIL_TOKEN;
 
-		if(litTokens.containsKey(token)) {
+		if (litTokens.containsKey(token)) {
 			tk = new Token(litTokens.get(token));
 		} else {
-			switch(token.charAt(0)) {
+			switch (token.charAt(0)) {
 			case '(':
 			case ')':
 			case '[':
@@ -71,11 +97,11 @@ public class Tokenizer {
 		return tk;
 	}
 
-	private Token tokenizeGrouping(String token) {
+	private static Token tokenizeGrouping(final String token) {
 		Token tk = Token.NIL_TOKEN;
 
-		if(StringUtils.containsOnly(token, "\\" + token.charAt(0))) {
-			switch(token.charAt(0)) {
+		if (StringUtils.containsOnly(token, "\\" + token.charAt(0))) {
+			switch (token.charAt(0)) {
 			case '(':
 				tk = new Token(OPAREN, token.length());
 				break;
@@ -103,44 +129,44 @@ public class Tokenizer {
 		return tk;
 	}
 
-	private Pattern	hexadecimalMatcher	= Pattern.compile("\\A[\\-\\+]?0x[0-9A-Fa-f]+\\Z");
-	private Pattern	flexadecimalMatcher	= Pattern.compile("\\A[\\-\\+]?[0-9][0-9A-Za-z]+B\\d{1,2}\\Z");
-	private Pattern	stringLitMatcher	= Pattern.compile("\\AstringLiteral(\\d+)\\Z");
+	private final Pattern	hexadecimalMatcher	= Pattern.compile("\\A[\\-\\+]?0x[0-9A-Fa-f]+\\Z");
+	private final Pattern	flexadecimalMatcher	= Pattern.compile("\\A[\\-\\+]?[0-9][0-9A-Za-z]+B\\d{1,2}\\Z");
+	private final Pattern	stringLitMatcher	= Pattern.compile("\\AstringLiteral(\\d+)\\Z");
 
-	private Token tokenizeLiteral(String token, IMap<String, String> stringLts) {
+	private Token tokenizeLiteral(final String token, final IMap<String, String> stringLts) {
 		Token tk = Token.NIL_TOKEN;
 
-		if(TokenUtils.isInt(token)) {
+		if (TokenUtils.isInt(token)) {
 			tk = new Token(INT_LIT, Long.parseLong(token));
-		} else if(hexadecimalMatcher.matcher(token).matches()) {
-			String newToken = token.substring(0, 1) + token.substring(token.indexOf('x'));
+		} else if (hexadecimalMatcher.matcher(token).matches()) {
+			final String newToken = token.substring(0, 1) + token.substring(token.indexOf('x'));
 
 			tk = new Token(INT_LIT, Long.parseLong(newToken.substring(2).toUpperCase(), 16));
-		} else if(flexadecimalMatcher.matcher(token).matches()) {
-			int parseBase = Integer.parseInt(token.substring(token.lastIndexOf('B') + 1));
+		} else if (flexadecimalMatcher.matcher(token).matches()) {
+			final int parseBase = Integer.parseInt(token.substring(token.lastIndexOf('B') + 1));
 
-			if(parseBase < Character.MIN_RADIX || parseBase > Character.MAX_RADIX) {
+			if (parseBase < Character.MIN_RADIX || parseBase > Character.MAX_RADIX) {
 				Errors.inst.printError(EK_TOK_INVBASE, Integer.toString(parseBase));
 				return Token.NIL_TOKEN;
 			}
 
-			String flexNum = token.substring(0, token.lastIndexOf('B'));
+			final String flexNum = token.substring(0, token.lastIndexOf('B'));
 
 			try {
 				tk = new Token(INT_LIT, Long.parseLong(flexNum, parseBase));
-			} catch(@SuppressWarnings("unused") NumberFormatException nfex) {
+			} catch (final NumberFormatException nfex) {
 				Errors.inst.printError(EK_TOK_INVFLEX, flexNum, Integer.toString(parseBase));
 				return Token.NIL_TOKEN;
 			}
-		} else if(TokenUtils.isDouble(token)) {
+		} else if (TokenUtils.isDouble(token)) {
 			tk = new Token(FLOAT_LIT, Double.parseDouble(token));
-		} else if(DiceBox.isValidExpression(token)) {
+		} else if (DiceBox.isValidExpression(token)) {
 			tk = new Token(DICE_LIT, DiceBox.parseExpression(token));
 		} else {
-			Matcher stringLit = stringLitMatcher.matcher(token);
+			final Matcher stringLit = stringLitMatcher.matcher(token);
 
-			if(stringLit.matches()) {
-				int litNum = Integer.parseInt(stringLit.group(1));
+			if (stringLit.matches()) {
+				final int litNum = Integer.parseInt(stringLit.group(1));
 
 				eng.addStringLiteral(litNum, stringLts.get(token));
 				tk = new Token(STRING_LIT, litNum);

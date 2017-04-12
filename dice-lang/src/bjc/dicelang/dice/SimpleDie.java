@@ -7,8 +7,8 @@ package bjc.dicelang.dice;
  *
  */
 public class SimpleDie implements Die {
-	private Die	numDice;
-	private Die	diceSize;
+	private final Die	numDice;
+	private final Die	diceSize;
 
 	/**
 	 * Create a new dice group.
@@ -19,7 +19,7 @@ public class SimpleDie implements Die {
 	 * @param size
 	 *                The size of the dice.
 	 */
-	public SimpleDie(long nDice, long size) {
+	public SimpleDie(final long nDice, final long size) {
 		this(new ScalarDie(nDice), new ScalarDie(size));
 	}
 
@@ -32,7 +32,7 @@ public class SimpleDie implements Die {
 	 * @param size
 	 *                The size of the dice.
 	 */
-	public SimpleDie(Die nDice, long size) {
+	public SimpleDie(final Die nDice, final long size) {
 		this(nDice, new ScalarDie(size));
 	}
 
@@ -45,7 +45,7 @@ public class SimpleDie implements Die {
 	 * @param size
 	 *                The size of the dice.
 	 */
-	public SimpleDie(long nDice, Die size) {
+	public SimpleDie(final long nDice, final Die size) {
 		this(new ScalarDie(nDice), size);
 	}
 
@@ -58,37 +58,35 @@ public class SimpleDie implements Die {
 	 * @param size
 	 *                The size of the dice.
 	 */
-	public SimpleDie(Die nDice, Die size) {
+	public SimpleDie(final Die nDice, final Die size) {
 		numDice = nDice;
 		diceSize = size;
 	}
 
 	@Override
 	public boolean canOptimize() {
-		if(diceSize.canOptimize() && diceSize.optimize() <= 1)
-			return numDice.canOptimize();
-		else
-			return false;
+		if (diceSize.canOptimize() && diceSize.optimize() <= 1) return numDice.canOptimize();
+
+		return false;
 	}
 
 	@Override
 	public long optimize() {
-		long optSize = diceSize.optimize();
+		final long optSize = diceSize.optimize();
 
-		if(optSize == 0)
-			return 0;
-		else
-			return numDice.optimize();
+		if (optSize == 0) return 0;
+
+		return numDice.optimize();
 	}
 
 	@Override
 	public long roll() {
 		long total = 0;
 
-		long nDice = numDice.roll();
-		long dSize = diceSize.roll();
+		final long nDice = numDice.roll();
+		final long dSize = diceSize.roll();
 
-		for(int i = 0; i < nDice; i++) {
+		for (int i = 0; i < nDice; i++) {
 			total += Math.abs(DiceBox.rng.nextLong()) % dSize + 1;
 		}
 

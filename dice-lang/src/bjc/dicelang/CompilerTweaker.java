@@ -11,19 +11,19 @@ public class CompilerTweaker {
 	/*
 	 * Bits of the compiler necessary
 	 */
-	private DiceLangEngine			eng;
-	private ConfigurableTokenSplitter	opExpander;
+	private final DiceLangEngine		eng;
+	private final ConfigurableTokenSplitter	opExpander;
 
 	/**
 	 * Create a new compiler tweaker.
 	 *
-	 * @param eng
+	 * @param engine
 	 *                The engine to tweak.
 	 */
-	public CompilerTweaker(DiceLangEngine eng) {
-		this.eng = eng;
+	public CompilerTweaker(final DiceLangEngine engine) {
+		eng = engine;
 
-		this.opExpander = eng.opExpander;
+		this.opExpander = engine.opExpander;
 	}
 
 	/**
@@ -34,7 +34,7 @@ public class CompilerTweaker {
 	 *
 	 * @return The key into the string literal table for this string.
 	 */
-	public int addStringLiteral(String val) {
+	public int addStringLiteral(final String val) {
 		eng.addStringLiteral(eng.nextLiteral, val);
 
 		eng.nextLiteral += 1;
@@ -47,7 +47,7 @@ public class CompilerTweaker {
 	 * @param dfn
 	 *                The defn to add.
 	 */
-	public void addLineDefine(Define dfn) {
+	public void addLineDefine(final Define dfn) {
 		eng.addLineDefine(dfn);
 	}
 
@@ -57,7 +57,7 @@ public class CompilerTweaker {
 	 * @param dfn
 	 *                The defn to add.
 	 */
-	public void addTokenDefine(Define dfn) {
+	public void addTokenDefine(final Define dfn) {
 		eng.addTokenDefine(dfn);
 	}
 
@@ -67,7 +67,7 @@ public class CompilerTweaker {
 	 * @param delims
 	 *                The delimiters to expand on.
 	 */
-	public void addDelimiter(String... delims) {
+	public void addDelimiter(final String... delims) {
 		opExpander.addSimpleDelimiters(delims);
 	}
 
@@ -77,7 +77,7 @@ public class CompilerTweaker {
 	 * @param delims
 	 *                The multi-character delimiters to expand on.
 	 */
-	public void addMultiDelimiter(String... delims) {
+	public void addMultiDelimiter(final String... delims) {
 		opExpander.addMultiDelimiters(delims);
 	}
 
@@ -94,7 +94,7 @@ public class CompilerTweaker {
 	 * @param times
 	 *                The number of times to allow defines to recur.
 	 */
-	public static void setDefineRecurLimit(int times) {
+	public static void setDefineRecurLimit(final int times) {
 		Define.MAX_RECURS = times;
 	}
 }

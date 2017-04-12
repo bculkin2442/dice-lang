@@ -50,7 +50,7 @@ public enum TokenType {
 	 */
 	public final int	operatorPriority;
 
-	private TokenType(int num, boolean isOp, int priority) {
+	private TokenType(final int num, final boolean isOp, final int priority) {
 		nVal = num;
 
 		isOperator = isOp;
@@ -58,7 +58,7 @@ public enum TokenType {
 		operatorPriority = priority;
 	}
 
-	private TokenType(int num) {
+	private TokenType(final int num) {
 		this(num, false, -1);
 	}
 

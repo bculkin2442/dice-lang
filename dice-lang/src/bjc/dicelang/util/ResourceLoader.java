@@ -1,6 +1,6 @@
 package bjc.dicelang.util;
 
-import bjc.dicelang.Errors;
+import static bjc.dicelang.Errors.ErrorKey.EK_MISC_IOEX;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -8,7 +8,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import static bjc.dicelang.Errors.ErrorKey.EK_MISC_IOEX;
+import bjc.dicelang.Errors;
 
 /**
  * Load resources bundled with DiceLang.
@@ -26,13 +26,12 @@ public class ResourceLoader {
 	 * @return The contents of the help file, or null if it could not be
 	 *         opened.
 	 */
-	@SuppressWarnings("unused")
-	public static String[] loadHelpFile(String name) {
-		URL fle = ResourceLoader.class.getResource("/data/help/" + name + ".help");
+	public static String[] loadHelpFile(final String name) {
+		final URL fle = ResourceLoader.class.getResource("/data/help/" + name + ".help");
 
 		try {
 			return Files.lines(Paths.get(fle.toURI())).toArray(sze -> new String[sze]);
-		} catch(IOException | URISyntaxException ioex) {
+		} catch (IOException | URISyntaxException ioex) {
 			Errors.inst.printError(EK_MISC_IOEX, fle.toString());
 		}
 

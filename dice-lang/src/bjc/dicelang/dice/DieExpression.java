@@ -28,7 +28,7 @@ public class DieExpression {
 	 * @param scal
 	 *                The scalar value of this expression.
 	 */
-	public DieExpression(Die scal) {
+	public DieExpression(final Die scal) {
 		isList = false;
 		scalar = scal;
 	}
@@ -39,17 +39,16 @@ public class DieExpression {
 	 * @param lst
 	 *                The list value of this expression.
 	 */
-	public DieExpression(DieList lst) {
+	public DieExpression(final DieList lst) {
 		isList = true;
 		list = lst;
 	}
 
 	@Override
 	public String toString() {
-		if(isList)
-			return list.toString();
-		else
-			return scalar.toString();
+		if (isList) return list.toString();
+
+		return scalar.toString();
 	}
 
 	/**
@@ -58,9 +57,8 @@ public class DieExpression {
 	 * @return The value of the expression as a string.
 	 */
 	public String value() {
-		if(isList)
-			return Arrays.toString(list.roll());
-		else
-			return Long.toString(scalar.roll());
+		if (isList) return Arrays.toString(list.roll());
+
+		return Long.toString(scalar.roll());
 	}
 }

@@ -1,5 +1,21 @@
 package bjc.dicelang;
 
+import static bjc.dicelang.Errors.ErrorKey.EK_ENG_NOCLOSING;
+import static bjc.dicelang.Errors.ErrorKey.EK_ENG_NOOPENING;
+import static bjc.dicelang.Token.Type.CBRACE;
+import static bjc.dicelang.Token.Type.CBRACKET;
+import static bjc.dicelang.Token.Type.CPAREN;
+import static bjc.dicelang.Token.Type.OBRACE;
+import static bjc.dicelang.Token.Type.OBRACKET;
+import static bjc.dicelang.Token.Type.OPAREN;
+
+import java.util.Deque;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import bjc.dicelang.scl.StreamEngine;
 import bjc.utils.data.ITree;
 import bjc.utils.funcdata.FunctionalList;
@@ -10,17 +26,6 @@ import bjc.utils.funcdata.IMap;
 import bjc.utils.funcutils.ListUtils;
 import bjc.utils.parserutils.TokenUtils;
 import bjc.utils.parserutils.splitter.ConfigurableTokenSplitter;
-
-import java.util.Deque;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import static bjc.dicelang.Errors.ErrorKey.EK_ENG_NOCLOSING;
-import static bjc.dicelang.Errors.ErrorKey.EK_ENG_NOOPENING;
-import static bjc.dicelang.Token.Type.*;
 
 /**
  * Implements the orchestration necessary for processing DiceLang commands.
@@ -86,14 +91,14 @@ public class DiceLangEngine {
 	 */
 	public final IMap<Integer, String> symTable;
 
-	private IMap<Integer, String>	stringLits;
-	private IMap<String, String>	stringLiterals;
+	private final IMap<Integer, String>	stringLits;
+	private final IMap<String, String>	stringLiterals;
 
 	/*
 	 * Lists of defns.
 	 */
-	private IList<Define>	lineDefns;
-	private IList<Define>	tokenDefns;
+	private final IList<Define>	lineDefns;
+	private final IList<Define>	tokenDefns;
 
 	/*
 	 * Are defns sorted by priority?
@@ -182,7 +187,7 @@ public class DiceLangEngine {
 	 * @param dfn
 	 *                The defn to add.
 	 */
-	public void addLineDefine(Define dfn) {
+	public void addLineDefine(final Define dfn) {
 		lineDefns.add(dfn);
 
 		defnsSorted = false;
@@ -194,7 +199,7 @@ public class DiceLangEngine {
 	 * @param dfn
 	 *                The defn to add.
 	 */
-	public void addTokenDefine(Define dfn) {
+	public void addTokenDefine(final Define dfn) {
 		tokenDefns.add(dfn);
 
 		defnsSorted = false;
@@ -247,7 +252,7 @@ public class DiceLangEngine {
 	/*
 	 * Matches double-angle bracketed strings.
 	 */
-	private Pattern nonExpandPattern = Pattern.compile("<<([^\\>]*(?:\\>(?:[^\\>])*)*)>>");
+	private final Pattern nonExpandPattern = Pattern.compile("<<([^\\>]*(?:\\>(?:[^\\>])*)*)>>");
 
 	/**
 	 * Run a command to completion.
@@ -257,28 +262,28 @@ public class DiceLangEngine {
 	 *
 	 * @return Whether or not the command ran successfully
 	 */
-	public boolean runCommand(String command) {
+	public boolean runCommand(final String command) {
 		/*
 		 * Preprocess the command into tokens
 		 */
-		IList<String> preprocessedTokens = preprocessCommand(command);
+		final IList<String> preprocessedTokens = preprocessCommand(command);
 
-		if(preprocessedTokens == null) return false;
+		if (preprocessedTokens == null) return false;
 
 		/*
 		 * Lex the string tokens into token-tokens
 		 */
-		IList<Token> lexedTokens = lexTokens(preprocessedTokens);
+		final IList<Token> lexedTokens = lexTokens(preprocessedTokens);
 
-		if(lexedTokens == null) return false;
+		if (lexedTokens == null) return false;
 
 		/*
 		 * Parse the tokens into an AST forest
 		 */
-		IList<ITree<Node>> astForest = new FunctionalList<>();
-		boolean succ = parsr.parseTokens(lexedTokens, astForest);
+		final IList<ITree<Node>> astForest = new FunctionalList<>();
+		final boolean succ = Parser.parseTokens(lexedTokens, astForest);
 
-		if(!succ) return false;
+		if (!succ) return false;
 
 		/*
 		 * Evaluate the AST forest
@@ -291,30 +296,30 @@ public class DiceLangEngine {
 	/*
 	 * Lex string tokens into token-tokens
 	 */
-	private IList<Token> lexTokens(IList<String> preprocessedTokens) {
-		IList<Token> lexedTokens = new FunctionalList<>();
+	private IList<Token> lexTokens(final IList<String> preprocessedTokens) {
+		final IList<Token> lexedTokens = new FunctionalList<>();
 
-		for(String token : preprocessedTokens) {
+		for (final String token : preprocessedTokens) {
 			String newTok = token;
 
 			/*
 			 * Apply token defns
 			 */
-			for(Define dfn : tokenDefns.toIterable()) {
+			for (final Define dfn : tokenDefns.toIterable()) {
 				newTok = dfn.apply(newTok);
 			}
 
 			/*
 			 * Lex the token
 			 */
-			Token tk = tokenzer.lexToken(token, stringLiterals);
+			final Token tk = tokenzer.lexToken(token, stringLiterals);
 
-			if(tk == null) {
+			if (tk == null) {
 				/*
 				 * Ignore blank tokens
 				 */
 				continue;
-			} else if(tk == Token.NIL_TOKEN)
+			} else if (tk == Token.NIL_TOKEN)
 				/*
 				 * Fail on bad tokens
 				 */
@@ -324,7 +329,7 @@ public class DiceLangEngine {
 			}
 		}
 
-		if(debugMode) {
+		if (debugMode) {
 			System.out.printf("\tCommand after tokenization: %s\n", lexedTokens.toString());
 		}
 
@@ -332,25 +337,25 @@ public class DiceLangEngine {
 		 * Preshunt preshunt-marked groups of tokens
 		 */
 		IList<Token> shuntedTokens = lexedTokens;
-		IList<Token> preparedTokens = new FunctionalList<>();
+		final IList<Token> preparedTokens = new FunctionalList<>();
 
 		boolean succ = removePreshuntTokens(lexedTokens, preparedTokens);
 
-		if(!succ) return null;
+		if (!succ) return null;
 
-		if(debugMode && !postfixMode) {
+		if (debugMode && !postfixMode) {
 			System.out.printf("\tCommand after pre-shunter removal: %s\n", preparedTokens.toString());
 		}
 
-		if(!postfixMode && !prefixMode) {
+		if (!postfixMode && !prefixMode) {
 			/*
 			 * Shunt the tokens
 			 */
 			shuntedTokens = new FunctionalList<>();
 			succ = shunt.shuntTokens(preparedTokens, shuntedTokens);
 
-			if(!succ) return null;
-		} else if(prefixMode) {
+			if (!succ) return null;
+		} else if (prefixMode) {
 			/*
 			 * Reverse directional tokens
 			 */
@@ -358,23 +363,22 @@ public class DiceLangEngine {
 			shuntedTokens = preparedTokens.map(this::reverseToken);
 		}
 
-		if(debugMode && !postfixMode) {
+		if (debugMode && !postfixMode) {
 			System.out.printf("\tCommand after shunting: %s\n", shuntedTokens.toString());
 		}
 
 		/*
 		 * Expand token groups
 		 */
-		IList<Token> readyTokens = shuntedTokens.flatMap(tk -> {
-			if(tk.type == Token.Type.TOKGROUP)
+		final IList<Token> readyTokens = shuntedTokens.flatMap(tk -> {
+			if (tk.type == Token.Type.TOKGROUP)
 				return tk.tokenValues;
-			else if(tk.type == Token.Type.TAGOP || tk.type == Token.Type.TAGOPR)
+			else if (tk.type == Token.Type.TAGOP || tk.type == Token.Type.TAGOPR)
 				return tk.tokenValues;
-			else
-				return new FunctionalList<>(tk);
+			else return new FunctionalList<>(tk);
 		});
 
-		if(debugMode && !postfixMode) {
+		if (debugMode && !postfixMode) {
 			System.out.printf("\tCommand after re-preshunting: %s\n", readyTokens.toString());
 		}
 
@@ -386,8 +390,8 @@ public class DiceLangEngine {
 	 *
 	 * These are mostly just things like (, {, and [
 	 */
-	private Token reverseToken(Token tk) {
-		switch(tk.type) {
+	private Token reverseToken(final Token tk) {
+		switch (tk.type) {
 		case OBRACE:
 			return new Token(CBRACE, tk.intValue);
 		case OPAREN:
@@ -408,55 +412,55 @@ public class DiceLangEngine {
 	/*
 	 * Preprocess a command into a list of string tokens.
 	 */
-	private IList<String> preprocessCommand(String command) {
+	private IList<String> preprocessCommand(final String command) {
 		/*
 		 * Sort the defines if they aren't sorted
 		 */
-		if(!defnsSorted) {
+		if (!defnsSorted) {
 			sortDefns();
 		}
 
 		/*
 		 * Run the tokens through the stream engine
 		 */
-		IList<String> streamToks = new FunctionalList<>();
-		boolean succ = streamEng.doStreams(command.split(" "), streamToks);
+		final IList<String> streamToks = new FunctionalList<>();
+		final boolean succ = streamEng.doStreams(command.split(" "), streamToks);
 
-		if(!succ) return null;
+		if (!succ) return null;
 
 		/*
 		 * Apply line defns
 		 */
 		String newComm = ListUtils.collapseTokens(streamToks, " ");
 
-		if(debugMode) {
+		if (debugMode) {
 			System.out.println("\tCommand after stream commands: " + newComm);
 		}
 
-		for(Define dfn : lineDefns.toIterable()) {
+		for (final Define dfn : lineDefns.toIterable()) {
 			newComm = dfn.apply(newComm);
 		}
 
-		if(debugMode) {
+		if (debugMode) {
 			System.out.println("\tCommand after line defines: " + newComm);
 		}
 
 		/*
 		 * Remove string literals.
 		 */
-		List<String> destringedParts = TokenUtils.removeDQuotedStrings(newComm);
-		StringBuffer destringedCommand = new StringBuffer();
+		final List<String> destringedParts = TokenUtils.removeDQuotedStrings(newComm);
+		final StringBuffer destringedCommand = new StringBuffer();
 
-		for(String part : destringedParts) {
+		for (final String part : destringedParts) {
 			/*
 			 * Handle string literals
 			 */
-			if(part.startsWith("\"") && part.endsWith("\"")) {
+			if (part.startsWith("\"") && part.endsWith("\"")) {
 				/*
 				 * Get the actual string.
 				 */
-				String litName = "stringLiteral" + nextLiteral;
-				String litVal = part.substring(1, part.length() - 1);
+				final String litName = "stringLiteral" + nextLiteral;
+				final String litVal = part.substring(1, part.length() - 1);
 
 				/*
 				 * Insert the string with its escape sequences
@@ -474,13 +478,13 @@ public class DiceLangEngine {
 			}
 		}
 
-		if(debugMode) {
+		if (debugMode) {
 			System.out.println("\tCommand after destringing: " + destringedCommand);
 
 			/*
 			 * Print the string table if it exists.
 			 */
-			if(stringLiterals.size() > 0) {
+			if (stringLiterals.size() > 0) {
 				System.out.println("\tString literals in table");
 
 				stringLiterals.forEach((key, val) -> {
@@ -492,26 +496,27 @@ public class DiceLangEngine {
 		/*
 		 * Split the command into tokens
 		 */
-		String strang = destringedCommand.toString();
+		final String strang = destringedCommand.toString();
 		IList<String> tokens = FunctionalStringTokenizer.fromString(strang).toList();
 
 		/*
 		 * Temporarily remove non-expanding tokens
 		 */
-		IMap<String, String> nonExpandedTokens = new FunctionalMap<>();
+		final IMap<String, String> nonExpandedTokens = new FunctionalMap<>();
 		tokens = tokens.map(tk -> {
-			Matcher nonExpandMatcher = nonExpandPattern.matcher(tk);
+			final Matcher nonExpandMatcher = nonExpandPattern.matcher(tk);
 
-			if(nonExpandMatcher.matches()) {
-				String tkName = "nonExpandToken" + nextLiteral++;
+			if (nonExpandMatcher.matches()) {
+				final String tkName = "nonExpandToken" + nextLiteral++;
 				nonExpandedTokens.put(tkName, nonExpandMatcher.group(1));
 
 				return tkName;
-			} else
-				return tk;
+			}
+
+			return tk;
 		});
 
-		if(debugMode) {
+		if (debugMode) {
 			System.out.printf("\tCommand after removal of non-expanders: %s\n", tokens.toString());
 		}
 
@@ -525,13 +530,12 @@ public class DiceLangEngine {
 		 * Reinsert non-expanded tokens
 		 */
 		fullyExpandedTokens = fullyExpandedTokens.map(tk -> {
-			if(tk.startsWith("nonExpandToken"))
-				return nonExpandedTokens.get(tk);
-			else
-				return tk;
+			if (tk.startsWith("nonExpandToken")) return nonExpandedTokens.get(tk);
+
+			return tk;
 		});
 
-		if(debugMode) {
+		if (debugMode) {
 			System.out.printf("\tCommand after non-expander reinsertion: %s\n",
 					fullyExpandedTokens.toString());
 		}
@@ -539,33 +543,33 @@ public class DiceLangEngine {
 		return fullyExpandedTokens;
 	}
 
-	private void evaluateForest(IList<ITree<Node>> astForest) {
-		if(debugMode) {
+	private void evaluateForest(final IList<ITree<Node>> astForest) {
+		if (debugMode) {
 			System.out.println("\tParsed forest of asts");
 		}
 
 		int treeNo = 1;
 
-		for(ITree<Node> ast : astForest) {
-			if(debugMode) {
+		for (final ITree<Node> ast : astForest) {
+			if (debugMode) {
 				System.out.printf("\t\tTree %d in forest:\n%s\n", treeNo, ast.toString());
 			}
 
-			if(debugMode && stepEval) {
+			if (debugMode && stepEval) {
 				int step = 1;
 
 				/*
 				 * Evaluate it step by step
 				 */
-				for(Iterator<ITree<Node>> itr = eval.stepDebug(ast); itr.hasNext();) {
-					ITree<Node> nodeStep = itr.next();
+				for (final Iterator<ITree<Node>> itr = eval.stepDebug(ast); itr.hasNext();) {
+					final ITree<Node> nodeStep = itr.next();
 
 					System.out.printf("\t\tStep %d: Node is %s", step, nodeStep);
 
 					/*
 					 * Don't evaluate null steps
 					 */
-					if(nodeStep == null) {
+					if (nodeStep == null) {
 						System.out.println();
 
 						step += 1;
@@ -575,16 +579,16 @@ public class DiceLangEngine {
 					/*
 					 * Print out details for results
 					 */
-					if(nodeStep.getHead().type == Node.Type.RESULT) {
-						EvaluatorResult res = nodeStep.getHead().resultVal;
+					if (nodeStep.getHead().type == Node.Type.RESULT) {
+						final EvaluatorResult res = nodeStep.getHead().resultVal;
 
 						System.out.printf(" (result is %s", res);
 
-						if(res.type == EvaluatorResult.Type.DICE) {
+						if (res.type == EvaluatorResult.Type.DICE) {
 							System.out.printf(" (sample roll %s)", res.diceVal.value());
 						}
 
-						if(res.origVal != null) {
+						if (res.origVal != null) {
 							System.out.printf(" (original tree is %s)", res.origVal);
 						}
 
@@ -601,12 +605,12 @@ public class DiceLangEngine {
 				/*
 				 * Evaluate it normally
 				 */
-				EvaluatorResult res = eval.evaluate(ast);
+				final EvaluatorResult res = eval.evaluate(ast);
 
-				if(debugMode) {
+				if (debugMode) {
 					System.out.printf("\t\tEvaluates to %s", res);
 
-					if(res.type == EvaluatorResult.Type.DICE) {
+					if (res.type == EvaluatorResult.Type.DICE) {
 						System.out.println("\t\t (sample roll " + res.diceVal.value() + ")");
 					}
 				}
@@ -621,7 +625,7 @@ public class DiceLangEngine {
 	/*
 	 * Preshunt preshunt-marked groups of tokens.
 	 */
-	private boolean removePreshuntTokens(IList<Token> lexedTokens, IList<Token> preparedTokens) {
+	private boolean removePreshuntTokens(final IList<Token> lexedTokens, final IList<Token> preparedTokens) {
 		/*
 		 * Current nesting level of tokens.
 		 */
@@ -630,17 +634,17 @@ public class DiceLangEngine {
 		/*
 		 * Data storage.
 		 */
-		Deque<IList<Token>> bracedTokens = new LinkedList<>();
+		final Deque<IList<Token>> bracedTokens = new LinkedList<>();
 		IList<Token> curBracedTokens = new FunctionalList<>();
 
-		for(Token tk : lexedTokens) {
-			if(tk.type == Token.Type.OBRACE && tk.intValue == 2) {
+		for (final Token tk : lexedTokens) {
+			if (tk.type == Token.Type.OBRACE && tk.intValue == 2) {
 				/*
 				 * Open a preshunt group.
 				 */
 				curBraceCount += 1;
 
-				if(curBraceCount != 1) {
+				if (curBraceCount != 1) {
 					/*
 					 * Push the old group onto the group
 					 * stack.
@@ -649,11 +653,11 @@ public class DiceLangEngine {
 				}
 
 				curBracedTokens = new FunctionalList<>();
-			} else if(tk.type == Token.Type.CBRACE && tk.intValue == 2) {
+			} else if (tk.type == Token.Type.CBRACE && tk.intValue == 2) {
 				/*
 				 * Close a preshunt group.
 				 */
-				if(curBraceCount == 0) {
+				if (curBraceCount == 0) {
 					/*
 					 * Error if there couldn't have been an
 					 * opening.
@@ -664,21 +668,21 @@ public class DiceLangEngine {
 
 				curBraceCount -= 1;
 
-				IList<Token> preshuntTokens = new FunctionalList<>();
+				final IList<Token> preshuntTokens = new FunctionalList<>();
 
 				/*
 				 * Shunt preshunt group.
 				 */
-				boolean success = shunt.shuntTokens(curBracedTokens, preshuntTokens);
+				final boolean success = shunt.shuntTokens(curBracedTokens, preshuntTokens);
 
-				if(debugMode) {
+				if (debugMode) {
 					System.out.println("\t\tPreshunted " + curBracedTokens + " into "
 							+ preshuntTokens);
 				}
 
-				if(!success) return false;
+				if (!success) return false;
 
-				if(curBraceCount >= 1) {
+				if (curBraceCount >= 1) {
 					/*
 					 * Add the preshunt group to the
 					 * previous group.
@@ -698,7 +702,7 @@ public class DiceLangEngine {
 				 * Add the token to the active preshunt group,
 				 * if there is one..
 				 */
-				if(curBraceCount >= 1) {
+				if (curBraceCount >= 1) {
 					curBracedTokens.add(tk);
 				} else {
 					preparedTokens.add(tk);
@@ -706,7 +710,7 @@ public class DiceLangEngine {
 			}
 		}
 
-		if(curBraceCount > 0) {
+		if (curBraceCount > 0) {
 			/*
 			 * There was an unclosed group.
 			 */
@@ -717,11 +721,11 @@ public class DiceLangEngine {
 		return true;
 	}
 
-	String getStringLiteral(int key) {
+	String getStringLiteral(final int key) {
 		return stringLits.get(key);
 	}
 
-	void addStringLiteral(int key, String val) {
+	void addStringLiteral(final int key, final String val) {
 		stringLits.put(key, val);
 	}
 }

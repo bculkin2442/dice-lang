@@ -1,5 +1,9 @@
 package bjc.dicelang.scl;
 
+import static bjc.dicelang.Errors.ErrorKey.EK_STRM_INVCOM;
+import static bjc.dicelang.Errors.ErrorKey.EK_STRM_LAST;
+import static bjc.dicelang.Errors.ErrorKey.EK_STRM_NONEX;
+
 import bjc.dicelang.DiceLangEngine;
 import bjc.dicelang.Errors;
 import bjc.utils.esodata.SingleTape;
@@ -8,10 +12,6 @@ import bjc.utils.esodata.TapeLibrary;
 import bjc.utils.funcdata.FunctionalList;
 import bjc.utils.funcdata.IList;
 import bjc.utils.funcutils.ListUtils;
-
-import static bjc.dicelang.Errors.ErrorKey.EK_STRM_INVCOM;
-import static bjc.dicelang.Errors.ErrorKey.EK_STRM_LAST;
-import static bjc.dicelang.Errors.ErrorKey.EK_STRM_NONEX;
 
 /**
  * Implements multiple interleaved parse streams, as well as a command language
@@ -42,7 +42,7 @@ public class StreamEngine {
 	/*
 	 * Handler for SCL programs
 	 */
-	private StreamControlEngine scleng;
+	private final StreamControlEngine scleng;
 
 	/**
 	 * Create a new stream engine.
@@ -50,7 +50,7 @@ public class StreamEngine {
 	 * @param engine
 	 *                The dice engine we're attached to.
 	 */
-	public StreamEngine(DiceLangEngine engine) {
+	public StreamEngine(final DiceLangEngine engine) {
 		eng = engine;
 
 		savedStreams = new TapeLibrary<>();
@@ -81,7 +81,7 @@ public class StreamEngine {
 	 *
 	 * @return Whether or not the streams were successfully processed.
 	 */
-	public boolean doStreams(String[] toks, IList<String> dest) {
+	public boolean doStreams(final String[] toks, final IList<String> dest) {
 		/*
 		 * Initialize per-run state.
 		 */
@@ -95,18 +95,18 @@ public class StreamEngine {
 		/*
 		 * Process each token.
 		 */
-		for(String tk : toks) {
+		for (final String tk : toks) {
 			/*
 			 * Process stream commands.
 			 */
-			if(tk.startsWith("{@S") && !quoteMode) {
-				if(tk.equals("{@SQ}")) {
+			if (tk.startsWith("{@S") && !quoteMode) {
+				if (tk.equals("{@SQ}")) {
 					quoteMode = true;
-				} else if(!processCommand(tk)) return false;
+				} else if (!processCommand(tk)) return false;
 			} else {
-				if(tk.equals("{@SU}")) {
+				if (tk.equals("{@SU}")) {
 					quoteMode = false;
-				} else if(tk.startsWith("\\") && tk.endsWith("{@SU}")) {
+				} else if (tk.startsWith("\\") && tk.endsWith("{@SU}")) {
 					currStream.add(tk.substring(1));
 				} else {
 					currStream.add(tk);
@@ -114,7 +114,7 @@ public class StreamEngine {
 			}
 		}
 
-		for(String tk : currStream) {
+		for (final String tk : currStream) {
 			dest.add(tk);
 		}
 
@@ -134,7 +134,7 @@ public class StreamEngine {
 	 * @return Whether or not the move was successful.
 	 */
 	public boolean rightStream() {
-		if(!streams.right()) {
+		if (!streams.right()) {
 			Errors.inst.printError(EK_STRM_NONEX);
 			return false;
 		}
@@ -149,7 +149,7 @@ public class StreamEngine {
 	 * @return Whether or not the move was successful.
 	 */
 	public boolean leftStream() {
-		if(!streams.left()) {
+		if (!streams.left()) {
 			Errors.inst.printError(EK_STRM_NONEX);
 			return false;
 		}
@@ -164,13 +164,13 @@ public class StreamEngine {
 	 * @return Whether or not the delete succeeded.
 	 */
 	public boolean deleteStream() {
-		if(streams.size() == 1) {
+		if (streams.size() == 1) {
 			Errors.inst.printError(EK_STRM_LAST);
 			return false;
-		} else {
-			streams.remove();
-			currStream = streams.item();
 		}
+
+		streams.remove();
+		currStream = streams.item();
 
 		return true;
 	}
@@ -181,22 +181,22 @@ public class StreamEngine {
 	 * @return Whether or not the merge succeded.
 	 */
 	public boolean mergeStream() {
-		if(streams.size() == 1) {
+		if (streams.size() == 1) {
 			Errors.inst.printError(EK_STRM_LAST);
 			return false;
-		} else {
-			IList<String> stringLit = streams.remove();
-			currStream = streams.item();
-			currStream.add(ListUtils.collapseTokens(stringLit, " "));
 		}
+
+		final IList<String> stringLit = streams.remove();
+		currStream = streams.item();
+		currStream.add(ListUtils.collapseTokens(stringLit, " "));
 
 		return true;
 	}
 
-	private boolean processCommand(String tk) {
+	private boolean processCommand(final String tk) {
 		char[] comms = null;
 
-		if(tk.length() > 5) {
+		if (tk.length() > 5) {
 			comms = tk.substring(3, tk.length() - 1).toCharArray();
 		} else {
 			comms = new char[1];
@@ -205,30 +205,30 @@ public class StreamEngine {
 
 		boolean succ;
 
-		for(char comm : comms) {
-			switch(comm) {
+		for (final char comm : comms) {
+			switch (comm) {
 			case '+':
 				newStream();
 				break;
 			case '>':
 				succ = rightStream();
-				if(!succ) return false;
+				if (!succ) return false;
 				break;
 			case '<':
 				succ = leftStream();
-				if(!succ) return false;
+				if (!succ) return false;
 				break;
 			case '-':
 				succ = deleteStream();
-				if(!succ) return false;
+				if (!succ) return false;
 				break;
 			case 'M':
 				succ = mergeStream();
-				if(!succ) return false;
+				if (!succ) return false;
 				break;
 			case 'L':
 				succ = scleng.runProgram(currStream.toArray(new String[0]));
-				if(!succ) return false;
+				if (!succ) return false;
 				break;
 			default:
 				Errors.inst.printError(EK_STRM_INVCOM, tk);

@@ -7,7 +7,7 @@ package bjc.dicelang.dice;
  *
  */
 public class ScalarDie implements Die {
-	private long val;
+	private final long val;
 
 	/**
 	 * Create a new scalar die with a set value.
@@ -15,7 +15,7 @@ public class ScalarDie implements Die {
 	 * @param vl
 	 *                The value to use.
 	 */
-	public ScalarDie(long vl) {
+	public ScalarDie(final long vl) {
 		val = vl;
 	}
 

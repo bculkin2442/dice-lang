@@ -45,29 +45,29 @@ public class Token {
 	// TAG* (the tagged construct)
 	public IList<Token> tokenValues;
 
-	public Token(Type typ) {
+	public Token(final Type typ) {
 		type = typ;
 	}
 
-	public Token(Type typ, long val) {
+	public Token(final Type typ, final long val) {
 		this(typ);
 
 		intValue = val;
 	}
 
-	public Token(Type typ, double val) {
+	public Token(final Type typ, final double val) {
 		this(typ);
 
 		floatValue = val;
 	}
 
-	public Token(Type typ, DieExpression val) {
+	public Token(final Type typ, final DieExpression val) {
 		this(typ);
 
 		diceValue = val;
 	}
 
-	public Token(Type typ, IList<Token> tkVals) {
+	public Token(final Type typ, final IList<Token> tkVals) {
 		this(typ);
 
 		tokenValues = tkVals;
@@ -75,7 +75,7 @@ public class Token {
 
 	@Override
 	public String toString() {
-		switch(type) {
+		switch (type) {
 		case INT_LIT:
 		case STRING_LIT:
 		case VREF:
@@ -100,14 +100,14 @@ public class Token {
 	}
 
 	@Override
-	public boolean equals(Object other) {
-		if(!(other instanceof Token)) return false;
+	public boolean equals(final Object other) {
+		if (!(other instanceof Token)) return false;
 
-		Token otk = (Token) other;
+		final Token otk = (Token) other;
 
-		if(otk.type != type) return false;
+		if (otk.type != type) return false;
 
-		switch(type) {
+		switch (type) {
 		case OBRACE:
 		case OBRACKET:
 			return intValue == otk.intValue;
@@ -117,7 +117,7 @@ public class Token {
 	}
 
 	public boolean isGrouper() {
-		switch(type) {
+		switch (type) {
 		case OPAREN:
 		case OBRACE:
 		case OBRACKET:

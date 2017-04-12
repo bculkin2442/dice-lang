@@ -18,29 +18,29 @@ public class Node {
 	public GroupType	groupType;
 	public EvaluatorResult	resultVal;
 
-	public Node(Type typ) {
+	public Node(final Type typ) {
 		type = typ;
 	}
 
-	public Node(Type typ, Token tokenVl) {
+	public Node(final Type typ, final Token tokenVl) {
 		this(typ);
 
 		tokenVal = tokenVl;
 	}
 
-	public Node(Type typ, Token.Type opType) {
+	public Node(final Type typ, final Token.Type opType) {
 		this(typ);
 
 		operatorType = opType;
 	}
 
-	public Node(Type typ, GroupType grupType) {
+	public Node(final Type typ, final GroupType grupType) {
 		this(typ);
 
 		groupType = grupType;
 	}
 
-	public Node(Type typ, EvaluatorResult res) {
+	public Node(final Type typ, final EvaluatorResult res) {
 		this(typ);
 
 		resultVal = res;
@@ -48,7 +48,7 @@ public class Node {
 
 	@Override
 	public String toString() {
-		switch(type) {
+		switch (type) {
 		case UNARYOP:
 		case BINOP:
 			return "(" + type.name() + " : " + operatorType + ")";
@@ -65,14 +65,14 @@ public class Node {
 	}
 
 	@Override
-	public boolean equals(Object other) {
-		if(!(other instanceof Node)) return false;
+	public boolean equals(final Object other) {
+		if (!(other instanceof Node)) return false;
 
-		Node otk = (Node) other;
+		final Node otk = (Node) other;
 
-		if(otk.type != type) return false;
+		if (otk.type != type) return false;
 
-		switch(type) {
+		switch (type) {
 		case OGROUP:
 			return tokenVal.equals(otk.tokenVal);
 		default:
