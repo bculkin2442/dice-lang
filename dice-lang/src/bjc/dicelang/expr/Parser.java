@@ -52,6 +52,7 @@ public class Parser {
 			 */
 			final Token[] infixTokens = lex.lexString(ln, toks);
 			System.out.println("Lexed tokens: ");
+
 			for (final Token tok : infixTokens) {
 				System.out.println("\t" + tok);
 			}
@@ -60,9 +61,11 @@ public class Parser {
 			 * Print out infix expression.
 			 */
 			System.out.print("Lexed expression: ");
+
 			for (final Token tok : infixTokens) {
 				System.out.print(tok.toExpr() + " ");
 			}
+
 			System.out.println();
 			System.out.println();
 
@@ -71,6 +74,7 @@ public class Parser {
 			 */
 			final Token[] postfixTokens = Shunter.shuntTokens(infixTokens);
 			System.out.println("Lexed tokens: ");
+
 			for (final Token tok : postfixTokens) {
 				System.out.println("\t" + tok);
 			}
@@ -79,14 +83,17 @@ public class Parser {
 			 * Print out postfix tokens.
 			 */
 			System.out.print("Shunted expression: ");
+
 			for (final Token tok : postfixTokens) {
 				System.out.print(tok.toExpr() + " ");
 			}
+
 			System.out.println();
 			System.out.println();
 
 			final FunctionalList<Token> tokList = new FunctionalList<>(Arrays.asList(postfixTokens));
-			final ITree<Token> ast = TreeConstructor.constructTree(tokList, tok -> tok.typ.isOperator);
+			final ITree<Token> ast = TreeConstructor.constructTree(tokList,
+			                         tok -> tok.typ.isOperator);
 
 			/*
 			 * Print the tree, then the canonical expression for it.

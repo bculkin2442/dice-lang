@@ -86,14 +86,18 @@ public class Token {
 		case OBRACE:
 		case CBRACE:
 			return type.toString() + "(" + intValue + ")";
+
 		case FLOAT_LIT:
 			return type.toString() + "(" + floatValue + ")";
+
 		case DICE_LIT:
 			return type.toString() + "(" + diceValue + ")";
+
 		case TAGOP:
 		case TAGOPR:
 		case TOKGROUP:
 			return type.toString() + "(" + tokenValues + ")";
+
 		default:
 			return type.toString();
 		}
@@ -111,6 +115,7 @@ public class Token {
 		case OBRACE:
 		case OBRACKET:
 			return intValue == otk.intValue;
+
 		default:
 			return true;
 		}
@@ -122,6 +127,7 @@ public class Token {
 		case OBRACE:
 		case OBRACKET:
 			return true;
+
 		default:
 			return false;
 		}

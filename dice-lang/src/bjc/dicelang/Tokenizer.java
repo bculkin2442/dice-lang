@@ -89,6 +89,7 @@ public class Tokenizer {
 			case '}':
 				tk = tokenizeGrouping(token);
 				break;
+
 			default:
 				tk = tokenizeLiteral(token, stringLts);
 			}
@@ -105,21 +106,27 @@ public class Tokenizer {
 			case '(':
 				tk = new Token(OPAREN, token.length());
 				break;
+
 			case ')':
 				tk = new Token(CPAREN, token.length());
 				break;
+
 			case '[':
 				tk = new Token(OBRACKET, token.length());
 				break;
+
 			case ']':
 				tk = new Token(CBRACKET, token.length());
 				break;
+
 			case '{':
 				tk = new Token(OBRACE, token.length());
 				break;
+
 			case '}':
 				tk = new Token(CBRACE, token.length());
 				break;
+
 			default:
 				Errors.inst.printError(EK_TOK_UNGROUP, token);
 				break;
@@ -129,9 +136,12 @@ public class Tokenizer {
 		return tk;
 	}
 
-	private final Pattern	hexadecimalMatcher	= Pattern.compile("\\A[\\-\\+]?0x[0-9A-Fa-f]+\\Z");
-	private final Pattern	flexadecimalMatcher	= Pattern.compile("\\A[\\-\\+]?[0-9][0-9A-Za-z]+B\\d{1,2}\\Z");
-	private final Pattern	stringLitMatcher	= Pattern.compile("\\AstringLiteral(\\d+)\\Z");
+	private final Pattern   hexadecimalMatcher      =
+	        Pattern.compile("\\A[\\-\\+]?0x[0-9A-Fa-f]+\\Z");
+	private final Pattern   flexadecimalMatcher     =
+	        Pattern.compile("\\A[\\-\\+]?[0-9][0-9A-Za-z]+B\\d{1,2}\\Z");
+	private final Pattern   stringLitMatcher        =
+	        Pattern.compile("\\AstringLiteral(\\d+)\\Z");
 
 	private Token tokenizeLiteral(final String token, final IMap<String, String> stringLts) {
 		Token tk = Token.NIL_TOKEN;

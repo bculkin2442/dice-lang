@@ -45,7 +45,8 @@ public class Parser {
 	 *
 	 * @return Whether or not the parse was successful.
 	 */
-	public static boolean parseTokens(final IList<Token> tokens, final IList<ITree<Node>> results) {
+	public static boolean parseTokens(final IList<Token> tokens,
+	                                  final IList<ITree<Node>> results) {
 		final Deque<ITree<Node>> working = new LinkedList<>();
 
 		for (final Token tk : tokens) {
@@ -54,11 +55,15 @@ public class Parser {
 			case OBRACE:
 				working.push(new Tree<>(new Node(OGROUP, tk)));
 				break;
+
 			case CBRACKET:
 			case CBRACE:
 				final boolean sc = parseClosingGrouper(working, tk);
+
 				if (!sc) return false;
+
 				break;
+
 			case MULTIPLY:
 			case DIVIDE:
 			case IDIVIDE:
@@ -76,6 +81,7 @@ public class Parser {
 
 				handleBinaryNode(working, tk);
 				break;
+
 			case ADD:
 			case SUBTRACT:
 				if (working.size() == 0) {
@@ -92,7 +98,9 @@ public class Parser {
 				} else {
 					handleBinaryNode(working, tk);
 				}
+
 				break;
+
 			case COERCE:
 			case DICESCALAR:
 			case DICEFUDGE:
@@ -106,7 +114,9 @@ public class Parser {
 
 					working.push(opNode);
 				}
+
 				break;
+
 			case INT_LIT:
 			case FLOAT_LIT:
 			case STRING_LIT:
@@ -114,6 +124,7 @@ public class Parser {
 			case DICE_LIT:
 				working.push(new Tree<>(new Node(TOKREF, tk)));
 				break;
+
 			default:
 				Errors.inst.printError(EK_PARSE_INVTOKEN, tk.type.toString());
 				return false;
@@ -139,26 +150,31 @@ public class Parser {
 		working.push(opNode);
 	}
 
-	private static boolean parseClosingGrouper(final Deque<ITree<Node>> working, final Token tk) {
+	private static boolean parseClosingGrouper(final Deque<ITree<Node>> working,
+	                final Token tk) {
 		if (working.size() == 0) {
 			Errors.inst.printError(EK_PARSE_NOCLOSE);
 			return false;
 		}
 
 		ITree<Node> groupNode = null;
+
 		switch (tk.type) {
 		case CBRACE:
 			groupNode = new Tree<>(new Node(GROUP, Node.GroupType.CODE));
 			break;
+
 		case CBRACKET:
 			groupNode = new Tree<>(new Node(GROUP, Node.GroupType.ARRAY));
 			break;
+
 		default:
 			Errors.inst.printError(EK_PARSE_UNCLOSE, tk.type.toString());
 			return false;
 		}
 
 		Token matching = null;
+
 		if (tk.type == CBRACKET) {
 			matching = new Token(Token.Type.OBRACKET, tk.intValue);
 		} else if (tk.type == CBRACE) {
@@ -166,12 +182,14 @@ public class Parser {
 		}
 
 		final ITree<Node> matchNode = new Tree<>(new Node(OGROUP, matching));
+
 		if (!working.contains(matchNode)) {
 			Errors.inst.printError(EK_PARSE_UNCLOSE, tk.toString(), matchNode.toString());
 
 			System.out.println("\tCurrent forest is: ");
 
 			int treeNo = 1;
+
 			for (final ITree<Node> ast : working) {
 				System.out.println("Tree " + treeNo++ + ": " + ast.toString());
 			}

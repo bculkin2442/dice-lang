@@ -47,6 +47,9 @@ public class DiceLangConsole {
 	 * Run the console.
 	 */
 	public void run() {
+		/*
+		 * Set up console.
+		 */
 		try {
 			read = new ConsoleReader();
 		} catch (final IOException ioex) {
@@ -58,6 +61,9 @@ public class DiceLangConsole {
 
 		String comm = null;
 
+		/*
+		 * Read initial command.
+		 */
 		try {
 			comm = read.readLine(String.format("(%d) dice-lang> ", commandNumber));
 		} catch (final IOException ioex) {
@@ -65,9 +71,15 @@ public class DiceLangConsole {
 			return;
 		}
 
+		/*
+		 * Run commands.
+		 */
 		while (!comm.equals("quit") && !comm.equals("exit")) {
 			if (comm.startsWith("pragma")) {
-				final boolean success = handlePragma(comm.substring(7));
+				/*
+				 * Run pragmas.
+				 */
+				final boolean success = handlePragma(comm.substring(7)); 
 
 				if (success) {
 					System.out.println("Pragma completed succesfully");
@@ -75,7 +87,11 @@ public class DiceLangConsole {
 					System.out.println("Pragma execution failed");
 				}
 			} else {
-				System.out.printf("\tRaw command: %s\n", comm);
+				/*
+				 * Run commands.
+				 */
+				if(eng.debugMode)
+					System.out.printf("\tRaw command: %s\n", comm);
 
 				final boolean success = eng.runCommand(comm);
 
@@ -98,33 +114,50 @@ public class DiceLangConsole {
 	}
 
 	private boolean handlePragma(final String pragma) {
-		System.out.println("\tRaw pragma: " + pragma);
+		if(eng.debugMode)
+			System.out.println("\tRaw pragma: " + pragma);
 
+		/*
+		 * Grab the name from the arguments.
+		 */
 		String pragmaName = null;
 		final int firstIndex = pragma.indexOf(' ');
+
+		/*
+		 * Handle argless pragmas.
+		 */
 		if (firstIndex == -1) {
 			pragmaName = pragma;
 		} else {
 			pragmaName = pragma.substring(0, firstIndex);
 		}
 
+		/*
+		 * Run pragmas.
+		 */
 		switch (pragmaName) {
 		case "debug":
 			System.out.println("\tDebug mode is now " + eng.toggleDebug());
 			break;
+
 		case "postfix":
 			System.out.println("\tPostfix mode is now " + eng.togglePostfix());
 			break;
+
 		case "prefix":
 			System.out.println("\tPrefix mode is now " + eng.togglePrefix());
 			break;
+
 		case "stepeval":
 			System.out.println("\tStepeval mode is now" + eng.toggleStepEval());
 			break;
+
 		case "define":
 			return defineMode(pragma.substring(7));
+
 		case "help":
 			return helpMode(pragma.substring(5));
+
 		default:
 			Errors.inst.printError(EK_CONS_INVPRAG, pragma);
 			return false;
@@ -133,27 +166,36 @@ public class DiceLangConsole {
 		return true;
 	}
 
+	/*
+	 * Run a help mode.
+	 */
 	private static boolean helpMode(final String pragma) {
 		switch (pragma.trim()) {
 		case "help":
 			System.out.println("\tGet help on pragmas");
 			break;
+
 		case "debug":
 			System.out.println("\tToggle debug mode. (Output stage results)");
 			break;
+
 		case "postfix":
 			System.out.println("\tToggle postfix mode. (Don't shunt tokens)");
 			break;
+
 		case "prefix":
 			System.out.println("\tToggle prefix mode. (Reverse token order instead of shunting)");
 			break;
+
 		case "stepeval":
 			System.out.println("\tToggle stepeval mode. (Print out evaluation progress)");
 			break;
+
 		case "define":
 			System.out.println("\tAdd a macro rewrite directive.");
 			System.out.println("\tdefine <priority> <type> <recursion> <guard> <circular> <patterns>...");
 			break;
+
 		default:
 			System.out.println("\tNo help available for pragma " + pragma);
 		}
@@ -175,6 +217,9 @@ public class DiceLangConsole {
 	private final Pattern slashPattern = Pattern.compile("/((?:\\\\.|[^/\\\\])*)/");
 
 	private boolean defineMode(final String defineText) {
+		/*
+		 * Grab all of the separator spaces.
+		 */
 		final int firstIndex = defineText.indexOf(' ');
 		final int secondIndex = defineText.indexOf(' ', firstIndex + 1);
 		final int thirdIndex = defineText.indexOf(' ', secondIndex + 1);
@@ -182,6 +227,9 @@ public class DiceLangConsole {
 		final int fifthIndex = defineText.indexOf(' ', fourthIndex + 1);
 		final int sixthIndex = defineText.indexOf(' ', fifthIndex + 1);
 
+		/*
+		 * Error if we got something we didn't need.
+		 */
 		if (firstIndex == -1) {
 			Errors.inst.printError(EK_CONS_INVDEFINE, "(no priority)");
 			return false;
@@ -213,25 +261,32 @@ public class DiceLangConsole {
 		case "line":
 			type = Define.Type.LINE;
 			break;
+
 		case "token":
 			type = Define.Type.TOKEN;
 			break;
+
 		case "subline":
 			type = Define.Type.LINE;
 			subMode = true;
 			break;
+
 		case "subtoken":
 			type = Define.Type.TOKEN;
 			subMode = true;
 			break;
+
 		default:
 			Errors.inst.printError(EK_CONS_INVDEFINE, "(unknown type)");
 			return false;
 		}
 
-		final boolean doRecur = defineText.substring(secondIndex + 1, thirdIndex).equalsIgnoreCase("true");
-		final boolean hasGuard = defineText.substring(thirdIndex + 1, fourthIndex).equalsIgnoreCase("true");
-		final boolean isCircular = defineText.substring(thirdIndex + 1, fourthIndex).equalsIgnoreCase("true");
+		final boolean doRecur = defineText.substring(secondIndex + 1,
+		                        thirdIndex).equalsIgnoreCase("true");
+		final boolean hasGuard = defineText.substring(thirdIndex + 1,
+		                         fourthIndex).equalsIgnoreCase("true");
+		final boolean isCircular = defineText.substring(thirdIndex + 1,
+		                           fourthIndex).equalsIgnoreCase("true");
 
 		final String pats = defineText.substring(fifthIndex + 1).trim();
 		final Matcher patMatcher = slashPattern.matcher(pats);
@@ -259,8 +314,9 @@ public class DiceLangConsole {
 			replacePatterns.add(patMatcher.group(1));
 		}
 
-		final Define dfn = new Define(priority, subMode, doRecur, isCircular, guardPattern, searchPattern,
-				replacePatterns);
+		final Define dfn = new Define(priority, subMode, doRecur, isCircular, guardPattern,
+		                              searchPattern,
+		                              replacePatterns);
 
 		if (dfn.inError) return false;
 

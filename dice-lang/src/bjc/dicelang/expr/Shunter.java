@@ -41,6 +41,7 @@ public class Shunter {
 				int leftPriority = tok.typ.operatorPriority;
 
 				int rightPriority;
+
 				if (curOp == null) {
 					rightPriority = 0;
 				} else {

@@ -7,8 +7,8 @@ package bjc.dicelang.dice;
  *
  */
 public class SimpleDie implements Die {
-	private final Die	numDice;
-	private final Die	diceSize;
+	private final Die       numDice;
+	private final Die       diceSize;
 
 	/**
 	 * Create a new dice group.

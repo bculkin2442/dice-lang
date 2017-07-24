@@ -13,8 +13,8 @@ import java.util.function.Predicate;
 public class CompoundingDie implements Die {
 	private final Die source;
 
-	private final Predicate<Long>	compoundOn;
-	private final String		compoundPattern;
+	private final Predicate<Long>   compoundOn;
+	private final String            compoundPattern;
 
 	/**
 	 * Create a new compounding die with no pattern.

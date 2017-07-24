@@ -41,6 +41,7 @@ public class DiceBox {
 			final String[] dieParts = expString.split("d");
 
 			final long right = Long.parseLong(dieParts[1]);
+
 			if (dieParts[0].equals("")) {
 				/*
 				 * Handle short-form expressions.
@@ -131,16 +132,18 @@ public class DiceBox {
 	 *
 	 * This is just a number.
 	 */
-	private static final String	scalarDie		= "[\\+\\-]?\\d+sd";
-	private static final Pattern	scalarDiePattern	= Pattern.compile("\\A" + scalarDie + "\\Z");
+	private static final String     scalarDie               = "[\\+\\-]?\\d+sd";
+	private static final Pattern    scalarDiePattern        = Pattern.compile("\\A" +
+	                scalarDie + "\\Z");
 
 	/*
 	 * Defines a simple die.
 	 *
 	 * This is a group of one or more dice of the same size.
 	 */
-	private static final String	simpleDie		= "(?:\\d+)?d\\d+";
-	private static final Pattern	simpleDiePattern	= Pattern.compile("\\A" + simpleDie + "\\Z");
+	private static final String     simpleDie               = "(?:\\d+)?d\\d+";
+	private static final Pattern    simpleDiePattern        = Pattern.compile("\\A" +
+	                simpleDie + "\\Z");
 
 	/*
 	 * Defines a fudge die.
@@ -148,24 +151,28 @@ public class DiceBox {
 	 * This is like a simple die, but all the die give -1, 0, or 1 as
 	 * results.
 	 */
-	private static final String	fudgeDie	= "(?:\\d+)?dF";
-	private static final Pattern	fudgeDiePattern	= Pattern.compile("\\A" + fudgeDie + "\\Z");
+	private static final String     fudgeDie        = "(?:\\d+)?dF";
+	private static final Pattern    fudgeDiePattern = Pattern.compile("\\A" + fudgeDie +
+	                "\\Z");
 
 	/*
 	 * Defines a compound die.
 	 *
 	 * This is like using two d10's to simulate a d100
 	 */
-	private static final String	compoundDie		= simpleDie + "c(?:(?:" + simpleDie + ")|(?:\\d+))";
-	private static final Pattern	compoundDiePattern	= Pattern.compile("\\A" + compoundDie + "\\Z");
+	private static final String     compoundDie             = simpleDie + "c(?:(?:" +
+	                simpleDie + ")|(?:\\d+))";
+	private static final Pattern    compoundDiePattern      = Pattern.compile("\\A" +
+	                compoundDie + "\\Z");
 
 	/*
 	 * Defines a compound group.
 	 *
 	 * This is used for forming die list type expressions.
 	 */
-	private static final String compoundGroup = "(?:(?:" + scalarDie + ")|(?:" + simpleDie + ")|(?:" + compoundDie
-			+ ")|(?:" + fudgeDie + "))";
+	private static final String compoundGroup = "(?:(?:" + scalarDie + ")|(?:" + simpleDie +
+	                ")|(?:" + compoundDie
+	                + ")|(?:" + fudgeDie + "))";
 
 	/*
 	 * Defines a compounding die.
@@ -173,8 +180,10 @@ public class DiceBox {
 	 * This is like an exploding die, but is a single die, not a group of
 	 * them.
 	 */
-	private static final String	compoundingDie		= compoundGroup + "!!" + comparePoint;
-	private static final Pattern	compoundingDiePattern	= Pattern.compile("\\A" + compoundingDie + "\\Z");
+	private static final String     compoundingDie          = compoundGroup + "!!" +
+	                comparePoint;
+	private static final Pattern    compoundingDiePattern   = Pattern.compile("\\A" +
+	                compoundingDie + "\\Z");
 
 	/*
 	 * Defines an exploding die.
@@ -182,8 +191,10 @@ public class DiceBox {
 	 * This is a die that you reroll the component of if it meets a certain
 	 * condition.
 	 */
-	private static final String	explodingDie		= compoundGroup + "!" + comparePoint;
-	private static final Pattern	explodingDiePattern	= Pattern.compile("\\A" + explodingDie + "\\Z");
+	private static final String     explodingDie            = compoundGroup + "!" +
+	                comparePoint;
+	private static final Pattern    explodingDiePattern     = Pattern.compile("\\A" +
+	                explodingDie + "\\Z");
 
 	/*
 	 * Defines a penetrating die.
@@ -191,16 +202,19 @@ public class DiceBox {
 	 * This is like an exploding die, but the exploded result gets a -1
 	 * penalty.
 	 */
-	private static final String	penetratingDie		= compoundGroup + "!" + comparePoint;
-	private static final Pattern	penetratingDiePattern	= Pattern.compile("\\A" + penetratingDie + "\\Z");
+	private static final String     penetratingDie          = compoundGroup + "!" +
+	                comparePoint;
+	private static final Pattern    penetratingDiePattern   = Pattern.compile("\\A" +
+	                penetratingDie + "\\Z");
 
 	/*
 	 * Defines a die list.
 	 *
 	 * This is an array of dice of the specified size.
 	 */
-	private static final String	diceList	= compoundGroup + "dl" + compoundGroup;
-	private static final Pattern	diceListPattern	= Pattern.compile("\\A" + diceList + "\\Z");
+	private static final String     diceList        = compoundGroup + "dl" + compoundGroup;
+	private static final Pattern    diceListPattern = Pattern.compile("\\A" + diceList +
+	                "\\Z");
 
 	/**
 	 * Check if a given string is a valid die expression.
@@ -239,10 +253,13 @@ public class DiceBox {
 		switch (patt.charAt(0)) {
 		case '<':
 			return (roll) -> roll < num;
+
 		case '=':
 			return (roll) -> roll == num;
+
 		case '>':
 			return (roll) -> roll > num;
+
 		default:
 			return (roll) -> false;
 		}

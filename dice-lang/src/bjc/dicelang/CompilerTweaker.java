@@ -11,8 +11,8 @@ public class CompilerTweaker {
 	/*
 	 * Bits of the compiler necessary
 	 */
-	private final DiceLangEngine		eng;
-	private final ConfigurableTokenSplitter	opExpander;
+	private final DiceLangEngine            eng;
+	private final ConfigurableTokenSplitter opExpander;
 
 	/**
 	 * Create a new compiler tweaker.

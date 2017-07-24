@@ -33,6 +33,8 @@ import bjc.utils.parserutils.splitter.ConfigurableTokenSplitter;
  * @author Ben Culkin
  */
 public class DiceLangEngine {
+	public boolean debug = true;
+
 	/*
 	 * The random fields that are package private instead of private-private
 	 * are for the benefit of the tweaker, so that it can mess around with
@@ -52,7 +54,7 @@ public class DiceLangEngine {
 	/*
 	 * Debug indicator.
 	 */
-	private boolean debugMode;
+	public boolean debugMode;
 	/*
 	 * Should we do shunting?
 	 */
@@ -91,14 +93,14 @@ public class DiceLangEngine {
 	 */
 	public final IMap<Integer, String> symTable;
 
-	private final IMap<Integer, String>	stringLits;
-	private final IMap<String, String>	stringLiterals;
+	private final IMap<Integer, String>     stringLits;
+	private final IMap<String, String>      stringLiterals;
 
 	/*
 	 * Lists of defns.
 	 */
-	private final IList<Define>	lineDefns;
-	private final IList<Define>	tokenDefns;
+	private final IList<Define>     lineDefns;
+	private final IList<Define>     tokenDefns;
 
 	/*
 	 * Are defns sorted by priority?
@@ -252,7 +254,8 @@ public class DiceLangEngine {
 	/*
 	 * Matches double-angle bracketed strings.
 	 */
-	private final Pattern nonExpandPattern = Pattern.compile("<<([^\\>]*(?:\\>(?:[^\\>])*)*)>>");
+	private final Pattern nonExpandPattern =
+	        Pattern.compile("<<([^\\>]*(?:\\>(?:[^\\>])*)*)>>");
 
 	/**
 	 * Run a command to completion.
@@ -394,16 +397,22 @@ public class DiceLangEngine {
 		switch (tk.type) {
 		case OBRACE:
 			return new Token(CBRACE, tk.intValue);
+
 		case OPAREN:
 			return new Token(CPAREN, tk.intValue);
+
 		case OBRACKET:
 			return new Token(CBRACKET, tk.intValue);
+
 		case CBRACE:
 			return new Token(OBRACE, tk.intValue);
+
 		case CPAREN:
 			return new Token(OPAREN, tk.intValue);
+
 		case CBRACKET:
 			return new Token(OBRACKET, tk.intValue);
+
 		default:
 			return tk;
 		}
@@ -537,7 +546,7 @@ public class DiceLangEngine {
 
 		if (debugMode) {
 			System.out.printf("\tCommand after non-expander reinsertion: %s\n",
-					fullyExpandedTokens.toString());
+			                  fullyExpandedTokens.toString());
 		}
 
 		return fullyExpandedTokens;
@@ -625,7 +634,8 @@ public class DiceLangEngine {
 	/*
 	 * Preshunt preshunt-marked groups of tokens.
 	 */
-	private boolean removePreshuntTokens(final IList<Token> lexedTokens, final IList<Token> preparedTokens) {
+	private boolean removePreshuntTokens(final IList<Token> lexedTokens,
+	                                     final IList<Token> preparedTokens) {
 		/*
 		 * Current nesting level of tokens.
 		 */
@@ -677,7 +687,7 @@ public class DiceLangEngine {
 
 				if (debugMode) {
 					System.out.println("\t\tPreshunted " + curBracedTokens + " into "
-							+ preshuntTokens);
+					                   + preshuntTokens);
 				}
 
 				if (!success) return false;

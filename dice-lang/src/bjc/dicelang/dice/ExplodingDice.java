@@ -21,9 +21,9 @@ public class ExplodingDice implements DieList {
 	/*
 	 * The conditions for exploding.
 	 */
-	private final Predicate<Long>	explodeOn;
-	private final String		explodePattern;
-	private final boolean		explodePenetrates;
+	private final Predicate<Long>   explodeOn;
+	private final String            explodePattern;
+	private final boolean           explodePenetrates;
 
 	/**
 	 * Create a new exploding die.
@@ -48,7 +48,8 @@ public class ExplodingDice implements DieList {
 	 *                Whether or not for explosions to penetrate (-1 to
 	 *                exploded die).
 	 */
-	public ExplodingDice(final Die src, final Predicate<Long> explode, final boolean penetrate) {
+	public ExplodingDice(final Die src, final Predicate<Long> explode,
+	                     final boolean penetrate) {
 		this(src, explode, null, penetrate);
 	}
 
@@ -65,7 +66,8 @@ public class ExplodingDice implements DieList {
 	 * @param patt
 	 *                The string the condition came from, for printing.
 	 */
-	public ExplodingDice(final Die src, final Predicate<Long> explode, final String patt, final boolean penetrate) {
+	public ExplodingDice(final Die src, final Predicate<Long> explode, final String patt,
+	                     final boolean penetrate) {
 		source = src;
 		explodeOn = explode;
 		explodePattern = patt;
@@ -95,6 +97,7 @@ public class ExplodingDice implements DieList {
 			if (explodePenetrates) {
 				oldRes -= 1;
 			}
+
 			resList.add(oldRes);
 		}
 
@@ -102,6 +105,7 @@ public class ExplodingDice implements DieList {
 		newRes[0] = res;
 
 		int i = 1;
+
 		for (final long rll : resList) {
 			newRes[i] = rll;
 			i += 1;

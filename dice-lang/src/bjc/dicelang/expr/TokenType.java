@@ -44,11 +44,11 @@ public enum TokenType {
 	/**
 	 * Whether or not this type of token is an operator.
 	 */
-	public final boolean	isOperator;
+	public final boolean    isOperator;
 	/**
 	 * The priority of this operator, if it is one.
 	 */
-	public final int	operatorPriority;
+	public final int        operatorPriority;
 
 	private TokenType(final int num, final boolean isOp, final int priority) {
 		nVal = num;

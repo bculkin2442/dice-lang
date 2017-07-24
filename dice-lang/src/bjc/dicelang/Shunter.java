@@ -73,19 +73,19 @@ public class Shunter {
 	/**
 	 * Precedence for math operators.
 	 */
-	public final int	MATH_PREC	= 30;
+	public final int        MATH_PREC       = 30;
 	/**
 	 * Precedence for dice operators.
 	 */
-	public final int	DICE_PREC	= 20;
+	public final int        DICE_PREC       = 20;
 	/**
 	 * Precedence for string operators.
 	 */
-	public final int	STR_PREC	= 10;
+	public final int        STR_PREC        = 10;
 	/**
 	 * Precedence for expression operators.
 	 */
-	public final int	EXPR_PREC	= 0;
+	public final int        EXPR_PREC       = 0;
 
 	/**
 	 * Create a new shunter.
@@ -168,8 +168,9 @@ public class Shunter {
 		return true;
 	}
 
-	private boolean shuntToken(final Token tk, final Deque<Token> opStack, final Deque<Token> unaryStack,
-			final Deque<Token> currReturned, final Deque<Token> feed) {
+	private boolean shuntToken(final Token tk, final Deque<Token> opStack,
+	                           final Deque<Token> unaryStack,
+	                           final Deque<Token> currReturned, final Deque<Token> feed) {
 		if (unaryStack.size() != 0) {
 			if (isUnary(tk)) {
 				unaryStack.add(tk);
@@ -247,9 +248,11 @@ public class Shunter {
 			case CPAREN:
 				matching = new Token(OPAREN, tk.intValue);
 				break;
+
 			case CBRACE:
 				matching = new Token(OBRACE, tk.intValue);
 				break;
+
 			default:
 				Errors.inst.printError(EK_SHUNT_NOGROUP);
 				return false;
@@ -330,9 +333,13 @@ public class Shunter {
 		final Token.Type ty = tk.type;
 
 		if (ops.containsKey(ty)) return true;
+
 		if (unaryAdjectives.contains(ty)) return true;
+
 		if (unaryAdverbs.contains(ty)) return true;
+
 		if (unaryGerunds.contains(ty)) return true;
+
 		if (ty == TAGOPR) return true;
 
 		return false;
@@ -342,7 +349,9 @@ public class Shunter {
 		final Token.Type ty = tk.type;
 
 		if (unaryAdjectives.contains(ty)) return true;
+
 		if (unaryAdverbs.contains(ty)) return true;
+
 		if (unaryGerunds.contains(ty)) return true;
 
 		return false;

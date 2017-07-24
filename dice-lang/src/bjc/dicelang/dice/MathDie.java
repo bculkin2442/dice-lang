@@ -32,10 +32,13 @@ public class MathDie implements Die {
 			switch (this) {
 			case ADD:
 				return "+";
+
 			case SUBTRACT:
 				return "-";
+
 			case MULTIPLY:
 				return "*";
+
 			default:
 				return this.name();
 			}
@@ -44,8 +47,8 @@ public class MathDie implements Die {
 
 	private final MathDie.MathOp type;
 
-	private final Die	left;
-	private final Die	right;
+	private final Die       left;
+	private final Die       right;
 
 	/**
 	 * Create a new math die.
@@ -75,10 +78,13 @@ public class MathDie implements Die {
 		switch (type) {
 		case ADD:
 			return lft + rght;
+
 		case SUBTRACT:
 			return lft - rght;
+
 		case MULTIPLY:
 			return lft * rght;
+
 		default:
 			return 0;
 		}

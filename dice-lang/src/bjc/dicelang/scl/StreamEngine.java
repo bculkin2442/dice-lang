@@ -31,8 +31,8 @@ public class StreamEngine {
 	/*
 	 * Our streams.
 	 */
-	Tape<IList<String>>	streams;
-	IList<String>		currStream;
+	Tape<IList<String>>     streams;
+	IList<String>           currStream;
 
 	/*
 	 * Saved streams
@@ -210,26 +210,42 @@ public class StreamEngine {
 			case '+':
 				newStream();
 				break;
+
 			case '>':
 				succ = rightStream();
+
 				if (!succ) return false;
+
 				break;
+
 			case '<':
 				succ = leftStream();
+
 				if (!succ) return false;
+
 				break;
+
 			case '-':
 				succ = deleteStream();
+
 				if (!succ) return false;
+
 				break;
+
 			case 'M':
 				succ = mergeStream();
+
 				if (!succ) return false;
+
 				break;
+
 			case 'L':
 				succ = scleng.runProgram(currStream.toArray(new String[0]));
+
 				if (!succ) return false;
+
 				break;
+
 			default:
 				Errors.inst.printError(EK_STRM_INVCOM, tk);
 				return false;

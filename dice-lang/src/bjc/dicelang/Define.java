@@ -44,20 +44,20 @@ public class Define implements UnaryOperator<String>, Comparable<Define> {
 	/**
 	 * The priority of this definition.
 	 */
-	public final int	priority;
+	public final int        priority;
 	/**
 	 * Whether or not this definition is in error.
 	 */
-	public final boolean	inError;
+	public final boolean    inError;
 
-	private boolean	doRecur;
-	private boolean	subType;
+	private boolean doRecur;
+	private boolean subType;
 
-	private Pattern	predicate;
-	private Pattern	searcher;
+	private Pattern predicate;
+	private Pattern searcher;
 
-	private Iterator<String>	replacers;
-	private String			replacer;
+	private Iterator<String>        replacers;
+	private String                  replacer;
 
 	/**
 	 * Create a new define.
@@ -83,8 +83,9 @@ public class Define implements UnaryOperator<String>, Comparable<Define> {
 	 * @param replacrs
 	 *                The source for replacement strings.
 	 */
-	public Define(final int priorty, final boolean isSub, final boolean recur, final boolean isCircular,
-			final String predicte, final String searchr, final Iterable<String> replacrs) {
+	public Define(final int priorty, final boolean isSub, final boolean recur,
+	              final boolean isCircular,
+	              final String predicte, final String searchr, final Iterable<String> replacrs) {
 		priority = priorty;
 		doRecur = recur;
 		subType = isSub;
@@ -114,6 +115,7 @@ public class Define implements UnaryOperator<String>, Comparable<Define> {
 		}
 
 		inError = false;
+
 		/*
 		 * Check whether or not we do sub-replacements
 		 */
@@ -170,6 +172,7 @@ public class Define implements UnaryOperator<String>, Comparable<Define> {
 
 		if (subType) {
 			final StringBuffer sb = new StringBuffer();
+
 			while (searcherMatcher.find()) {
 				if (replacers == null) {
 					searcherMatcher.appendReplacement(sb, "");

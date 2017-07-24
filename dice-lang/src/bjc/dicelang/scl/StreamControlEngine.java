@@ -174,8 +174,8 @@ public class StreamControlEngine {
 			}
 		}
 
-		private static final Map<String, Token.Type>	litTokens;
-		private static final Map<String, Token.Type>	builtinWords;
+		private static final Map<String, Token.Type>    litTokens;
+		private static final Map<String, Token.Type>    builtinWords;
 
 		static {
 			litTokens = new HashMap<>();
@@ -242,21 +242,31 @@ public class StreamControlEngine {
 			switch (tok.type) {
 			case SQUOTE:
 				i = handleSingleQuote(i, tokens);
+
 				if (i == -1) return false;
+
 				break;
+
 			case OBRACKET:
 				i = handleDelim(i, tokens, "]");
+
 				if (i == -1) return false;
+
 				break;
+
 			case OBRACE:
 				i = handleDelim(i, tokens, "}");
+
 				if (i == -1) return false;
+
 				final Token brak = curStack.pop();
 				curStack.push(new Token(ARRAY, brak.tokenVals));
 				break;
+
 			case WORD:
 				handleWord(tok);
 				break;
+
 			default:
 				curStack.push(tok);
 				break;
@@ -273,51 +283,80 @@ public class StreamControlEngine {
 		case NEWSTREAM:
 			eng.newStream();
 			break;
+
 		case LEFTSTREAM:
 			succ = eng.leftStream();
+
 			if (!succ) return false;
+
 			break;
+
 		case RIGHTSTREAM:
 			succ = eng.rightStream();
+
 			if (!succ) return false;
+
 			break;
+
 		case DELETESTREAM:
 			succ = eng.deleteStream();
+
 			if (!succ) return false;
+
 			break;
+
 		case MERGESTREAM:
 			succ = eng.mergeStream();
+
 			if (!succ) return false;
+
 			break;
+
 		case MAKEARRAY:
 			succ = makeArray();
+
 			if (!succ) return false;
+
 			break;
+
 		case MAKEEXEC:
 			succ = toggleExec(true);
+
 			if (!succ) return false;
+
 			break;
+
 		case MAKEUNEXEC:
 			succ = toggleExec(false);
+
 			if (!succ) return false;
+
 			break;
+
 		case STACKCOUNT:
 			curStack.push(new Token(ILIT, curStack.size()));
 			break;
+
 		case STACKEMPTY:
 			curStack.push(new Token(BLIT, curStack.empty()));
 			break;
+
 		case DROP:
 			if (curStack.size() == 0) {
 				Errors.inst.printError(EK_SCL_SUNDERFLOW, tk.tokenVal.type.toString());
 				return false;
 			}
+
 			curStack.drop();
 			break;
+
 		case NDROP:
 			succ = handleNDrop();
+
 			if (!succ) return false;
+
 			break;
+
 		case NIP:
 			if (curStack.size() < 2) {
 				Errors.inst.printError(EK_SCL_SUNDERFLOW, tk.tokenVal.type.toString());
@@ -326,10 +365,14 @@ public class StreamControlEngine {
 
 			curStack.nip();
 			break;
+
 		case NNIP:
 			succ = handleNNip();
+
 			if (!succ) return false;
+
 			break;
+
 		default:
 			Errors.inst.printError(EK_SCL_UNWORD, tk.tokenVal.type.toString());
 			return false;
@@ -420,10 +463,12 @@ public class StreamControlEngine {
 		final IList<Token> toks = new FunctionalList<>();
 
 		int n = i + 1;
+
 		if (n >= tokens.length) {
 			Errors.inst.printError(EK_SCL_MMQUOTE);
 			return -1;
 		}
+
 		String tok = tokens[n];
 
 		while (!tok.equals(delim)) {
@@ -432,31 +477,43 @@ public class StreamControlEngine {
 			switch (ntok.type) {
 			case SQUOTE:
 				n = handleSingleQuote(n, tokens);
+
 				if (n == -1) return -1;
+
 				toks.add(curStack.pop());
 				break;
+
 			case OBRACKET:
 				n = handleDelim(n, tokens, "]");
+
 				if (n == -1) return -1;
+
 				toks.add(curStack.pop());
 				break;
+
 			case OBRACE:
 				n = handleDelim(i, tokens, "}");
+
 				if (n == -1) return -1;
+
 				final Token brak = curStack.pop();
 				toks.add(new Token(ARRAY, brak.tokenVals));
 				break;
+
 			default:
 				toks.add(ntok);
 			}
+
 			/*
 			 * Move to the next token
 			 */
 			n += 1;
+
 			if (n >= tokens.length) {
 				Errors.inst.printError(EK_SCL_MMQUOTE);
 				return -1;
 			}
+
 			tok = tokens[n];
 		}
 
@@ -474,10 +531,12 @@ public class StreamControlEngine {
 		final StringBuilder sb = new StringBuilder();
 
 		int n = i + 1;
+
 		if (n >= tokens.length) {
 			Errors.inst.printError(EK_SCL_MMQUOTE);
 			return -1;
 		}
+
 		String tok = tokens[n];
 
 		while (!tok.equals("'")) {
@@ -494,10 +553,12 @@ public class StreamControlEngine {
 			 * Move to the next token
 			 */
 			n += 1;
+
 			if (n >= tokens.length) {
 				Errors.inst.printError(EK_SCL_MMQUOTE);
 				return -1;
 			}
+
 			tok = tokens[n];
 		}
 

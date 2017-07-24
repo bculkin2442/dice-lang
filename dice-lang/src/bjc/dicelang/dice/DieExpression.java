@@ -16,11 +16,11 @@ public class DieExpression {
 	/**
 	 * The scalar value in this expression, if there is one.
 	 */
-	public Die	scalar;
+	public Die      scalar;
 	/**
 	 * The list value in this expression, if there is one.
 	 */
-	public DieList	list;
+	public DieList  list;
 
 	/**
 	 * Create a scalar die expression.

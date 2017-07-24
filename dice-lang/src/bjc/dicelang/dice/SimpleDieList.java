@@ -7,8 +7,8 @@ package bjc.dicelang.dice;
  *
  */
 public class SimpleDieList implements DieList {
-	private final Die	numDice;
-	private final Die	size;
+	private final Die       numDice;
+	private final Die       size;
 
 	/**
 	 * Create a new list of dice.

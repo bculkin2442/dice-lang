@@ -70,18 +70,25 @@ public class Token {
 		switch (typ) {
 		case ADD:
 			return "+";
+
 		case SUBTRACT:
 			return "-";
+
 		case MULTIPLY:
 			return "*";
+
 		case DIVIDE:
 			return "/";
+
 		case VREF:
 			return tks.symbolTable.get(intValue);
+
 		case OPAREN:
 			return "(";
+
 		case CPAREN:
 			return ")";
+
 		default:
 			return "???";
 		}

@@ -13,10 +13,10 @@ public class Node {
 	public final Type type;
 
 	// These can have or not have values based of the node type
-	public Token		tokenVal;
-	public Token.Type	operatorType;
-	public GroupType	groupType;
-	public EvaluatorResult	resultVal;
+	public Token            tokenVal;
+	public Token.Type       operatorType;
+	public GroupType        groupType;
+	public EvaluatorResult  resultVal;
 
 	public Node(final Type typ) {
 		type = typ;
@@ -52,13 +52,17 @@ public class Node {
 		case UNARYOP:
 		case BINOP:
 			return "(" + type.name() + " : " + operatorType + ")";
+
 		case OGROUP:
 		case TOKREF:
 			return "(" + type.name() + " : " + tokenVal + ")";
+
 		case GROUP:
 			return "(" + type.name() + " : " + groupType + ")";
+
 		case RESULT:
 			return "(" + type.name() + " : " + resultVal + ")";
+
 		default:
 			return "Unknown node type " + type;
 		}
@@ -75,6 +79,7 @@ public class Node {
 		switch (type) {
 		case OGROUP:
 			return tokenVal.equals(otk.tokenVal);
+
 		default:
 			return true;
 		}

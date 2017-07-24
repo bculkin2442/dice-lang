@@ -52,19 +52,19 @@ public class EvaluatorResult {
 	/**
 	 * The integer value of the result.
 	 */
-	public long		intVal;
+	public long             intVal;
 	/**
 	 * The float value of the result.
 	 */
-	public double		floatVal;
+	public double           floatVal;
 	/**
 	 * The dice value of the result.
 	 */
-	public DieExpression	diceVal;
+	public DieExpression    diceVal;
 	/**
 	 * The string value of the result.
 	 */
-	public String		stringVal;
+	public String           stringVal;
 
 	/**
 	 * Original node data
@@ -196,14 +196,19 @@ public class EvaluatorResult {
 		switch (type) {
 		case INT:
 			return type.toString() + "(" + intVal + ")";
+
 		case FLOAT:
 			return type.toString() + "(" + floatVal + ")";
+
 		case DICE:
 			return type.toString() + "(" + diceVal + ")";
+
 		case STRING:
 			return type.toString() + "(" + stringVal + ")";
+
 		case FAILURE:
 			return type.toString();
+
 		default:
 			return "Unknown result type " + type.toString();
 		}

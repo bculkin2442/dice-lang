@@ -51,64 +51,87 @@ public class CLIArgsParser {
 				if (!eng.toggleDebug()) {
 					eng.toggleDebug();
 				}
+
 				break;
+
 			case "-nd":
 			case "--no-debug":
 				if (eng.toggleDebug()) {
 					eng.toggleDebug();
 				}
+
 				break;
+
 			case "-po":
 			case "--postfix":
 				if (!eng.togglePostfix()) {
 					eng.togglePostfix();
 				}
+
 				break;
+
 			case "-npo":
 			case "--no-postfix":
 				if (eng.togglePostfix()) {
 					eng.togglePostfix();
 				}
+
 				break;
+
 			case "-pr":
 			case "--prefix":
 				if (!eng.togglePrefix()) {
 					eng.togglePrefix();
 				}
+
 				break;
+
 			case "-npr":
 			case "--no-prefix":
 				if (eng.togglePrefix()) {
 					eng.togglePrefix();
 				}
+
 				break;
+
 			case "-se":
 			case "--stepeval":
 				if (!eng.toggleStepEval()) {
 					eng.toggleStepEval();
 				}
+
 				break;
+
 			case "-nse":
 			case "--no-stepeval":
 				if (eng.toggleStepEval()) {
 					eng.toggleStepEval();
 				}
+
 				break;
+
 			case "-D":
 			case "--define":
 				i = simpleDefine(i, args, eng);
+
 				if (i == -1) return false;
+
 				break;
+
 			case "-df":
 			case "--define-file":
 				i = defineFile(i, args, eng);
+
 				if (i == -1) return false;
+
 				break;
+
 			case "-ctf":
 			case "--compiler-tweak-file":
-				/*
-				 * @TODO not yet implemented
-				 */
+
+			/*
+			 * @TODO not yet implemented
+			 */
 			default:
 				Errors.inst.printError(EK_CLI_UNARG, arg);
 				return false;
@@ -118,14 +141,16 @@ public class CLIArgsParser {
 		return true;
 	}
 
-	private static int simpleDefine(final int i, final String[] args, final DiceLangEngine eng) {
+	private static int simpleDefine(final int i, final String[] args,
+	                                final DiceLangEngine eng) {
 		if (i >= args.length - 1) {
 			Errors.inst.printError(EK_CLI_MISARG, "define");
 			return -1;
 		}
 
 		if (i >= args.length - 2) {
-			final Define dfn = new Define(5, false, false, false, null, args[i + 1], Arrays.asList(""));
+			final Define dfn = new Define(5, false, false, false, null, args[i + 1],
+			                              Arrays.asList(""));
 
 			if (dfn.inError) return -1;
 
@@ -133,7 +158,8 @@ public class CLIArgsParser {
 			return i + 1;
 		}
 
-		final Define dfn = new Define(5, false, false, false, null, args[i + 1], Arrays.asList(args[i + 2]));
+		final Define dfn = new Define(5, false, false, false, null, args[i + 1],
+		                              Arrays.asList(args[i + 2]));
 
 		if (dfn.inError) return -1;
 
@@ -141,7 +167,8 @@ public class CLIArgsParser {
 		return i + 2;
 	}
 
-	private static int defineFile(final int i, final String[] args, final DiceLangEngine eng) {
+	private static int defineFile(final int i, final String[] args,
+	                              final DiceLangEngine eng) {
 		if (i >= args.length - 1) {
 			Errors.inst.printError(EK_CLI_MISARG, "define-file");
 			return -1;
@@ -155,6 +182,7 @@ public class CLIArgsParser {
 					final String ln = scan.nextLine();
 
 					final Define dfn = parseDefine(ln.substring(ln.indexOf(' ')));
+
 					if (dfn == null || dfn.inError) return -1;
 
 					if (ln.startsWith("line")) {
