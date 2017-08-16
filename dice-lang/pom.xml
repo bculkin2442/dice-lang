@@ -4,7 +4,7 @@
 	<artifactId>dice-lang</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<properties>
-		<main.class>bjc.dicelang.DiceLangConsole</main.class>
+		<main.class>bjc.dicelang.scl.StreamControlConsole</main.class>
 	</properties>
 	<build>
 		<sourceDirectory>src</sourceDirectory>

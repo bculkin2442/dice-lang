@@ -41,5 +41,5 @@ Help for DiceLang v0.2 CLI arguments:
 	-ctf or --compiler-tweak-file <filename>	Load compiler tweaks
 	from a file
 		Loads a series of compiler tweaks from a file. Consult
-		'compiler-tweak-file' in the DiceLang helpy system for details
+		'compiler-tweak-file' in the DiceLang help system for details
 		on the format.

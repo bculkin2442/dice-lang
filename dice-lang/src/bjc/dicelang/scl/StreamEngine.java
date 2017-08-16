@@ -4,6 +4,8 @@ import static bjc.dicelang.Errors.ErrorKey.EK_STRM_INVCOM;
 import static bjc.dicelang.Errors.ErrorKey.EK_STRM_LAST;
 import static bjc.dicelang.Errors.ErrorKey.EK_STRM_NONEX;
 
+import static java.util.logging.Level.*;
+
 import bjc.dicelang.DiceLangEngine;
 import bjc.dicelang.Errors;
 import bjc.utils.esodata.SingleTape;
@@ -23,6 +25,11 @@ import bjc.utils.funcutils.ListUtils;
  * @author Ben Culkin
  */
 public class StreamEngine {
+	/*
+	 * Whether or not we're doing debugging.
+	 */
+	public final boolean debug = true;
+
 	/*
 	 * The engine we're attached to.
 	 */
