@@ -3,7 +3,10 @@ package bjc.dicelang.scl;
 import bjc.utils.funcdata.FunctionalList;
 import bjc.utils.funcdata.IList;
 
+import java.util.Iterator;
 import java.util.Scanner;
+
+import java.util.function.Supplier;
 
 public class StreamControlConsole {
 	public static void main(String[] args) {
@@ -28,17 +31,14 @@ public class StreamControlConsole {
 			String[] tokens = ln.split(" ");
 
 			boolean succ = sengine.doStreams(tokens, res);
-
 			if(!succ) continue;
 
 			tokens = res.toArray(new String[res.getSize()]);
 
 			succ = sclengine.runProgram(tokens);
-
 			if(!succ) continue;
 
 			System.out.print("Command string executed succesfully.\n\n");
-
 			System.out.print("Enter a SCL command string (blank to exit): ");
 		}
 	}

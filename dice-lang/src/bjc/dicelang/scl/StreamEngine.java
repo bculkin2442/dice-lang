@@ -15,6 +15,8 @@ import bjc.utils.funcdata.FunctionalList;
 import bjc.utils.funcdata.IList;
 import bjc.utils.funcutils.ListUtils;
 
+import java.util.Arrays;
+
 /**
  * Implements multiple interleaved parse streams, as well as a command language
  * for the streams.
@@ -89,6 +91,10 @@ public class StreamEngine {
 	 * @return Whether or not the streams were successfully processed.
 	 */
 	public boolean doStreams(final String[] toks, final IList<String> dest) {
+		return doStreams(Arrays.asList(toks), dest);
+	}
+
+	public boolean doStreams(final Iterable<String> toks, final IList<String> dest) {
 		/*
 		 * Initialize per-run state.
 		 */

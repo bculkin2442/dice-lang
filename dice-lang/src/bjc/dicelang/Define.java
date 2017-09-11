@@ -45,6 +45,7 @@ public class Define implements UnaryOperator<String>, Comparable<Define> {
 	 * The priority of this definition.
 	 */
 	public final int        priority;
+
 	/**
 	 * Whether or not this definition is in error.
 	 */
