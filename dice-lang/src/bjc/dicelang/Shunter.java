@@ -44,30 +44,31 @@ import bjc.utils.funcdata.IMap;
  *
  */
 public class Shunter {
-	// The binary operators and their
-	// priorities
+	/* The binary operators and their priorities. */
 	IMap<Token.Type, Integer> ops;
 
-	/*
-	 * Operators that are right-associative
-	 */
+	/* Operators that are right-associative */
 	Set<Token.Type> rightAssoc;
 
-	/*
-	 * Operators that aren't associative
-	 */
+	/* Operators that aren't associative */
 	Set<Token.Type> notAssoc;
 
-	// Unary operators that can only be
-	// applied to non-operator tokens and yield operator tokens
+	/*
+	 * Unary operators that can only be applied to non-operator tokens and
+	 * yield operator tokens.
+	 */
 	Set<Token.Type> unaryAdjectives;
 
-	// Unary operators that can only be
-	// applied to operator tokens and yield operator tokens
+	/* 
+	 * Unary operators that can only be applied to operator tokens and yield
+	 * operator tokens.
+	 */
 	Set<Token.Type> unaryAdverbs;
 
-	// Unary operators that can only be
-	// applied to operator tokens and yield data tokens
+	/*
+	 * Unary operators that can only be applied to operator tokens and yield
+	 * data tokens
+	 */
 	Set<Token.Type> unaryGerunds;
 
 	/**
