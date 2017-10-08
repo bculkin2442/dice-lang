@@ -26,7 +26,9 @@ public class SimpleDieList implements DieList {
 
 	@Override
 	public boolean canOptimize() {
-		if (size.canOptimize() && size.optimize() <= 1) return numDice.canOptimize();
+		if (size.canOptimize() && size.optimize() <= 1) {
+			return numDice.canOptimize();
+		}
 
 		return false;
 	}

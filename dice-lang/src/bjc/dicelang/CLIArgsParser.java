@@ -32,7 +32,9 @@ public class CLIArgsParser {
 	 * @return Whether or not to continue to the DiceLang repl.
 	 */
 	public static boolean parseArgs(final String[] args, final DiceLangEngine eng) {
-		if (args.length < 0) return true;
+		if (args.length < 0) {
+			return true;
+		}
 
 		if (args.length == 1 && (args[0].equals("--help") || args[0].equals("-h"))) {
 			for (final String lne : ResourceLoader.loadHelpFile("cli")) {
@@ -114,7 +116,9 @@ public class CLIArgsParser {
 			case "--define":
 				i = simpleDefine(i, args, eng);
 
-				if (i == -1) return false;
+				if (i == -1) {
+					return false;
+				}
 
 				break;
 
@@ -122,7 +126,9 @@ public class CLIArgsParser {
 			case "--define-file":
 				i = defineFile(i, args, eng);
 
-				if (i == -1) return false;
+				if (i == -1) {
+					return false;
+				}
 
 				break;
 
@@ -152,7 +158,9 @@ public class CLIArgsParser {
 			final Define dfn = new Define(5, false, false, false, null, args[i + 1],
 			                              Arrays.asList(""));
 
-			if (dfn.inError) return -1;
+			if (dfn.inError) {
+				return -1;
+			}
 
 			eng.addLineDefine(dfn);
 			return i + 1;
@@ -161,7 +169,9 @@ public class CLIArgsParser {
 		final Define dfn = new Define(5, false, false, false, null, args[i + 1],
 		                              Arrays.asList(args[i + 2]));
 
-		if (dfn.inError) return -1;
+		if (dfn.inError) {
+			return -1;
+		}
 
 		eng.addLineDefine(dfn);
 		return i + 2;
@@ -183,7 +193,9 @@ public class CLIArgsParser {
 
 					final Define dfn = parseDefine(ln.substring(ln.indexOf(' ')));
 
-					if (dfn == null || dfn.inError) return -1;
+					if (dfn == null || dfn.inError) {
+						return -1;
+					}
 
 					if (ln.startsWith("line")) {
 						eng.addLineDefine(dfn);

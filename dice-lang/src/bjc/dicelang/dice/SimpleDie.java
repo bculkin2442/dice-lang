@@ -65,7 +65,9 @@ public class SimpleDie implements Die {
 
 	@Override
 	public boolean canOptimize() {
-		if (diceSize.canOptimize() && diceSize.optimize() <= 1) return numDice.canOptimize();
+		if (diceSize.canOptimize() && diceSize.optimize() <= 1) {
+			return numDice.canOptimize();
+		}
 
 		return false;
 	}
@@ -74,7 +76,9 @@ public class SimpleDie implements Die {
 	public long optimize() {
 		final long optSize = diceSize.optimize();
 
-		if (optSize == 0) return 0;
+		if (optSize == 0) {
+			return 0;
+		}
 
 		return numDice.optimize();
 	}

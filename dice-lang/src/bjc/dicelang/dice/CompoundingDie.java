@@ -51,7 +51,7 @@ public class CompoundingDie implements Die {
 
 	@Override
 	public boolean canOptimize() {
-		if(source.canOptimize()) {
+		if (source.canOptimize()) {
 			/* We can only be optimized for a result of zero. */
 			return source.optimize() == 0;
 		}

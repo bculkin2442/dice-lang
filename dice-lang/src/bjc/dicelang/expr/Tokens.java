@@ -67,7 +67,9 @@ public class Tokens {
 	 * @return The token the string represents.
 	 */
 	public Token lexToken(final String tok, final String raw) {
-		if (litTokens.containsKey(tok)) return new Token(litTokens.get(tok), raw, this);
+		if (litTokens.containsKey(tok)) {
+			return new Token(litTokens.get(tok), raw, this);
+		}
 
 		return parseVRef(tok, raw);
 	}

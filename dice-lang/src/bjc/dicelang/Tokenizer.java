@@ -47,7 +47,9 @@ public class Tokenizer {
 	}
 
 	public Token lexToken(final String token, final IMap<String, String> stringLts) {
-		if (token.equals("")) return null;
+		if (token.equals("")) {
+			return null;
+		}
 
 		Token tk = Token.NIL_TOKEN;
 
@@ -63,6 +65,7 @@ public class Tokenizer {
 			case '}':
 				tk = tokenizeGrouping(token);
 				break;
+
 			default:
 				tk = tokenizeLiteral(token, stringLts);
 			}
@@ -79,21 +82,27 @@ public class Tokenizer {
 			case '(':
 				tk = new Token(OPAREN, token.length());
 				break;
+
 			case ')':
 				tk = new Token(CPAREN, token.length());
 				break;
+
 			case '[':
 				tk = new Token(OBRACKET, token.length());
 				break;
+
 			case ']':
 				tk = new Token(CBRACKET, token.length());
 				break;
+
 			case '{':
 				tk = new Token(OBRACE, token.length());
 				break;
+
 			case '}':
 				tk = new Token(CBRACE, token.length());
 				break;
+
 			default:
 				Errors.inst.printError(EK_TOK_UNGROUP, token);
 				break;
@@ -114,6 +123,7 @@ public class Tokenizer {
 		Token tk = Token.NIL_TOKEN;
 
 		String token = rtoken.trim();
+
 		if (TokenUtils.isInt(token)) {
 			tk = new Token(INT_LIT, Long.parseLong(token));
 		} else if (hexadecimalMatcher.matcher(token).matches()) {
@@ -121,6 +131,7 @@ public class Tokenizer {
 			tk = new Token(INT_LIT, Long.parseLong(newToken.substring(2).toUpperCase(), 16));
 		} else if (flexadecimalMatcher.matcher(token).matches()) {
 			final int parseBase = Integer.parseInt(token.substring(token.lastIndexOf('B') + 1));
+
 			if (parseBase < Character.MIN_RADIX || parseBase > Character.MAX_RADIX) {
 				Errors.inst.printError(EK_TOK_INVBASE, Integer.toString(parseBase));
 				return Token.NIL_TOKEN;
@@ -153,6 +164,7 @@ public class Tokenizer {
 				tk = new Token(VREF, nextSym - 1);
 			}
 		}
+
 		return tk;
 	}
 }

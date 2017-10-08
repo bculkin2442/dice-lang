@@ -18,9 +18,13 @@ public class StreamControlConsole {
 
 		/* Get input from the user. */
 		System.out.print("Enter a SCL command string (blank to exit): ");
-		while(scn.hasNextLine()) {
+
+		while (scn.hasNextLine()) {
 			String ln = scn.nextLine();
-			if(ln.trim().equals("")) break;
+
+			if (ln.trim().equals("")) {
+				break;
+			}
 
 			/* Break the token into strings. */
 			IList<String> res = new FunctionalList<>();
@@ -28,12 +32,18 @@ public class StreamControlConsole {
 
 			/* Run the stream engine on the tokens. */
 			boolean succ = sengine.doStreams(tokens, res);
-			if(!succ) continue;
+
+			if (!succ) {
+				continue;
+			}
 
 			/* Run the command through SCL. */
 			tokens = res.toArray(new String[res.getSize()]);
 			succ   = sclengine.runProgram(tokens);
-			if(!succ) continue;
+
+			if (!succ) {
+				continue;
+			}
 
 			/* Prompt again. */
 			System.out.print("Command string executed succesfully.\n\n");

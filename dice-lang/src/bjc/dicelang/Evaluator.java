@@ -141,9 +141,11 @@ public class Evaluator {
 			switch (nd.operatorType) {
 			case COERCE:
 				return TopDownTransformResult.RTRANSFORM;
+
 			default:
 				return TopDownTransformResult.PUSHDOWN;
 			}
+
 		default:
 			return TopDownTransformResult.PUSHDOWN;
 		}
@@ -154,14 +156,19 @@ public class Evaluator {
 		switch (ast.getHead().type) {
 		case UNARYOP:
 			return evaluateUnaryOp(ast, ctx);
+
 		case BINOP:
 			return evaluateBinaryOp(ast, ctx);
+
 		case TOKREF:
 			return evaluateTokenRef(ast.getHead().tokenVal, ctx);
+
 		case ROOT:
 			return ast.getChild(ast.getChildrenCount() - 1);
+
 		case RESULT:
 			return ast;
+
 		default:
 			Errors.inst.printError(EK_EVAL_INVNODE, ast.getHead().type.toString());
 			return new Tree<>(FAIL(ast));
@@ -419,9 +426,9 @@ public class Evaluator {
 		if (left.type == STRING || right.type == STRING) {
 			Errors.inst.printError(EK_EVAL_STRINGMATH);
 			return new Tree<>(FAIL());
-		} else if (left.type == FAILURE || right.type == FAILURE)
+		} else if (left.type == FAILURE || right.type == FAILURE) {
 			return new Tree<>(FAIL());
-		else if (left.type == INT && right.type != INT) {
+		} else if (left.type == INT && right.type != INT) {
 			Errors.inst.printError(EK_EVAL_MISMATH);
 			return new Tree<>(FAIL(right));
 		} else if (left.type == FLOAT && right.type != FLOAT) {

@@ -24,7 +24,7 @@ public class DiceBox {
 		try {
 			return doParseExpression(expString);
 		} catch (Exception ex) {
-			/* 
+			/*
 			 * @TODO 10/08/17 Ben Culkin :DieErrors :ErrorRefactor
 			 * 	Use different types of exceptions to provide
 			 * 	better error messages. */
@@ -34,7 +34,7 @@ public class DiceBox {
 			return null;
 		}
 	}
-	
+
 	private static DieExpression doParseExpression(final String expString) {
 		/* Only bother with valid expressions. */
 		if (!isValidExpression(expString)) {
@@ -96,10 +96,12 @@ public class DiceBox {
 			final DieExpression right = parseExpression(dieParts[1]);
 
 			/* :ErrorRefactor */
-			if(left.isList) {
-				System.out.printf("ERROR: Expected a scalar die expression for lhs of compound die, got a list expression instead (%s)\n", left);
-			} else if(right.isList) {
-				System.out.printf("ERROR: Expected a scalar die expression for rhs of compound die, got a list expression instead (%s)\n", right);
+			if (left.isList) {
+				System.out.printf("ERROR: Expected a scalar die expression for lhs of compound die, got a list expression instead (%s)\n",
+				                  left);
+			} else if (right.isList) {
+				System.out.printf("ERROR: Expected a scalar die expression for rhs of compound die, got a list expression instead (%s)\n",
+				                  right);
 			}
 
 			final Die compound = new CompoundDie(left.scalar, right.scalar);
@@ -167,7 +169,7 @@ public class DiceBox {
 	 */
 	private static final String     scalarDie        = "[\\+\\-]?\\d+sd";
 	private static final Pattern    scalarDiePattern = Pattern.compile(
-			String.format("\\A%s\\Z", scalarDie));
+	                        String.format("\\A%s\\Z", scalarDie));
 
 	/*
 	 * Defines a simple die.
@@ -258,23 +260,25 @@ public class DiceBox {
 	 * @return Whether or not the string is a valid command.
 	 */
 	public static boolean isValidExpression(final String exp) {
-		if (scalarDiePattern.matcher(exp).matches())
+		if (scalarDiePattern.matcher(exp).matches()) {
 			return true;
-		else if (simpleDiePattern.matcher(exp).matches())
+		} else if (simpleDiePattern.matcher(exp).matches()) {
 			return true;
-		else if (fudgeDiePattern.matcher(exp).matches())
+		} else if (fudgeDiePattern.matcher(exp).matches()) {
 			return true;
-		else if (compoundDiePattern.matcher(exp).matches())
+		} else if (compoundDiePattern.matcher(exp).matches()) {
 			return true;
-		else if (compoundingDiePattern.matcher(exp).matches())
+		} else if (compoundingDiePattern.matcher(exp).matches()) {
 			return true;
-		else if (explodingDiePattern.matcher(exp).matches())
+		} else if (explodingDiePattern.matcher(exp).matches()) {
 			return true;
-		else if (penetratingDiePattern.matcher(exp).matches())
+		} else if (penetratingDiePattern.matcher(exp).matches()) {
 			return true;
-		else if (diceListPattern.matcher(exp).matches())
+		} else if (diceListPattern.matcher(exp).matches()) {
 			return true;
-		else return false;
+		} else {
+			return false;
+		}
 	}
 
 	/*

@@ -60,7 +60,9 @@ public class Parser {
 			case CBRACE:
 				final boolean sc = parseClosingGrouper(working, tk);
 
-				if (!sc) return false;
+				if (!sc) {
+					return false;
+				}
 
 				break;
 

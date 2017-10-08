@@ -105,11 +105,15 @@ public class Token {
 
 	@Override
 	public boolean equals(final Object other) {
-		if (!(other instanceof Token)) return false;
+		if (!(other instanceof Token)) {
+			return false;
+		}
 
 		final Token otk = (Token) other;
 
-		if (otk.type != type) return false;
+		if (otk.type != type) {
+			return false;
+		}
 
 		switch (type) {
 		case OBRACE:

@@ -154,21 +154,21 @@ public class StreamControlEngine {
 		}
 
 		public static Token tokenizeString(final String token) {
-			if (litTokens.containsKey(token))
+			if (litTokens.containsKey(token)) {
 				return new Token(litTokens.get(token));
-			else if (token.startsWith("\\"))
+			} else if (token.startsWith("\\")) {
 				return new Token(SYMBOL, token.substring(1));
-			else if (builtinWords.containsKey(token))
+			} else if (builtinWords.containsKey(token)) {
 				return new Token(WORD, builtinWords.get(token));
-			else if (token.equals("true"))
+			} else if (token.equals("true")) {
 				return new Token(BLIT, true);
-			else if (token.equals("false"))
+			} else if (token.equals("false")) {
 				return new Token(BLIT, false);
-			else if (TokenUtils.isInt(token))
+			} else if (TokenUtils.isInt(token)) {
 				return new Token(ILIT, Long.parseLong(token));
-			else if (TokenUtils.isDouble(token))
+			} else if (TokenUtils.isDouble(token)) {
 				return new Token(FLIT, Double.parseDouble(token));
-			else {
+			} else {
 				Errors.inst.printError(EK_SCL_INVTOKEN, token);
 				return null;
 			}
@@ -237,27 +237,35 @@ public class StreamControlEngine {
 			final String token = tokens[i];
 			final Token tok = Token.tokenizeString(token);
 
-			if (tok == null) return false;
+			if (tok == null) {
+				return false;
+			}
 
 			switch (tok.type) {
 			case SQUOTE:
 				i = handleSingleQuote(i, tokens);
 
-				if (i == -1) return false;
+				if (i == -1) {
+					return false;
+				}
 
 				break;
 
 			case OBRACKET:
 				i = handleDelim(i, tokens, "]");
 
-				if (i == -1) return false;
+				if (i == -1) {
+					return false;
+				}
 
 				break;
 
 			case OBRACE:
 				i = handleDelim(i, tokens, "}");
 
-				if (i == -1) return false;
+				if (i == -1) {
+					return false;
+				}
 
 				final Token brak = curStack.pop();
 				curStack.push(new Token(ARRAY, brak.tokenVals));
@@ -287,49 +295,63 @@ public class StreamControlEngine {
 		case LEFTSTREAM:
 			succ = eng.leftStream();
 
-			if (!succ) return false;
+			if (!succ) {
+				return false;
+			}
 
 			break;
 
 		case RIGHTSTREAM:
 			succ = eng.rightStream();
 
-			if (!succ) return false;
+			if (!succ) {
+				return false;
+			}
 
 			break;
 
 		case DELETESTREAM:
 			succ = eng.deleteStream();
 
-			if (!succ) return false;
+			if (!succ) {
+				return false;
+			}
 
 			break;
 
 		case MERGESTREAM:
 			succ = eng.mergeStream();
 
-			if (!succ) return false;
+			if (!succ) {
+				return false;
+			}
 
 			break;
 
 		case MAKEARRAY:
 			succ = makeArray();
 
-			if (!succ) return false;
+			if (!succ) {
+				return false;
+			}
 
 			break;
 
 		case MAKEEXEC:
 			succ = toggleExec(true);
 
-			if (!succ) return false;
+			if (!succ) {
+				return false;
+			}
 
 			break;
 
 		case MAKEUNEXEC:
 			succ = toggleExec(false);
 
-			if (!succ) return false;
+			if (!succ) {
+				return false;
+			}
 
 			break;
 
@@ -353,7 +375,9 @@ public class StreamControlEngine {
 		case NDROP:
 			succ = handleNDrop();
 
-			if (!succ) return false;
+			if (!succ) {
+				return false;
+			}
 
 			break;
 
@@ -369,7 +393,9 @@ public class StreamControlEngine {
 		case NNIP:
 			succ = handleNNip();
 
-			if (!succ) return false;
+			if (!succ) {
+				return false;
+			}
 
 			break;
 
@@ -478,7 +504,9 @@ public class StreamControlEngine {
 			case SQUOTE:
 				n = handleSingleQuote(n, tokens);
 
-				if (n == -1) return -1;
+				if (n == -1) {
+					return -1;
+				}
 
 				toks.add(curStack.pop());
 				break;
@@ -486,7 +514,9 @@ public class StreamControlEngine {
 			case OBRACKET:
 				n = handleDelim(n, tokens, "]");
 
-				if (n == -1) return -1;
+				if (n == -1) {
+					return -1;
+				}
 
 				toks.add(curStack.pop());
 				break;
@@ -494,7 +524,9 @@ public class StreamControlEngine {
 			case OBRACE:
 				n = handleDelim(i, tokens, "}");
 
-				if (n == -1) return -1;
+				if (n == -1) {
+					return -1;
+				}
 
 				final Token brak = curStack.pop();
 				toks.add(new Token(ARRAY, brak.tokenVals));

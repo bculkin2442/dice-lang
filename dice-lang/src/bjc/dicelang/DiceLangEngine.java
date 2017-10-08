@@ -226,16 +226,25 @@ public class DiceLangEngine {
 	public boolean runCommand(final String command) {
 		/* Preprocess the command into tokens */
 		final IList<String> preprocessedTokens = preprocessCommand(command);
-		if (preprocessedTokens == null) return false;
+
+		if (preprocessedTokens == null) {
+			return false;
+		}
 
 		/* Lex the string tokens into token-tokens */
 		final IList<Token> lexedTokens = lexTokens(preprocessedTokens);
-		if (lexedTokens == null) return false;
+
+		if (lexedTokens == null) {
+			return false;
+		}
 
 		/* Parse the tokens into an AST forest */
 		final IList<ITree<Node>> astForest = new FunctionalList<>();
 		final boolean succ = Parser.parseTokens(lexedTokens, astForest);
-		if (!succ) return false;
+
+		if (!succ) {
+			return false;
+		}
 
 		/* Evaluate the AST forest */
 		evaluateForest(astForest);
@@ -256,14 +265,19 @@ public class DiceLangEngine {
 
 			/* Lex the token */
 			final Token tk = tokenzer.lexToken(token, stringLiterals);
-			if(debugMode) LOG.finer(String.format("lexed token: %s\n", tk));
+
+			if (debugMode) {
+				LOG.finer(String.format("lexed token: %s\n", tk));
+			}
+
 			if (tk == null) {
 				/* Ignore blank tokens */
 				continue;
 			} else if (tk == Token.NIL_TOKEN)
 				/* Fail on bad tokens */
+			{
 				return null;
-			else {
+			} else {
 				lexedTokens.add(tk);
 			}
 		}
@@ -279,10 +293,14 @@ public class DiceLangEngine {
 		final IList<Token> preparedTokens = new FunctionalList<>();
 
 		boolean succ = removePreshuntTokens(lexedTokens, preparedTokens);
-		if (!succ) return null;
+
+		if (!succ) {
+			return null;
+		}
 
 		if (debugMode && !postfixMode) {
-			String msg = String.format("\tCommand after pre-shunter removal: %s\n", preparedTokens.toString());
+			String msg = String.format("\tCommand after pre-shunter removal: %s\n",
+			                           preparedTokens.toString());
 			LOG.fine(msg);
 			System.out.print(msg);
 		}
@@ -292,7 +310,9 @@ public class DiceLangEngine {
 			shuntedTokens = new FunctionalList<>();
 			succ = shunt.shuntTokens(preparedTokens, shuntedTokens);
 
-			if (!succ) return null;
+			if (!succ) {
+				return null;
+			}
 		} else if (prefixMode) {
 			/* Reverse directional tokens */
 			preparedTokens.reverse();
@@ -308,8 +328,8 @@ public class DiceLangEngine {
 		/* Expand token groups */
 		final IList<Token> readyTokens = shuntedTokens.flatMap(tk -> {
 			if (tk.type == Token.Type.TOKGROUP ||
-			    tk.type == Token.Type.TAGOP    ||
-			    tk.type == Token.Type.TAGOPR      ) {
+			                tk.type == Token.Type.TAGOP    ||
+			                tk.type == Token.Type.TAGOPR      ) {
 				LOG.finer(String.format("Expanding token group to: %s\n", tk.tokenValues.toString()));
 				return tk.tokenValues;
 			} else {
@@ -318,7 +338,8 @@ public class DiceLangEngine {
 		});
 
 		if (debugMode && !postfixMode) {
-			String msg = String.format("\tCommand after re-preshunting: %s\n", readyTokens.toString());
+			String msg = String.format("\tCommand after re-preshunting: %s\n",
+			                           readyTokens.toString());
 			LOG.fine(msg);
 			System.out.print(msg);
 		}
@@ -335,16 +356,22 @@ public class DiceLangEngine {
 		switch (tk.type) {
 		case OBRACE:
 			return new Token(CBRACE, tk.intValue);
+
 		case OPAREN:
 			return new Token(CPAREN, tk.intValue);
+
 		case OBRACKET:
 			return new Token(CBRACKET, tk.intValue);
+
 		case CBRACE:
 			return new Token(OBRACE, tk.intValue);
+
 		case CPAREN:
 			return new Token(OPAREN, tk.intValue);
+
 		case CBRACKET:
 			return new Token(OBRACKET, tk.intValue);
+
 		default:
 			return tk;
 		}
@@ -360,7 +387,10 @@ public class DiceLangEngine {
 		/* Run the tokens through the stream engine */
 		final IList<String> streamToks = new FunctionalList<>();
 		final boolean succ = streamEng.doStreams(command.split(" "), streamToks);
-		if (!succ) return null;
+
+		if (!succ) {
+			return null;
+		}
 
 		/* Apply line defns */
 		String newComm = ListUtils.collapseTokens(streamToks, " ");
@@ -398,9 +428,11 @@ public class DiceLangEngine {
 				 */
 				final String descVal = TokenUtils.descapeString(litVal);
 				stringLiterals.put(litName, descVal);
-				if(debugMode)
+
+				if (debugMode)
 					LOG.finer(String.format("Replaced string literal '%s' with literal no. %d",
-								descVal, nextLiteral));
+					                        descVal, nextLiteral));
+
 				nextLiteral += 1;
 
 				/* Place a ref. to the string in the command */
@@ -438,7 +470,8 @@ public class DiceLangEngine {
 				final String tkName = "nonExpandToken" + nextLiteral++;
 				nonExpandedTokens.put(tkName, nonExpandMatcher.group(1));
 
-				LOG.finer(String.format("Pulled non-expander '%s' to '%s'", nonExpandMatcher.group(1), tkName));
+				LOG.finer(String.format("Pulled non-expander '%s' to '%s'", nonExpandMatcher.group(1),
+				                        tkName));
 				return tkName;
 			}
 
@@ -446,15 +479,18 @@ public class DiceLangEngine {
 		});
 
 		if (debugMode) {
-			String msg = String.format("\tCommand after removal of non-expanders: %s\n", tokens.toString());
+			String msg = String.format("\tCommand after removal of non-expanders: %s\n",
+			                           tokens.toString());
 			LOG.fine(msg);
 			System.out.print(msg);
 		}
 
 		/* Expand tokens */
 		IList<String> fullyExpandedTokens = tokens.flatMap(opExpander::split);
-		if(debugMode) {
-			String msg = String.format("\tCommand after token expansion: %s\n", fullyExpandedTokens.toString());
+
+		if (debugMode) {
+			String msg = String.format("\tCommand after token expansion: %s\n",
+			                           fullyExpandedTokens.toString());
 			LOG.fine(msg);
 			System.out.print(msg);
 		}
@@ -468,7 +504,7 @@ public class DiceLangEngine {
 
 		if (debugMode) {
 			String msg = String.format("\tCommand after non-expander reinsertion: %s\n",
-					fullyExpandedTokens.toString());
+			                           fullyExpandedTokens.toString());
 			LOG.fine(msg);
 			System.out.print(msg);
 		}
@@ -596,7 +632,9 @@ public class DiceLangEngine {
 					                   + preshuntTokens);
 				}
 
-				if (!success) return false;
+				if (!success) {
+					return false;
+				}
 
 				if (curBraceCount >= 1) {
 					/*

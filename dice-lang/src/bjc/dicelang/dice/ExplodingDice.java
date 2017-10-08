@@ -116,7 +116,9 @@ public class ExplodingDice implements DieList {
 
 	@Override
 	public String toString() {
-		if (explodePattern == null) return source + (explodePenetrates ? "p" : "") + "!";
+		if (explodePattern == null) {
+			return source + (explodePenetrates ? "p" : "") + "!";
+		}
 
 		return source + (explodePenetrates ? "p" : "") + "!" + explodePattern;
 	}

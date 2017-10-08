@@ -139,10 +139,14 @@ public class Define implements UnaryOperator<String>, Comparable<Define> {
 
 	@Override
 	public String apply(final String tok) {
-		if (inError) return tok;
+		if (inError) {
+			return tok;
+		}
 
 		if (predicate != null) {
-			if (!predicate.matcher(tok).matches()) return tok;
+			if (!predicate.matcher(tok).matches()) {
+				return tok;
+			}
 		}
 
 		String strang = doPass(tok);
@@ -150,7 +154,9 @@ public class Define implements UnaryOperator<String>, Comparable<Define> {
 		if (doRecur) {
 			int recurCount = 0;
 
-			if (strang.equals(tok)) return strang;
+			if (strang.equals(tok)) {
+				return strang;
+			}
 
 			final String oldStrang = strang;
 

@@ -128,7 +128,9 @@ public class Parser {
 			/*
 			 * Handle leaf nodes.
 			 */
+		{
 			return data.toExpr();
+		}
 
 		final ITree<Token> left = ast.getChild(0);
 		final ITree<Token> right = ast.getChild(1);

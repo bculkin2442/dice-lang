@@ -46,7 +46,9 @@ public class DieExpression {
 
 	@Override
 	public String toString() {
-		if (isList) return list.toString();
+		if (isList) {
+			return list.toString();
+		}
 
 		return scalar.toString();
 	}
@@ -57,7 +59,9 @@ public class DieExpression {
 	 * @return The value of the expression as a string.
 	 */
 	public String value() {
-		if (isList) return Arrays.toString(list.roll());
+		if (isList) {
+			return Arrays.toString(list.roll());
+		}
 
 		return Long.toString(scalar.roll());
 	}

@@ -70,11 +70,15 @@ public class Node {
 
 	@Override
 	public boolean equals(final Object other) {
-		if (!(other instanceof Node)) return false;
+		if (!(other instanceof Node)) {
+			return false;
+		}
 
 		final Node otk = (Node) other;
 
-		if (otk.type != type) return false;
+		if (otk.type != type) {
+			return false;
+		}
 
 		switch (type) {
 		case OGROUP:

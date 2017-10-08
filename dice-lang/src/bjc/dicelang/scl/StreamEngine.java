@@ -98,12 +98,16 @@ public class StreamEngine {
 
 		/* Are we currently quoting things? */
 		boolean quoteMode = false;
+
 		/* Process each token. */
 		for (final String tk : toks) {
 			/* Process stream commands. */
 			if (tk.startsWith("{@S") && !quoteMode) {
-				if       (tk.equals("{@SQ}"))  quoteMode = true;
-				 else if (!processCommand(tk)) return false;
+				if       (tk.equals("{@SQ}")) {
+					quoteMode = true;
+				} else if (!processCommand(tk)) {
+					return false;
+				}
 			} else {
 				if (tk.equals("{@SU}")) {
 					quoteMode = false;
@@ -215,35 +219,45 @@ public class StreamEngine {
 			case '>':
 				succ = rightStream();
 
-				if (!succ) return false;
+				if (!succ) {
+					return false;
+				}
 
 				break;
 
 			case '<':
 				succ = leftStream();
 
-				if (!succ) return false;
+				if (!succ) {
+					return false;
+				}
 
 				break;
 
 			case '-':
 				succ = deleteStream();
 
-				if (!succ) return false;
+				if (!succ) {
+					return false;
+				}
 
 				break;
 
 			case 'M':
 				succ = mergeStream();
 
-				if (!succ) return false;
+				if (!succ) {
+					return false;
+				}
 
 				break;
 
 			case 'L':
 				succ = scleng.runProgram(currStream.toArray(new String[0]));
 
-				if (!succ) return false;
+				if (!succ) {
+					return false;
+				}
 
 				break;
 

@@ -59,7 +59,7 @@ public class Shunter {
 	 */
 	Set<Token.Type> unaryAdjectives;
 
-	/* 
+	/*
 	 * Unary operators that can only be applied to operator tokens and yield
 	 * operator tokens.
 	 */
@@ -149,12 +149,16 @@ public class Shunter {
 			while (feed.size() != 0) {
 				succ = shuntToken(feed.poll(), opStack, unaryOps, currReturned, feed);
 
-				if (!succ) return false;
+				if (!succ) {
+					return false;
+				}
 			}
 
 			succ = shuntToken(tk, opStack, unaryOps, currReturned, feed);
 
-			if (!succ) return false;
+			if (!succ) {
+				return false;
+			}
 		}
 
 		// Flush leftover operators
@@ -308,7 +312,9 @@ public class Shunter {
 		}
 
 		// If it doesn't, the left is higher precedence.
-		if (!exists) return false;
+		if (!exists) {
+			return false;
+		}
 
 		int rightPrecedence;
 		int leftPrecedence;
@@ -325,7 +331,9 @@ public class Shunter {
 			leftPrecedence = ops.get(left);
 		}
 
-		if (rightAssoc.contains(left)) return rightPrecedence > leftPrecedence;
+		if (rightAssoc.contains(left)) {
+			return rightPrecedence > leftPrecedence;
+		}
 
 		return rightPrecedence >= leftPrecedence;
 	}
@@ -333,15 +341,25 @@ public class Shunter {
 	private boolean isOp(final Token tk) {
 		final Token.Type ty = tk.type;
 
-		if (ops.containsKey(ty)) return true;
+		if (ops.containsKey(ty)) {
+			return true;
+		}
 
-		if (unaryAdjectives.contains(ty)) return true;
+		if (unaryAdjectives.contains(ty)) {
+			return true;
+		}
 
-		if (unaryAdverbs.contains(ty)) return true;
+		if (unaryAdverbs.contains(ty)) {
+			return true;
+		}
 
-		if (unaryGerunds.contains(ty)) return true;
+		if (unaryGerunds.contains(ty)) {
+			return true;
+		}
 
-		if (ty == TAGOPR) return true;
+		if (ty == TAGOPR) {
+			return true;
+		}
 
 		return false;
 	}
@@ -349,11 +367,17 @@ public class Shunter {
 	private boolean isUnary(final Token tk) {
 		final Token.Type ty = tk.type;
 
-		if (unaryAdjectives.contains(ty)) return true;
+		if (unaryAdjectives.contains(ty)) {
+			return true;
+		}
 
-		if (unaryAdverbs.contains(ty)) return true;
+		if (unaryAdverbs.contains(ty)) {
+			return true;
+		}
 
-		if (unaryGerunds.contains(ty)) return true;
+		if (unaryGerunds.contains(ty)) {
+			return true;
+		}
 
 		return false;
 	}
