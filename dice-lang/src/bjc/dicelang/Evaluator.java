@@ -74,8 +74,8 @@ public class Evaluator {
 	}
 
 	private static Node FAIL(final EvaluatorResult res) {
-		return new Node(Node.Type.RESULT, new EvaluatorResult(FAILURE, new Node(Node.Type.RESULT,
-		                res)));
+		EvaluatorResult eres = new EvaluatorResult(FAILURE, new Node(Node.Type.RESULT, res));
+		return new Node(Node.Type.RESULT, eres);
 	}
 
 	private final DiceLangEngine eng;
@@ -105,7 +105,7 @@ public class Evaluator {
 		ctx.thunk = itr -> {
 			/**
 			 * Deliberately finish the iterator, but ignore results.
-			 * It's only for stepwise evaluation but we don't know
+			 * It's only for stepwise evaluation, but we don't know
 			 * if stepping the iterator causes something to happen.
 			 *
 			 */
@@ -134,45 +134,41 @@ public class Evaluator {
 		}, comm);
 	}
 
+	/* Pick the way to evaluate a node. */
 	private TopDownTransformResult pickEvaluationType(final Node nd) {
 		switch (nd.type) {
 		case UNARYOP:
 			switch (nd.operatorType) {
 			case COERCE:
 				return TopDownTransformResult.RTRANSFORM;
-
 			default:
 				return TopDownTransformResult.PUSHDOWN;
 			}
-
 		default:
 			return TopDownTransformResult.PUSHDOWN;
 		}
 	}
 
+	/* Evaluate a node. */
 	private ITree<Node> evaluateNode(final ITree<Node> ast, final Context ctx) {
 		switch (ast.getHead().type) {
 		case UNARYOP:
 			return evaluateUnaryOp(ast, ctx);
-
 		case BINOP:
 			return evaluateBinaryOp(ast, ctx);
-
 		case TOKREF:
 			return evaluateTokenRef(ast.getHead().tokenVal, ctx);
-
 		case ROOT:
 			return ast.getChild(ast.getChildrenCount() - 1);
-
 		case RESULT:
 			return ast;
-
 		default:
 			Errors.inst.printError(EK_EVAL_INVNODE, ast.getHead().type.toString());
 			return new Tree<>(FAIL(ast));
 		}
 	}
 
+	/* Evaluate a unary operator. */
 	private ITree<Node> evaluateUnaryOp(final ITree<Node> ast, final Context ctx) {
 		if (ast.getChildrenCount() != 1) {
 			Errors.inst.printError(EK_EVAL_UNUNARY, Integer.toString(ast.getChildrenCount()));
@@ -180,9 +176,7 @@ public class Evaluator {
 		}
 
 		switch (ast.getHead().operatorType) {
-		/*
-		 * TODO move coercing to its own class
-		 */
+		/* @TODO move coercing to its own class */
 		case COERCE:
 			final ITree<Node> toCoerce = ast.getChild(0);
 			final ITree<Node> retVal = new Tree<>(toCoerce.getHead());

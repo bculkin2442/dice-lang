@@ -3,33 +3,7 @@ package bjc.dicelang;
 import static bjc.dicelang.Errors.ErrorKey.EK_TOK_INVBASE;
 import static bjc.dicelang.Errors.ErrorKey.EK_TOK_INVFLEX;
 import static bjc.dicelang.Errors.ErrorKey.EK_TOK_UNGROUP;
-import static bjc.dicelang.Token.Type.ADD;
-import static bjc.dicelang.Token.Type.BIND;
-import static bjc.dicelang.Token.Type.CBRACE;
-import static bjc.dicelang.Token.Type.CBRACKET;
-import static bjc.dicelang.Token.Type.COERCE;
-import static bjc.dicelang.Token.Type.CPAREN;
-import static bjc.dicelang.Token.Type.DICECONCAT;
-import static bjc.dicelang.Token.Type.DICEFUDGE;
-import static bjc.dicelang.Token.Type.DICEGROUP;
-import static bjc.dicelang.Token.Type.DICELIST;
-import static bjc.dicelang.Token.Type.DICESCALAR;
-import static bjc.dicelang.Token.Type.DICE_LIT;
-import static bjc.dicelang.Token.Type.DIVIDE;
-import static bjc.dicelang.Token.Type.FLOAT_LIT;
-import static bjc.dicelang.Token.Type.GROUPSEP;
-import static bjc.dicelang.Token.Type.IDIVIDE;
-import static bjc.dicelang.Token.Type.INT_LIT;
-import static bjc.dicelang.Token.Type.LET;
-import static bjc.dicelang.Token.Type.MULTIPLY;
-import static bjc.dicelang.Token.Type.OBRACE;
-import static bjc.dicelang.Token.Type.OBRACKET;
-import static bjc.dicelang.Token.Type.OPAREN;
-import static bjc.dicelang.Token.Type.STRCAT;
-import static bjc.dicelang.Token.Type.STRING_LIT;
-import static bjc.dicelang.Token.Type.STRREP;
-import static bjc.dicelang.Token.Type.SUBTRACT;
-import static bjc.dicelang.Token.Type.VREF;
+import static bjc.dicelang.Token.Type.*;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -54,21 +28,21 @@ public class Tokenizer {
 
 		litTokens = new FunctionalMap<>();
 
-		litTokens.put("+", ADD);
-		litTokens.put("-", SUBTRACT);
-		litTokens.put("*", MULTIPLY);
-		litTokens.put("/", DIVIDE);
-		litTokens.put("//", IDIVIDE);
-		litTokens.put("sd", DICESCALAR);
-		litTokens.put("df", DICEFUDGE);
-		litTokens.put("dg", DICEGROUP);
-		litTokens.put("dc", DICECONCAT);
-		litTokens.put("dl", DICELIST);
-		litTokens.put("=>", LET);
-		litTokens.put(":=", BIND);
+		litTokens.put("+",   ADD);
+		litTokens.put("-",   SUBTRACT);
+		litTokens.put("*",   MULTIPLY);
+		litTokens.put("/",   DIVIDE);
+		litTokens.put("//",  IDIVIDE);
+		litTokens.put("sd",  DICESCALAR);
+		litTokens.put("df",  DICEFUDGE);
+		litTokens.put("dg",  DICEGROUP);
+		litTokens.put("dc",  DICECONCAT);
+		litTokens.put("dl",  DICELIST);
+		litTokens.put("=>",  LET);
+		litTokens.put(":=",  BIND);
 		litTokens.put(".+.", STRCAT);
 		litTokens.put(".*.", STRREP);
-		litTokens.put(",", GROUPSEP);
+		litTokens.put(",",   GROUPSEP);
 		litTokens.put("crc", COERCE);
 	}
 
@@ -89,7 +63,6 @@ public class Tokenizer {
 			case '}':
 				tk = tokenizeGrouping(token);
 				break;
-
 			default:
 				tk = tokenizeLiteral(token, stringLts);
 			}
@@ -106,27 +79,21 @@ public class Tokenizer {
 			case '(':
 				tk = new Token(OPAREN, token.length());
 				break;
-
 			case ')':
 				tk = new Token(CPAREN, token.length());
 				break;
-
 			case '[':
 				tk = new Token(OBRACKET, token.length());
 				break;
-
 			case ']':
 				tk = new Token(CBRACKET, token.length());
 				break;
-
 			case '{':
 				tk = new Token(OBRACE, token.length());
 				break;
-
 			case '}':
 				tk = new Token(CBRACE, token.length());
 				break;
-
 			default:
 				Errors.inst.printError(EK_TOK_UNGROUP, token);
 				break;
@@ -143,18 +110,17 @@ public class Tokenizer {
 	private final Pattern   stringLitMatcher        =
 	        Pattern.compile("\\AstringLiteral(\\d+)\\Z");
 
-	private Token tokenizeLiteral(final String token, final IMap<String, String> stringLts) {
+	private Token tokenizeLiteral(final String rtoken, final IMap<String, String> stringLts) {
 		Token tk = Token.NIL_TOKEN;
 
+		String token = rtoken.trim();
 		if (TokenUtils.isInt(token)) {
 			tk = new Token(INT_LIT, Long.parseLong(token));
 		} else if (hexadecimalMatcher.matcher(token).matches()) {
 			final String newToken = token.substring(0, 1) + token.substring(token.indexOf('x'));
-
 			tk = new Token(INT_LIT, Long.parseLong(newToken.substring(2).toUpperCase(), 16));
 		} else if (flexadecimalMatcher.matcher(token).matches()) {
 			final int parseBase = Integer.parseInt(token.substring(token.lastIndexOf('B') + 1));
-
 			if (parseBase < Character.MIN_RADIX || parseBase > Character.MAX_RADIX) {
 				Errors.inst.printError(EK_TOK_INVBASE, Integer.toString(parseBase));
 				return Token.NIL_TOKEN;
@@ -181,15 +147,12 @@ public class Tokenizer {
 				eng.addStringLiteral(litNum, stringLts.get(token));
 				tk = new Token(STRING_LIT, litNum);
 			} else {
-				/*
-				 * Everything else is a symbol
-				 */
+				/* Everything else is a symbol */
 				eng.symTable.put(nextSym++, token);
 
 				tk = new Token(VREF, nextSym - 1);
 			}
 		}
-
 		return tk;
 	}
 }

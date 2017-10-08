@@ -21,110 +21,143 @@ public class DiceBox {
 	 * @return The die expression from the string, or null if it wasn't one
 	 */
 	public static DieExpression parseExpression(final String expString) {
-		/*
-		 * Only bother with valid expressions.
-		 */
-		if (!isValidExpression(expString)) return null;
+		try {
+			return doParseExpression(expString);
+		} catch (Exception ex) {
+			/* 
+			 * @TODO 10/08/17 Ben Culkin :DieErrors :ErrorRefactor
+			 * 	Use different types of exceptions to provide
+			 * 	better error messages. */
+			System.out.println("ERROR: Could not parse die expression (Cause: %s)\n", ex.getMessage);
+			ex.printStackTrace();
+
+			return null;
+		}
+	}
+	
+	private static DieExpression doParseExpression(final String expString) {
+		/* Only bother with valid expressions. */
+		if (!isValidExpression(expString)) {
+			return null;
+		}
 
 		if (scalarDiePattern.matcher(expString).matches()) {
-			/*
-			 * Parse scalar die.
+			/* Parse scalar die. */
+			/* @TODO 10/08/17 Ben Culkin :SubstringIndexOf
+			 * 	This substring/index of call should be
+			 * 	abstracted into its own method so as to make the
+			 * 	code more explanatory and ensure that things
+			 * 	like the return code of indexOf are correctly
+			 * 	checked.
 			 */
 			final String dieString = expString.substring(0, expString.indexOf('s'));
-			final Die scal = new ScalarDie(Long.parseLong(dieString));
+
+			final long lar = Long.parseLong(dieString);
+
+			final Die scal = new ScalarDie(lar);
 
 			return new DieExpression(scal);
 		} else if (simpleDiePattern.matcher(expString).matches()) {
-			/*
-			 * Parse simple die groups.
-			 */
+			/* Parse simple die groups. */
 			final String[] dieParts = expString.split("d");
 
 			final long right = Long.parseLong(dieParts[1]);
+			final long left;
 
 			if (dieParts[0].equals("")) {
-				/*
-				 * Handle short-form expressions.
-				 */
-				final Die scal = new SimpleDie(1, right);
-				return new DieExpression(scal);
+				/* Handle short-form expressions. */
+				left = 1;
+			} else {
+				left = Long.parseLong(dieParts[0]);
 			}
 
-			final Die scal = new SimpleDie(Long.parseLong(dieParts[0]), right);
+			final Die scal = new SimpleDie(left, right);
+
 			return new DieExpression(scal);
 		} else if (fudgeDiePattern.matcher(expString).matches()) {
-			/*
-			 * Parse fudge dice.
-			 */
+			/* Parse fudge dice. */
+			/* :SubstringIndexOf */
 			final String nDice = expString.substring(0, expString.indexOf('d'));
+			final Die fudge    = new FudgeDie(Long.parseLong(nDice));
 
-			return new DieExpression(new FudgeDie(Long.parseLong(nDice)));
+			return new DieExpression(fudge);
 		} else if (compoundDiePattern.matcher(expString).matches()) {
-			/*
-			 * Parse compound die expressions.
-			 */
+			/* Parse compound die expressions. */
 			final String[] dieParts = expString.split("c");
 
-			final DieExpression left = parseExpression(dieParts[0]);
+			/* @TODO 10/08/17 :SplitParse
+			 * 	Should this split string/parse split parts be
+			 * 	abstracted into something else that handles
+			 * 	doing the splitting correctly, as well as
+			 * 	making sure that the resulting DieExpressions
+			 * 	are of the right type?
+			 */
+			final DieExpression left  = parseExpression(dieParts[0]);
 			final DieExpression right = parseExpression(dieParts[1]);
+
+			/* :ErrorRefactor */
+			if(left.isList) {
+				System.out.printf("ERROR: Expected a scalar die expression for lhs of compound die, got a list expression instead (%s)\n", left);
+			} else if(right.isList) {
+				System.out.printf("ERROR: Expected a scalar die expression for rhs of compound die, got a list expression instead (%s)\n", right);
+			}
+
+			final Die compound = new CompoundDie(left.scalar, right.scalar);
 
 			return new DieExpression(new CompoundDie(left.scalar, right.scalar));
 		} else if (compoundingDiePattern.matcher(expString).matches()) {
-			/*
-			 * Parse compounding die expressions.
-			 */
+			/* Parse compounding die expressions. */
 			final String[] dieParts = expString.split("!!");
 
-			final DieExpression left = parseExpression(dieParts[0]);
+			final DieExpression left    = parseExpression(dieParts[0]);
 			final Predicate<Long> right = deriveCond(dieParts[1]);
 
 			final Die scal = new CompoundingDie(left.scalar, right, dieParts[1]);
+
 			return new DieExpression(scal);
 		} else if (explodingDiePattern.matcher(expString).matches()) {
-			/*
-			 * Parse exploding die expressions.
-			 */
+			/* Parse exploding die expressions. */
 			final String[] dieParts = expString.split("!");
 
-			final DieExpression left = parseExpression(dieParts[0]);
+			final DieExpression left    = parseExpression(dieParts[0]);
 			final Predicate<Long> right = deriveCond(dieParts[1]);
 
 			final DieList lst = new ExplodingDice(left.scalar, right, dieParts[1], false);
+
 			return new DieExpression(lst);
 		} else if (penetratingDiePattern.matcher(expString).matches()) {
-			/*
-			 * Parse penetrating die expressions.
-			 */
+			/* Parse penetrating die expressions. */
 			final String[] dieParts = expString.split("p!");
 
-			final DieExpression left = parseExpression(dieParts[0]);
+			final DieExpression left    = parseExpression(dieParts[0]);
 			final Predicate<Long> right = deriveCond(dieParts[1]);
 
 			final DieList lst = new ExplodingDice(left.scalar, right, dieParts[1], true);
+
 			return new DieExpression(lst);
 		} else if (diceListPattern.matcher(expString).matches()) {
-			/*
-			 * Parse simple die lists.
-			 */
+			/* Parse simple die lists. */
 			final String[] dieParts = expString.split("dl");
 
-			final DieExpression left = parseExpression(dieParts[0]);
+			final DieExpression left  = parseExpression(dieParts[0]);
 			final DieExpression right = parseExpression(dieParts[1]);
 
 			final DieList lst = new SimpleDieList(left.scalar, right.scalar);
 			return new DieExpression(lst);
 		}
 
+		/* Unhandled type of die expression. */
+		System.out.printf("INTERNAL ERROR: Valid die expression '%s' not parsed\n", expString);
 		return null;
 	}
 
-	/*
-	 * The strings and patterns used for matching.
+	/* The strings and patterns used for matching. */
+	/* @TODO 10/08/17 Ben Culkin :RegexResource
+	 * 	These regexes and patterns should be moved to something
+	 * 	external, probably using the SimpleProperties-based system that
+	 * 	BJC-Utils2 uses.
 	 */
-
-	/*
-	 * Defines a comparison predicate.
-	 */
+	/* Defines a comparison predicate. */
 	private static final String comparePoint = "[<>=]\\d+";
 
 	/*
@@ -132,9 +165,9 @@ public class DiceBox {
 	 *
 	 * This is just a number.
 	 */
-	private static final String     scalarDie               = "[\\+\\-]?\\d+sd";
-	private static final Pattern    scalarDiePattern        = Pattern.compile("\\A" +
-	                scalarDie + "\\Z");
+	private static final String     scalarDie        = "[\\+\\-]?\\d+sd";
+	private static final Pattern    scalarDiePattern = Pattern.compile(
+			String.format("\\A%s\\Z", scalarDie));
 
 	/*
 	 * Defines a simple die.

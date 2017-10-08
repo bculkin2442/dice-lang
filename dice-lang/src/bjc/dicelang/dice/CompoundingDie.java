@@ -11,9 +11,12 @@ import java.util.function.Predicate;
  * @author Ben Culkin
  */
 public class CompoundingDie implements Die {
+	/* The source die to compound. */
 	private final Die source;
 
+	/* The predicate that marks when to compound. */
 	private final Predicate<Long>   compoundOn;
+	/* The string version of the predicate, if one exists. */
 	private final String            compoundPattern;
 
 	/**
@@ -48,22 +51,32 @@ public class CompoundingDie implements Die {
 
 	@Override
 	public boolean canOptimize() {
-		return source.canOptimize() && source.optimize() == 0;
+		if(source.canOptimize()) {
+			/* We can only be optimized for a result of zero. */
+			return source.optimize() == 0;
+		}
+
+		return false;
 	}
 
 	@Override
 	public long optimize() {
+		/* If we can be optimized, its to zero. */
 		return 0;
 	}
 
 	@Override
 	public long roll() {
+		/* The current result. */
 		long res = source.roll();
+		/* The last result. */
 		long oldRes = res;
 
 		while (compoundOn.test(oldRes)) {
+			/* Compound while the result should be compounded. */
 			oldRes = source.rollSingle();
 
+			/* Accumulate. */
 			res += oldRes;
 		}
 
@@ -72,15 +85,16 @@ public class CompoundingDie implements Die {
 
 	@Override
 	public long rollSingle() {
-		/*
-		 * Just compound on a single roll
-		 */
+		/* Just compound on an initial single role. */
 		long res = source.rollSingle();
+		/* The last result. */
 		long oldRes = res;
 
 		while (compoundOn.test(oldRes)) {
+			/* Compound while the result should be compounded. */
 			oldRes = source.rollSingle();
 
+			/* Accumulate. */
 			res += oldRes;
 		}
 
@@ -89,8 +103,13 @@ public class CompoundingDie implements Die {
 
 	@Override
 	public String toString() {
-		if (compoundPattern == null) return source + "!!";
+		String sourceString = source.toString();
 
-		return source + "!!" + compoundPattern;
+		/* Can't print a parseable version. */
+		if (compoundPattern == null) {
+			return String.format("%s!!<complex-pattern>", sourceString);
+		}
+
+		return String.format("%s!!%s", sourceString, compoundPattern);
 	}
 }

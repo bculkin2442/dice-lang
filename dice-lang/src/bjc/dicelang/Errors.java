@@ -3,6 +3,10 @@ package bjc.dicelang;
 /**
  * Repository for error messages.
  *
+ * @TODO 10/08/17 Ben Culkin :ErrorRefactor
+ * 	This way of handling error messages is not easy to deal with. Something
+ * 	else needs to be done, but I'm not sure what at the moment.
+ *
  * @author EVE
  *
  */
@@ -14,7 +18,7 @@ public class Errors {
 	 *
 	 */
 	public static enum ErrorKey {
-		// Define Errors
+		/* Define Errors */
 		/**
 		 * Incorrect define guard syntax
 		 */
@@ -28,7 +32,7 @@ public class Errors {
 		 */
 		EK_DFN_RECUR,
 
-		// Console Errors
+		/* Console Errors */
 		/**
 		 * Unknown console pragma
 		 */
@@ -38,7 +42,7 @@ public class Errors {
 		 */
 		EK_CONS_INVDEFINE,
 
-		// Language Engine Errors
+		/* Language Engine Errors */
 		/**
 		 * Found closing double-brace w/out opening double-brace
 		 */
@@ -48,7 +52,7 @@ public class Errors {
 		 */
 		EK_ENG_NOCLOSING,
 
-		// Tokenizer Errors
+		/* Tokenizer Errors */
 		/**
 		 * Found an unexpected grouping token
 		 */
@@ -62,7 +66,7 @@ public class Errors {
 		 */
 		EK_TOK_INVFLEX,
 
-		// Evaluator Errors
+		/* Evaluator Errors */
 		/**
 		 * Unknown node type
 		 */
@@ -132,7 +136,7 @@ public class Errors {
 		 */
 		EK_EVAL_UNSTRING,
 
-		// Parser Error
+		/* Parser Error */
 		/**
 		 * Group closing where there couldn't be an opener
 		 */
@@ -154,7 +158,7 @@ public class Errors {
 		 */
 		EK_PARSE_INVTOKEN,
 
-		// Shunter Error
+		/* Shunter Error */
 		/**
 		 * Unary operator expected a operand, but got an operator
 		 */
@@ -180,7 +184,7 @@ public class Errors {
 		 */
 		EK_SHUNT_NOTASSOC,
 
-		// Stream Errors
+		/* Stream Errors */
 		/**
 		 * Attempted to switch to a non-existant stream
 		 */
@@ -194,7 +198,7 @@ public class Errors {
 		 */
 		EK_STRM_INVCOM,
 
-		// SCL Errors
+		/* SCL Errors */
 		/**
 		 * Unknown SCL token
 		 */
@@ -216,7 +220,7 @@ public class Errors {
 		 */
 		EK_SCL_INVARG,
 
-		// CLI Argument Errors
+		/* CLI Argument Errors */
 		/**
 		 * Unknown CLI argument
 		 */
@@ -230,7 +234,7 @@ public class Errors {
 		 */
 		EK_CLI_INVDFNTYPE,
 
-		// Miscellaneous errors
+		/* Miscellaneous errors */
 		/**
 		 * Unknown I/O problem
 		 */
@@ -239,6 +243,10 @@ public class Errors {
 		 * File not found
 		 */
 		EK_MISC_NOFILE,
+
+		/* Dice errors. */
+		/* Recieved the wrong sort of expression to a die. */
+		EK_DICE_INVTYPE,
 	}
 
 	/**

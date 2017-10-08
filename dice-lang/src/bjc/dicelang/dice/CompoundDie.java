@@ -6,11 +6,9 @@ package bjc.dicelang.dice;
  * @author Ben Culkin
  */
 public class CompoundDie implements Die {
-	/*
-	 * The dice that form this die
-	 */
-	private final Die       left;
-	private final Die       right;
+	/* The dice that form this die */
+	private final Die left;
+	private final Die right;
 
 	/**
 	 * Create a new compound die.
@@ -32,24 +30,31 @@ public class CompoundDie implements Die {
 
 	@Override
 	public long optimize() {
-		return Long.parseLong(left.optimize() + "" + right.optimize());
+		long leftOpt  = left.optimize();
+		long rightOpt = right.optimize();
+
+		return Long.parseLong(String.format("%d%d", leftOpt, rightOpt));
 	}
 
 	@Override
 	public long roll() {
-		return Long.parseLong(left.roll() + "" + right.roll());
+		long leftRoll  = left.optimize();
+		long rightRoll = right.optimize();
+
+		return Long.parseLong(String.format("%d%d", leftRoll, rightRoll));
 	}
 
 	@Override
 	public long rollSingle() {
-		/*
-		 * We're only one die, we can't be split
-		 */
+		/* Actually one dice built using two, can't be split. */
 		return roll();
 	}
 
 	@Override
 	public String toString() {
-		return left.toString() + "c" + right.toString();
+		String leftString  = left.toString();
+		String rightString = right.toString();
+
+		return String.format("%sc%s", leftString, rightString);
 	}
 }

@@ -27,30 +27,20 @@ import java.util.Arrays;
  * @author Ben Culkin
  */
 public class StreamEngine {
-	/*
-	 * Whether or not we're doing debugging.
-	 */
+	/* Whether or not we're doing debugging. */
 	public final boolean debug = true;
 
-	/*
-	 * The engine we're attached to.
-	 */
+	/* The engine we're attached to. */
 	DiceLangEngine eng;
 
-	/*
-	 * Our streams.
-	 */
+	/* Our streams. */
 	Tape<IList<String>>     streams;
 	IList<String>           currStream;
 
-	/*
-	 * Saved streams
-	 */
+	/* Saved streams */
 	TapeLibrary<IList<String>> savedStreams;
 
-	/*
-	 * Handler for SCL programs
-	 */
+	/* Handler for SCL programs */
 	private final StreamControlEngine scleng;
 
 	/**
@@ -66,15 +56,12 @@ public class StreamEngine {
 		scleng = new StreamControlEngine(this);
 	}
 
+	/* Do pre-run (re)initialization. */
 	private void init() {
-		/*
-		 * Reinitialize our list of streams.
-		 */
+		/* Reinitialize our list of streams. */
 		streams = new SingleTape<>();
 
-		/*
-		 * Create an initial stream.
-		 */
+		/* Create an initial stream. */
 		currStream = new FunctionalList<>();
 		streams.insertBefore(currStream);
 	}
@@ -94,28 +81,29 @@ public class StreamEngine {
 		return doStreams(Arrays.asList(toks), dest);
 	}
 
+	/**
+	 * Process a possibly interleaved set of streams.
+	 *
+	 * @param toks
+	 *                The raw token to read streams from.
+	 *
+	 * @param dest
+	 *                The list to write the final stream to.
+	 *
+	 * @return Whether or not the streams were successfully processed.
+	 */
 	public boolean doStreams(final Iterable<String> toks, final IList<String> dest) {
-		/*
-		 * Initialize per-run state.
-		 */
+		/* Initialize per-run state. */
 		init();
 
-		/*
-		 * Are we currently quoting things?
-		 */
+		/* Are we currently quoting things? */
 		boolean quoteMode = false;
-
-		/*
-		 * Process each token.
-		 */
+		/* Process each token. */
 		for (final String tk : toks) {
-			/*
-			 * Process stream commands.
-			 */
+			/* Process stream commands. */
 			if (tk.startsWith("{@S") && !quoteMode) {
-				if (tk.equals("{@SQ}")) {
-					quoteMode = true;
-				} else if (!processCommand(tk)) return false;
+				if       (tk.equals("{@SQ}"))  quoteMode = true;
+				 else if (!processCommand(tk)) return false;
 			} else {
 				if (tk.equals("{@SU}")) {
 					quoteMode = false;
