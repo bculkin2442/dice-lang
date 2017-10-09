@@ -34,6 +34,7 @@ import bjc.utils.parserutils.splitter.ConfigurableTokenSplitter;
  * @author Ben Culkin
  */
 public class DiceLangEngine {
+	/* Logger. */
 	private static final Logger LOG = Logger.getLogger(DiceLangEngine.class.getName());
 
 	/*
@@ -120,22 +121,21 @@ public class DiceLangEngine {
 		nextLiteral = 1;
 
 		/* Initial mode settings. */
-		debugMode = true;
+		debugMode   = true;
 		postfixMode = false;
-		prefixMode = false;
-		stepEval = false;
+		prefixMode  = false;
+		stepEval    = false;
 
 		/* Create components. */
+		shunt     = new Shunter();
+		parsr     = new Parser();
+
 		streamEng = new StreamEngine(this);
-		shunt = new Shunter();
-		tokenzer = new Tokenizer(this);
-		parsr = new Parser();
-		eval = new Evaluator(this);
+		tokenzer  = new Tokenizer(this);
+		eval      = new Evaluator(this);
 	}
 
-	/**
-	 * Sort defns by priority.
-	 */
+	/** Sort defns by priority. */
 	public void sortDefns() {
 		lineDefns.sort(null);
 		tokenDefns.sort(null);
@@ -225,6 +225,10 @@ public class DiceLangEngine {
 	 */
 	public boolean runCommand(final String command) {
 		/* Preprocess the command into tokens */
+		/* @NOTE
+		 * 	Instead of strings, this should maybe use a RawToken
+		 * 	class or something.
+		 */
 		final IList<String> preprocessedTokens = preprocessCommand(command);
 
 		if (preprocessedTokens == null) {
@@ -260,6 +264,10 @@ public class DiceLangEngine {
 
 			/* Apply token defns */
 			for (final Define dfn : tokenDefns.toIterable()) {
+				/* @NOTE
+				 * 	What happens with a define that produces
+				 * 	multiple tokens from one token?
+				 */
 				newTok = dfn.apply(newTok);
 			}
 
@@ -273,9 +281,8 @@ public class DiceLangEngine {
 			if (tk == null) {
 				/* Ignore blank tokens */
 				continue;
-			} else if (tk == Token.NIL_TOKEN)
+			} else if (tk == Token.NIL_TOKEN) {
 				/* Fail on bad tokens */
-			{
 				return null;
 			} else {
 				lexedTokens.add(tk);
@@ -305,6 +312,7 @@ public class DiceLangEngine {
 			System.out.print(msg);
 		}
 
+		/* Only shunt if we're not in a special mode. */
 		if (!postfixMode && !prefixMode) {
 			/* Shunt the tokens */
 			shuntedTokens = new FunctionalList<>();
@@ -315,6 +323,11 @@ public class DiceLangEngine {
 			}
 		} else if (prefixMode) {
 			/* Reverse directional tokens */
+			/*
+			 * @NOTE
+			 * 	Merge these two operations into one iteration
+			 * 	over the list?
+			 */
 			preparedTokens.reverse();
 			shuntedTokens = preparedTokens.map(this::reverseToken);
 		}
@@ -328,8 +341,8 @@ public class DiceLangEngine {
 		/* Expand token groups */
 		final IList<Token> readyTokens = shuntedTokens.flatMap(tk -> {
 			if (tk.type == Token.Type.TOKGROUP ||
-			                tk.type == Token.Type.TAGOP    ||
-			                tk.type == Token.Type.TAGOPR      ) {
+			    tk.type == Token.Type.TAGOP    ||
+			    tk.type == Token.Type.TAGOPR     ) {
 				LOG.finer(String.format("Expanding token group to: %s\n", tk.tokenValues.toString()));
 				return tk.tokenValues;
 			} else {
@@ -350,28 +363,22 @@ public class DiceLangEngine {
 	/*
 	 * Reverse orientation-sensitive tokens.
 	 *
-	 * These are mostly just things like (, {, and [
+	 * These are things like (, {, and [
 	 */
 	private Token reverseToken(final Token tk) {
 		switch (tk.type) {
 		case OBRACE:
 			return new Token(CBRACE, tk.intValue);
-
 		case OPAREN:
 			return new Token(CPAREN, tk.intValue);
-
 		case OBRACKET:
 			return new Token(CBRACKET, tk.intValue);
-
 		case CBRACE:
 			return new Token(OBRACE, tk.intValue);
-
 		case CPAREN:
 			return new Token(OPAREN, tk.intValue);
-
 		case CBRACKET:
 			return new Token(OBRACKET, tk.intValue);
-
 		default:
 			return tk;
 		}
@@ -386,13 +393,13 @@ public class DiceLangEngine {
 
 		/* Run the tokens through the stream engine */
 		final IList<String> streamToks = new FunctionalList<>();
-		final boolean succ = streamEng.doStreams(command.split(" "), streamToks);
+		final boolean succ             = streamEng.doStreams(command.split(" "),
+				streamToks);
 
 		if (!succ) {
 			return null;
 		}
 
-		/* Apply line defns */
 		String newComm = ListUtils.collapseTokens(streamToks, " ");
 
 		if (debugMode) {
@@ -401,6 +408,7 @@ public class DiceLangEngine {
 			System.out.print(msg);
 		}
 
+		/* Apply line defns */
 		for (final Define dfn : lineDefns.toIterable()) {
 			newComm = dfn.apply(newComm);
 		}
@@ -412,7 +420,7 @@ public class DiceLangEngine {
 		}
 
 		/* Remove string literals. */
-		final List<String> destringedParts = TokenUtils.removeDQuotedStrings(newComm);
+		final List<String> destringedParts   = TokenUtils.removeDQuotedStrings(newComm);
 		final StringBuffer destringedCommand = new StringBuffer();
 
 		for (final String part : destringedParts) {
@@ -420,7 +428,7 @@ public class DiceLangEngine {
 			if (part.startsWith("\"") && part.endsWith("\"")) {
 				/* Get the actual string. */
 				final String litName = "stringLiteral" + nextLiteral;
-				final String litVal = part.substring(1, part.length() - 1);
+				final String litVal  = part.substring(1, part.length() - 1);
 
 				/*
 				 * Insert the string with its escape sequences
@@ -458,7 +466,7 @@ public class DiceLangEngine {
 		}
 
 		/* Split the command into tokens */
-		final String strang = destringedCommand.toString();
+		final String strang  = destringedCommand.toString();
 		IList<String> tokens = FunctionalStringTokenizer.fromString(strang).toList();
 
 		/* Temporarily remove non-expanding tokens */
@@ -522,7 +530,11 @@ public class DiceLangEngine {
 			}
 
 			if (debugMode && stepEval) {
-				/* @TODO fix stepEval */
+				/*
+				 * @NOTE
+				 * 	This is broken until stepwise top-down
+				 * 	tree transforms are fixed.
+				 */
 				int step = 1;
 
 				/* Evaluate it step by step */
@@ -556,9 +568,7 @@ public class DiceLangEngine {
 						System.out.printf(")");
 					}
 
-					/*
-					 * Advance a step
-					 */
+					/* Advance a step */
 					System.out.println();
 					step += 1;
 				}
@@ -606,9 +616,7 @@ public class DiceLangEngine {
 
 				curBracedTokens = new FunctionalList<>();
 			} else if (tk.type == Token.Type.CBRACE && tk.intValue == 2) {
-				/*
-				 * Close a preshunt group.
-				 */
+				/* Close a preshunt group. */
 				if (curBraceCount == 0) {
 					/*
 					 * Error if there couldn't have been an
@@ -622,9 +630,7 @@ public class DiceLangEngine {
 
 				final IList<Token> preshuntTokens = new FunctionalList<>();
 
-				/*
-				 * Shunt preshunt group.
-				 */
+				/* Shunt preshunt group. */
 				final boolean success = shunt.shuntTokens(curBracedTokens, preshuntTokens);
 
 				if (debugMode) {
@@ -647,7 +653,7 @@ public class DiceLangEngine {
 				} else {
 					/*
 					 * Add the preshunt group to the token
-					 * stream..
+					 * stream.
 					 */
 					preparedTokens.add(new Token(Token.Type.TOKGROUP, preshuntTokens));
 				}
@@ -665,9 +671,7 @@ public class DiceLangEngine {
 		}
 
 		if (curBraceCount > 0) {
-			/*
-			 * There was an unclosed group.
-			 */
+			/* There was an unclosed group. */
 			Errors.inst.printError(EK_ENG_NOCLOSING);
 			return false;
 		}
@@ -675,10 +679,16 @@ public class DiceLangEngine {
 		return true;
 	}
 
+	/* Get a string literal from the string literal table. */
 	String getStringLiteral(final int key) {
 		return stringLits.get(key);
 	}
 
+	/* Add a string literal to the string literal table. */
+	/* @NOTE
+	 * 	The string literal table should be abstracted into some kind of
+	 * 	auto-numbered map thing.
+	 */
 	void addStringLiteral(final int key, final String val) {
 		stringLits.put(key, val);
 	}

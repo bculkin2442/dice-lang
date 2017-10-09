@@ -103,15 +103,18 @@ public class StreamEngine {
 		for (final String tk : toks) {
 			/* Process stream commands. */
 			if (tk.startsWith("{@S") && !quoteMode) {
-				if       (tk.equals("{@SQ}")) {
+				if (tk.equals("{@SQ}")) {
+					/* Start quoting. */
 					quoteMode = true;
 				} else if (!processCommand(tk)) {
 					return false;
 				}
 			} else {
 				if (tk.equals("{@SU}")) {
+					/* Stop quoting. */
 					quoteMode = false;
 				} else if (tk.startsWith("\\") && tk.endsWith("{@SU}")) {
+					/* Unquote quoted end. */
 					currStream.add(tk.substring(1));
 				} else {
 					currStream.add(tk);
@@ -120,15 +123,14 @@ public class StreamEngine {
 		}
 
 		for (final String tk : currStream) {
+			/* Collect tokens from the current stream. */
 			dest.add(tk);
 		}
 
 		return true;
 	}
 
-	/**
-	 * Create a new stream.
-	 */
+	/** Create a new stream. */
 	public void newStream() {
 		streams.insertAfter(new FunctionalList<>());
 	}
@@ -202,65 +204,57 @@ public class StreamEngine {
 		char[] comms = null;
 
 		if (tk.length() > 5) {
+			/* Pull off {@S and closing } */
 			comms = tk.substring(3, tk.length() - 1).toCharArray();
 		} else {
+			/* Its a single char. command. */
 			comms = new char[1];
 			comms[0] = tk.charAt(3);
 		}
 
 		boolean succ;
 
+		/* Process each command. */
+		/*
+		 * @TODO 10/09/17 Ben Culkin :StreamCommands
+		 * 	This should probably be refactored in some way, so as to
+		 * 	make it easier to add new commands.
+		 */
 		for (final char comm : comms) {
 			switch (comm) {
 			case '+':
 				newStream();
 				break;
-
 			case '>':
 				succ = rightStream();
-
 				if (!succ) {
 					return false;
 				}
-
 				break;
-
 			case '<':
 				succ = leftStream();
-
 				if (!succ) {
 					return false;
 				}
-
 				break;
-
 			case '-':
 				succ = deleteStream();
-
 				if (!succ) {
 					return false;
 				}
-
 				break;
-
 			case 'M':
 				succ = mergeStream();
-
 				if (!succ) {
 					return false;
 				}
-
 				break;
-
 			case 'L':
 				succ = scleng.runProgram(currStream.toArray(new String[0]));
-
 				if (!succ) {
 					return false;
 				}
-
 				break;
-
 			default:
 				Errors.inst.printError(EK_STRM_INVCOM, tk);
 				return false;

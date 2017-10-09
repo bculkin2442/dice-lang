@@ -11,6 +11,11 @@ import java.util.List;
  * @author Ben Culkin
  */
 public class Shunter {
+	/*
+	 * @NOTE
+	 * 	Why does this method return an array, and not the list of
+	 * 	tokens?
+	 */
 	/**
 	 * Convert a infix series of tokens to a postfix series of tokens.
 	 *
@@ -20,26 +25,27 @@ public class Shunter {
 	 * @return The tokens in postfix order.
 	 */
 	public static Token[] shuntTokens(final Token[] infixTokens) {
+		/* The returned tokens. */
 		final List<Token> postfixTokens = new ArrayList<>(infixTokens.length);
 
+		/* The current stack of operators. */
 		final Deque<Token> opStack = new LinkedList<>();
 
-		/*
-		 * Shunt each token.
-		 */
+		/* Shunt each token. */
 		for (final Token tok : infixTokens) {
-			/*
-			 * Handle operators.
-			 */
+			/* Handle operators. */
 			if (tok.typ.isOperator) {
 				Token curOp = opStack.peek();
 
 				/*
 				 * Check if an operator is higher priority,
 				 * respecting their left associativity.
+				 *
+				 * @NOTE
+				 * 	Should this be factored out into a
+				 * 	method?
 				 */
 				int leftPriority = tok.typ.operatorPriority;
-
 				int rightPriority;
 
 				if (curOp == null) {
@@ -56,11 +62,9 @@ public class Shunter {
 				 */
 				while (!opStack.isEmpty() && isHigherPrec) {
 					postfixTokens.add(opStack.pop());
-
 					curOp = opStack.peek();
 
 					leftPriority = tok.typ.operatorPriority;
-
 					if (curOp == null) {
 						rightPriority = 0;
 					} else {
@@ -82,9 +86,7 @@ public class Shunter {
 				 */
 				while (curOp.typ != TokenType.OPAREN) {
 					final Token tk = opStack.pop();
-
 					postfixTokens.add(tk);
-
 					curOp = opStack.peek();
 				}
 

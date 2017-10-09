@@ -3,6 +3,10 @@ package bjc.dicelang;
 import bjc.dicelang.dice.DieExpression;
 import bjc.utils.funcdata.IList;
 
+/*
+ * @TODO 10/09/17 Ben Culkin :TokenReorg
+ * 	Split the class into subclasses based off of type.
+ */
 /**
  * Lexer token.
  */

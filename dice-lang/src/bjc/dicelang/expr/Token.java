@@ -1,14 +1,18 @@
 package bjc.dicelang.expr;
 
+/*
+ * @TODO 10/08/17 :TokenReorg
+ * 	I am not a fan of this 'having a bunch of subclasses' in one thing I
+ * 	seem to have been doing around this project. This should be multiple
+ * 	subclasses, one for each value for TokenType.
+ */
 /**
  * Represents a lexical token.
  *
  * @author Ben Culkin
  */
 public class Token {
-	/*
-	 * The state for this token.
-	 */
+	/* The state for this token. */
 	private final Tokens tks;
 
 	/**
@@ -18,14 +22,10 @@ public class Token {
 	 */
 	public final TokenType typ;
 
-	/**
-	 * The integer value attached to this token.
-	 */
+	/** The integer value attached to this token. */
 	public int intValue;
 
-	/**
-	 * The original string this token was part of.
-	 */
+	/** The original string this token was part of. */
 	public String rawValue;
 
 	/**
@@ -44,21 +44,20 @@ public class Token {
 		this.typ = type;
 
 		rawValue = raw;
-
 		tks = toks;
 	}
 
 	@Override
 	public String toString() {
 		String typeStr = typ.toString();
-		typeStr += " (" + typ.name() + ")";
+		       typeStr = String.format("%s (%s)", typeStr, typ.name());
 
 		if (typ == TokenType.VREF) {
 			typeStr += " (ind. " + intValue;
 			typeStr += ", sym. \"" + tks.symbolTable.get(intValue) + "\")";
 		}
 
-		return typeStr + " (originally from: " + rawValue + ")";
+		return String.format("%s (originally from: %s)", typeStr, rawValue);
 	}
 
 	/**
@@ -70,25 +69,18 @@ public class Token {
 		switch (typ) {
 		case ADD:
 			return "+";
-
 		case SUBTRACT:
 			return "-";
-
 		case MULTIPLY:
 			return "*";
-
 		case DIVIDE:
 			return "/";
-
 		case VREF:
 			return tks.symbolTable.get(intValue);
-
 		case OPAREN:
 			return "(";
-
 		case CPAREN:
 			return ")";
-
 		default:
 			return "???";
 		}

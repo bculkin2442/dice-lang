@@ -1,32 +1,5 @@
 package bjc.dicelang;
 
-import static bjc.dicelang.Errors.ErrorKey.EK_SHUNT_INVSEP;
-import static bjc.dicelang.Errors.ErrorKey.EK_SHUNT_NOGROUP;
-import static bjc.dicelang.Errors.ErrorKey.EK_SHUNT_NOTADJ;
-import static bjc.dicelang.Errors.ErrorKey.EK_SHUNT_NOTADV;
-import static bjc.dicelang.Errors.ErrorKey.EK_SHUNT_NOTASSOC;
-import static bjc.dicelang.Token.Type.ADD;
-import static bjc.dicelang.Token.Type.BIND;
-import static bjc.dicelang.Token.Type.CBRACE;
-import static bjc.dicelang.Token.Type.COERCE;
-import static bjc.dicelang.Token.Type.CPAREN;
-import static bjc.dicelang.Token.Type.DICECONCAT;
-import static bjc.dicelang.Token.Type.DICEGROUP;
-import static bjc.dicelang.Token.Type.DICELIST;
-import static bjc.dicelang.Token.Type.DIVIDE;
-import static bjc.dicelang.Token.Type.GROUPSEP;
-import static bjc.dicelang.Token.Type.IDIVIDE;
-import static bjc.dicelang.Token.Type.LET;
-import static bjc.dicelang.Token.Type.MULTIPLY;
-import static bjc.dicelang.Token.Type.OBRACE;
-import static bjc.dicelang.Token.Type.OPAREN;
-import static bjc.dicelang.Token.Type.STRCAT;
-import static bjc.dicelang.Token.Type.STRREP;
-import static bjc.dicelang.Token.Type.SUBTRACT;
-import static bjc.dicelang.Token.Type.TAGOP;
-import static bjc.dicelang.Token.Type.TAGOPR;
-import static bjc.dicelang.Token.Type.TOKGROUP;
-
 import java.util.Deque;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -36,6 +9,13 @@ import bjc.utils.funcdata.FunctionalList;
 import bjc.utils.funcdata.FunctionalMap;
 import bjc.utils.funcdata.IList;
 import bjc.utils.funcdata.IMap;
+
+import static bjc.dicelang.Errors.ErrorKey.EK_SHUNT_INVSEP;
+import static bjc.dicelang.Errors.ErrorKey.EK_SHUNT_NOGROUP;
+import static bjc.dicelang.Errors.ErrorKey.EK_SHUNT_NOTADJ;
+import static bjc.dicelang.Errors.ErrorKey.EK_SHUNT_NOTADV;
+import static bjc.dicelang.Errors.ErrorKey.EK_SHUNT_NOTASSOC;
+import static bjc.dicelang.Token.Type.*;
 
 /**
  * Shunt a set of infix tokens to postfix tokens.
@@ -71,56 +51,56 @@ public class Shunter {
 	 */
 	Set<Token.Type> unaryGerunds;
 
-	/**
-	 * Precedence for math operators.
-	 */
-	public final int        MATH_PREC       = 30;
-	/**
-	 * Precedence for dice operators.
-	 */
-	public final int        DICE_PREC       = 20;
-	/**
-	 * Precedence for string operators.
-	 */
-	public final int        STR_PREC        = 10;
-	/**
-	 * Precedence for expression operators.
-	 */
-	public final int        EXPR_PREC       = 0;
+	/** Precedence for math operators. */
+	public final int MATH_PREC = 30;
+	/** Precedence for dice operators. */
+	public final int DICE_PREC = 20;
+	/** Precedence for string operators. */
+	public final int STR_PREC  = 10;
+	/** Precedence for expression operators. */
+	public final int EXPR_PREC = 0;
 
-	/**
-	 * Create a new shunter.
-	 */
+	/** Create a new shunter. */
 	public Shunter() {
+		/* Create op map. */
 		ops = new FunctionalMap<>();
 
+		/* Create association maps. */
 		rightAssoc = new HashSet<>();
-		notAssoc = new HashSet<>();
+		notAssoc   = new HashSet<>();
 
+		/* Create unary maps. */
 		unaryAdjectives = new HashSet<>();
-		unaryAdverbs = new HashSet<>();
-		unaryGerunds = new HashSet<>();
+		unaryAdverbs    = new HashSet<>();
+		unaryGerunds    = new HashSet<>();
 
+		/* Set up unary adverbs. */
 		unaryAdverbs.add(COERCE);
 
-		ops.put(ADD, 0 + MATH_PREC);
+		/* Setup operators. */
+		/* Math operators. */
+		ops.put(ADD,      0 + MATH_PREC);
 		ops.put(SUBTRACT, 0 + MATH_PREC);
 
 		ops.put(MULTIPLY, 1 + MATH_PREC);
-		ops.put(IDIVIDE, 1 + MATH_PREC);
-		ops.put(DIVIDE, 1 + MATH_PREC);
+		ops.put(IDIVIDE,  1 + MATH_PREC);
+		ops.put(DIVIDE,   1 + MATH_PREC);
 
+		/* Dice operators. */
 		ops.put(DICEGROUP, 0 + DICE_PREC);
 
 		ops.put(DICECONCAT, 1 + DICE_PREC);
 
 		ops.put(DICELIST, 2 + DICE_PREC);
 
+		/* String operators. */
 		ops.put(STRCAT, 0 + STR_PREC);
 
 		ops.put(STRREP, 1 + STR_PREC);
 
+		/* Expression operators. */
 		ops.put(LET, 0 + EXPR_PREC);
+
 		ops.put(BIND, 1 + EXPR_PREC);
 	}
 
@@ -136,16 +116,20 @@ public class Shunter {
 	 * @return Whether or not the shunt succeeded.
 	 */
 	public boolean shuntTokens(final IList<Token> tks, final IList<Token> returned) {
-		final Deque<Token> opStack = new LinkedList<>();
+		/* Operator stack for normal and unary operators. */
+		final Deque<Token> opStack  = new LinkedList<>();
 		final Deque<Token> unaryOps = new LinkedList<>();
 
+		/* Currently returned lists. */
 		final Deque<Token> currReturned = new LinkedList<>();
 
+		/* Tokens to feed ahead of the current one. */
 		final Deque<Token> feed = new LinkedList<>();
 
 		for (final Token tk : tks.toIterable()) {
 			boolean succ;
 
+			/* Drain the feed queue. */
 			while (feed.size() != 0) {
 				succ = shuntToken(feed.poll(), opStack, unaryOps, currReturned, feed);
 
@@ -161,11 +145,12 @@ public class Shunter {
 			}
 		}
 
-		// Flush leftover operators
+		/* Flush leftover operators. */
 		while (!opStack.isEmpty()) {
 			currReturned.addLast(opStack.pop());
 		}
 
+		/* Add the tokens to the returned list. */
 		for (final Token tk : currReturned) {
 			returned.add(tk);
 		}
@@ -173,9 +158,11 @@ public class Shunter {
 		return true;
 	}
 
+	/* Shunt a token. */
 	private boolean shuntToken(final Token tk, final Deque<Token> opStack,
 	                           final Deque<Token> unaryStack,
 	                           final Deque<Token> currReturned, final Deque<Token> feed) {
+		/* Handle unary operators. */
 		if (unaryStack.size() != 0) {
 			if (isUnary(tk)) {
 				unaryStack.add(tk);
@@ -187,6 +174,10 @@ public class Shunter {
 			final Token.Type unaryType = unaryOp.type;
 
 			if (unaryAdjectives.contains(unaryType)) {
+				/* 
+				 * Handle unary adjectives that take a
+				 * non-operator. 
+				 */
 				if (isOp(tk)) {
 					Errors.inst.printError(EK_SHUNT_NOTADV, unaryOp.toString(), tk.toString());
 					return false;
@@ -205,6 +196,7 @@ public class Shunter {
 
 				return true;
 			} else if (unaryAdverbs.contains(unaryType)) {
+				/* Handle unary adverbs that take an operator. */
 				if (!isOp(tk)) {
 					Errors.inst.printError(EK_SHUNT_NOTADJ, unaryOp.toString(), tk.toString());
 					return false;
@@ -229,6 +221,7 @@ public class Shunter {
 			unaryStack.add(tk);
 			return true;
 		} else if (isOp(tk)) {
+			/* Drain higher precedence operators. */
 			while (!opStack.isEmpty() && isHigherPrec(tk, opStack.peek())) {
 				final Token newOp = opStack.pop();
 
@@ -247,17 +240,16 @@ public class Shunter {
 				currReturned.addLast(tk);
 			}
 		} else if (tk.type == CPAREN || tk.type == CBRACE) {
+			/* Handle closing delimiter. */
 			Token matching = null;
 
 			switch (tk.type) {
 			case CPAREN:
 				matching = new Token(OPAREN, tk.intValue);
 				break;
-
 			case CBRACE:
 				matching = new Token(OBRACE, tk.intValue);
 				break;
-
 			default:
 				Errors.inst.printError(EK_SHUNT_NOGROUP);
 				return false;
@@ -278,6 +270,7 @@ public class Shunter {
 
 			opStack.pop();
 		} else if (tk.type == GROUPSEP) {
+			/* Add a grouped token. */
 			final IList<Token> group = new FunctionalList<>();
 
 			while (currReturned.size() != 0 && !currReturned.peek().isGrouper()) {
@@ -301,8 +294,9 @@ public class Shunter {
 		return true;
 	}
 
+	/* Check if an operator has higher precedence. */
 	private boolean isHigherPrec(final Token lft, final Token rght) {
-		final Token.Type left = lft.type;
+		final Token.Type left  = lft.type;
 		final Token.Type right = rght.type;
 
 		boolean exists = ops.containsKey(right);
@@ -311,7 +305,7 @@ public class Shunter {
 			exists = true;
 		}
 
-		// If it doesn't, the left is higher precedence.
+		/* If it doesn't, the left is higher precedence. */
 		if (!exists) {
 			return false;
 		}
@@ -338,6 +332,7 @@ public class Shunter {
 		return rightPrecedence >= leftPrecedence;
 	}
 
+	/* Check if something is an operator. */
 	private boolean isOp(final Token tk) {
 		final Token.Type ty = tk.type;
 
@@ -364,6 +359,7 @@ public class Shunter {
 		return false;
 	}
 
+	/* Check if something is a unary operator. */
 	private boolean isUnary(final Token tk) {
 		final Token.Type ty = tk.type;
 

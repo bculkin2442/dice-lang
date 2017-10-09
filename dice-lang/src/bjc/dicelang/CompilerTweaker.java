@@ -2,15 +2,17 @@ package bjc.dicelang;
 
 import bjc.utils.parserutils.splitter.ConfigurableTokenSplitter;
 
+/*
+ * @TODO 10/09/17 Ben Culkin :CompilerTweaking
+ * 	Expand this to allow tweaking more things about the compiler.
+ */
 /**
  * Contains methods for customizing the DiceLang and SCL compilers.
  *
  * @author Ben Culkin
  */
 public class CompilerTweaker {
-	/*
-	 * Bits of the compiler necessary
-	 */
+	/* Bits of the compiler necessary */
 	private final DiceLangEngine            eng;
 	private final ConfigurableTokenSplitter opExpander;
 

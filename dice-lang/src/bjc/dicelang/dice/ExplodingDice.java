@@ -13,16 +13,13 @@ import java.util.function.Predicate;
  * @author Ben Culkin
  */
 public class ExplodingDice implements DieList {
-	/*
-	 * The source die to use.
-	 */
+	/* The source die to use. */
 	private final Die source;
 
-	/*
-	 * The conditions for exploding.
-	 */
+	/* The conditions for exploding. */
 	private final Predicate<Long>   explodeOn;
 	private final String            explodePattern;
+	/* Whether or not to apply a -1 penalty to explosions. */
 	private final boolean           explodePenetrates;
 
 	/**
@@ -90,6 +87,7 @@ public class ExplodingDice implements DieList {
 		long oldRes = res;
 
 		final List<Long> resList = new LinkedList<>();
+		resList.add(res);
 
 		while (explodeOn.test(oldRes)) {
 			oldRes = source.rollSingle();
@@ -101,25 +99,26 @@ public class ExplodingDice implements DieList {
 			resList.add(oldRes);
 		}
 
-		final long[] newRes = new long[resList.size() + 1];
-		newRes[0] = res;
+		final long resArr[] = new long[resList.size()];
 
-		int i = 1;
-
-		for (final long rll : resList) {
-			newRes[i] = rll;
-			i += 1;
+		int i = 0;
+		for(long rll : resList) {
+			resArr[i] = rll;
+			i        += 1;
 		}
 
-		return newRes;
+		return resArr;
 	}
 
 	@Override
 	public String toString() {
+		String penString    = explodePenetrates ? "p" : "";
+		String sourceString = source.toString();
+
 		if (explodePattern == null) {
-			return source + (explodePenetrates ? "p" : "") + "!";
+			return String.format("%s%s!<complex-pred>", sourceString, penString);
 		}
 
-		return source + (explodePenetrates ? "p" : "") + "!" + explodePattern;
+		return String.format("%s%s!%s", sourceString, penString, explodePattern);
 	}
 }

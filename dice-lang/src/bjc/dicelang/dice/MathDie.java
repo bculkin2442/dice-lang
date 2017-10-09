@@ -7,6 +7,12 @@ package bjc.dicelang.dice;
  *
  */
 public class MathDie implements Die {
+	/* 
+	 * @TODO 10/08/17 Ben Culkin :MathGeneralize
+	 * 	Why do we have the operator types hardcoded, instead of just
+	 * 	having a general thing for applying a binary operator to dice?
+	 * 	Fix this by changing it to the more general form.
+	 */
 	/**
 	 * The types of a math operator.
 	 *
@@ -14,17 +20,11 @@ public class MathDie implements Die {
 	 *
 	 */
 	public static enum MathOp {
-		/**
-		 * Add two dice.
-		 */
+		/** Add two dice. */
 		ADD,
-		/**
-		 * Subtract two dice.
-		 */
+		/** Subtract two dice. */
 		SUBTRACT,
-		/**
-		 * Multiply two dice.
-		 */
+		/** Multiply two dice. */
 		MULTIPLY;
 
 		@Override

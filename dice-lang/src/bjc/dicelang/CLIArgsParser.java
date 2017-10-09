@@ -47,97 +47,79 @@ public class CLIArgsParser {
 		for (int i = 0; i < args.length; i++) {
 			final String arg = args[i];
 
+			/*
+			 * @TODO 10/08/17 Ben Culkin :CLIArgRefactor
+			 * 	Use whatever library gets added to BJC-Utils for
+			 * 	this, and extend these to do more things.
+			 */
 			switch (arg) {
 			case "-d":
 			case "--debug":
 				if (!eng.toggleDebug()) {
 					eng.toggleDebug();
 				}
-
 				break;
-
 			case "-nd":
 			case "--no-debug":
 				if (eng.toggleDebug()) {
 					eng.toggleDebug();
 				}
-
 				break;
-
 			case "-po":
 			case "--postfix":
 				if (!eng.togglePostfix()) {
 					eng.togglePostfix();
 				}
-
 				break;
-
 			case "-npo":
 			case "--no-postfix":
 				if (eng.togglePostfix()) {
 					eng.togglePostfix();
 				}
-
 				break;
-
 			case "-pr":
 			case "--prefix":
 				if (!eng.togglePrefix()) {
 					eng.togglePrefix();
 				}
-
 				break;
-
 			case "-npr":
 			case "--no-prefix":
 				if (eng.togglePrefix()) {
 					eng.togglePrefix();
 				}
-
 				break;
-
 			case "-se":
 			case "--stepeval":
 				if (!eng.toggleStepEval()) {
 					eng.toggleStepEval();
 				}
-
 				break;
-
 			case "-nse":
 			case "--no-stepeval":
 				if (eng.toggleStepEval()) {
 					eng.toggleStepEval();
 				}
-
 				break;
-
 			case "-D":
 			case "--define":
 				i = simpleDefine(i, args, eng);
-
 				if (i == -1) {
 					return false;
 				}
-
 				break;
-
 			case "-df":
 			case "--define-file":
 				i = defineFile(i, args, eng);
-
 				if (i == -1) {
 					return false;
 				}
-
 				break;
-
 			case "-ctf":
 			case "--compiler-tweak-file":
-
-			/*
-			 * @TODO not yet implemented
-			 */
+				/* @NOTE
+				 * 	Not yet implemented.
+				 */
 			default:
 				Errors.inst.printError(EK_CLI_UNARG, arg);
 				return false;
@@ -147,8 +129,11 @@ public class CLIArgsParser {
 		return true;
 	}
 
+	/* Handle parsing a simple define. */
 	private static int simpleDefine(final int i, final String[] args,
 	                                final DiceLangEngine eng) {
+		/* :DefineRefactor */
+
 		if (i >= args.length - 1) {
 			Errors.inst.printError(EK_CLI_MISARG, "define");
 			return -1;
@@ -177,6 +162,7 @@ public class CLIArgsParser {
 		return i + 2;
 	}
 
+	/* Load a series of defines from a file. */
 	private static int defineFile(final int i, final String[] args,
 	                              final DiceLangEngine eng) {
 		if (i >= args.length - 1) {
@@ -223,8 +209,7 @@ public class CLIArgsParser {
 	private static Define parseDefine(final String ln) {
 		final Define res = null;
 
-		// @TODO move this functionality from DiceLangConsole to some
-		// common ground where it can be used by both functions
+		/* :DefineRefactor */
 		return res;
 	}
 }

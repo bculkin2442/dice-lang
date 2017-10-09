@@ -5,9 +5,19 @@ package bjc.dicelang.dice;
  *
  * @author EVE
  *
+ * @TODO 10/08/17 Ben Culkin :DieListGeneralize
+ * 	DieList in general should be changed to be able to be
+ * 	constructed from an arbitrary die using rollSingle and things
+ * 	like that.
  */
 public class SimpleDieList implements DieList {
+	/* The number of dice to roll. */
 	private final Die       numDice;
+	/* 
+	 * The size of each die to roll.
+	 *
+	 * Checked once per roll, not once per dice rolled.
+	 */
 	private final Die       size;
 
 	/**

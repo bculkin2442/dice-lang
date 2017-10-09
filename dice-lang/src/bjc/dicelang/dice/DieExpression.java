@@ -2,24 +2,25 @@ package bjc.dicelang.dice;
 
 import java.util.Arrays;
 
+/*
+ * @NOTE
+ * 	I'm not a particularly large fan of sticking everything on this class
+ * 	and just documenting which fields are tied together in a non-obvious
+ * 	way. I think a class hierarchy might be better, but I am unsure of the
+ * 	details.
+ */
 /**
  * Represents either a die or a die list.
  *
  * @author Ben Culkin
  */
 public class DieExpression {
-	/**
-	 * Is this expression a list?
-	 */
+	/** Is this expression a list? */
 	public final boolean isList;
 
-	/**
-	 * The scalar value in this expression, if there is one.
-	 */
+	/** The scalar value in this expression, if there is one. */
 	public Die      scalar;
-	/**
-	 * The list value in this expression, if there is one.
-	 */
+	/** The list value in this expression, if there is one. */
 	public DieList  list;
 
 	/**

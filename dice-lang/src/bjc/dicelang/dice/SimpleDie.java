@@ -7,7 +7,17 @@ package bjc.dicelang.dice;
  *
  */
 public class SimpleDie implements Die {
+	/* The number of dice to roll. */
 	private final Die       numDice;
+	/* 
+	 * The size of each dice to roll.
+	 *
+	 * Rolled once per role, not once for each dice rolled.
+	 *
+	 * @NOTE
+	 * 	Would having some way to roll it once for each dice rolled be
+	 * 	useful in any sort of case?
+	 */
 	private final Die       diceSize;
 
 	/**

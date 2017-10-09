@@ -12,6 +12,10 @@ import java.util.regex.PatternSyntaxException;
 
 import bjc.utils.data.CircularIterator;
 
+/*
+ * @TODO 10/09/17 Ben Culkin :DefineRefactor
+ * 	Consider replacing this with the defines package from BJC-Utils.
+ */
 /**
  * A regular expression based pre-processor define.
  *
@@ -26,38 +30,34 @@ public class Define implements UnaryOperator<String>, Comparable<Define> {
 	 *
 	 */
 	public static enum Type {
-		/**
-		 * Match on lines.
-		 */
+		/** Match on lines. */
 		LINE,
-		/**
-		 * Match on tokens.
-		 */
+		/** Match on tokens. */
 		TOKEN
 	}
 
-	/**
-	 * The max amount of times to recur on expansions.
-	 */
+	/** The max amount of times to recur on expansions. */
 	public static int MAX_RECURS = 10;
 
-	/**
-	 * The priority of this definition.
-	 */
+	/** The priority of this definition. */
 	public final int        priority;
 
-	/**
-	 * Whether or not this definition is in error.
-	 */
+	/** Whether or not this definition is in error. */
 	public final boolean    inError;
 
+	/* Whether this define is recurring. */
 	private boolean doRecur;
+	/* Whether this define is applied multiple times per unit. */
 	private boolean subType;
 
+	/* The pattern that needs to match to apply this. */
 	private Pattern predicate;
+	/* The pattern to use to find everything to replace. */
 	private Pattern searcher;
 
+	/* The array of replacement strings to use. */
 	private Iterator<String>        replacers;
+	/* The current replacement string to use. */
 	private String                  replacer;
 
 	/**
@@ -91,9 +91,7 @@ public class Define implements UnaryOperator<String>, Comparable<Define> {
 		doRecur = recur;
 		subType = isSub;
 
-		/*
-		 * Only try to compile non-null predicates
-		 */
+		/* Only try to compile non-null predicates */
 		if (predicte != null) {
 			try {
 				predicate = Pattern.compile(predicte);
@@ -104,9 +102,7 @@ public class Define implements UnaryOperator<String>, Comparable<Define> {
 			}
 		}
 
-		/*
-		 * Compile the search pattern
-		 */
+		/* Compile the search pattern */
 		try {
 			searcher = Pattern.compile(searchr);
 		} catch (final PatternSyntaxException psex) {
@@ -117,9 +113,7 @@ public class Define implements UnaryOperator<String>, Comparable<Define> {
 
 		inError = false;
 
-		/*
-		 * Check whether or not we do sub-replacements
-		 */
+		/* Check whether or not we do sub-replacements */
 		if (subType) {
 			if (replacrs.iterator().hasNext()) {
 				replacers = new CircularIterator<>(replacrs, isCircular);
@@ -174,6 +168,7 @@ public class Define implements UnaryOperator<String>, Comparable<Define> {
 		return strang;
 	}
 
+	/* Apply a definition pass. */
 	private String doPass(final String tok) {
 		final Matcher searcherMatcher = searcher.matcher(tok);
 

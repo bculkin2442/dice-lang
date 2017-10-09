@@ -1,6 +1,15 @@
 package bjc.dicelang;
 
-@SuppressWarnings("javadoc")
+/*
+ * @TODO 10/09/17 Ben Culkin :NodeReorg
+ * 	Same thing, different class. Split into subclasses based off of the type
+ * 	values.
+ */
+/**
+ * Represents a node in the AST.
+ *
+ * @author Ben Culkin
+ */
 public class Node {
 	public static enum Type {
 		ROOT, TOKREF, UNARYOP, BINOP, GROUP, OGROUP, RESULT

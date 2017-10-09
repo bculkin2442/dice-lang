@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import bjc.dicelang.Errors;
@@ -30,7 +31,9 @@ public class ResourceLoader {
 		final URL fle = ResourceLoader.class.getResource("/data/help/" + name + ".help");
 
 		try {
-			return Files.lines(Paths.get(fle.toURI())).toArray(sze -> new String[sze]);
+			Path pth = Paths.get(fle.toURI());
+
+			return Files.lines(pth).toArray(sze -> new String[sze]);
 		} catch (IOException | URISyntaxException ioex) {
 			Errors.inst.printError(EK_MISC_IOEX, fle.toString());
 		}

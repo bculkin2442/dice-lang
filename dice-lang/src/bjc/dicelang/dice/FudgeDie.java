@@ -7,6 +7,7 @@ package bjc.dicelang.dice;
  *
  */
 public class FudgeDie implements Die {
+	/* The number of dice to roll. */
 	private final Die numDice;
 
 	/**
@@ -59,6 +60,8 @@ public class FudgeDie implements Die {
 
 	@Override
 	public String toString() {
-		return numDice + "dF";
+		String dieString = numDice.toString();
+
+		return String.format("%sdF", dieString);
 	}
 }

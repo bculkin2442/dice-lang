@@ -7,6 +7,7 @@ package bjc.dicelang.dice;
  *
  */
 public class ScalarDie implements Die {
+	/* The die value. */
 	private final long val;
 
 	/**
@@ -41,6 +42,6 @@ public class ScalarDie implements Die {
 
 	@Override
 	public String toString() {
-		return Long.toString(val);
+		return String.format("%d", val);
 	}
 }

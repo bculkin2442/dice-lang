@@ -27,9 +27,7 @@ import bjc.utils.funcdata.IList;
  *
  */
 public class Parser {
-	/**
-	 * Create a new parser.
-	 */
+	/** Create a new parser. */
 	public Parser() {
 
 	}
@@ -53,11 +51,13 @@ public class Parser {
 			switch (tk.type) {
 			case OBRACKET:
 			case OBRACE:
+				/* Parse opening delims. */
 				working.push(new Tree<>(new Node(OGROUP, tk)));
-				break;
 
+				break;
 			case CBRACKET:
 			case CBRACE:
+				/* Parse closing delims. */
 				final boolean sc = parseClosingGrouper(working, tk);
 
 				if (!sc) {
@@ -65,7 +65,6 @@ public class Parser {
 				}
 
 				break;
-
 			case MULTIPLY:
 			case DIVIDE:
 			case IDIVIDE:
@@ -76,6 +75,7 @@ public class Parser {
 			case STRREP:
 			case LET:
 			case BIND:
+				/* Parse binary operator. */
 				if (working.size() < 2) {
 					Errors.inst.printError(EK_PARSE_BINARY);
 					return false;
@@ -83,16 +83,15 @@ public class Parser {
 
 				handleBinaryNode(working, tk);
 				break;
-
 			case ADD:
 			case SUBTRACT:
+				/* Handle binary/unary operators. */
 				if (working.size() == 0) {
 					Errors.inst.printError(EK_PARSE_UNOPERAND, tk.toString());
 					return false;
 				} else if (working.size() == 1) {
 					final ITree<Node> operand = working.pop();
-
-					final ITree<Node> opNode = new Tree<>(new Node(UNARYOP, tk.type));
+					final ITree<Node> opNode  = new Tree<>(new Node(UNARYOP, tk.type));
 
 					opNode.addChild(operand);
 
@@ -102,15 +101,15 @@ public class Parser {
 				}
 
 				break;
-
 			case COERCE:
 			case DICESCALAR:
 			case DICEFUDGE:
+				/* Handle unary operators. */
 				if (working.size() == 0) {
 					Errors.inst.printError(EK_PARSE_UNOPERAND, tk.toString());
 				} else {
 					final ITree<Node> operand = working.pop();
-					final ITree<Node> opNode = new Tree<>(new Node(UNARYOP, tk.type));
+					final ITree<Node> opNode  = new Tree<>(new Node(UNARYOP, tk.type));
 
 					opNode.addChild(operand);
 
@@ -118,21 +117,24 @@ public class Parser {
 				}
 
 				break;
-
 			case INT_LIT:
 			case FLOAT_LIT:
 			case STRING_LIT:
 			case VREF:
 			case DICE_LIT:
+				/* Handle literals. */
 				working.push(new Tree<>(new Node(TOKREF, tk)));
 				break;
-
 			default:
 				Errors.inst.printError(EK_PARSE_INVTOKEN, tk.type.toString());
 				return false;
 			}
 		}
 
+		/* 
+		 * Collect the remaining nodes as the roots of the trees in the
+		 * AST forest.
+		 */
 		for (final ITree<Node> ast : working) {
 			results.add(ast);
 		}
@@ -140,9 +142,10 @@ public class Parser {
 		return true;
 	}
 
+	/* Handle a binary operator. */
 	private static void handleBinaryNode(final Deque<ITree<Node>> working, final Token tk) {
 		final ITree<Node> right = working.pop();
-		final ITree<Node> left = working.pop();
+		final ITree<Node> left  = working.pop();
 
 		final ITree<Node> opNode = new Tree<>(new Node(BINOP, tk.type));
 
@@ -152,6 +155,7 @@ public class Parser {
 		working.push(opNode);
 	}
 
+	/* Parse a closing delimiter. */
 	private static boolean parseClosingGrouper(final Deque<ITree<Node>> working,
 	                final Token tk) {
 		if (working.size() == 0) {
@@ -165,11 +169,9 @@ public class Parser {
 		case CBRACE:
 			groupNode = new Tree<>(new Node(GROUP, Node.GroupType.CODE));
 			break;
-
 		case CBRACKET:
 			groupNode = new Tree<>(new Node(GROUP, Node.GroupType.ARRAY));
 			break;
-
 		default:
 			Errors.inst.printError(EK_PARSE_UNCLOSE, tk.type.toString());
 			return false;
@@ -205,7 +207,7 @@ public class Parser {
 			childs.push(working.pop());
 		}
 
-		// Discard opener
+		/* Discard opener */
 		working.pop();
 
 		for (final ITree<Node> child : childs) {

@@ -6,6 +6,10 @@ import bjc.dicelang.dice.DieList;
 import bjc.utils.data.ITree;
 import bjc.utils.data.Tree;
 
+/*
+ * @TODO 10/09/17 Ben Culkin :EvalResultReorg
+ * 	Again, split it into seperate classes based off of the type.
+ */
 /**
  * The result from the evaluator.
  *

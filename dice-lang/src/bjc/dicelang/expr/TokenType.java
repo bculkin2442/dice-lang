@@ -2,59 +2,46 @@ package bjc.dicelang.expr;
 
 /**
  * Represents the type of this token.
+ *
+ * @author Ben Culkin
  */
 public enum TokenType {
-	/**
-	 * Represents +
+	/* 
+	 * @NOTE
+	 * 	Do we want to switch to auto-numbering the tokens? They were
+	 * 	manually numbered because this was an assignment for PoPL and
+	 * 	that was what Dr. Naz wanted.
 	 */
-	ADD(14, true, 0),
-	/**
-	 * Represents -
-	 */
+
+	/** Represents + */
+	ADD(     14, true, 0),
+	/** Represents - */
 	SUBTRACT(15, true, 0),
-
-	/**
-	 * Represents *
-	 */
+	/** Represents * */
 	MULTIPLY(16, true, 1),
-	/**
-	 * Represents /
-	 */
-	DIVIDE(17, true, 1),
+	/** Represents / */
+	DIVIDE(  17, true, 1),
 
-	/**
-	 * Represents variable names.
-	 */
+	/** Represents variable names. */
 	VREF(11),
 
-	/**
-	 * Represents (
-	 */
+	/** Represents ( */
 	OPAREN(0, false, 100),
-	/**
-	 * Represents )
-	 */
+	/** Represents ) */
 	CPAREN(0, false, 100);
 
-	/**
-	 * The ID number for this token type.
-	 */
+	/** The ID number for this token type. */
 	public final int nVal;
 
-	/**
-	 * Whether or not this type of token is an operator.
-	 */
+	/** Whether or not this type of token is an operator. */
 	public final boolean    isOperator;
-	/**
-	 * The priority of this operator, if it is one.
-	 */
+	/** The priority of this operator, if it is one. */
 	public final int        operatorPriority;
 
+	/* Create a new token. */
 	private TokenType(final int num, final boolean isOp, final int priority) {
-		nVal = num;
-
-		isOperator = isOp;
-
+		nVal             = num;
+		isOperator       = isOp;
 		operatorPriority = priority;
 	}
 

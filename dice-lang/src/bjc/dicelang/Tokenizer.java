@@ -14,9 +14,11 @@ import bjc.utils.funcdata.IMap;
 import bjc.utils.funcutils.StringUtils;
 import bjc.utils.parserutils.TokenUtils;
 
-@SuppressWarnings("javadoc")
+/**
+ * Converts strings into tokens.
+ */
 public class Tokenizer {
-	// Literal tokens for tokenization
+	/* Literal tokens for tokenization */
 	private final IMap<String, Token.Type> litTokens;
 
 	private final DiceLangEngine eng;
@@ -65,7 +67,6 @@ public class Tokenizer {
 			case '}':
 				tk = tokenizeGrouping(token);
 				break;
-
 			default:
 				tk = tokenizeLiteral(token, stringLts);
 			}
@@ -78,6 +79,7 @@ public class Tokenizer {
 		Token tk = Token.NIL_TOKEN;
 
 		if (StringUtils.containsOnly(token, "\\" + token.charAt(0))) {
+			/* Handle multiple-grouped delimiters. */
 			switch (token.charAt(0)) {
 			case '(':
 				tk = new Token(OPAREN, token.length());
@@ -112,6 +114,7 @@ public class Tokenizer {
 		return tk;
 	}
 
+	/* Patterns for matching. */
 	private final Pattern   hexadecimalMatcher      =
 	        Pattern.compile("\\A[\\-\\+]?0x[0-9A-Fa-f]+\\Z");
 	private final Pattern   flexadecimalMatcher     =
@@ -119,6 +122,7 @@ public class Tokenizer {
 	private final Pattern   stringLitMatcher        =
 	        Pattern.compile("\\AstringLiteral(\\d+)\\Z");
 
+	/* Tokenize a literal value. */
 	private Token tokenizeLiteral(final String rtoken, final IMap<String, String> stringLts) {
 		Token tk = Token.NIL_TOKEN;
 

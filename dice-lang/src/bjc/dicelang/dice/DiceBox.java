@@ -27,8 +27,11 @@ public class DiceBox {
 			/*
 			 * @TODO 10/08/17 Ben Culkin :DieErrors :ErrorRefactor
 			 * 	Use different types of exceptions to provide
-			 * 	better error messages. */
-			System.out.println("ERROR: Could not parse die expression (Cause: %s)\n", ex.getMessage);
+			 * 	better error messages. 
+			 */
+			String exMessage = ex.getMessage();
+
+			System.out.printf("ERROR: Could not parse die expression (Cause: %s)\n", exMessage);
 			ex.printStackTrace();
 
 			return null;
@@ -260,6 +263,10 @@ public class DiceBox {
 	 * @return Whether or not the string is a valid command.
 	 */
 	public static boolean isValidExpression(final String exp) {
+		/* @NOTE
+		 * 	Should this matcher/matches expression be abstracted in
+		 * 	some way?
+		 */
 		if (scalarDiePattern.matcher(exp).matches()) {
 			return true;
 		} else if (simpleDiePattern.matcher(exp).matches()) {
@@ -281,24 +288,23 @@ public class DiceBox {
 		}
 	}
 
-	/*
-	 * Derive a predicate from a compare point
-	 */
+	/* Derive a predicate from a compare point */
 	private static Predicate<Long> deriveCond(final String patt) {
 		final long num = Long.parseLong(patt.substring(1));
 
+		/* @NOTE
+		 * 	Should this be extended in some way, to provide other
+		 * 	operators?
+		 */
 		switch (patt.charAt(0)) {
 		case '<':
-			return (roll) -> roll < num;
-
+			return (roll) -> (roll < num);
 		case '=':
-			return (roll) -> roll == num;
-
+			return (roll) -> (roll == num);
 		case '>':
-			return (roll) -> roll > num;
-
+			return (roll) -> (roll > num);
 		default:
-			return (roll) -> false;
+			return (roll) -> (false);
 		}
 	}
 }

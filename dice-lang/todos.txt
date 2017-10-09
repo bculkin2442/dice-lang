@@ -1,0 +1,8 @@
+@TODO 10/08/17 Ben Culkin :ModuleSplitting
+	Split dice-lang into maven modules. Right now I'm thinking to split it
+	into the following modules
+	- dice (contains everything in the dice package)
+	- SCL  (contains everything in the SCL package)
+	- lang (contains everything else)
+	This'll make it easier to use these parts elsewhere, as well as make
+	compilation times shorter
