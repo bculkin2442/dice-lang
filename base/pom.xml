@@ -7,7 +7,7 @@
 		<version>1.0.0</version>
 	</parent>
 
-	<artifactId>dice-lang</artifactId>
+	<artifactId>dicelang-base</artifactId>
 	<packaging>jar</packaging>
 
 	<properties>
@@ -24,20 +24,30 @@
 				<artifactId>exec-maven-plugin</artifactId>
 				<version>1.5.0</version> 
 
-				<configuration>
-					<executable>java</executable>
+				<executions>
+					<execution>
+						<!-- Run the program -->
+						<id>dicelang-console</id>
 
-					<arguments>
-						<argument>-agentlib:jdwp=transport=dt_socket,server=y,suspend=n</argument>
-						<argument>-classpath</argument>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+						<configuration>
+							<executable>java</executable>
 
-						<classpath/>
+							<arguments>
+								<argument>-agentlib:jdwp=transport=dt_socket,server=y,suspend=n</argument>
+								<argument>-classpath</argument>
 
-						<argument>${main.class}</argument>
-					</arguments>
+								<classpath/>
 
-					<mainClass>${main.class}</mainClass>
-				</configuration>
+								<argument>${main.class}</argument>
+							</arguments>
+
+							<mainClass>${main.class}</mainClass>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 
 			<plugin>
