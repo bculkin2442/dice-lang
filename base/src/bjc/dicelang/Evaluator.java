@@ -6,11 +6,13 @@ import java.util.LinkedList;
 import java.util.function.Consumer;
 
 import bjc.dicelang.dice.CompoundDie;
+import bjc.dicelang.dice.Die;
 import bjc.dicelang.dice.FudgeDie;
 import bjc.dicelang.dice.MathDie;
 import bjc.dicelang.dice.ScalarDie;
 import bjc.dicelang.dice.SimpleDie;
 import bjc.dicelang.dice.SimpleDieList;
+
 import bjc.utils.data.ITree;
 import bjc.utils.data.SingleIterator;
 import bjc.utils.data.TopDownTransformIterator;
