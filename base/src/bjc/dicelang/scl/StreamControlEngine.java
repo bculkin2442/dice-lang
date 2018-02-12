@@ -12,7 +12,7 @@ import bjc.utils.parserutils.TokenUtils;
 
 import static bjc.dicelang.Errors.ErrorKey.*;
 import static bjc.dicelang.scl.SCLToken.Type.*;
-import static bjc.dicelang.scl.SCLToken.Word.*;
+import static bjc.dicelang.scl.WordSCLToken.Word.*;
 
 /*
  * @TODO 10/08/17 Ben Culkin :SCLReorg
@@ -92,7 +92,7 @@ public class StreamControlEngine {
 					return false;
 				}
 				final SCLToken brak = curStack.pop();
-				curStack.push(new WordsSCLToken(true, ((WordsSCLToken) brak).tokenVals));
+				curStack.push(new ArraySCLToken(((WordListSCLToken) brak).tokenVals));
 				break;
 
 			case WORD:
@@ -281,7 +281,7 @@ public class StreamControlEngine {
 			arr.add(curStack.pop());
 		}
 
-		curStack.push(new WordsSCLToken(true, arr));
+		curStack.push(new ArraySCLToken(arr));
 
 		return true;
 	}
@@ -323,7 +323,7 @@ public class StreamControlEngine {
 					return -1;
 				}
 				final SCLToken brak = curStack.pop();
-				toks.add(new WordsSCLToken(true, ((WordsSCLToken) brak).tokenVals));
+				toks.add(new ArraySCLToken(((WordListSCLToken) brak).tokenVals));
 				break;
 			default:
 				toks.add(ntok);
@@ -346,7 +346,7 @@ public class StreamControlEngine {
 		/*
 		 * @NOTE Instead of being hardcoded, this should be a parameter.
 		 */
-		curStack.push(new WordsSCLToken(false, toks));
+		curStack.push(new WordsSCLToken(toks));
 
 		return n;
 	}

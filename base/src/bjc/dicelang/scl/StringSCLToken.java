@@ -4,7 +4,7 @@ public class StringSCLToken extends SCLToken {
 	/* Used for SYMBOL & SLIT */
 	public String stringVal;
 	
-	public StringSCLToken(boolean isSymbol, String val) {
+	protected StringSCLToken(boolean isSymbol, String val) {
 		if(isSymbol) {
 			type = Type.SYMBOL;
 		} else {
