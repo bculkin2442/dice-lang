@@ -43,7 +43,7 @@ public class StreamEngine {
 	 * Create a new stream engine.
 	 *
 	 * @param engine
-	 *            The dice engine we're attached to.
+	 *        The dice engine we're attached to.
 	 */
 	public StreamEngine(final DiceLangEngine engine) {
 		eng = engine;
@@ -66,10 +66,10 @@ public class StreamEngine {
 	 * Process a possibly interleaved set of streams.
 	 *
 	 * @param toks
-	 *            The raw token to read streams from.
+	 *        The raw token to read streams from.
 	 *
 	 * @param dest
-	 *            The list to write the final stream to.
+	 *        The list to write the final stream to.
 	 *
 	 * @return Whether or not the streams were successfully processed.
 	 */
@@ -81,10 +81,10 @@ public class StreamEngine {
 	 * Process a possibly interleaved set of streams.
 	 *
 	 * @param toks
-	 *            The raw token to read streams from.
+	 *        The raw token to read streams from.
 	 *
 	 * @param dest
-	 *            The list to write the final stream to.
+	 *        The list to write the final stream to.
 	 *
 	 * @return Whether or not the streams were successfully processed.
 	 */

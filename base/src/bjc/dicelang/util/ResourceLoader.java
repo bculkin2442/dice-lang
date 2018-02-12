@@ -22,7 +22,7 @@ public class ResourceLoader {
 	 * Loads a .help file from the data/help directory.
 	 *
 	 * @param name
-	 *            The name of the help file to load.
+	 *        The name of the help file to load.
 	 *
 	 * @return The contents of the help file, or null if it could not be opened.
 	 */

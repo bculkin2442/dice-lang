@@ -41,7 +41,7 @@ public class StreamControlEngine {
 	 * Create a new stream control engine.
 	 *
 	 * @param engine
-	 *            The engine to control.
+	 *        The engine to control.
 	 */
 	public StreamControlEngine(final StreamEngine engine) {
 		eng = engine;
@@ -54,7 +54,7 @@ public class StreamControlEngine {
 	 * Run a SCL program.
 	 *
 	 * @param tokens
-	 *            The program to run.
+	 *        The program to run.
 	 *
 	 * @return Whether the program executed successfully.
 	 */

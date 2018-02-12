@@ -18,7 +18,7 @@ public class Shunter {
 	 * Convert a infix series of tokens to a postfix series of tokens.
 	 *
 	 * @param infixTokens
-	 *            The tokens in infix order.
+	 *        The tokens in infix order.
 	 *
 	 * @return The tokens in postfix order.
 	 */

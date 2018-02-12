@@ -79,7 +79,7 @@ public class EvaluatorResult {
 	 * Create a new result.
 	 *
 	 * @param typ
-	 *            The type of the result.
+	 *        The type of the result.
 	 */
 	public EvaluatorResult(final EvaluatorResult.Type typ) {
 		type = typ;
@@ -89,10 +89,10 @@ public class EvaluatorResult {
 	 * Create a new result.
 	 *
 	 * @param typ
-	 *            The type of the result.
+	 *        The type of the result.
 	 *
 	 * @param orig
-	 *            The original value of the result.
+	 *        The original value of the result.
 	 */
 	public EvaluatorResult(final EvaluatorResult.Type typ, final ITree<Node> orig) {
 		this(typ);
@@ -104,10 +104,10 @@ public class EvaluatorResult {
 	 * Create a new result.
 	 *
 	 * @param typ
-	 *            The type of the result.
+	 *        The type of the result.
 	 *
 	 * @param orig
-	 *            The original value of the result.
+	 *        The original value of the result.
 	 */
 	public EvaluatorResult(final EvaluatorResult.Type typ, final Node orig) {
 		this(typ, new Tree<>(orig));

@@ -30,7 +30,7 @@ public class DiceLangConsole {
 	 * Create a new console.
 	 *
 	 * @param args
-	 *            The CLI args for the console.
+	 *        The CLI args for the console.
 	 */
 	public DiceLangConsole(final String[] args) {
 		commandNumber = 0;
@@ -304,7 +304,7 @@ public class DiceLangConsole {
 	 * Main method.
 	 *
 	 * @param args
-	 *            CLI arguments.
+	 *        CLI arguments.
 	 */
 	public static void main(final String[] args) {
 		final DiceLangConsole console = new DiceLangConsole(args);

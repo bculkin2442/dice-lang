@@ -33,10 +33,10 @@ public class Lexer {
 	 * Convert a string from a input command to a series of infix tokens.
 	 *
 	 * @param inp
-	 *            The input command.
+	 *        The input command.
 	 *
 	 * @param tks
-	 *            The token state.
+	 *        The token state.
 	 *
 	 * @return A series of infix tokens representing the command.
 	 */

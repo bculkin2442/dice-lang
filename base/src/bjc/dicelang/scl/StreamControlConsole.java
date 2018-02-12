@@ -19,7 +19,7 @@ public class StreamControlConsole {
 	 * Main method
 	 *
 	 * @param args
-	 *            Unused CLI args.
+	 *        Unused CLI args.
 	 */
 	public static void main(String[] args) {
 		/*

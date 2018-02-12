@@ -64,25 +64,25 @@ public class Define implements UnaryOperator<String>, Comparable<Define> {
 	 * Create a new define.
 	 *
 	 * @param priorty
-	 *            The priority of the define.
+	 *        The priority of the define.
 	 *
 	 * @param isSub
-	 *            Whether or not this is a 'sub-define'
+	 *        Whether or not this is a 'sub-define'
 	 *
 	 * @param recur
-	 *            Whether this define is recursive or not.
+	 *        Whether this define is recursive or not.
 	 *
 	 * @param isCircular
-	 *            Whether this define is circular or not.
+	 *        Whether this define is circular or not.
 	 *
 	 * @param predicte
-	 *            The string to use as a predicate.
+	 *        The string to use as a predicate.
 	 *
 	 * @param searchr
-	 *            The string to use as a search.
+	 *        The string to use as a search.
 	 *
 	 * @param replacrs
-	 *            The source for replacement strings.
+	 *        The source for replacement strings.
 	 */
 	public Define(final int priorty, final boolean isSub, final boolean recur, final boolean isCircular,
 			final String predicte, final String searchr, final Iterable<String> replacrs) {
