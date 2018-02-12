@@ -160,7 +160,7 @@ public class DiceBox {
 			Die rhs = ((ScalarDiceExpression) right).scalar;
 
 			final DieList lst = new SimpleDieList(lhs, rhs);
-			
+
 			return new ListDiceExpression(lst);
 		}
 

@@ -26,7 +26,7 @@ public class ListDiceExpression implements DiceExpression {
 	public boolean isList() {
 		return true;
 	}
-	
+
 	@Override
 	public String toString() {
 		return list.toString();

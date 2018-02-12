@@ -8,26 +8,25 @@ package bjc.dicelang.dice;
  */
 public class SimpleDie implements Die {
 	/* The number of dice to roll. */
-	private final Die       numDice;
-	/* 
+	private final Die numDice;
+	/*
 	 * The size of each dice to roll.
 	 *
 	 * Rolled once per role, not once for each dice rolled.
 	 *
-	 * @NOTE
-	 * 	Would having some way to roll it once for each dice rolled be
-	 * 	useful in any sort of case?
+	 * @NOTE Would having some way to roll it once for each dice rolled be useful in
+	 * any sort of case?
 	 */
-	private final Die       diceSize;
+	private final Die diceSize;
 
 	/**
 	 * Create a new dice group.
 	 *
 	 * @param nDice
-	 *                The number of dice.
+	 *        The number of dice.
 	 *
 	 * @param size
-	 *                The size of the dice.
+	 *        The size of the dice.
 	 */
 	public SimpleDie(final long nDice, final long size) {
 		this(new ScalarDie(nDice), new ScalarDie(size));
@@ -37,10 +36,10 @@ public class SimpleDie implements Die {
 	 * Create a new dice group.
 	 *
 	 * @param nDice
-	 *                The number of dice.
+	 *        The number of dice.
 	 *
 	 * @param size
-	 *                The size of the dice.
+	 *        The size of the dice.
 	 */
 	public SimpleDie(final Die nDice, final long size) {
 		this(nDice, new ScalarDie(size));
@@ -50,10 +49,10 @@ public class SimpleDie implements Die {
 	 * Create a new dice group.
 	 *
 	 * @param nDice
-	 *                The number of dice.
+	 *        The number of dice.
 	 *
 	 * @param size
-	 *                The size of the dice.
+	 *        The size of the dice.
 	 */
 	public SimpleDie(final long nDice, final Die size) {
 		this(new ScalarDie(nDice), size);
@@ -63,10 +62,10 @@ public class SimpleDie implements Die {
 	 * Create a new dice group.
 	 *
 	 * @param nDice
-	 *                The number of dice.
+	 *        The number of dice.
 	 *
 	 * @param size
-	 *                The size of the dice.
+	 *        The size of the dice.
 	 */
 	public SimpleDie(final Die nDice, final Die size) {
 		numDice = nDice;

@@ -12,6 +12,6 @@ public interface DiceExpression {
 	 * @return The value of the expression as a string.
 	 */
 	public String value();
-	
+
 	public boolean isList();
 }

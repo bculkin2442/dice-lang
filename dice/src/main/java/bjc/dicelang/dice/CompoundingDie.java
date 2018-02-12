@@ -15,17 +15,17 @@ public class CompoundingDie implements Die {
 	private final Die source;
 
 	/* The predicate that marks when to compound. */
-	private final Predicate<Long>   compoundOn;
+	private final Predicate<Long> compoundOn;
 	/* The string version of the predicate, if one exists. */
-	private final String            compoundPattern;
+	private final String compoundPattern;
 
 	/**
 	 * Create a new compounding die with no pattern.
 	 *
 	 * @param src
-	 *                The die to compound from
+	 *        The die to compound from
 	 * @param compound
-	 *                The conditions to compound on
+	 *        The conditions to compound on
 	 */
 	public CompoundingDie(final Die src, final Predicate<Long> compound) {
 		this(src, compound, null);
@@ -35,12 +35,11 @@ public class CompoundingDie implements Die {
 	 * Create a new compounding die with a specified pattern.
 	 *
 	 * @param src
-	 *                The die to compound from
+	 *        The die to compound from
 	 * @param compound
-	 *                The conditions to compound on
+	 *        The conditions to compound on
 	 * @param patt
-	 *                The string pattern the condition came from, for
-	 *                printing
+	 *        The string pattern the condition came from, for printing
 	 */
 	public CompoundingDie(final Die src, final Predicate<Long> compound, final String patt) {
 		source = src;

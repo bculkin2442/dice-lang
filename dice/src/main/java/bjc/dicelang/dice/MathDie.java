@@ -7,11 +7,10 @@ package bjc.dicelang.dice;
  *
  */
 public class MathDie implements Die {
-	/* 
-	 * @TODO 10/08/17 Ben Culkin :MathGeneralize
-	 * 	Why do we have the operator types hardcoded, instead of just
-	 * 	having a general thing for applying a binary operator to dice?
-	 * 	Fix this by changing it to the more general form.
+	/*
+	 * @TODO 10/08/17 Ben Culkin :MathGeneralize Why do we have the operator types
+	 * hardcoded, instead of just having a general thing for applying a binary
+	 * operator to dice? Fix this by changing it to the more general form.
 	 */
 	/**
 	 * The types of a math operator.
@@ -47,20 +46,20 @@ public class MathDie implements Die {
 
 	private final MathDie.MathOp type;
 
-	private final Die       left;
-	private final Die       right;
+	private final Die left;
+	private final Die right;
 
 	/**
 	 * Create a new math die.
 	 *
 	 * @param op
-	 *                The operator to apply.
+	 *        The operator to apply.
 	 *
 	 * @param lft
-	 *                The left operand.
+	 *        The left operand.
 	 *
 	 * @param rght
-	 *                The right operand.
+	 *        The right operand.
 	 */
 	public MathDie(final MathDie.MathOp op, final Die lft, final Die rght) {
 		type = op;
