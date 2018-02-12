@@ -8,6 +8,10 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import bjc.dicelang.eval.DiceEvaluatorResult;
+import bjc.dicelang.eval.Evaluator;
+import bjc.dicelang.eval.EvaluatorResult;
+import bjc.dicelang.eval.FailureEvaluatorResult;
 import bjc.dicelang.scl.StreamEngine;
 import bjc.utils.data.ITree;
 import bjc.utils.funcdata.FunctionalList;
@@ -538,11 +542,15 @@ public class DiceLangEngine {
 						System.out.printf(" (result is %s", res);
 
 						if (res.type == EvaluatorResult.Type.DICE) {
-							System.out.printf(" (sample roll %s)", res.diceVal.value());
+							String value = ((DiceEvaluatorResult) res).diceVal.value();
+
+							System.out.printf(" (sample roll %s)", value);
 						}
 
-						if (res.origVal != null) {
-							System.out.printf(" (original tree is %s)", res.origVal);
+						if (res.type == EvaluatorResult.Type.FAILURE) {
+							ITree<Node> otree = ((FailureEvaluatorResult) res).origVal;
+
+							System.out.printf(" (original tree is %s)", otree);
 						}
 
 						System.out.printf(")");
@@ -560,7 +568,9 @@ public class DiceLangEngine {
 					System.out.printf("\t\tEvaluates to %s", res);
 
 					if (res.type == EvaluatorResult.Type.DICE) {
-						System.out.println("\t\t (sample roll " + res.diceVal.value() + ")");
+						String value = ((DiceEvaluatorResult) res).diceVal.value();
+
+						System.out.println("\t\t (sample roll " + value + ")");
 					}
 				}
 			}
@@ -653,7 +663,7 @@ public class DiceLangEngine {
 	}
 
 	/* Get a string literal from the string literal table. */
-	String getStringLiteral(final int key) {
+	public String getStringLiteral(final int key) {
 		return stringLits.get(key);
 	}
 

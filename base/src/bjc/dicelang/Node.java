@@ -1,12 +1,14 @@
 package bjc.dicelang;
 
-import static bjc.dicelang.EvaluatorResult.Type.FAILURE;
-
+import bjc.dicelang.eval.EvaluatorResult;
+import bjc.dicelang.eval.FailureEvaluatorResult;
 import bjc.utils.data.ITree;
 
 /*
- * @TODO 10/09/17 Ben Culkin :NodeReorg Same thing, different class. Split into
- * subclasses based off of the type values.
+ * @TODO 10/09/17 Ben Culkin :NodeReorg
+ * 
+ * Same thing, different class. Split into subclasses based off of the type
+ * values.
  */
 /**
  * Represents a node in the AST.
@@ -106,24 +108,30 @@ public class Node {
 		return super.hashCode();
 	}
 
-	static Node FAIL(final EvaluatorResult res) {
-		EvaluatorResult eres = new EvaluatorResult(FAILURE, new Node(Type.RESULT, res));
+	public static Node FAIL(final EvaluatorResult res) {
+		Node nd = new Node(Type.RESULT, res);
+
+		EvaluatorResult eres = new FailureEvaluatorResult(nd);
+
 		return new Node(Type.RESULT, eres);
 	}
 
-	static Node FAIL(final Node orig) {
-		return new Node(Type.RESULT, new EvaluatorResult(FAILURE, orig));
+	public static Node FAIL(final Node orig) {
+		FailureEvaluatorResult res = new FailureEvaluatorResult(orig);
+
+		return new Node(Type.RESULT, res);
 	}
 
-	static Node FAIL(final ITree<Node> orig) {
-		return new Node(Type.RESULT, new EvaluatorResult(FAILURE, orig));
+	public static Node FAIL(final ITree<Node> orig) {
+		FailureEvaluatorResult res = new FailureEvaluatorResult(orig);
+
+		return new Node(Type.RESULT, res);
 	}
 
-	/*
-	 * @TODO 10/09/17 Ben Culkin :NodeFAIL These methods should be moved to Node.
-	 */
 	/* Create a failing node. */
-	static Node FAIL() {
-		return new Node(Type.RESULT, new EvaluatorResult(FAILURE));
+	public static Node FAIL() {
+		FailureEvaluatorResult res = new FailureEvaluatorResult();
+
+		return new Node(Type.RESULT, res);
 	}
 }
