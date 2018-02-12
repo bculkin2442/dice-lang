@@ -36,15 +36,14 @@ public class Parser {
 	 * Parse a series of tokens to a forest of ASTs.
 	 *
 	 * @param tokens
-	 *                The list of tokens to parse.
+	 *            The list of tokens to parse.
 	 *
 	 * @param results
-	 *                The place to set results.
+	 *            The place to set results.
 	 *
 	 * @return Whether or not the parse was successful.
 	 */
-	public static boolean parseTokens(final IList<Token> tokens,
-	                                  final IList<ITree<Node>> results) {
+	public static boolean parseTokens(final IList<Token> tokens, final IList<ITree<Node>> results) {
 		final Deque<ITree<Node>> working = new LinkedList<>();
 
 		for (final Token tk : tokens) {
@@ -91,7 +90,7 @@ public class Parser {
 					return false;
 				} else if (working.size() == 1) {
 					final ITree<Node> operand = working.pop();
-					final ITree<Node> opNode  = new Tree<>(new Node(UNARYOP, tk.type));
+					final ITree<Node> opNode = new Tree<>(new Node(UNARYOP, tk.type));
 
 					opNode.addChild(operand);
 
@@ -109,7 +108,7 @@ public class Parser {
 					Errors.inst.printError(EK_PARSE_UNOPERAND, tk.toString());
 				} else {
 					final ITree<Node> operand = working.pop();
-					final ITree<Node> opNode  = new Tree<>(new Node(UNARYOP, tk.type));
+					final ITree<Node> opNode = new Tree<>(new Node(UNARYOP, tk.type));
 
 					opNode.addChild(operand);
 
@@ -131,9 +130,8 @@ public class Parser {
 			}
 		}
 
-		/* 
-		 * Collect the remaining nodes as the roots of the trees in the
-		 * AST forest.
+		/*
+		 * Collect the remaining nodes as the roots of the trees in the AST forest.
 		 */
 		for (final ITree<Node> ast : working) {
 			results.add(ast);
@@ -145,7 +143,7 @@ public class Parser {
 	/* Handle a binary operator. */
 	private static void handleBinaryNode(final Deque<ITree<Node>> working, final Token tk) {
 		final ITree<Node> right = working.pop();
-		final ITree<Node> left  = working.pop();
+		final ITree<Node> left = working.pop();
 
 		final ITree<Node> opNode = new Tree<>(new Node(BINOP, tk.type));
 
@@ -156,8 +154,7 @@ public class Parser {
 	}
 
 	/* Parse a closing delimiter. */
-	private static boolean parseClosingGrouper(final Deque<ITree<Node>> working,
-	                final Token tk) {
+	private static boolean parseClosingGrouper(final Deque<ITree<Node>> working, final Token tk) {
 		if (working.size() == 0) {
 			Errors.inst.printError(EK_PARSE_NOCLOSE);
 			return false;

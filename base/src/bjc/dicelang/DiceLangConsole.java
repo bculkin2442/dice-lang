@@ -30,7 +30,7 @@ public class DiceLangConsole {
 	 * Create a new console.
 	 *
 	 * @param args
-	 *                The CLI args for the console.
+	 *            The CLI args for the console.
 	 */
 	public DiceLangConsole(final String[] args) {
 		commandNumber = 0;
@@ -66,9 +66,8 @@ public class DiceLangConsole {
 		}
 
 		/* Run commands. */
-		/* @NOTE
-		 * 	Should switch this to a do-while loop to reduce code
-		 * 	duplication.
+		/*
+		 * @NOTE Should switch this to a do-while loop to reduce code duplication.
 		 */
 		while (!comm.equals("quit") && !comm.equals("exit")) {
 			if (comm.startsWith("pragma")) {
@@ -126,9 +125,8 @@ public class DiceLangConsole {
 
 		/* Run pragmas. */
 		/*
-		 * @TODO 10/09/17 Ben Culkin :PragmaRefactor
-		 * 	Swap to using something that makes it easier to add
-		 * 	pragmas.
+		 * @TODO 10/09/17 Ben Culkin :PragmaRefactor Swap to using something that makes
+		 * it easier to add pragmas.
 		 */
 		switch (pragmaName) {
 		case "debug":
@@ -191,16 +189,15 @@ public class DiceLangConsole {
 	/* Parse a define macro. */
 	private boolean defineMode(final String defineText) {
 		/* Grab all of the separator spaces. */
-		final int firstIndex  = defineText.indexOf(' ');
-		final int secondIndex = defineText.indexOf(' ', firstIndex  + 1);
-		final int thirdIndex  = defineText.indexOf(' ', secondIndex + 1);
-		final int fourthIndex = defineText.indexOf(' ', thirdIndex  + 1);
-		final int fifthIndex  = defineText.indexOf(' ', fourthIndex + 1);
-		final int sixthIndex  = defineText.indexOf(' ', fifthIndex  + 1);
+		final int firstIndex = defineText.indexOf(' ');
+		final int secondIndex = defineText.indexOf(' ', firstIndex + 1);
+		final int thirdIndex = defineText.indexOf(' ', secondIndex + 1);
+		final int fourthIndex = defineText.indexOf(' ', thirdIndex + 1);
+		final int fifthIndex = defineText.indexOf(' ', fourthIndex + 1);
+		final int sixthIndex = defineText.indexOf(' ', fifthIndex + 1);
 
 		/*
-		 * Error if we got something we didn't need, or didn't get
-		 * something we need.
+		 * Error if we got something we didn't need, or didn't get something we need.
 		 */
 		if (firstIndex == -1) {
 			Errors.inst.printError(EK_CONS_INVDEFINE, "(no priority)");
@@ -251,14 +248,11 @@ public class DiceLangConsole {
 		}
 
 		/* Do we want this to be a recursive pattern? */
-		final boolean doRecur    = defineText.substring(secondIndex + 1, thirdIndex)
-		                           .equalsIgnoreCase("true");
+		final boolean doRecur = defineText.substring(secondIndex + 1, thirdIndex).equalsIgnoreCase("true");
 		/* Do we want this pattern to have a guard? */
-		final boolean hasGuard   = defineText.substring(thirdIndex + 1,  fourthIndex)
-		                           .equalsIgnoreCase("true");
+		final boolean hasGuard = defineText.substring(thirdIndex + 1, fourthIndex).equalsIgnoreCase("true");
 		/* Do we want this pattern to use circular replacements. */
-		final boolean isCircular = defineText.substring(thirdIndex + 1,  fourthIndex)
-		                           .equalsIgnoreCase("true");
+		final boolean isCircular = defineText.substring(thirdIndex + 1, fourthIndex).equalsIgnoreCase("true");
 
 		/* The part of the string that contains patterns. */
 		final String pats = defineText.substring(fifthIndex + 1).trim();
@@ -289,9 +283,8 @@ public class DiceLangConsole {
 			replacePatterns.add(patMatcher.group(1));
 		}
 
-		final Define dfn = new Define(priority, subMode, doRecur,
-		                              isCircular, guardPattern, searchPattern,
-		                              replacePatterns);
+		final Define dfn = new Define(priority, subMode, doRecur, isCircular, guardPattern, searchPattern,
+				replacePatterns);
 
 		if (dfn.inError) {
 			return false;
@@ -311,7 +304,7 @@ public class DiceLangConsole {
 	 * Main method.
 	 *
 	 * @param args
-	 *                CLI arguments.
+	 *            CLI arguments.
 	 */
 	public static void main(final String[] args) {
 		final DiceLangConsole console = new DiceLangConsole(args);

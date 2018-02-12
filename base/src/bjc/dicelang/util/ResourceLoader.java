@@ -22,10 +22,9 @@ public class ResourceLoader {
 	 * Loads a .help file from the data/help directory.
 	 *
 	 * @param name
-	 *                The name of the help file to load.
+	 *            The name of the help file to load.
 	 *
-	 * @return The contents of the help file, or null if it could not be
-	 *         opened.
+	 * @return The contents of the help file, or null if it could not be opened.
 	 */
 	public static String[] loadHelpFile(final String name) {
 		final URL fle = ResourceLoader.class.getResource("/data/help/" + name + ".help");

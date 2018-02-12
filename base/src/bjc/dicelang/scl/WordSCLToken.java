@@ -16,14 +16,14 @@ public class WordSCLToken extends SCLToken {
 	}
 
 	public Word wordVal;
-	
+
 	public WordSCLToken(String wrd) {
 		this(builtinWords.get(wrd));
 	}
-	
+
 	public WordSCLToken(Word wrd) {
 		super(Type.WORD);
-		
+
 		wordVal = wrd;
 	}
 
@@ -57,9 +57,9 @@ public class WordSCLToken extends SCLToken {
 	public static boolean isBuiltinWord(String wrd) {
 		return builtinWords.containsKey(wrd);
 	}
-	
+
 	private static final Map<String, WordSCLToken.Word> builtinWords;
-	
+
 	static {
 		/* Init builtin words. */
 		builtinWords = new HashMap<>();

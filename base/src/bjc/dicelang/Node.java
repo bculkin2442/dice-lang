@@ -26,10 +26,10 @@ public class Node {
 	public final Type type;
 
 	// These can have or not have values based of the node type
-	public Token            tokenVal;
-	public Token.Type       operatorType;
-	public GroupType        groupType;
-	public EvaluatorResult  resultVal;
+	public Token tokenVal;
+	public Token.Type operatorType;
+	public GroupType groupType;
+	public EvaluatorResult resultVal;
 
 	public Node(final Type typ) {
 		type = typ;
@@ -120,8 +120,8 @@ public class Node {
 		return new Node(Type.RESULT, new EvaluatorResult(FAILURE, orig));
 	}
 
-	/* @TODO 10/09/17 Ben Culkin :NodeFAIL
-	 * 	These methods should be moved to Node.
+	/*
+	 * @TODO 10/09/17 Ben Culkin :NodeFAIL These methods should be moved to Node.
 	 */
 	/* Create a failing node. */
 	static Node FAIL() {

@@ -12,15 +12,13 @@ import java.util.List;
  */
 public class Shunter {
 	/*
-	 * @NOTE
-	 * 	Why does this method return an array, and not the list of
-	 * 	tokens?
+	 * @NOTE Why does this method return an array, and not the list of tokens?
 	 */
 	/**
 	 * Convert a infix series of tokens to a postfix series of tokens.
 	 *
 	 * @param infixTokens
-	 *                The tokens in infix order.
+	 *            The tokens in infix order.
 	 *
 	 * @return The tokens in postfix order.
 	 */
@@ -38,12 +36,9 @@ public class Shunter {
 				Token curOp = opStack.peek();
 
 				/*
-				 * Check if an operator is higher priority,
-				 * respecting their left associativity.
+				 * Check if an operator is higher priority, respecting their left associativity.
 				 *
-				 * @NOTE
-				 * 	Should this be factored out into a
-				 * 	method?
+				 * @NOTE Should this be factored out into a method?
 				 */
 				int leftPriority = tok.typ.operatorPriority;
 				int rightPriority;
@@ -57,8 +52,7 @@ public class Shunter {
 				boolean isHigherPrec = leftPriority >= rightPriority;
 
 				/*
-				 * Pop all operators that are lower precedence
-				 * than us.
+				 * Pop all operators that are lower precedence than us.
 				 */
 				while (!opStack.isEmpty() && isHigherPrec) {
 					postfixTokens.add(opStack.pop());
@@ -81,8 +75,7 @@ public class Shunter {
 				Token curOp = opStack.peek();
 
 				/*
-				 * Pop things until we find the matching
-				 * parenthesis.
+				 * Pop things until we find the matching parenthesis.
 				 */
 				while (curOp.typ != TokenType.OPAREN) {
 					final Token tk = opStack.pop();

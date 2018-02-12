@@ -25,9 +25,9 @@ public class CLIArgsParser {
 	 * Parse the provided set of CLI arguments.
 	 *
 	 * @param args
-	 *                The CLI arguments to parse.
+	 *            The CLI arguments to parse.
 	 * @param eng
-	 *                The engine to affect with parsing.
+	 *            The engine to affect with parsing.
 	 *
 	 * @return Whether or not to continue to the DiceLang repl.
 	 */
@@ -48,9 +48,8 @@ public class CLIArgsParser {
 			final String arg = args[i];
 
 			/*
-			 * @TODO 10/08/17 Ben Culkin :CLIArgRefactor
-			 * 	Use whatever library gets added to BJC-Utils for
-			 * 	this, and extend these to do more things.
+			 * @TODO 10/08/17 Ben Culkin :CLIArgRefactor Use whatever library gets added to
+			 * BJC-Utils for this, and extend these to do more things.
 			 */
 			switch (arg) {
 			case "-d":
@@ -117,8 +116,8 @@ public class CLIArgsParser {
 				break;
 			case "-ctf":
 			case "--compiler-tweak-file":
-				/* @NOTE
-				 * 	Not yet implemented.
+				/*
+				 * @NOTE Not yet implemented.
 				 */
 			default:
 				Errors.inst.printError(EK_CLI_UNARG, arg);
@@ -130,8 +129,7 @@ public class CLIArgsParser {
 	}
 
 	/* Handle parsing a simple define. */
-	private static int simpleDefine(final int i, final String[] args,
-	                                final DiceLangEngine eng) {
+	private static int simpleDefine(final int i, final String[] args, final DiceLangEngine eng) {
 		/* :DefineRefactor */
 
 		if (i >= args.length - 1) {
@@ -140,8 +138,7 @@ public class CLIArgsParser {
 		}
 
 		if (i >= args.length - 2) {
-			final Define dfn = new Define(5, false, false, false, null, args[i + 1],
-			                              Arrays.asList(""));
+			final Define dfn = new Define(5, false, false, false, null, args[i + 1], Arrays.asList(""));
 
 			if (dfn.inError) {
 				return -1;
@@ -151,8 +148,7 @@ public class CLIArgsParser {
 			return i + 1;
 		}
 
-		final Define dfn = new Define(5, false, false, false, null, args[i + 1],
-		                              Arrays.asList(args[i + 2]));
+		final Define dfn = new Define(5, false, false, false, null, args[i + 1], Arrays.asList(args[i + 2]));
 
 		if (dfn.inError) {
 			return -1;
@@ -163,8 +159,7 @@ public class CLIArgsParser {
 	}
 
 	/* Load a series of defines from a file. */
-	private static int defineFile(final int i, final String[] args,
-	                              final DiceLangEngine eng) {
+	private static int defineFile(final int i, final String[] args, final DiceLangEngine eng) {
 		if (i >= args.length - 1) {
 			Errors.inst.printError(EK_CLI_MISARG, "define-file");
 			return -1;

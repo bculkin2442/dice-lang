@@ -12,26 +12,25 @@ import java.util.Scanner;
  */
 public class StreamControlConsole {
 	/*
-	 * @TODO 10/08/17 :SCLArgs
-	 * 	Do something useful with the CLI args.
+	 * @TODO 10/08/17 :SCLArgs Do something useful with the CLI args.
 	 *
 	 */
 	/**
 	 * Main method
 	 *
 	 * @param args
-	 * 	Unused CLI args.
+	 *            Unused CLI args.
 	 */
 	public static void main(String[] args) {
 		/*
 		 * Initialize vars.
-		* 
-		*  We can get away with passing the null, because StreamEngine
-		*  doesn't reference any parts of DiceLangEngine.
+		 * 
+		 * We can get away with passing the null, because StreamEngine doesn't reference
+		 * any parts of DiceLangEngine.
 		 */
-		StreamEngine sengine          = new StreamEngine(null);
+		StreamEngine sengine = new StreamEngine(null);
 		StreamControlEngine sclengine = new StreamControlEngine(sengine);
-		Scanner scn                   = new Scanner(System.in);
+		Scanner scn = new Scanner(System.in);
 
 		/* Get input from the user. */
 		System.out.print("Enter a SCL command string (blank to exit): ");
@@ -47,7 +46,7 @@ public class StreamControlConsole {
 
 			/* Break the token into strings. */
 			IList<String> res = new FunctionalList<>();
-			String[] tokens   = ln.split(" ");
+			String[] tokens = ln.split(" ");
 
 			/* Run the stream engine on the tokens. */
 			boolean succ = sengine.doStreams(tokens, res);
@@ -58,7 +57,7 @@ public class StreamControlConsole {
 
 			/* Run the command through SCL. */
 			tokens = res.toArray(new String[res.getSize()]);
-			succ   = sclengine.runProgram(tokens);
+			succ = sclengine.runProgram(tokens);
 			if (!succ) {
 				System.out.printf("ERROR: SCL engine failed for line '%s'\n", ln);
 				continue;

@@ -56,19 +56,19 @@ public class EvaluatorResult {
 	/**
 	 * The integer value of the result.
 	 */
-	public long             intVal;
+	public long intVal;
 	/**
 	 * The float value of the result.
 	 */
-	public double           floatVal;
+	public double floatVal;
 	/**
 	 * The dice value of the result.
 	 */
-	public DieExpression    diceVal;
+	public DieExpression diceVal;
 	/**
 	 * The string value of the result.
 	 */
-	public String           stringVal;
+	public String stringVal;
 
 	/**
 	 * Original node data
@@ -79,7 +79,7 @@ public class EvaluatorResult {
 	 * Create a new result.
 	 *
 	 * @param typ
-	 *                The type of the result.
+	 *            The type of the result.
 	 */
 	public EvaluatorResult(final EvaluatorResult.Type typ) {
 		type = typ;
@@ -89,10 +89,10 @@ public class EvaluatorResult {
 	 * Create a new result.
 	 *
 	 * @param typ
-	 *                The type of the result.
+	 *            The type of the result.
 	 *
 	 * @param orig
-	 *                The original value of the result.
+	 *            The original value of the result.
 	 */
 	public EvaluatorResult(final EvaluatorResult.Type typ, final ITree<Node> orig) {
 		this(typ);
@@ -104,10 +104,10 @@ public class EvaluatorResult {
 	 * Create a new result.
 	 *
 	 * @param typ
-	 *                The type of the result.
+	 *            The type of the result.
 	 *
 	 * @param orig
-	 *                The original value of the result.
+	 *            The original value of the result.
 	 */
 	public EvaluatorResult(final EvaluatorResult.Type typ, final Node orig) {
 		this(typ, new Tree<>(orig));

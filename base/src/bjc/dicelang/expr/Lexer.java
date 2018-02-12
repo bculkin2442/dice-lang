@@ -33,10 +33,10 @@ public class Lexer {
 	 * Convert a string from a input command to a series of infix tokens.
 	 *
 	 * @param inp
-	 *                The input command.
+	 *            The input command.
 	 *
 	 * @param tks
-	 *                The token state.
+	 *            The token state.
 	 *
 	 * @return A series of infix tokens representing the command.
 	 */
@@ -44,14 +44,14 @@ public class Lexer {
 		/* Split tokens on whitespace. */
 		final String[] spacedTokens = inp.split("[ \t]");
 		/* Tokens to return. */
-		final List<Token> tokens    = new LinkedList<>();
+		final List<Token> tokens = new LinkedList<>();
 
 		/* Process each token. */
 		for (final String spacedToken : spacedTokens) {
 			/* Split on operators. */
 			final IList<String> splitTokens = split.split(spacedToken);
 			/* Convert strings to tokens. */
-			final IList<Token> rawTokens    = splitTokens.map(tok -> tks.lexToken(tok, spacedToken));
+			final IList<Token> rawTokens = splitTokens.map(tok -> tks.lexToken(tok, spacedToken));
 
 			/* Add tokens to results. */
 			rawTokens.forEach(tokens::add);

@@ -3,14 +3,14 @@ package bjc.dicelang.scl;
 public class StringSCLToken extends SCLToken {
 	/* Used for SYMBOL & SLIT */
 	public String stringVal;
-	
+
 	protected StringSCLToken(boolean isSymbol, String val) {
-		if(isSymbol) {
+		if (isSymbol) {
 			type = Type.SYMBOL;
 		} else {
 			type = Type.SLIT;
 		}
-		
+
 		stringVal = val;
 	}
 

@@ -7,12 +7,12 @@ public class WordListSCLToken extends SCLToken {
 	public IList<SCLToken> tokenVals;
 
 	protected WordListSCLToken(boolean isArray, IList<SCLToken> tokens) {
-		if(isArray) {
+		if (isArray) {
 			type = Type.ARRAY;
 		} else {
 			type = Type.WORDS;
 		}
-		
+
 		tokenVals = tokens;
 	}
 

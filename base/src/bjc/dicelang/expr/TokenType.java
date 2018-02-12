@@ -6,21 +6,20 @@ package bjc.dicelang.expr;
  * @author Ben Culkin
  */
 public enum TokenType {
-	/* 
-	 * @NOTE
-	 * 	Do we want to switch to auto-numbering the tokens? They were
-	 * 	manually numbered because this was an assignment for PoPL and
-	 * 	that was what Dr. Naz wanted.
+	/*
+	 * @NOTE Do we want to switch to auto-numbering the tokens? They were manually
+	 * numbered because this was an assignment for PoPL and that was what Dr. Naz
+	 * wanted.
 	 */
 
 	/** Represents + */
-	ADD(     14, true, 0),
+	ADD(14, true, 0),
 	/** Represents - */
 	SUBTRACT(15, true, 0),
 	/** Represents * */
 	MULTIPLY(16, true, 1),
 	/** Represents / */
-	DIVIDE(  17, true, 1),
+	DIVIDE(17, true, 1),
 
 	/** Represents variable names. */
 	VREF(11),
@@ -34,14 +33,14 @@ public enum TokenType {
 	public final int nVal;
 
 	/** Whether or not this type of token is an operator. */
-	public final boolean    isOperator;
+	public final boolean isOperator;
 	/** The priority of this operator, if it is one. */
-	public final int        operatorPriority;
+	public final int operatorPriority;
 
 	/* Create a new token. */
 	private TokenType(final int num, final boolean isOp, final int priority) {
-		nVal             = num;
-		isOperator       = isOp;
+		nVal = num;
+		isOperator = isOp;
 		operatorPriority = priority;
 	}
 

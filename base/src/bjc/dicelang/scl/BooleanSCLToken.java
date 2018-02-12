@@ -3,10 +3,10 @@ package bjc.dicelang.scl;
 public class BooleanSCLToken extends SCLToken {
 	/* Used for BLIT */
 	public boolean boolVal;
-	
+
 	public BooleanSCLToken(boolean val) {
 		super(Type.BLIT);
-		
+
 		boolVal = val;
 	}
 

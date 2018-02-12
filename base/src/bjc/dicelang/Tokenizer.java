@@ -30,21 +30,21 @@ public class Tokenizer {
 
 		litTokens = new FunctionalMap<>();
 
-		litTokens.put("+",   ADD);
-		litTokens.put("-",   SUBTRACT);
-		litTokens.put("*",   MULTIPLY);
-		litTokens.put("/",   DIVIDE);
-		litTokens.put("//",  IDIVIDE);
-		litTokens.put("sd",  DICESCALAR);
-		litTokens.put("df",  DICEFUDGE);
-		litTokens.put("dg",  DICEGROUP);
-		litTokens.put("dc",  DICECONCAT);
-		litTokens.put("dl",  DICELIST);
-		litTokens.put("=>",  LET);
-		litTokens.put(":=",  BIND);
+		litTokens.put("+", ADD);
+		litTokens.put("-", SUBTRACT);
+		litTokens.put("*", MULTIPLY);
+		litTokens.put("/", DIVIDE);
+		litTokens.put("//", IDIVIDE);
+		litTokens.put("sd", DICESCALAR);
+		litTokens.put("df", DICEFUDGE);
+		litTokens.put("dg", DICEGROUP);
+		litTokens.put("dc", DICECONCAT);
+		litTokens.put("dl", DICELIST);
+		litTokens.put("=>", LET);
+		litTokens.put(":=", BIND);
 		litTokens.put(".+.", STRCAT);
 		litTokens.put(".*.", STRREP);
-		litTokens.put(",",   GROUPSEP);
+		litTokens.put(",", GROUPSEP);
 		litTokens.put("crc", COERCE);
 	}
 
@@ -115,12 +115,9 @@ public class Tokenizer {
 	}
 
 	/* Patterns for matching. */
-	private final Pattern   hexadecimalMatcher      =
-	        Pattern.compile("\\A[\\-\\+]?0x[0-9A-Fa-f]+\\Z");
-	private final Pattern   flexadecimalMatcher     =
-	        Pattern.compile("\\A[\\-\\+]?[0-9][0-9A-Za-z]+B\\d{1,2}\\Z");
-	private final Pattern   stringLitMatcher        =
-	        Pattern.compile("\\AstringLiteral(\\d+)\\Z");
+	private final Pattern hexadecimalMatcher = Pattern.compile("\\A[\\-\\+]?0x[0-9A-Fa-f]+\\Z");
+	private final Pattern flexadecimalMatcher = Pattern.compile("\\A[\\-\\+]?[0-9][0-9A-Za-z]+B\\d{1,2}\\Z");
+	private final Pattern stringLitMatcher = Pattern.compile("\\AstringLiteral(\\d+)\\Z");
 
 	/* Tokenize a literal value. */
 	private Token tokenizeLiteral(final String rtoken, final IMap<String, String> stringLts) {

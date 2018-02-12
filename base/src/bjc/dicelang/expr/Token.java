@@ -32,13 +32,13 @@ public class Token {
 	 * Create a new token.
 	 *
 	 * @param type
-	 *                The type of this token.
+	 *            The type of this token.
 	 *
 	 * @param raw
-	 *                The string this token came from.
+	 *            The string this token came from.
 	 *
 	 * @param toks
-	 *                The state for this token
+	 *            The state for this token
 	 */
 	public Token(final TokenType type, final String raw, final Tokens toks) {
 		this.typ = type;
@@ -50,7 +50,7 @@ public class Token {
 	@Override
 	public String toString() {
 		String typeStr = typ.toString();
-		       typeStr = String.format("%s (%s)", typeStr, typ.name());
+		typeStr = String.format("%s (%s)", typeStr, typ.name());
 
 		if (typ == TokenType.VREF) {
 			typeStr += " (ind. " + intValue;

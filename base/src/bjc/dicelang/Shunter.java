@@ -34,8 +34,8 @@ public class Shunter {
 	Set<Token.Type> notAssoc;
 
 	/*
-	 * Unary operators that can only be applied to non-operator tokens and
-	 * yield operator tokens.
+	 * Unary operators that can only be applied to non-operator tokens and yield
+	 * operator tokens.
 	 */
 	Set<Token.Type> unaryAdjectives;
 
@@ -46,8 +46,8 @@ public class Shunter {
 	Set<Token.Type> unaryAdverbs;
 
 	/*
-	 * Unary operators that can only be applied to operator tokens and yield
-	 * data tokens
+	 * Unary operators that can only be applied to operator tokens and yield data
+	 * tokens
 	 */
 	Set<Token.Type> unaryGerunds;
 
@@ -56,7 +56,7 @@ public class Shunter {
 	/** Precedence for dice operators. */
 	public final int DICE_PREC = 20;
 	/** Precedence for string operators. */
-	public final int STR_PREC  = 10;
+	public final int STR_PREC = 10;
 	/** Precedence for expression operators. */
 	public final int EXPR_PREC = 0;
 
@@ -67,24 +67,24 @@ public class Shunter {
 
 		/* Create association maps. */
 		rightAssoc = new HashSet<>();
-		notAssoc   = new HashSet<>();
+		notAssoc = new HashSet<>();
 
 		/* Create unary maps. */
 		unaryAdjectives = new HashSet<>();
-		unaryAdverbs    = new HashSet<>();
-		unaryGerunds    = new HashSet<>();
+		unaryAdverbs = new HashSet<>();
+		unaryGerunds = new HashSet<>();
 
 		/* Set up unary adverbs. */
 		unaryAdverbs.add(COERCE);
 
 		/* Setup operators. */
 		/* Math operators. */
-		ops.put(ADD,      0 + MATH_PREC);
+		ops.put(ADD, 0 + MATH_PREC);
 		ops.put(SUBTRACT, 0 + MATH_PREC);
 
 		ops.put(MULTIPLY, 1 + MATH_PREC);
-		ops.put(IDIVIDE,  1 + MATH_PREC);
-		ops.put(DIVIDE,   1 + MATH_PREC);
+		ops.put(IDIVIDE, 1 + MATH_PREC);
+		ops.put(DIVIDE, 1 + MATH_PREC);
 
 		/* Dice operators. */
 		ops.put(DICEGROUP, 0 + DICE_PREC);
@@ -108,16 +108,16 @@ public class Shunter {
 	 * Shunt a set of tokens from infix to postfix.
 	 *
 	 * @param tks
-	 *                The tokens to input.
+	 *            The tokens to input.
 	 *
 	 * @param returned
-	 *                The postfix tokens.
+	 *            The postfix tokens.
 	 *
 	 * @return Whether or not the shunt succeeded.
 	 */
 	public boolean shuntTokens(final IList<Token> tks, final IList<Token> returned) {
 		/* Operator stack for normal and unary operators. */
-		final Deque<Token> opStack  = new LinkedList<>();
+		final Deque<Token> opStack = new LinkedList<>();
 		final Deque<Token> unaryOps = new LinkedList<>();
 
 		/* Currently returned lists. */
@@ -159,9 +159,8 @@ public class Shunter {
 	}
 
 	/* Shunt a token. */
-	private boolean shuntToken(final Token tk, final Deque<Token> opStack,
-	                           final Deque<Token> unaryStack,
-	                           final Deque<Token> currReturned, final Deque<Token> feed) {
+	private boolean shuntToken(final Token tk, final Deque<Token> opStack, final Deque<Token> unaryStack,
+			final Deque<Token> currReturned, final Deque<Token> feed) {
 		/* Handle unary operators. */
 		if (unaryStack.size() != 0) {
 			if (isUnary(tk)) {
@@ -174,9 +173,8 @@ public class Shunter {
 			final Token.Type unaryType = unaryOp.type;
 
 			if (unaryAdjectives.contains(unaryType)) {
-				/* 
-				 * Handle unary adjectives that take a
-				 * non-operator. 
+				/*
+				 * Handle unary adjectives that take a non-operator.
 				 */
 				if (isOp(tk)) {
 					Errors.inst.printError(EK_SHUNT_NOTADV, unaryOp.toString(), tk.toString());
@@ -296,7 +294,7 @@ public class Shunter {
 
 	/* Check if an operator has higher precedence. */
 	private boolean isHigherPrec(final Token lft, final Token rght) {
-		final Token.Type left  = lft.type;
+		final Token.Type left = lft.type;
 		final Token.Type right = rght.type;
 
 		boolean exists = ops.containsKey(right);

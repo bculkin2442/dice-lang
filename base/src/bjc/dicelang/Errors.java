@@ -3,9 +3,9 @@ package bjc.dicelang;
 /**
  * Repository for error messages.
  *
- * @TODO 10/08/17 Ben Culkin :ErrorRefactor
- * 	This way of handling error messages is not easy to deal with. Something
- * 	else needs to be done, but I'm not sure what at the moment.
+ * @TODO 10/08/17 Ben Culkin :ErrorRefactor This way of handling error messages
+ *       is not easy to deal with. Something else needs to be done, but I'm not
+ *       sure what at the moment.
  *
  * @author EVE
  *
@@ -272,10 +272,10 @@ public class Errors {
 	 * Print an error.
 	 *
 	 * @param key
-	 *                The key of the error.
+	 *            The key of the error.
 	 *
 	 * @param args
-	 *                The arguments for the error.
+	 *            The arguments for the error.
 	 */
 	public void printError(final ErrorKey key, final String... args) {
 		switch (mode) {
@@ -308,10 +308,8 @@ public class Errors {
 			break;
 
 		case EK_DFN_RECUR:
-			System.out.printf(
-			        "\tERROR: Recursive define didn't converge after %s iterations."
-			        + " Original string was %s, last iteration was %s\n",
-			        args[0], args[1], args[2]);
+			System.out.printf("\tERROR: Recursive define didn't converge after %s iterations."
+					+ " Original string was %s, last iteration was %s\n", args[0], args[1], args[2]);
 			break;
 
 		case EK_CONS_INVPRAG:
@@ -323,8 +321,7 @@ public class Errors {
 			break;
 
 		case EK_ENG_NOOPENING:
-			System.out.printf("\tERROR: Encountered closing doublebrace without"
-			                  + " matching opening doublebrace\n");
+			System.out.printf("\tERROR: Encountered closing doublebrace without" + " matching opening doublebrace\n");
 			break;
 
 		case EK_ENG_NOCLOSING:
@@ -340,8 +337,7 @@ public class Errors {
 			break;
 
 		case EK_TOK_INVFLEX:
-			System.out.printf("\tERROR: Invalid flexadecimal number %s in base %s\n", args[0],
-			                  args[1]);
+			System.out.printf("\tERROR: Invalid flexadecimal number %s in base %s\n", args[0], args[1]);
 			break;
 
 		case EK_EVAL_INVNODE:
@@ -349,8 +345,8 @@ public class Errors {
 			break;
 
 		case EK_EVAL_INVBIN:
-			System.out.printf("\tERROR: Binary operators take 2 operands, not %s\n"
-			                  + "\tProblem node is %s\n", args[0], args[1]);
+			System.out.printf("\tERROR: Binary operators take 2 operands, not %s\n" + "\tProblem node is %s\n", args[0],
+					args[1]);
 			break;
 
 		case EK_EVAL_UNBIN:
@@ -382,14 +378,11 @@ public class Errors {
 			break;
 
 		case EK_EVAL_INVDCREATE:
-			System.out.printf("\tERROR: Dice creation operator expects integers," + " not %s\n",
-			                  args[0]);
+			System.out.printf("\tERROR: Dice creation operator expects integers," + " not %s\n", args[0]);
 			break;
 
 		case EK_EVAL_INVDGROUP:
-			System.out.printf("\tERROR: Dice group operator expects scalar dice or integers," +
-			                  " not %s\n",
-			                  args[0]);
+			System.out.printf("\tERROR: Dice group operator expects scalar dice or integers," + " not %s\n", args[0]);
 			break;
 
 		case EK_EVAL_INVDICE:
@@ -413,8 +406,8 @@ public class Errors {
 			break;
 
 		case EK_PARSE_UNCLOSE:
-			System.out.printf("\tERROR: Found group closer without opener: (closing was %s"
-			                  + ", expected %s)\n", args[0], args[1]);
+			System.out.printf("\tERROR: Found group closer without opener: (closing was %s" + ", expected %s)\n",
+					args[0], args[1]);
 			break;
 
 		case EK_PARSE_BINARY:
@@ -431,22 +424,21 @@ public class Errors {
 
 		case EK_SHUNT_NOTADV:
 			System.out.printf("\tERROR: Unary operator %s is an adjective, not an adverb. It can't be"
-			                  + " applied to the operator %s\n", args[0], args[1]);
+					+ " applied to the operator %s\n", args[0], args[1]);
 			break;
 
 		case EK_SHUNT_NOTADJ:
 			System.out.printf("\tERROR: Unary operator %s is an adjective, not an adverb. It can't be"
-			                  + " applied to the operator %s\n", args[0], args[1]);
+					+ " applied to the operator %s\n", args[0], args[1]);
 			break;
 
 		case EK_SHUNT_NOOP:
-			System.out.printf("\tERROR: Unary operator %s is an adverb, but there is no operator"
-			                  + " to apply it to\n", args[0]);
+			System.out.printf("\tERROR: Unary operator %s is an adverb, but there is no operator" + " to apply it to\n",
+					args[0]);
 			break;
 
 		case EK_SHUNT_NOGROUP:
-			System.out.printf("\tERROR: Couldn't find matching grouping %s (expected %s)\n", args[0],
-			                  args[1]);
+			System.out.printf("\tERROR: Couldn't find matching grouping %s (expected %s)\n", args[0], args[1]);
 			break;
 
 		case EK_SHUNT_NOTASSOC:

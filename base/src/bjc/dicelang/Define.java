@@ -40,10 +40,10 @@ public class Define implements UnaryOperator<String>, Comparable<Define> {
 	public static int MAX_RECURS = 10;
 
 	/** The priority of this definition. */
-	public final int        priority;
+	public final int priority;
 
 	/** Whether or not this definition is in error. */
-	public final boolean    inError;
+	public final boolean inError;
 
 	/* Whether this define is recurring. */
 	private boolean doRecur;
@@ -56,37 +56,36 @@ public class Define implements UnaryOperator<String>, Comparable<Define> {
 	private Pattern searcher;
 
 	/* The array of replacement strings to use. */
-	private Iterator<String>        replacers;
+	private Iterator<String> replacers;
 	/* The current replacement string to use. */
-	private String                  replacer;
+	private String replacer;
 
 	/**
 	 * Create a new define.
 	 *
 	 * @param priorty
-	 *                The priority of the define.
+	 *            The priority of the define.
 	 *
 	 * @param isSub
-	 *                Whether or not this is a 'sub-define'
+	 *            Whether or not this is a 'sub-define'
 	 *
 	 * @param recur
-	 *                Whether this define is recursive or not.
+	 *            Whether this define is recursive or not.
 	 *
 	 * @param isCircular
-	 *                Whether this define is circular or not.
+	 *            Whether this define is circular or not.
 	 *
 	 * @param predicte
-	 *                The string to use as a predicate.
+	 *            The string to use as a predicate.
 	 *
 	 * @param searchr
-	 *                The string to use as a search.
+	 *            The string to use as a search.
 	 *
 	 * @param replacrs
-	 *                The source for replacement strings.
+	 *            The source for replacement strings.
 	 */
-	public Define(final int priorty, final boolean isSub, final boolean recur,
-	              final boolean isCircular,
-	              final String predicte, final String searchr, final Iterable<String> replacrs) {
+	public Define(final int priorty, final boolean isSub, final boolean recur, final boolean isCircular,
+			final String predicte, final String searchr, final Iterable<String> replacrs) {
 		priority = priorty;
 		doRecur = recur;
 		subType = isSub;

@@ -14,14 +14,14 @@ import bjc.utils.parserutils.TreeConstructor;
  */
 public class Parser {
 	/*
-	 * @TODO 10/08/17 Ben Culkin :MainSeperation
-	 * 	This main method should be moved to its own class.
+	 * @TODO 10/08/17 Ben Culkin :MainSeperation This main method should be moved to
+	 * its own class.
 	 */
 	/**
 	 * Main method.
 	 *
 	 * @param args
-	 *                Unused CLI args.
+	 *            Unused CLI args.
 	 */
 	public static void main(final String[] args) {
 		/* Create our objects. */
@@ -76,12 +76,10 @@ public class Parser {
 			System.out.println();
 
 			/* Construct a list from the array of tokens. */
-			final FunctionalList<Token> tokList = new FunctionalList<>(
-					Arrays.asList(postfixTokens));
+			final FunctionalList<Token> tokList = new FunctionalList<>(Arrays.asList(postfixTokens));
 
 			/* Construct a tree from the list of postfixed tokens. */
-			final ITree<Token> ast = TreeConstructor.constructTree(tokList,
-					tok -> tok.typ.isOperator);
+			final ITree<Token> ast = TreeConstructor.constructTree(tokList, tok -> tok.typ.isOperator);
 
 			/* Print the tree, then the canonical expression for it. */
 			System.out.println("Parsed tree");
@@ -103,8 +101,8 @@ public class Parser {
 	}
 
 	/*
-	 * Convert an expression to one that uses the smallest necessary amount
-	 * of parens.
+	 * Convert an expression to one that uses the smallest necessary amount of
+	 * parens.
 	 */
 	private static String toCanonicalExpr(final ITree<Token> ast) {
 		final Token data = ast.getHead();
@@ -115,11 +113,11 @@ public class Parser {
 		}
 
 		/* The left/right children. */
-		final ITree<Token> left  = ast.getChild(0);
+		final ITree<Token> left = ast.getChild(0);
 		final ITree<Token> right = ast.getChild(1);
 
 		/* Recursively canonicalize them. */
-		String leftExpr  = toCanonicalExpr(left);
+		String leftExpr = toCanonicalExpr(left);
 		String rightExpr = toCanonicalExpr(right);
 
 		/* Add parens if the left was higher priority. */
@@ -135,7 +133,7 @@ public class Parser {
 		/* Add parens if the right was higher priority. */
 		if (right.getChildrenCount() == 0) {
 			int rightPriority = right.getHead().typ.operatorPriority;
-			int dataPriority  = data.typ.operatorPriority;
+			int dataPriority = data.typ.operatorPriority;
 
 			if (rightPriority >= dataPriority) {
 				rightExpr = String.format("(%s)", rightExpr);

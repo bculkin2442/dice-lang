@@ -3,10 +3,10 @@ package bjc.dicelang.scl;
 public class FloatSCLToken extends SCLToken {
 	/* Used for FLIT */
 	public double floatVal;
-	
+
 	public FloatSCLToken(double val) {
 		super(Type.FLIT);
-		
+
 		floatVal = val;
 	}
 

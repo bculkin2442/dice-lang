@@ -12,7 +12,7 @@ public class IntSCLToken extends SCLToken {
 	/* Create a new token. */
 	public IntSCLToken(final long iVal) {
 		super(Type.ILIT);
-		
+
 		intVal = iVal;
 	}
 }

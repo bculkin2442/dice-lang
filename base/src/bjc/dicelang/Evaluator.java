@@ -25,7 +25,6 @@ import static bjc.dicelang.EvaluatorResult.Type.FLOAT;
 import static bjc.dicelang.EvaluatorResult.Type.INT;
 import static bjc.dicelang.EvaluatorResult.Type.STRING;
 
-
 /* @TODO 10/09/17 Ben Culkin :EvaluatorSplit
  * 	Type/sanity checking should be moved into a seperate stage, not part of
  * 	evaluation.
@@ -60,7 +59,7 @@ public class Evaluator {
 	 * Create a new evaluator.
 	 *
 	 * @param en
-	 *                The engine.
+	 *            The engine.
 	 */
 	public Evaluator(final DiceLangEngine en) {
 		eng = en;
@@ -70,7 +69,7 @@ public class Evaluator {
 	 * Evaluate a AST.
 	 *
 	 * @param comm
-	 *                The AST to evaluate.
+	 *            The AST to evaluate.
 	 *
 	 * @return The result of the tree.
 	 */
@@ -80,9 +79,8 @@ public class Evaluator {
 		ctx.isDebug = false;
 		ctx.thunk = itr -> {
 			/*
-			 * Deliberately finish the iterator, but ignore results.
-			 * It's only for stepwise evaluation, but we don't know
-			 * if stepping the iterator has side effects. 
+			 * Deliberately finish the iterator, but ignore results. It's only for stepwise
+			 * evaluation, but we don't know if stepping the iterator has side effects.
 			 */
 			while (itr.hasNext()) {
 				itr.next();
@@ -90,15 +88,14 @@ public class Evaluator {
 		};
 
 		/* The result. */
-		final ITree<Node> res = comm.topDownTransform(
-				this::pickEvaluationType,
-				node -> this.evaluateNode(node, ctx));
+		final ITree<Node> res = comm.topDownTransform(this::pickEvaluationType, node -> this.evaluateNode(node, ctx));
 
 		return res.getHead().resultVal;
 	}
 
-	/* @NOTE
-	 * 	This is broken until stepwise top-down transforms are fixed. */
+	/*
+	 * @NOTE This is broken until stepwise top-down transforms are fixed.
+	 */
 	public Iterator<ITree<Node>> stepDebug(final ITree<Node> comm) {
 		final Context ctx = new Context();
 
@@ -156,16 +153,15 @@ public class Evaluator {
 		}
 
 		switch (ast.getHead().operatorType) {
-			/* 
-			 * @TODO 10/09/17 Ben Culkin :CoerceRefactor :EvaluatorSplit
-			 * 	Coercing should be moved to its own class, or at the
-			 * 	very least its own method. When the evaluator splits,
-			 * 	this node type'll be handled exclusively by the
-			 * 	type-checker.
-			 *
-			 * 	Coerce also needs to be able to coerce things to
-			 * 	dice and ratios (whenever they get added).
-			 */
+		/*
+		 * @TODO 10/09/17 Ben Culkin :CoerceRefactor :EvaluatorSplit Coercing should be
+		 * moved to its own class, or at the very least its own method. When the
+		 * evaluator splits, this node type'll be handled exclusively by the
+		 * type-checker.
+		 *
+		 * Coerce also needs to be able to coerce things to dice and ratios (whenever
+		 * they get added).
+		 */
 		case COERCE:
 			final ITree<Node> toCoerce = ast.getChild(0);
 			final ITree<Node> retVal = new Tree<>(toCoerce.getHead());
@@ -258,16 +254,15 @@ public class Evaluator {
 
 		/* Binary operators always have two children. */
 		if (ast.getChildrenCount() != 2) {
-			Errors.inst.printError(EK_EVAL_INVBIN, Integer.toString(ast.getChildrenCount()),
-					ast.toString());
+			Errors.inst.printError(EK_EVAL_INVBIN, Integer.toString(ast.getChildrenCount()), ast.toString());
 
 			return new Tree<>(Node.FAIL(ast));
 		}
 
-		final ITree<Node> left  = ast.getChild(0);
+		final ITree<Node> left = ast.getChild(0);
 		final ITree<Node> right = ast.getChild(1);
 
-		final EvaluatorResult leftRes  = left.getHead().resultVal;
+		final EvaluatorResult leftRes = left.getHead().resultVal;
 		final EvaluatorResult rightRes = right.getHead().resultVal;
 
 		switch (binOp) {
@@ -291,8 +286,7 @@ public class Evaluator {
 	}
 
 	/* Evaluate a binary operator on strings. */
-	private static ITree<Node> evaluateStringBinary(final Token.Type op,
-			final EvaluatorResult left,
+	private static ITree<Node> evaluateStringBinary(final Token.Type op, final EvaluatorResult left,
 			final EvaluatorResult right, final Context ctx) {
 		if (left.type != STRING) {
 			Errors.inst.printError(EK_EVAL_INVSTRING, left.type.toString());
@@ -333,36 +327,30 @@ public class Evaluator {
 	}
 
 	/* Evaluate dice binary operators. */
-	private static ITree<Node> evaluateDiceBinary(final Token.Type op,
-			final EvaluatorResult left,
+	private static ITree<Node> evaluateDiceBinary(final Token.Type op, final EvaluatorResult left,
 			final EvaluatorResult right, final Context ctx) {
 		EvaluatorResult res = null;
 
 		switch (op) {
-			/*
-			 * @TODO 10/09/17 Ben Culkin :DiceSimplify
-			 * 	Figure out some way to simplify this sort of
-			 * 	thing.
-			 */
+		/*
+		 * @TODO 10/09/17 Ben Culkin :DiceSimplify Figure out some way to simplify this
+		 * sort of thing.
+		 */
 		case DICEGROUP:
 			if (left.type == DICE && !left.diceVal.isList) {
 				if (right.type == DICE && !right.diceVal.isList) {
-					Die simple = new SimpleDie(
-							left.diceVal.scalar,
-							right.diceVal.scalar);
+					Die simple = new SimpleDie(left.diceVal.scalar, right.diceVal.scalar);
 
 					res = new EvaluatorResult(DICE, simple);
 				} else if (right.type == INT) {
-					res = new EvaluatorResult(DICE,
-							new SimpleDie(left.diceVal.scalar, right.intVal));
+					res = new EvaluatorResult(DICE, new SimpleDie(left.diceVal.scalar, right.intVal));
 				} else {
 					Errors.inst.printError(EK_EVAL_INVDGROUP, right.type.toString());
 					return new Tree<>(Node.FAIL(right));
 				}
 			} else if (left.type == INT) {
 				if (right.type == DICE && !right.diceVal.isList) {
-					res = new EvaluatorResult(DICE,
-							new SimpleDie(left.intVal, right.diceVal.scalar));
+					res = new EvaluatorResult(DICE, new SimpleDie(left.intVal, right.diceVal.scalar));
 				} else if (right.type == INT) {
 					res = new EvaluatorResult(DICE, new SimpleDie(left.intVal, right.intVal));
 				} else {
@@ -382,8 +370,7 @@ public class Evaluator {
 				Errors.inst.printError(EK_EVAL_INVDICE, right.type.toString());
 				return new Tree<>(Node.FAIL(right));
 			} else {
-				res = new EvaluatorResult(DICE,
-						new CompoundDie(left.diceVal.scalar, right.diceVal.scalar));
+				res = new EvaluatorResult(DICE, new CompoundDie(left.diceVal.scalar, right.diceVal.scalar));
 			}
 
 			break;
@@ -396,8 +383,7 @@ public class Evaluator {
 				Errors.inst.printError(EK_EVAL_INVDICE, right.type.toString());
 				return new Tree<>(Node.FAIL(right));
 			} else {
-				res = new EvaluatorResult(DICE,
-						new SimpleDieList(left.diceVal.scalar, right.diceVal.scalar));
+				res = new EvaluatorResult(DICE, new SimpleDieList(left.diceVal.scalar, right.diceVal.scalar));
 			}
 
 			break;
@@ -411,8 +397,7 @@ public class Evaluator {
 	}
 
 	/* Evaluate a binary math operator. */
-	private static ITree<Node> evaluateMathBinary(final Token.Type op,
-			final EvaluatorResult left,
+	private static ITree<Node> evaluateMathBinary(final Token.Type op, final EvaluatorResult left,
 			final EvaluatorResult right, final Context ctx) {
 		if (left.type == STRING || right.type == STRING) {
 			Errors.inst.printError(EK_EVAL_STRINGMATH);
@@ -454,8 +439,8 @@ public class Evaluator {
 					return new Tree<>(Node.FAIL(right));
 				}
 
-				res = new EvaluatorResult(DICE, new MathDie(MathDie.MathOp.ADD, left.diceVal.scalar,
-							right.diceVal.scalar));
+				res = new EvaluatorResult(DICE,
+						new MathDie(MathDie.MathOp.ADD, left.diceVal.scalar, right.diceVal.scalar));
 			} else {
 				res = new EvaluatorResult(FLOAT, left.floatVal + right.floatVal);
 			}
@@ -474,8 +459,8 @@ public class Evaluator {
 					return new Tree<>(Node.FAIL(right));
 				}
 
-				res = new EvaluatorResult(DICE, new MathDie(MathDie.MathOp.SUBTRACT,
-							left.diceVal.scalar, right.diceVal.scalar));
+				res = new EvaluatorResult(DICE,
+						new MathDie(MathDie.MathOp.SUBTRACT, left.diceVal.scalar, right.diceVal.scalar));
 			} else {
 				res = new EvaluatorResult(FLOAT, left.floatVal - right.floatVal);
 			}
@@ -494,8 +479,8 @@ public class Evaluator {
 					return new Tree<>(Node.FAIL(right));
 				}
 
-				res = new EvaluatorResult(DICE, new MathDie(MathDie.MathOp.MULTIPLY,
-							left.diceVal.scalar, right.diceVal.scalar));
+				res = new EvaluatorResult(DICE,
+						new MathDie(MathDie.MathOp.MULTIPLY, left.diceVal.scalar, right.diceVal.scalar));
 			} else {
 				res = new EvaluatorResult(FLOAT, left.floatVal * right.floatVal);
 			}
