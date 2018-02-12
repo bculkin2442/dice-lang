@@ -108,10 +108,10 @@ public class Shunter {
 	 * Shunt a set of tokens from infix to postfix.
 	 *
 	 * @param tks
-	 *        The tokens to input.
+	 *            The tokens to input.
 	 *
 	 * @param returned
-	 *        The postfix tokens.
+	 *            The postfix tokens.
 	 *
 	 * @return Whether or not the shunt succeeded.
 	 */

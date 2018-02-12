@@ -273,10 +273,10 @@ public class Errors {
 	 * Print an error.
 	 *
 	 * @param key
-	 *        The key of the error.
+	 *            The key of the error.
 	 *
 	 * @param args
-	 *        The arguments for the error.
+	 *            The arguments for the error.
 	 */
 	public void printError(final ErrorKey key, final String... args) {
 		switch (mode) {

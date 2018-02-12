@@ -53,13 +53,13 @@ public class MathDie implements Die {
 	 * Create a new math die.
 	 *
 	 * @param op
-	 *        The operator to apply.
+	 *            The operator to apply.
 	 *
 	 * @param lft
-	 *        The left operand.
+	 *            The left operand.
 	 *
 	 * @param rght
-	 *        The right operand.
+	 *            The right operand.
 	 */
 	public MathDie(final MathDie.MathOp op, final Die lft, final Die rght) {
 		type = op;

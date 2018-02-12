@@ -14,7 +14,7 @@ public class FudgeDie implements Die {
 	 * Create a new fudge die.
 	 *
 	 * @param nDice
-	 *        The number of dice to roll.
+	 *            The number of dice to roll.
 	 */
 	public FudgeDie(final long nDice) {
 		numDice = new ScalarDie(nDice);
@@ -24,7 +24,7 @@ public class FudgeDie implements Die {
 	 * Create a new fudge die.
 	 *
 	 * @param nDice
-	 *        The number of dice to roll.
+	 *            The number of dice to roll.
 	 */
 	public FudgeDie(final Die nDice) {
 		numDice = nDice;

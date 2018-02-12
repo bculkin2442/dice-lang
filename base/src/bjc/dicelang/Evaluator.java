@@ -62,7 +62,7 @@ public class Evaluator {
 	 * Create a new evaluator.
 	 *
 	 * @param en
-	 *        The engine.
+	 *            The engine.
 	 */
 	public Evaluator(final DiceLangEngine en) {
 		eng = en;
@@ -72,7 +72,7 @@ public class Evaluator {
 	 * Evaluate a AST.
 	 *
 	 * @param comm
-	 *        The AST to evaluate.
+	 *            The AST to evaluate.
 	 *
 	 * @return The result of the tree.
 	 */

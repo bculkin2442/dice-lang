@@ -5,9 +5,8 @@ import static bjc.dicelang.EvaluatorResult.Type.FAILURE;
 import bjc.utils.data.ITree;
 
 /*
- * @TODO 10/09/17 Ben Culkin :NodeReorg
- * 	Same thing, different class. Split into subclasses based off of the type
- * 	values.
+ * @TODO 10/09/17 Ben Culkin :NodeReorg Same thing, different class. Split into
+ * subclasses based off of the type values.
  */
 /**
  * Represents a node in the AST.

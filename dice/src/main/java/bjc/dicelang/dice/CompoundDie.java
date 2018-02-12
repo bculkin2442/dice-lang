@@ -14,9 +14,9 @@ public class CompoundDie implements Die {
 	 * Create a new compound die.
 	 *
 	 * @param lft
-	 *        The left die
+	 *            The left die
 	 * @param rght
-	 *        The right die
+	 *            The right die
 	 */
 	public CompoundDie(final Die lft, final Die rght) {
 		left = lft;

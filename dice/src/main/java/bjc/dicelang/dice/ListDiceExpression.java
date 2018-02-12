@@ -11,7 +11,7 @@ public class ListDiceExpression implements DiceExpression {
 	 * Create a list die expression.
 	 *
 	 * @param lst
-	 *        The list value of this expression.
+	 *            The list value of this expression.
 	 */
 	public ListDiceExpression(final DieList lst) {
 		list = lst;

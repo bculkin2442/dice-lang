@@ -1,6 +1,6 @@
 /*
- * @TODO 10/08/17 Ben Culkin :EzprFixing
- *	 Implement these, and make sure they work correctly.
+ * @TODO 10/08/17 Ben Culkin :EzprFixing Implement these, and make sure they
+ * work correctly.
  */
 package bjc.dicelang.expr;
 

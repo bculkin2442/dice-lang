@@ -16,7 +16,7 @@ public class DiceBox {
 	 * Parse a die expression from a string.
 	 *
 	 * @param expString
-	 *        The string to parse.
+	 *            The string to parse.
 	 *
 	 * @return The die expression from the string, or null if it wasn't one
 	 */
@@ -255,7 +255,7 @@ public class DiceBox {
 	 * Check if a given string is a valid die expression.
 	 *
 	 * @param exp
-	 *        The string to check validity of.
+	 *            The string to check validity of.
 	 *
 	 * @return Whether or not the string is a valid command.
 	 */

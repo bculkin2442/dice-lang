@@ -14,7 +14,7 @@ public class ScalarDie implements Die {
 	 * Create a new scalar die with a set value.
 	 *
 	 * @param vl
-	 *        The value to use.
+	 *            The value to use.
 	 */
 	public ScalarDie(final long vl) {
 		val = vl;

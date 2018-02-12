@@ -3,9 +3,9 @@ package bjc.dicelang.expr;
 /*
  * @TODO 10/08/17 :TokenReorg
  * 
- * 	I am not a fan of this 'having a bunch of subclasses' in one thing I
- * 	seem to have been doing around this project. This should be multiple
- * 	subclasses, one for each value for TokenType.
+ * I am not a fan of this 'having a bunch of subclasses' in one thing I seem to
+ * have been doing around this project. This should be multiple subclasses, one
+ * for each value for TokenType.
  */
 /**
  * Represents a lexical token.
@@ -33,13 +33,13 @@ public class Token {
 	 * Create a new token.
 	 *
 	 * @param type
-	 *        The type of this token.
+	 *            The type of this token.
 	 *
 	 * @param raw
-	 *        The string this token came from.
+	 *            The string this token came from.
 	 *
 	 * @param toks
-	 *        The state for this token
+	 *            The state for this token
 	 */
 	public Token(final TokenType type, final String raw, final Tokens toks) {
 		this.typ = type;

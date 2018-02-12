@@ -23,10 +23,10 @@ public class SimpleDieList implements DieList {
 	 * Create a new list of dice.
 	 *
 	 * @param nDice
-	 *        The number of dice in the list.
+	 *            The number of dice in the list.
 	 *
 	 * @param sze
-	 *        The size of dice in the list.
+	 *            The size of dice in the list.
 	 */
 	public SimpleDieList(final Die nDice, final Die sze) {
 		numDice = nDice;

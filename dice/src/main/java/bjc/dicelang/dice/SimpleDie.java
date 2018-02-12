@@ -23,10 +23,10 @@ public class SimpleDie implements Die {
 	 * Create a new dice group.
 	 *
 	 * @param nDice
-	 *        The number of dice.
+	 *            The number of dice.
 	 *
 	 * @param size
-	 *        The size of the dice.
+	 *            The size of the dice.
 	 */
 	public SimpleDie(final long nDice, final long size) {
 		this(new ScalarDie(nDice), new ScalarDie(size));
@@ -36,10 +36,10 @@ public class SimpleDie implements Die {
 	 * Create a new dice group.
 	 *
 	 * @param nDice
-	 *        The number of dice.
+	 *            The number of dice.
 	 *
 	 * @param size
-	 *        The size of the dice.
+	 *            The size of the dice.
 	 */
 	public SimpleDie(final Die nDice, final long size) {
 		this(nDice, new ScalarDie(size));
@@ -49,10 +49,10 @@ public class SimpleDie implements Die {
 	 * Create a new dice group.
 	 *
 	 * @param nDice
-	 *        The number of dice.
+	 *            The number of dice.
 	 *
 	 * @param size
-	 *        The size of the dice.
+	 *            The size of the dice.
 	 */
 	public SimpleDie(final long nDice, final Die size) {
 		this(new ScalarDie(nDice), size);
@@ -62,10 +62,10 @@ public class SimpleDie implements Die {
 	 * Create a new dice group.
 	 *
 	 * @param nDice
-	 *        The number of dice.
+	 *            The number of dice.
 	 *
 	 * @param size
-	 *        The size of the dice.
+	 *            The size of the dice.
 	 */
 	public SimpleDie(final Die nDice, final Die size) {
 		numDice = nDice;

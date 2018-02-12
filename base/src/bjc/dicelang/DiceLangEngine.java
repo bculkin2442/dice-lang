@@ -140,7 +140,7 @@ public class DiceLangEngine {
 	 * Add a defn that's applied to lines.
 	 *
 	 * @param dfn
-	 *        The defn to add.
+	 *            The defn to add.
 	 */
 	public void addLineDefine(final Define dfn) {
 		lineDefns.add(dfn);
@@ -152,7 +152,7 @@ public class DiceLangEngine {
 	 * Add a defn that's applied to tokens.
 	 *
 	 * @param dfn
-	 *        The defn to add.
+	 *            The defn to add.
 	 */
 	public void addTokenDefine(final Define dfn) {
 		tokenDefns.add(dfn);
@@ -211,7 +211,7 @@ public class DiceLangEngine {
 	 * Run a command to completion.
 	 *
 	 * @param command
-	 *        The command to run
+	 *            The command to run
 	 *
 	 * @return Whether or not the command ran successfully
 	 */

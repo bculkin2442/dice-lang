@@ -58,9 +58,9 @@ public class Tokens {
 	 * Convert the string representation of a token into a token.
 	 *
 	 * @param tok
-	 *        The string representation of the token.
+	 *            The string representation of the token.
 	 * @param raw
-	 *        The original string the token came from.
+	 *            The original string the token came from.
 	 *
 	 * @return The token the string represents.
 	 */
