@@ -1,9 +1,5 @@
 package bjc.dicelang;
 
-import static bjc.dicelang.Errors.ErrorKey.EK_DFN_PREDSYN;
-import static bjc.dicelang.Errors.ErrorKey.EK_DFN_RECUR;
-import static bjc.dicelang.Errors.ErrorKey.EK_DFN_SRCSYN;
-
 import java.util.Iterator;
 import java.util.function.UnaryOperator;
 import java.util.regex.Matcher;
@@ -12,8 +8,11 @@ import java.util.regex.PatternSyntaxException;
 
 import bjc.utils.data.CircularIterator;
 
+import static bjc.dicelang.Errors.ErrorKey.*;
+
 /*
  * @TODO 10/09/17 Ben Culkin :DefineRefactor
+ * 
  * 	Consider replacing this with the defines package from BJC-Utils.
  */
 /**

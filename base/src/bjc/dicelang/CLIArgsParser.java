@@ -1,11 +1,5 @@
 package bjc.dicelang;
 
-import static bjc.dicelang.Errors.ErrorKey.EK_CLI_INVDFNTYPE;
-import static bjc.dicelang.Errors.ErrorKey.EK_CLI_MISARG;
-import static bjc.dicelang.Errors.ErrorKey.EK_CLI_UNARG;
-import static bjc.dicelang.Errors.ErrorKey.EK_MISC_IOEX;
-import static bjc.dicelang.Errors.ErrorKey.EK_MISC_NOFILE;
-
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -13,6 +7,8 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 import bjc.dicelang.util.ResourceLoader;
+
+import static bjc.dicelang.Errors.ErrorKey.*;
 
 /**
  * Parse CLI arguments.
@@ -48,8 +44,10 @@ public class CLIArgsParser {
 			final String arg = args[i];
 
 			/*
-			 * @TODO 10/08/17 Ben Culkin :CLIArgRefactor Use whatever library gets added to
-			 * BJC-Utils for this, and extend these to do more things.
+			 * @TODO 10/08/17 Ben Culkin :CLIArgRefactor
+			 * 
+			 * Use whatever library gets added to BJC-Utils for this, and extend these to do
+			 * more things.
 			 */
 			switch (arg) {
 			case "-d":

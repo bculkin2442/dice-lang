@@ -16,6 +16,7 @@ import static bjc.dicelang.scl.WordSCLToken.Word.*;
 
 /*
  * @TODO 10/08/17 Ben Culkin :SCLReorg
+ * 
  * 	This is a large enough class that it should maybe be split into
  * 	subclasses.
  */

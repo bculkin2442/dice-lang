@@ -1,10 +1,5 @@
 package bjc.dicelang;
 
-import static bjc.dicelang.Errors.ErrorKey.EK_TOK_INVBASE;
-import static bjc.dicelang.Errors.ErrorKey.EK_TOK_INVFLEX;
-import static bjc.dicelang.Errors.ErrorKey.EK_TOK_UNGROUP;
-import static bjc.dicelang.Token.Type.*;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -14,20 +9,21 @@ import bjc.utils.funcdata.IMap;
 import bjc.utils.funcutils.StringUtils;
 import bjc.utils.parserutils.TokenUtils;
 
+import static bjc.dicelang.Errors.ErrorKey.*;
+import static bjc.dicelang.Token.Type.*;
+
 /**
  * Converts strings into tokens.
  */
 public class Tokenizer {
 	/* Literal tokens for tokenization */
-	private final IMap<String, Token.Type> litTokens;
+	private static final IMap<String, Token.Type> litTokens;
 
 	private final DiceLangEngine eng;
 
 	private int nextSym = 0;
 
-	public Tokenizer(final DiceLangEngine engine) {
-		eng = engine;
-
+	static {
 		litTokens = new FunctionalMap<>();
 
 		litTokens.put("+", ADD);
@@ -46,6 +42,10 @@ public class Tokenizer {
 		litTokens.put(".*.", STRREP);
 		litTokens.put(",", GROUPSEP);
 		litTokens.put("crc", COERCE);
+	}
+
+	public Tokenizer(final DiceLangEngine engine) {
+		eng = engine;
 	}
 
 	public Token lexToken(final String token, final IMap<String, String> stringLts) {
@@ -149,7 +149,7 @@ public class Tokenizer {
 		} else if (TokenUtils.isDouble(token)) {
 			tk = new Token(FLOAT_LIT, Double.parseDouble(token));
 		} else if (DiceBox.isValidExpression(token)) {
-			tk = new Token(DICE_LIT, DiceBox.parseExpression(token));
+			tk = new DiceToken(DiceBox.parseExpression(token));
 		} else {
 			final Matcher stringLit = stringLitMatcher.matcher(token);
 

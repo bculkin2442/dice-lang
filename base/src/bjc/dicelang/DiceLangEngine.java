@@ -1,14 +1,5 @@
 package bjc.dicelang;
 
-import static bjc.dicelang.Errors.ErrorKey.EK_ENG_NOCLOSING;
-import static bjc.dicelang.Errors.ErrorKey.EK_ENG_NOOPENING;
-import static bjc.dicelang.Token.Type.CBRACE;
-import static bjc.dicelang.Token.Type.CBRACKET;
-import static bjc.dicelang.Token.Type.CPAREN;
-import static bjc.dicelang.Token.Type.OBRACE;
-import static bjc.dicelang.Token.Type.OBRACKET;
-import static bjc.dicelang.Token.Type.OPAREN;
-
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -27,6 +18,9 @@ import bjc.utils.funcdata.IMap;
 import bjc.utils.funcutils.ListUtils;
 import bjc.utils.parserutils.TokenUtils;
 import bjc.utils.parserutils.splitter.ConfigurableTokenSplitter;
+
+import static bjc.dicelang.Errors.ErrorKey.*;
+import static bjc.dicelang.Token.Type.*;
 
 /**
  * Implements the orchestration necessary for processing DiceLang commands.
@@ -224,8 +218,9 @@ public class DiceLangEngine {
 	public boolean runCommand(final String command) {
 		/* Preprocess the command into tokens */
 		/*
-		 * @NOTE Instead of strings, this should maybe use a RawToken class or
-		 * something.
+		 * @NOTE
+		 * 
+		 * Instead of strings, this should maybe use a RawToken class or something.
 		 */
 		final IList<String> preprocessedTokens = preprocessCommand(command);
 
@@ -664,8 +659,10 @@ public class DiceLangEngine {
 
 	/* Add a string literal to the string literal table. */
 	/*
-	 * @NOTE The string literal table should be abstracted into some kind of
-	 * auto-numbered map thing.
+	 * @NOTE
+	 * 
+	 * The string literal table should be abstracted into some kind of auto-numbered
+	 * map thing.
 	 */
 	void addStringLiteral(final int key, final String val) {
 		stringLits.put(key, val);

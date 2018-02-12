@@ -1,8 +1,5 @@
 package bjc.dicelang;
 
-import static bjc.dicelang.Errors.ErrorKey.EK_CONS_INVDEFINE;
-import static bjc.dicelang.Errors.ErrorKey.EK_CONS_INVPRAG;
-
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
@@ -11,6 +8,8 @@ import java.util.regex.Pattern;
 
 import jline.ConsoleReader;
 import jline.Terminal;
+
+import static bjc.dicelang.Errors.ErrorKey.*;
 
 /**
  * CLI interface to DiceLang

@@ -1,9 +1,10 @@
 package bjc.dicelang.expr;
 
-import java.util.ArrayList;
 import java.util.Deque;
 import java.util.LinkedList;
-import java.util.List;
+
+import bjc.utils.funcdata.FunctionalList;
+import bjc.utils.funcdata.IList;
 
 /**
  * Converts a infix series of tokens into a prefix series of tokens.
@@ -11,9 +12,6 @@ import java.util.List;
  * @author Ben Culkin
  */
 public class Shunter {
-	/*
-	 * @NOTE Why does this method return an array, and not the list of tokens?
-	 */
 	/**
 	 * Convert a infix series of tokens to a postfix series of tokens.
 	 *
@@ -22,9 +20,9 @@ public class Shunter {
 	 *
 	 * @return The tokens in postfix order.
 	 */
-	public static Token[] shuntTokens(final Token[] infixTokens) {
+	public static IList<Token> shuntTokens(final Token[] infixTokens) {
 		/* The returned tokens. */
-		final List<Token> postfixTokens = new ArrayList<>(infixTokens.length);
+		final IList<Token> postfixTokens = new FunctionalList<>();
 
 		/* The current stack of operators. */
 		final Deque<Token> opStack = new LinkedList<>();
@@ -98,6 +96,6 @@ public class Shunter {
 			postfixTokens.add(opStack.pop());
 		}
 
-		return postfixTokens.toArray(new Token[0]);
+		return postfixTokens;
 	}
 }

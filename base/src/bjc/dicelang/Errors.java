@@ -3,9 +3,10 @@ package bjc.dicelang;
 /**
  * Repository for error messages.
  *
- * @TODO 10/08/17 Ben Culkin :ErrorRefactor This way of handling error messages
- *       is not easy to deal with. Something else needs to be done, but I'm not
- *       sure what at the moment.
+ * @TODO 10/08/17 Ben Culkin :ErrorRefactor
+ * 
+ *       This way of handling error messages is not easy to deal with. Something
+ *       else needs to be done, but I'm not sure what at the moment.
  *
  * @author EVE
  *

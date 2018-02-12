@@ -1,10 +1,11 @@
 package bjc.dicelang;
 
-import bjc.dicelang.dice.DieExpression;
+import bjc.dicelang.dice.DiceExpression;
 import bjc.utils.funcdata.IList;
 
 /*
  * @TODO 10/09/17 Ben Culkin :TokenReorg
+ * 
  * 	Split the class into subclasses based off of type.
  */
 /**
@@ -18,35 +19,81 @@ public class Token {
 	 * Possible token types
 	 */
 	public static enum Type {
-		// Natural tokens
-		// These are produced from lexemes
-		ADD, SUBTRACT, MULTIPLY, DIVIDE, IDIVIDE, INT_LIT, FLOAT_LIT, STRING_LIT, VREF, DICE_LIT, DICESCALAR, DICEFUDGE, DICEGROUP, DICECONCAT, DICELIST, LET, BIND, COERCE, STRCAT, STRREP, OPAREN, CPAREN, OBRACKET, CBRACKET, OBRACE, CBRACE,
+		/*
+		 * Natural tokens
+		 * 
+		 * These are produced from lexemes.
+		 */
+		/*
+		 * Math tokens.
+		 */
+		ADD, SUBTRACT, MULTIPLY, DIVIDE, IDIVIDE,
 
-		// Synthetic tokens
-		// These are produced when needed
+		/*
+		 * Literal tokens.
+		 */
+		INT_LIT, FLOAT_LIT, STRING_LIT, VREF, DICE_LIT,
+
+		/*
+		 * Dice operators.
+		 */
+		DICESCALAR, DICEFUDGE, DICEGROUP, DICECONCAT, DICELIST,
+
+		/*
+		 * Expression operators.
+		 */
+		LET, BIND, COERCE,
+
+		/*
+		 * String operators.
+		 */
+		STRCAT, STRREP,
+
+		/*
+		 * Grouping operators.
+		 */
+		OPAREN, CPAREN, OBRACKET, CBRACKET, OBRACE, CBRACE,
+
+		/*
+		 * Synthetic tokens
+		 * 
+		 * These are produced when needed.
+		 */
 		NIL, GROUPSEP, TOKGROUP, TAGOP, TAGOPR
 	}
 
 	public final Type type;
 
-	// This is used for the following token types
-	// INT_LIT (int value)
-	// STRING_LIT (index into string table)
-	// VREF (index into sym table)
-	// O* and C* (sym-count of current token)
+	/*
+	 * This is used for the following token types
+	 *
+	 * - INT_LIT (int value)
+	 * 
+	 * - STRING_LIT (index into string table)
+	 * 
+	 * - VREF (index into sym table)
+	 * 
+	 * - O* and C* (sym-count of current token)
+	 * 
+	 */
 	public long intValue;
 
-	// This is used for the following token types
-	// FLOAT_LIT (float value)
+	/*
+	 * This is used for the following token types
+	 * 
+	 * - FLOAT_LIT (float value)
+	 * 
+	 */
 	public double floatValue;
 
-	// This is used for the following token types
-	// DICE_LIT (dice value)
-	public DieExpression diceValue;
-
-	// This is used for the following token types
-	// TOKGROUP (the tokens in the group)
-	// TAG* (the tagged construct)
+	/*
+	 * This is used for the following token types
+	 *
+	 * - TOKGROUP (the tokens in the group)
+	 * 
+	 * - TAG* (the tagged construct)
+	 * 
+	 */
 	public IList<Token> tokenValues;
 
 	public Token(final Type typ) {
@@ -63,12 +110,6 @@ public class Token {
 		this(typ);
 
 		floatValue = val;
-	}
-
-	public Token(final Type typ, final DieExpression val) {
-		this(typ);
-
-		diceValue = val;
 	}
 
 	public Token(final Type typ, final IList<Token> tkVals) {
@@ -93,9 +134,6 @@ public class Token {
 
 		case FLOAT_LIT:
 			return type.toString() + "(" + floatValue + ")";
-
-		case DICE_LIT:
-			return type.toString() + "(" + diceValue + ")";
 
 		case TAGOP:
 		case TAGOPR:
@@ -123,7 +161,6 @@ public class Token {
 		case OBRACE:
 		case OBRACKET:
 			return intValue == otk.intValue;
-
 		default:
 			return true;
 		}

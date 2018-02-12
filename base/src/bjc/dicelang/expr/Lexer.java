@@ -26,7 +26,9 @@ public class Lexer {
 		split = new ConfigurableTokenSplitter(true);
 
 		split.addSimpleDelimiters("(", ")");
-		split.addSimpleDelimiters("+", "-", "*", "/");
+
+		split.addSimpleDelimiters("+", "-");
+		split.addSimpleDelimiters("*", "/");
 	}
 
 	/**
@@ -50,8 +52,11 @@ public class Lexer {
 		for (final String spacedToken : spacedTokens) {
 			/* Split on operators. */
 			final IList<String> splitTokens = split.split(spacedToken);
+			
 			/* Convert strings to tokens. */
-			final IList<Token> rawTokens = splitTokens.map(tok -> tks.lexToken(tok, spacedToken));
+			final IList<Token> rawTokens = splitTokens.map(tok -> {
+				return tks.lexToken(tok, spacedToken);
+			});
 
 			/* Add tokens to results. */
 			rawTokens.forEach(tokens::add);

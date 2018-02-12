@@ -23,7 +23,23 @@ public class Tokens {
 	private int nextSym;
 
 	/* Mapping from literal tokens to token types. */
-	private final Map<String, TokenType> litTokens;
+	private static final Map<String, TokenType> litTokens;
+
+	static {
+		/*
+		 * Setup literal mappings.
+		 *
+		 * @NOTE Should this be a static member?
+		 */
+		litTokens = new HashMap<>();
+
+		litTokens.put("+", TokenType.ADD);
+		litTokens.put("-", TokenType.SUBTRACT);
+		litTokens.put("*", TokenType.MULTIPLY);
+		litTokens.put("/", TokenType.DIVIDE);
+		litTokens.put("(", TokenType.OPAREN);
+		litTokens.put(")", TokenType.CPAREN);
+	}
 
 	/** Create a new set of tokens. */
 	public Tokens() {
@@ -36,19 +52,6 @@ public class Tokens {
 
 		/* Set sym ID. */
 		nextSym = 0;
-
-		/*
-		 * Setup literal mappings.
-		 *
-		 * @NOTE Should this be a static member?
-		 */
-		litTokens = new HashMap<>();
-		litTokens.put("+", TokenType.ADD);
-		litTokens.put("-", TokenType.SUBTRACT);
-		litTokens.put("*", TokenType.MULTIPLY);
-		litTokens.put("/", TokenType.DIVIDE);
-		litTokens.put("(", TokenType.OPAREN);
-		litTokens.put(")", TokenType.CPAREN);
 	}
 
 	/**
