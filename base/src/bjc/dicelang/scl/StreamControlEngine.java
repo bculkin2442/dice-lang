@@ -12,6 +12,7 @@ import bjc.utils.parserutils.TokenUtils;
 
 import static bjc.dicelang.Errors.ErrorKey.*;
 import static bjc.dicelang.scl.SCLToken.Type.*;
+import static bjc.dicelang.scl.SCLToken.Word.*;
 
 /*
  * @TODO 10/08/17 Ben Culkin :SCLReorg
@@ -40,7 +41,7 @@ public class StreamControlEngine {
 	 * Create a new stream control engine.
 	 *
 	 * @param engine
-	 *                The engine to control.
+	 *            The engine to control.
 	 */
 	public StreamControlEngine(final StreamEngine engine) {
 		eng = engine;
@@ -53,7 +54,7 @@ public class StreamControlEngine {
 	 * Run a SCL program.
 	 *
 	 * @param tokens
-	 *                The program to run.
+	 *            The program to run.
 	 *
 	 * @return Whether the program executed successfully.
 	 */
@@ -61,7 +62,7 @@ public class StreamControlEngine {
 		for (int i = 0; i < tokens.length; i++) {
 			/* Tokenize each token. */
 			final String token = tokens[i];
-			final SCLToken tok    = SCLToken.tokenizeString(token);
+			final SCLToken tok = SCLToken.tokenizeString(token);
 
 			if (tok == null) {
 				System.out.printf("ERROR: Tokenization failed for '%s'\n", token);
@@ -91,12 +92,12 @@ public class StreamControlEngine {
 					return false;
 				}
 				final SCLToken brak = curStack.pop();
-				curStack.push(new SCLToken(ARRAY, brak.tokenVals));
+				curStack.push(new WordsSCLToken(true, ((WordsSCLToken) brak).tokenVals));
 				break;
 
 			case WORD:
 				/* Handle words. */
-				if(!handleWord(tok)) {
+				if (!handleWord((WordSCLToken) tok)) {
 					System.out.printf("WARNING: Execution of word '%s' failed\n", tok);
 				}
 				break;
@@ -110,16 +111,14 @@ public class StreamControlEngine {
 		return true;
 	}
 
-	private boolean handleWord(final SCLToken tk) {
+	private boolean handleWord(final WordSCLToken tk) {
 		boolean succ = true;
 
 		/* Handle each type of word. */
-		/* 
-		 * @NOTE
-		 * 	This should probably use something other than a switch
-		 * 	statement.
+		/*
+		 * @NOTE This should probably use something other than a switch statement.
 		 */
-		switch (tk.tokenVal.type) {
+		switch (tk.wordVal) {
 		case NEWSTREAM:
 			eng.newStream();
 			break;
@@ -166,14 +165,14 @@ public class StreamControlEngine {
 			}
 			break;
 		case STACKCOUNT:
-			curStack.push(new SCLToken(ILIT, curStack.size()));
+			curStack.push(new IntSCLToken(curStack.size()));
 			break;
 		case STACKEMPTY:
-			curStack.push(new SCLToken(BLIT, curStack.empty()));
+			curStack.push(new BooleanSCLToken(curStack.empty()));
 			break;
 		case DROP:
 			if (curStack.size() == 0) {
-				Errors.inst.printError(EK_SCL_SUNDERFLOW, tk.tokenVal.type.toString());
+				Errors.inst.printError(EK_SCL_SUNDERFLOW, tk.toString());
 				return false;
 			}
 			curStack.drop();
@@ -186,7 +185,7 @@ public class StreamControlEngine {
 			break;
 		case NIP:
 			if (curStack.size() < 2) {
-				Errors.inst.printError(EK_SCL_SUNDERFLOW, tk.tokenVal.type.toString());
+				Errors.inst.printError(EK_SCL_SUNDERFLOW, tk.toString());
 				return false;
 			}
 			curStack.nip();
@@ -198,7 +197,7 @@ public class StreamControlEngine {
 			}
 			break;
 		default:
-			Errors.inst.printError(EK_SCL_UNWORD, tk.tokenVal.type.toString());
+			Errors.inst.printError(EK_SCL_UNWORD, tk.toString());
 			return false;
 		}
 
@@ -214,7 +213,7 @@ public class StreamControlEngine {
 			return false;
 		}
 
-		final int n = (int) num.intVal;
+		final int n = (int) ((IntSCLToken) num).intVal;
 
 		if (curStack.size() < n) {
 			Errors.inst.printError(EK_SCL_SUNDERFLOW, NNIP.toString());
@@ -234,7 +233,7 @@ public class StreamControlEngine {
 			return false;
 		}
 
-		final int n = (int) num.intVal;
+		final int n = (int) ((IntSCLToken) num).intVal;
 
 		if (curStack.size() < n) {
 			Errors.inst.printError(EK_SCL_SUNDERFLOW, NDROP.toString());
@@ -278,11 +277,11 @@ public class StreamControlEngine {
 
 		final IList<SCLToken> arr = new FunctionalList<>();
 
-		for (int i = 0; i < num.intVal; i++) {
+		for (int i = 0; i < ((IntSCLToken) num).intVal; i++) {
 			arr.add(curStack.pop());
 		}
 
-		curStack.push(new SCLToken(ARRAY, arr));
+		curStack.push(new WordsSCLToken(true, arr));
 
 		return true;
 	}
@@ -324,7 +323,7 @@ public class StreamControlEngine {
 					return -1;
 				}
 				final SCLToken brak = curStack.pop();
-				toks.add(new SCLToken(ARRAY, brak.tokenVals));
+				toks.add(new WordsSCLToken(true, ((WordsSCLToken) brak).tokenVals));
 				break;
 			default:
 				toks.add(ntok);
@@ -344,10 +343,10 @@ public class StreamControlEngine {
 		/* Skip the closing bracket */
 		n += 1;
 
-		/* @NOTE
-		 * 	Instead of being hardcoded, this should be a parameter.
+		/*
+		 * @NOTE Instead of being hardcoded, this should be a parameter.
 		 */
-		curStack.push(new SCLToken(WORDS, toks));
+		curStack.push(new WordsSCLToken(false, toks));
 
 		return n;
 	}
@@ -389,7 +388,9 @@ public class StreamControlEngine {
 		 */
 		n += 1;
 
-		curStack.push(new SCLToken(SLIT, TokenUtils.descapeString(sb.toString())));
+		String strang = TokenUtils.descapeString(sb.toString());
+
+		curStack.push(new StringSCLToken(false, strang));
 
 		return n;
 	}

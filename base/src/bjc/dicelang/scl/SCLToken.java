@@ -1,33 +1,27 @@
 package bjc.dicelang.scl;
 
-import static bjc.dicelang.Errors.ErrorKey.EK_SCL_INVTOKEN;
-
 import java.util.HashMap;
 import java.util.Map;
 
 import bjc.dicelang.Errors;
-import bjc.utils.funcdata.IList;
 import bjc.utils.parserutils.TokenUtils;
 
-import static bjc.dicelang.scl.SCLToken.Type.*;
+import static bjc.dicelang.Errors.ErrorKey.EK_SCL_INVTOKEN;
 
-/*
- * @TODO 10/08/17 Ben Culkin :TokenSplit
- * 	Again with the multiple subclasses in one class. Split it so
- * 	that each subclass only has the fields it needs.
- */
+import static bjc.dicelang.scl.SCLToken.Type.*;
+import static bjc.dicelang.scl.SCLToken.Word.*;
+
 public class SCLToken {
+
 	public static enum Type {
 		/* Natural tokens. These come directly from strings */
 		ILIT, FLIT, BLIT, SQUOTE, DQUOTE, OBRACKET, OBRACE, SYMBOL, WORD,
 
 		/* Synthetic tokens. These are produced from special tokens. */
 		SLIT, WORDS, ARRAY,
+	}
 
-		/* Word tokens These are subordinate to WORD tokens */
-		/*
-		 * @NOTE These should really be in their own enum.
-		 */
+	public static enum Word {
 		/* Array manipulation */
 		MAKEARRAY, MAKEEXEC, MAKEUNEXEC,
 		/* Stream manipulation */
@@ -36,100 +30,39 @@ public class SCLToken {
 		STACKCOUNT, STACKEMPTY, DROP, NDROP, NIP, NNIP,
 	}
 
-	/* The type of this token */
 	public SCLToken.Type type;
 
-	/* Used for ILIT */
-	public long intVal;
-	/* Used for FLIT */
-	public double floatVal;
-	/* Used for BLIT */
-	public boolean boolVal;
-	/* Used for SYMBOL & SLIT */
-	public String stringVal;
-	/* Used for WORD */
-	public SCLToken tokenVal;
-	/* Used for WORDS & ARRAY */
-	public IList<SCLToken> tokenVals;
-
-	/* Create a new token. */
-	public SCLToken(final SCLToken.Type typ) {
-		type = typ;
-	}
-
-	/* Create a new token. */
-	public SCLToken(final SCLToken.Type typ, final long iVal) {
-		this(typ);
-
-		intVal = iVal;
-	}
-
-	/* Create a new token. */
-	public SCLToken(final SCLToken.Type typ, final double dVal) {
-		this(typ);
-
-		floatVal = dVal;
-	}
-
-	/* Create a new token. */
-	public SCLToken(final SCLToken.Type typ, final boolean bVal) {
-		this(typ);
-
-		boolVal = bVal;
-	}
-
-	/* Create a new token. */
-	public SCLToken(final SCLToken.Type typ, final String sVal) {
-		this(typ);
-
-		stringVal = sVal;
-	}
-
-	/* Create a new token. */
-	public SCLToken(final SCLToken.Type typ, final SCLToken tVal) {
-		this(typ);
-
-		tokenVal = tVal;
-	}
-
-	/* Create a new token. */
-	public SCLToken(final SCLToken.Type typ, final SCLToken.Type tVal) {
-		this(typ, new SCLToken(tVal));
-	}
-
-	/* Create a new token. */
-	public SCLToken(final SCLToken.Type typ, final IList<SCLToken> tVals) {
-		this(typ);
-
-		tokenVals = tVals;
-	}
-
-	/* Convert a string into a token. */
 	public static SCLToken tokenizeString(final String token) {
 		if (litTokens.containsKey(token)) {
-			return new SCLToken(litTokens.get(token));
+			return new IntSCLToken(litTokens.get(token));
 		} else if (token.startsWith("\\")) {
-			return new SCLToken(SYMBOL, token.substring(1));
+			return new StringSCLToken(true, token.substring(1));
 		} else if (builtinWords.containsKey(token)) {
-			return new SCLToken(WORD, builtinWords.get(token));
+			return new WordSCLToken(builtinWords.get(token));
 		} else if (token.equals("true")) {
-			return new SCLToken(BLIT, true);
+			return new BooleanSCLToken(true);
 		} else if (token.equals("false")) {
-			return new SCLToken(BLIT, false);
+			return new BooleanSCLToken(false);
 		} else if (TokenUtils.isInt(token)) {
-			return new SCLToken(ILIT, Long.parseLong(token));
+			return new IntSCLToken(Long.parseLong(token));
 		} else if (TokenUtils.isDouble(token)) {
-			return new SCLToken(FLIT, Double.parseDouble(token));
+			return new FloatSCLToken(Double.parseDouble(token));
 		} else {
 			Errors.inst.printError(EK_SCL_INVTOKEN, token);
 			return null;
 		}
 	}
 
-	/* The literal tokens. */
-	private static final Map<String, SCLToken.Type> litTokens;
-	/* The builtin words. */
-	private static final Map<String, SCLToken.Type> builtinWords;
+	protected static final Map<String, Type> litTokens;
+	protected static final Map<String, Word> builtinWords;
+
+	protected SCLToken() {
+
+	}
+
+	protected SCLToken(Type typ) {
+		type = typ;
+	}
 
 	static {
 		/* Init literal tokens. */
@@ -157,5 +90,32 @@ public class SCLToken {
 		builtinWords.put("ndrop", NDROP);
 		builtinWords.put("nip", NIP);
 		builtinWords.put("nnip", NNIP);
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		SCLToken other = (SCLToken) obj;
+		if (type != other.type)
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "SCLToken [type=" + type + "]";
 	}
 }
