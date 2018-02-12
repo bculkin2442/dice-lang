@@ -8,6 +8,7 @@ import java.util.function.Consumer;
 import bjc.dicelang.dice.CompoundDie;
 import bjc.dicelang.dice.Die;
 import bjc.dicelang.dice.MathDie;
+import bjc.dicelang.dice.ScalarDiceExpression;
 import bjc.dicelang.dice.ScalarDie;
 import bjc.dicelang.dice.SimpleDie;
 import bjc.dicelang.dice.SimpleDieList;
@@ -25,9 +26,11 @@ import static bjc.dicelang.EvaluatorResult.Type.FLOAT;
 import static bjc.dicelang.EvaluatorResult.Type.INT;
 import static bjc.dicelang.EvaluatorResult.Type.STRING;
 
-/* @TODO 10/09/17 Ben Culkin :EvaluatorSplit
- * 	Type/sanity checking should be moved into a seperate stage, not part of
- * 	evaluation.
+/*
+ * @TODO 10/09/17 Ben Culkin :EvaluatorSplit
+ * 
+ * Type/sanity checking should be moved into a seperate stage, not part of
+ * evaluation.
  */
 /**
  * Evaluate DiceLang ASTs
@@ -94,7 +97,9 @@ public class Evaluator {
 	}
 
 	/*
-	 * @NOTE This is broken until stepwise top-down transforms are fixed.
+	 * @NOTE
+	 * 
+	 * This is broken until stepwise top-down transforms are fixed.
 	 */
 	public Iterator<ITree<Node>> stepDebug(final ITree<Node> comm) {
 		final Context ctx = new Context();
@@ -154,10 +159,13 @@ public class Evaluator {
 
 		switch (ast.getHead().operatorType) {
 		/*
-		 * @TODO 10/09/17 Ben Culkin :CoerceRefactor :EvaluatorSplit Coercing should be
-		 * moved to its own class, or at the very least its own method. When the
-		 * evaluator splits, this node type'll be handled exclusively by the
-		 * type-checker.
+		 * @TODO 10/09/17 Ben Culkin :CoerceRefactor
+		 * 
+		 * :EvaluatorSplit
+		 * 
+		 * Coercing should be moved to its own class, or at the very least its own
+		 * method. When the evaluator splits, this node type'll be handled exclusively
+		 * by the type-checker.
 		 *
 		 * Coerce also needs to be able to coerce things to dice and ratios (whenever
 		 * they get added).
@@ -333,24 +341,31 @@ public class Evaluator {
 
 		switch (op) {
 		/*
-		 * @TODO 10/09/17 Ben Culkin :DiceSimplify Figure out some way to simplify this
-		 * sort of thing.
+		 * @TODO 10/09/17 Ben Culkin :DiceSimplify
+		 * 
+		 * Figure out some way to simplify this sort of thing.
 		 */
 		case DICEGROUP:
-			if (left.type == DICE && !left.diceVal.isList) {
-				if (right.type == DICE && !right.diceVal.isList) {
-					Die simple = new SimpleDie(left.diceVal.scalar, right.diceVal.scalar);
+			if (left.type == DICE && !left.diceVal.isList()) {
+				Die lhs = ((ScalarDiceExpression) left.diceVal).scalar;
+
+				if (right.type == DICE && !right.diceVal.isList()) {
+					Die rhs = ((ScalarDiceExpression) right.diceVal).scalar;
+
+					Die simple = new SimpleDie(lhs, rhs);
 
 					res = new EvaluatorResult(DICE, simple);
 				} else if (right.type == INT) {
-					res = new EvaluatorResult(DICE, new SimpleDie(left.diceVal.scalar, right.intVal));
+					res = new EvaluatorResult(DICE, new SimpleDie(lhs, right.intVal));
 				} else {
 					Errors.inst.printError(EK_EVAL_INVDGROUP, right.type.toString());
 					return new Tree<>(Node.FAIL(right));
 				}
 			} else if (left.type == INT) {
-				if (right.type == DICE && !right.diceVal.isList) {
-					res = new EvaluatorResult(DICE, new SimpleDie(left.intVal, right.diceVal.scalar));
+				if (right.type == DICE && !right.diceVal.isList()) {
+					Die rhs = ((ScalarDiceExpression) right.diceVal).scalar;
+
+					res = new EvaluatorResult(DICE, new SimpleDie(left.intVal, rhs));
 				} else if (right.type == INT) {
 					res = new EvaluatorResult(DICE, new SimpleDie(left.intVal, right.intVal));
 				} else {
@@ -363,27 +378,33 @@ public class Evaluator {
 			}
 
 		case DICECONCAT:
-			if (left.type != DICE || left.diceVal.isList) {
+			if (left.type != DICE || left.diceVal.isList()) {
 				Errors.inst.printError(EK_EVAL_INVDICE, left.type.toString());
 				return new Tree<>(Node.FAIL(left));
-			} else if (right.type != DICE || right.diceVal.isList) {
+			} else if (right.type != DICE || right.diceVal.isList()) {
 				Errors.inst.printError(EK_EVAL_INVDICE, right.type.toString());
 				return new Tree<>(Node.FAIL(right));
 			} else {
-				res = new EvaluatorResult(DICE, new CompoundDie(left.diceVal.scalar, right.diceVal.scalar));
+				Die lhs = ((ScalarDiceExpression) left.diceVal).scalar;
+				Die rhs = ((ScalarDiceExpression) right.diceVal).scalar;
+
+				res = new EvaluatorResult(DICE, new CompoundDie(lhs, rhs));
 			}
 
 			break;
 
 		case DICELIST:
-			if (left.type != DICE || left.diceVal.isList) {
+			if (left.type != DICE || left.diceVal.isList()) {
 				Errors.inst.printError(EK_EVAL_INVDICE, left.type.toString());
 				return new Tree<>(Node.FAIL(left));
-			} else if (right.type != DICE || right.diceVal.isList) {
+			} else if (right.type != DICE || right.diceVal.isList()) {
 				Errors.inst.printError(EK_EVAL_INVDICE, right.type.toString());
 				return new Tree<>(Node.FAIL(right));
 			} else {
-				res = new EvaluatorResult(DICE, new SimpleDieList(left.diceVal.scalar, right.diceVal.scalar));
+				Die lhs = ((ScalarDiceExpression) left.diceVal).scalar;
+				Die rhs = ((ScalarDiceExpression) right.diceVal).scalar;
+
+				res = new EvaluatorResult(DICE, new SimpleDieList(lhs, rhs));
 			}
 
 			break;
@@ -431,16 +452,18 @@ public class Evaluator {
 			if (left.type == INT) {
 				res = new EvaluatorResult(INT, left.intVal + right.intVal);
 			} else if (left.type == DICE) {
-				if (left.diceVal.isList) {
+				if (left.diceVal.isList()) {
 					Errors.inst.printError(EK_EVAL_INVDICE, left.toString());
 					return new Tree<>(Node.FAIL(left));
-				} else if (right.diceVal.isList) {
+				} else if (right.diceVal.isList()) {
 					Errors.inst.printError(EK_EVAL_INVDICE, right.toString());
 					return new Tree<>(Node.FAIL(right));
 				}
 
-				res = new EvaluatorResult(DICE,
-						new MathDie(MathDie.MathOp.ADD, left.diceVal.scalar, right.diceVal.scalar));
+				Die lhs = ((ScalarDiceExpression) left.diceVal).scalar;
+				Die rhs = ((ScalarDiceExpression) right.diceVal).scalar;
+
+				res = new EvaluatorResult(DICE, new MathDie(MathDie.MathOp.ADD, lhs, rhs));
 			} else {
 				res = new EvaluatorResult(FLOAT, left.floatVal + right.floatVal);
 			}
@@ -451,16 +474,18 @@ public class Evaluator {
 			if (left.type == INT) {
 				res = new EvaluatorResult(INT, left.intVal - right.intVal);
 			} else if (left.type == DICE) {
-				if (left.diceVal.isList) {
+				if (left.diceVal.isList()) {
 					Errors.inst.printError(EK_EVAL_INVDICE, left.toString());
 					return new Tree<>(Node.FAIL(left));
-				} else if (right.diceVal.isList) {
+				} else if (right.diceVal.isList()) {
 					Errors.inst.printError(EK_EVAL_INVDICE, right.toString());
 					return new Tree<>(Node.FAIL(right));
 				}
 
-				res = new EvaluatorResult(DICE,
-						new MathDie(MathDie.MathOp.SUBTRACT, left.diceVal.scalar, right.diceVal.scalar));
+				Die lhs = ((ScalarDiceExpression) left.diceVal).scalar;
+				Die rhs = ((ScalarDiceExpression) right.diceVal).scalar;
+
+				res = new EvaluatorResult(DICE, new MathDie(MathDie.MathOp.SUBTRACT, lhs, rhs));
 			} else {
 				res = new EvaluatorResult(FLOAT, left.floatVal - right.floatVal);
 			}
@@ -471,16 +496,18 @@ public class Evaluator {
 			if (left.type == INT) {
 				res = new EvaluatorResult(INT, left.intVal * right.intVal);
 			} else if (left.type == DICE) {
-				if (left.diceVal.isList) {
+				if (left.diceVal.isList()) {
 					Errors.inst.printError(EK_EVAL_INVDICE, left.toString());
 					return new Tree<>(Node.FAIL(left));
-				} else if (right.diceVal.isList) {
+				} else if (right.diceVal.isList()) {
 					Errors.inst.printError(EK_EVAL_INVDICE, right.toString());
 					return new Tree<>(Node.FAIL(right));
 				}
 
-				res = new EvaluatorResult(DICE,
-						new MathDie(MathDie.MathOp.MULTIPLY, left.diceVal.scalar, right.diceVal.scalar));
+				Die lhs = ((ScalarDiceExpression) left.diceVal).scalar;
+				Die rhs = ((ScalarDiceExpression) right.diceVal).scalar;
+
+				res = new EvaluatorResult(DICE, new MathDie(MathDie.MathOp.MULTIPLY, lhs, rhs));
 			} else {
 				res = new EvaluatorResult(FLOAT, left.floatVal * right.floatVal);
 			}
@@ -551,7 +578,7 @@ public class Evaluator {
 			res = new EvaluatorResult(FLOAT, tk.floatValue);
 			break;
 		case DICE_LIT:
-			res = new EvaluatorResult(DICE, tk.diceValue);
+			res = new EvaluatorResult(DICE, ((DiceToken) tk).diceValue);
 			break;
 		case STRING_LIT:
 			res = new EvaluatorResult(STRING, eng.getStringLiteral((int) tk.intValue));

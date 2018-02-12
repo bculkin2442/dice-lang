@@ -1,14 +1,17 @@
 package bjc.dicelang;
 
 import bjc.dicelang.dice.Die;
-import bjc.dicelang.dice.DieExpression;
+import bjc.dicelang.dice.DiceExpression;
 import bjc.dicelang.dice.DieList;
+import bjc.dicelang.dice.ListDiceExpression;
+import bjc.dicelang.dice.ScalarDiceExpression;
 import bjc.utils.data.ITree;
 import bjc.utils.data.Tree;
 
 /*
  * @TODO 10/09/17 Ben Culkin :EvalResultReorg
- * 	Again, split it into seperate classes based off of the type.
+ * 
+ * Again, split it into separate classes based off of the type.
  */
 /**
  * The result from the evaluator.
@@ -64,7 +67,7 @@ public class EvaluatorResult {
 	/**
 	 * The dice value of the result.
 	 */
-	public DieExpression diceVal;
+	public DiceExpression diceVal;
 	/**
 	 * The string value of the result.
 	 */
@@ -153,7 +156,7 @@ public class EvaluatorResult {
 	 * @param typ
 	 * @param dVal
 	 */
-	public EvaluatorResult(final EvaluatorResult.Type typ, final DieExpression dVal) {
+	public EvaluatorResult(final EvaluatorResult.Type typ, final DiceExpression dVal) {
 		this(typ);
 
 		diceVal = dVal;
@@ -168,7 +171,7 @@ public class EvaluatorResult {
 	public EvaluatorResult(final EvaluatorResult.Type typ, final Die dVal) {
 		this(typ);
 
-		diceVal = new DieExpression(dVal);
+		diceVal = new ScalarDiceExpression(dVal);
 	}
 
 	/**
@@ -180,7 +183,7 @@ public class EvaluatorResult {
 	public EvaluatorResult(final EvaluatorResult.Type typ, final DieList dVal) {
 		this(typ);
 
-		diceVal = new DieExpression(dVal);
+		diceVal = new ListDiceExpression(dVal);
 	}
 
 	/**
