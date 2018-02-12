@@ -5,9 +5,10 @@ package bjc.dicelang.dice;
  *
  * @author EVE
  *
- * @TODO 10/08/17 Ben Culkin :DieListGeneralize DieList in general should be
- *       changed to be able to be constructed from an arbitrary die using
- *       rollSingle and things like that.
+ * @TODO 10/08/17 Ben Culkin :DieListGeneralize
+ * 
+ *       DieList in general should be changed to be able to be constructed from
+ *       an arbitrary die using rollSingle and things like that.
  */
 public class SimpleDieList implements DieList {
 	/* The number of dice to roll. */
@@ -72,5 +73,36 @@ public class SimpleDieList implements DieList {
 	@Override
 	public String toString() {
 		return numDice.toString() + "dl" + size.toString();
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((numDice == null) ? 0 : numDice.hashCode());
+		result = prime * result + ((size == null) ? 0 : size.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		SimpleDieList other = (SimpleDieList) obj;
+		if (numDice == null) {
+			if (other.numDice != null)
+				return false;
+		} else if (!numDice.equals(other.numDice))
+			return false;
+		if (size == null) {
+			if (other.size != null)
+				return false;
+		} else if (!size.equals(other.size))
+			return false;
+		return true;
 	}
 }

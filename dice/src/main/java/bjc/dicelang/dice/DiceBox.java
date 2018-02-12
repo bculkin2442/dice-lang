@@ -25,8 +25,11 @@ public class DiceBox {
 			return doParseExpression(expString);
 		} catch (Exception ex) {
 			/*
-			 * @TODO 10/08/17 Ben Culkin :DieErrors :ErrorRefactor Use different types of
-			 * exceptions to provide better error messages.
+			 * @TODO 10/08/17 Ben Culkin :DieErrors
+			 * 
+			 * :ErrorRefactor
+			 * 
+			 * Use different types of exceptions to provide better error messages.
 			 */
 			String exMessage = ex.getMessage();
 
@@ -46,10 +49,11 @@ public class DiceBox {
 		if (scalarDiePattern.matcher(expString).matches()) {
 			/* Parse scalar die. */
 			/*
-			 * @TODO 10/08/17 Ben Culkin :SubstringIndexOf This substring/index of call
-			 * should be abstracted into its own method so as to make the code more
-			 * explanatory and ensure that things like the return code of indexOf are
-			 * correctly checked.
+			 * @TODO 10/08/17 Ben Culkin :SubstringIndexOf
+			 * 
+			 * This substring/index of call should be abstracted into its own method so as
+			 * to make the code more explanatory and ensure that things like the return code
+			 * of indexOf are correctly checked.
 			 */
 			final String dieString = expString.substring(0, expString.indexOf('s'));
 
@@ -171,9 +175,10 @@ public class DiceBox {
 
 	/* The strings and patterns used for matching. */
 	/*
-	 * @TODO 10/08/17 Ben Culkin :RegexResource These regexes and patterns should be
-	 * moved to something external, probably using the SimpleProperties-based system
-	 * that BJC-Utils2 uses.
+	 * @TODO 10/08/17 Ben Culkin :RegexResource
+	 * 
+	 * These regexes and patterns should be moved to something external, probably
+	 * using the SimpleProperties-based system that BJC-Utils2 uses.
 	 */
 	/* Defines a comparison predicate. */
 	private static final String comparePoint = "[<>=]\\d+";

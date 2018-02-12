@@ -64,4 +64,29 @@ public class FudgeDie implements Die {
 
 		return String.format("%sdF", dieString);
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((numDice == null) ? 0 : numDice.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		FudgeDie other = (FudgeDie) obj;
+		if (numDice == null) {
+			if (other.numDice != null)
+				return false;
+		} else if (!numDice.equals(other.numDice))
+			return false;
+		return true;
+	}
 }

@@ -115,4 +115,35 @@ public class SimpleDie implements Die {
 	public String toString() {
 		return numDice + "d" + diceSize;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((diceSize == null) ? 0 : diceSize.hashCode());
+		result = prime * result + ((numDice == null) ? 0 : numDice.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		SimpleDie other = (SimpleDie) obj;
+		if (diceSize == null) {
+			if (other.diceSize != null)
+				return false;
+		} else if (!diceSize.equals(other.diceSize))
+			return false;
+		if (numDice == null) {
+			if (other.numDice != null)
+				return false;
+		} else if (!numDice.equals(other.numDice))
+			return false;
+		return true;
+	}
 }
