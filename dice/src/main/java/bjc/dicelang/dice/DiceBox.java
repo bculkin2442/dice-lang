@@ -109,7 +109,7 @@ public class DiceBox {
 
 			final Die compound = new CompoundDie(left.scalar, right.scalar);
 
-			return new DieExpression(new CompoundDie(left.scalar, right.scalar));
+			return new DieExpression(compound);
 		} else if (compoundingDiePattern.matcher(expString).matches()) {
 			/* Parse compounding die expressions. */
 			final String[] dieParts = expString.split("!!");

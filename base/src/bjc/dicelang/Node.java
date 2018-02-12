@@ -1,5 +1,9 @@
 package bjc.dicelang;
 
+import static bjc.dicelang.EvaluatorResult.Type.FAILURE;
+
+import bjc.utils.data.ITree;
+
 /*
  * @TODO 10/09/17 Ben Culkin :NodeReorg
  * 	Same thing, different class. Split into subclasses based off of the type
@@ -101,5 +105,26 @@ public class Node {
 	@Override
 	public int hashCode() {
 		return super.hashCode();
+	}
+
+	static Node FAIL(final EvaluatorResult res) {
+		EvaluatorResult eres = new EvaluatorResult(FAILURE, new Node(Type.RESULT, res));
+		return new Node(Type.RESULT, eres);
+	}
+
+	static Node FAIL(final Node orig) {
+		return new Node(Type.RESULT, new EvaluatorResult(FAILURE, orig));
+	}
+
+	static Node FAIL(final ITree<Node> orig) {
+		return new Node(Type.RESULT, new EvaluatorResult(FAILURE, orig));
+	}
+
+	/* @TODO 10/09/17 Ben Culkin :NodeFAIL
+	 * 	These methods should be moved to Node.
+	 */
+	/* Create a failing node. */
+	static Node FAIL() {
+		return new Node(Type.RESULT, new EvaluatorResult(FAILURE));
 	}
 }

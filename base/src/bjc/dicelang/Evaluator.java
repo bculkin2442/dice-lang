@@ -7,7 +7,6 @@ import java.util.function.Consumer;
 
 import bjc.dicelang.dice.CompoundDie;
 import bjc.dicelang.dice.Die;
-import bjc.dicelang.dice.FudgeDie;
 import bjc.dicelang.dice.MathDie;
 import bjc.dicelang.dice.ScalarDie;
 import bjc.dicelang.dice.SimpleDie;
@@ -52,27 +51,6 @@ public class Evaluator {
 		public Context() {
 			/* Empty block. */
 		}
-	}
-
-	/* @TODO 10/09/17 Ben Culkin :NodeFAIL
-	 * 	These methods should be moved to Node.
-	 */
-	/* Create a failing node. */
-	private static Node FAIL() {
-		return new Node(Node.Type.RESULT, new EvaluatorResult(FAILURE));
-	}
-
-	private static Node FAIL(final ITree<Node> orig) {
-		return new Node(Node.Type.RESULT, new EvaluatorResult(FAILURE, orig));
-	}
-
-	private static Node FAIL(final Node orig) {
-		return new Node(Node.Type.RESULT, new EvaluatorResult(FAILURE, orig));
-	}
-
-	private static Node FAIL(final EvaluatorResult res) {
-		EvaluatorResult eres = new EvaluatorResult(FAILURE, new Node(Node.Type.RESULT, res));
-		return new Node(Node.Type.RESULT, eres);
 	}
 
 	/* The engine we are connected to. */
@@ -165,7 +143,7 @@ public class Evaluator {
 			return ast;
 		default:
 			Errors.inst.printError(EK_EVAL_INVNODE, ast.getHead().type.toString());
-			return new Tree<>(FAIL(ast));
+			return new Tree<>(Node.FAIL(ast));
 		}
 	}
 
@@ -174,7 +152,7 @@ public class Evaluator {
 		/* Unary operators only take one operand. */
 		if (ast.getChildrenCount() != 1) {
 			Errors.inst.printError(EK_EVAL_UNUNARY, Integer.toString(ast.getChildrenCount()));
-			return new Tree<>(FAIL(ast));
+			return new Tree<>(Node.FAIL(ast));
 		}
 
 		switch (ast.getHead().operatorType) {
@@ -217,7 +195,7 @@ public class Evaluator {
 
 				if (nChild == null) {
 					Errors.inst.printError(EK_EVAL_INVNODE);
-					return new Tree<>(FAIL(ast));
+					return new Tree<>(Node.FAIL(ast));
 				}
 
 				final Node childNode = nChild.getHead();
@@ -270,7 +248,7 @@ public class Evaluator {
 			return new Tree<>(new Node(Node.Type.RESULT, fres));
 		default:
 			Errors.inst.printError(EK_EVAL_INVUNARY, ast.getHead().operatorType.toString());
-			return new Tree<>(FAIL(ast));
+			return new Tree<>(Node.FAIL(ast));
 		}
 	}
 
@@ -283,7 +261,7 @@ public class Evaluator {
 			Errors.inst.printError(EK_EVAL_INVBIN, Integer.toString(ast.getChildrenCount()),
 					ast.toString());
 
-			return new Tree<>(FAIL(ast));
+			return new Tree<>(Node.FAIL(ast));
 		}
 
 		final ITree<Node> left  = ast.getChild(0);
@@ -308,7 +286,7 @@ public class Evaluator {
 			return evaluateStringBinary(binOp, leftRes, rightRes, ctx);
 		default:
 			Errors.inst.printError(EK_EVAL_UNBIN, binOp.toString());
-			return new Tree<>(FAIL(ast));
+			return new Tree<>(Node.FAIL(ast));
 		}
 	}
 
@@ -318,7 +296,7 @@ public class Evaluator {
 			final EvaluatorResult right, final Context ctx) {
 		if (left.type != STRING) {
 			Errors.inst.printError(EK_EVAL_INVSTRING, left.type.toString());
-			return new Tree<>(FAIL(left));
+			return new Tree<>(Node.FAIL(left));
 		}
 
 		final String strang = left.stringVal;
@@ -327,7 +305,7 @@ public class Evaluator {
 		case STRCAT:
 			if (right.type != STRING) {
 				Errors.inst.printError(EK_EVAL_UNSTRING, right.type.toString());
-				return new Tree<>(FAIL(right));
+				return new Tree<>(Node.FAIL(right));
 			}
 
 			final String strung = right.stringVal;
@@ -337,7 +315,7 @@ public class Evaluator {
 		case STRREP:
 			if (right.type != INT) {
 				Errors.inst.printError(EK_EVAL_INVSTRING, right.type.toString());
-				return new Tree<>(FAIL(right));
+				return new Tree<>(Node.FAIL(right));
 			}
 
 			String res = strang;
@@ -350,7 +328,7 @@ public class Evaluator {
 			return new Tree<>(new Node(Node.Type.RESULT, new EvaluatorResult(STRING, res)));
 		default:
 			Errors.inst.printError(EK_EVAL_UNSTRING, op.toString());
-			return new Tree<>(FAIL());
+			return new Tree<>(Node.FAIL());
 		}
 	}
 
@@ -379,7 +357,7 @@ public class Evaluator {
 							new SimpleDie(left.diceVal.scalar, right.intVal));
 				} else {
 					Errors.inst.printError(EK_EVAL_INVDGROUP, right.type.toString());
-					return new Tree<>(FAIL(right));
+					return new Tree<>(Node.FAIL(right));
 				}
 			} else if (left.type == INT) {
 				if (right.type == DICE && !right.diceVal.isList) {
@@ -389,20 +367,20 @@ public class Evaluator {
 					res = new EvaluatorResult(DICE, new SimpleDie(left.intVal, right.intVal));
 				} else {
 					Errors.inst.printError(EK_EVAL_INVDGROUP, right.type.toString());
-					return new Tree<>(FAIL(right));
+					return new Tree<>(Node.FAIL(right));
 				}
 			} else {
 				Errors.inst.printError(EK_EVAL_INVDGROUP, left.type.toString());
-				return new Tree<>(FAIL(left));
+				return new Tree<>(Node.FAIL(left));
 			}
 
 		case DICECONCAT:
 			if (left.type != DICE || left.diceVal.isList) {
 				Errors.inst.printError(EK_EVAL_INVDICE, left.type.toString());
-				return new Tree<>(FAIL(left));
+				return new Tree<>(Node.FAIL(left));
 			} else if (right.type != DICE || right.diceVal.isList) {
 				Errors.inst.printError(EK_EVAL_INVDICE, right.type.toString());
-				return new Tree<>(FAIL(right));
+				return new Tree<>(Node.FAIL(right));
 			} else {
 				res = new EvaluatorResult(DICE,
 						new CompoundDie(left.diceVal.scalar, right.diceVal.scalar));
@@ -413,10 +391,10 @@ public class Evaluator {
 		case DICELIST:
 			if (left.type != DICE || left.diceVal.isList) {
 				Errors.inst.printError(EK_EVAL_INVDICE, left.type.toString());
-				return new Tree<>(FAIL(left));
+				return new Tree<>(Node.FAIL(left));
 			} else if (right.type != DICE || right.diceVal.isList) {
 				Errors.inst.printError(EK_EVAL_INVDICE, right.type.toString());
-				return new Tree<>(FAIL(right));
+				return new Tree<>(Node.FAIL(right));
 			} else {
 				res = new EvaluatorResult(DICE,
 						new SimpleDieList(left.diceVal.scalar, right.diceVal.scalar));
@@ -426,7 +404,7 @@ public class Evaluator {
 
 		default:
 			Errors.inst.printError(EK_EVAL_UNDICE, op.toString());
-			return new Tree<>(FAIL());
+			return new Tree<>(Node.FAIL());
 		}
 
 		return new Tree<>(new Node(Node.Type.RESULT, res));
@@ -438,27 +416,27 @@ public class Evaluator {
 			final EvaluatorResult right, final Context ctx) {
 		if (left.type == STRING || right.type == STRING) {
 			Errors.inst.printError(EK_EVAL_STRINGMATH);
-			return new Tree<>(FAIL());
+			return new Tree<>(Node.FAIL());
 		} else if (left.type == FAILURE || right.type == FAILURE) {
-			return new Tree<>(FAIL());
+			return new Tree<>(Node.FAIL());
 		} else if (left.type == INT && right.type != INT) {
 			Errors.inst.printError(EK_EVAL_MISMATH);
-			return new Tree<>(FAIL(right));
+			return new Tree<>(Node.FAIL(right));
 		} else if (left.type == FLOAT && right.type != FLOAT) {
 			Errors.inst.printError(EK_EVAL_MISMATH);
-			return new Tree<>(FAIL(right));
+			return new Tree<>(Node.FAIL(right));
 		} else if (left.type == DICE && right.type != DICE) {
 			Errors.inst.printError(EK_EVAL_MISMATH);
-			return new Tree<>(FAIL(right));
+			return new Tree<>(Node.FAIL(right));
 		} else if (right.type == INT && left.type != INT) {
 			Errors.inst.printError(EK_EVAL_MISMATH);
-			return new Tree<>(FAIL(left));
+			return new Tree<>(Node.FAIL(left));
 		} else if (right.type == FLOAT && left.type != FLOAT) {
 			Errors.inst.printError(EK_EVAL_MISMATH);
-			return new Tree<>(FAIL(left));
+			return new Tree<>(Node.FAIL(left));
 		} else if (right.type == DICE && left.type != DICE) {
 			Errors.inst.printError(EK_EVAL_MISMATH);
-			return new Tree<>(FAIL(left));
+			return new Tree<>(Node.FAIL(left));
 		}
 
 		EvaluatorResult res = null;
@@ -470,10 +448,10 @@ public class Evaluator {
 			} else if (left.type == DICE) {
 				if (left.diceVal.isList) {
 					Errors.inst.printError(EK_EVAL_INVDICE, left.toString());
-					return new Tree<>(FAIL(left));
+					return new Tree<>(Node.FAIL(left));
 				} else if (right.diceVal.isList) {
 					Errors.inst.printError(EK_EVAL_INVDICE, right.toString());
-					return new Tree<>(FAIL(right));
+					return new Tree<>(Node.FAIL(right));
 				}
 
 				res = new EvaluatorResult(DICE, new MathDie(MathDie.MathOp.ADD, left.diceVal.scalar,
@@ -490,10 +468,10 @@ public class Evaluator {
 			} else if (left.type == DICE) {
 				if (left.diceVal.isList) {
 					Errors.inst.printError(EK_EVAL_INVDICE, left.toString());
-					return new Tree<>(FAIL(left));
+					return new Tree<>(Node.FAIL(left));
 				} else if (right.diceVal.isList) {
 					Errors.inst.printError(EK_EVAL_INVDICE, right.toString());
-					return new Tree<>(FAIL(right));
+					return new Tree<>(Node.FAIL(right));
 				}
 
 				res = new EvaluatorResult(DICE, new MathDie(MathDie.MathOp.SUBTRACT,
@@ -510,10 +488,10 @@ public class Evaluator {
 			} else if (left.type == DICE) {
 				if (left.diceVal.isList) {
 					Errors.inst.printError(EK_EVAL_INVDICE, left.toString());
-					return new Tree<>(FAIL(left));
+					return new Tree<>(Node.FAIL(left));
 				} else if (right.diceVal.isList) {
 					Errors.inst.printError(EK_EVAL_INVDICE, right.toString());
-					return new Tree<>(FAIL(right));
+					return new Tree<>(Node.FAIL(right));
 				}
 
 				res = new EvaluatorResult(DICE, new MathDie(MathDie.MathOp.MULTIPLY,
@@ -541,7 +519,7 @@ public class Evaluator {
 				}
 			} else {
 				Errors.inst.printError(EK_EVAL_DIVDICE);
-				return new Tree<>(FAIL());
+				return new Tree<>(Node.FAIL());
 			}
 
 			break;
@@ -563,14 +541,14 @@ public class Evaluator {
 				}
 			} else {
 				Errors.inst.printError(EK_EVAL_DIVDICE);
-				return new Tree<>(FAIL());
+				return new Tree<>(Node.FAIL());
 			}
 
 			break;
 
 		default:
 			Errors.inst.printError(EK_EVAL_UNMATH, op.toString());
-			return new Tree<>(FAIL());
+			return new Tree<>(Node.FAIL());
 		}
 
 		return new Tree<>(new Node(Node.Type.RESULT, res));

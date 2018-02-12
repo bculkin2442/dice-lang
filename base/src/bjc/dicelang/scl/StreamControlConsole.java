@@ -3,10 +3,7 @@ package bjc.dicelang.scl;
 import bjc.utils.funcdata.FunctionalList;
 import bjc.utils.funcdata.IList;
 
-import java.util.Iterator;
 import java.util.Scanner;
-
-import java.util.function.Supplier;
 
 /**
  * Implement a SCL REPL
@@ -71,5 +68,7 @@ public class StreamControlConsole {
 			System.out.print("Command string executed succesfully.\n\n");
 			System.out.print("Enter a SCL command string (blank to exit): ");
 		}
+
+		scn.close();
 	}
 }

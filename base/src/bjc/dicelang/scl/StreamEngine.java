@@ -1,11 +1,5 @@
 package bjc.dicelang.scl;
 
-import static bjc.dicelang.Errors.ErrorKey.EK_STRM_INVCOM;
-import static bjc.dicelang.Errors.ErrorKey.EK_STRM_LAST;
-import static bjc.dicelang.Errors.ErrorKey.EK_STRM_NONEX;
-
-import static java.util.logging.Level.*;
-
 import bjc.dicelang.DiceLangEngine;
 import bjc.dicelang.Errors;
 import bjc.utils.esodata.SingleTape;
@@ -16,6 +10,8 @@ import bjc.utils.funcdata.IList;
 import bjc.utils.funcutils.ListUtils;
 
 import java.util.Arrays;
+
+import static bjc.dicelang.Errors.ErrorKey.*;
 
 /**
  * Implements multiple interleaved parse streams, as well as a command language

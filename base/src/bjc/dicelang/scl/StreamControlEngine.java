@@ -11,7 +11,7 @@ import bjc.utils.funcdata.IList;
 import bjc.utils.parserutils.TokenUtils;
 
 import static bjc.dicelang.Errors.ErrorKey.*;
-import static bjc.dicelang.scl.StreamControlEngine.Token.Type.*;
+import static bjc.dicelang.scl.SCLToken.Type.*;
 
 /*
  * @TODO 10/08/17 Ben Culkin :SCLReorg
@@ -27,164 +27,14 @@ import static bjc.dicelang.scl.StreamControlEngine.Token.Type.*;
  * @author Ben Culkin
  */
 public class StreamControlEngine {
-	/*
-	 * @TODO 10/08/17 Ben Culkin :TokenSplit
-	 * 	Again with the multiple subclasses in one class. Split it so
-	 * 	that each subclass only has the fields it needs.
-	 */
-	public static class Token {
-		public static enum Type {
-			/* Natural tokens. These come directly from strings */
-			ILIT, FLIT, BLIT, SQUOTE, DQUOTE, OBRACKET, OBRACE, SYMBOL, WORD,
-
-			/* Synthetic tokens. These are produced from special tokens. */
-			SLIT, WORDS, ARRAY,
-
-			/* Word tokens These are subordinate to WORD tokens */
-			/*
-			 * @NOTE
-			 * 	These should really be in their own enum.
-			 */
-			/* Array manipulation */
-			MAKEARRAY, MAKEEXEC, MAKEUNEXEC,
-			/* Stream manipulation */
-			NEWSTREAM, LEFTSTREAM, RIGHTSTREAM, DELETESTREAM, MERGESTREAM,
-			/* Stack manipulation */
-			STACKCOUNT, STACKEMPTY, DROP, NDROP, NIP, NNIP,
-		}
-
-		/* The type of this token */
-		public Type type;
-
-		/* Used for ILIT */
-		public long intVal;
-		/* Used for FLIT */
-		public double floatVal;
-		/* Used for BLIT */
-		public boolean boolVal;
-		/* Used for SYMBOL & SLIT */
-		public String stringVal;
-		/* Used for WORD */
-		public Token tokenVal;
-		/* Used for WORDS & ARRAY */
-		public IList<Token> tokenVals;
-
-		/* Create a new token. */
-		public Token(final Type typ) {
-			type = typ;
-		}
-
-		/* Create a new token. */
-		public Token(final Type typ, final long iVal) {
-			this(typ);
-
-			intVal = iVal;
-		}
-
-		/* Create a new token. */
-		public Token(final Type typ, final double dVal) {
-			this(typ);
-
-			floatVal = dVal;
-		}
-
-		/* Create a new token. */
-		public Token(final Type typ, final boolean bVal) {
-			this(typ);
-
-			boolVal = bVal;
-		}
-
-		/* Create a new token. */
-		public Token(final Type typ, final String sVal) {
-			this(typ);
-
-			stringVal = sVal;
-		}
-
-		/* Create a new token. */
-		public Token(final Type typ, final Token tVal) {
-			this(typ);
-
-			tokenVal = tVal;
-		}
-
-		/* Create a new token. */
-		public Token(final Type typ, final Token.Type tVal) {
-			this(typ, new Token(tVal));
-		}
-
-		/* Create a new token. */
-		public Token(final Type typ, final IList<Token> tVals) {
-			this(typ);
-
-			tokenVals = tVals;
-		}
-
-		/* Convert a string into a token. */
-		public static Token tokenizeString(final String token) {
-			if (litTokens.containsKey(token)) {
-				return new Token(litTokens.get(token));
-			} else if (token.startsWith("\\")) {
-				return new Token(SYMBOL, token.substring(1));
-			} else if (builtinWords.containsKey(token)) {
-				return new Token(WORD, builtinWords.get(token));
-			} else if (token.equals("true")) {
-				return new Token(BLIT, true);
-			} else if (token.equals("false")) {
-				return new Token(BLIT, false);
-			} else if (TokenUtils.isInt(token)) {
-				return new Token(ILIT, Long.parseLong(token));
-			} else if (TokenUtils.isDouble(token)) {
-				return new Token(FLIT, Double.parseDouble(token));
-			} else {
-				Errors.inst.printError(EK_SCL_INVTOKEN, token);
-				return null;
-			}
-		}
-
-		/* The literal tokens. */
-		private static final Map<String, Token.Type>    litTokens;
-		/* The builtin words. */
-		private static final Map<String, Token.Type>    builtinWords;
-
-		static {
-			/* Init literal tokens. */
-			litTokens = new HashMap<>();
-
-			litTokens.put("'", SQUOTE);
-			litTokens.put("\"", DQUOTE);
-			litTokens.put("[", OBRACKET);
-			litTokens.put("{", OBRACE);
-
-			/* Init builtin words. */
-			builtinWords = new HashMap<>();
-
-			builtinWords.put("makearray", MAKEARRAY);
-			builtinWords.put("+stream", NEWSTREAM);
-			builtinWords.put(">stream", LEFTSTREAM);
-			builtinWords.put("<stream", RIGHTSTREAM);
-			builtinWords.put("-stream", DELETESTREAM);
-			builtinWords.put("<-stream", MERGESTREAM);
-			builtinWords.put("cvx", MAKEEXEC);
-			builtinWords.put("cvux", MAKEUNEXEC);
-			builtinWords.put("#", STACKCOUNT);
-			builtinWords.put("empty?", STACKEMPTY);
-			builtinWords.put("drop", DROP);
-			builtinWords.put("ndrop", NDROP);
-			builtinWords.put("nip", NIP);
-			builtinWords.put("nnip", NNIP);
-		}
-	}
-
 	/* The stream engine we're hooked to. */
 	private final StreamEngine eng;
 
 	/* The current stack state. */
-	private final Stack<Token> curStack;
+	private final Stack<SCLToken> curStack;
 
 	/* Map of user defined words. */
-	private final Map<String, Token> words;
+	private final Map<String, SCLToken> words;
 
 	/**
 	 * Create a new stream control engine.
@@ -211,7 +61,7 @@ public class StreamControlEngine {
 		for (int i = 0; i < tokens.length; i++) {
 			/* Tokenize each token. */
 			final String token = tokens[i];
-			final Token tok    = Token.tokenizeString(token);
+			final SCLToken tok    = SCLToken.tokenizeString(token);
 
 			if (tok == null) {
 				System.out.printf("ERROR: Tokenization failed for '%s'\n", token);
@@ -240,8 +90,8 @@ public class StreamControlEngine {
 				if (i == -1) {
 					return false;
 				}
-				final Token brak = curStack.pop();
-				curStack.push(new Token(ARRAY, brak.tokenVals));
+				final SCLToken brak = curStack.pop();
+				curStack.push(new SCLToken(ARRAY, brak.tokenVals));
 				break;
 
 			case WORD:
@@ -260,7 +110,7 @@ public class StreamControlEngine {
 		return true;
 	}
 
-	private boolean handleWord(final Token tk) {
+	private boolean handleWord(final SCLToken tk) {
 		boolean succ = true;
 
 		/* Handle each type of word. */
@@ -316,10 +166,10 @@ public class StreamControlEngine {
 			}
 			break;
 		case STACKCOUNT:
-			curStack.push(new Token(ILIT, curStack.size()));
+			curStack.push(new SCLToken(ILIT, curStack.size()));
 			break;
 		case STACKEMPTY:
-			curStack.push(new Token(BLIT, curStack.empty()));
+			curStack.push(new SCLToken(BLIT, curStack.empty()));
 			break;
 		case DROP:
 			if (curStack.size() == 0) {
@@ -357,7 +207,7 @@ public class StreamControlEngine {
 
 	/* Handle nipping a specified number of items. */
 	private boolean handleNNip() {
-		final Token num = curStack.pop();
+		final SCLToken num = curStack.pop();
 
 		if (num.type != ILIT) {
 			Errors.inst.printError(EK_SCL_INVARG, num.type.toString());
@@ -377,7 +227,7 @@ public class StreamControlEngine {
 
 	/* Handle dropping a specified number of items. */
 	private boolean handleNDrop() {
-		final Token num = curStack.pop();
+		final SCLToken num = curStack.pop();
 
 		if (num.type != ILIT) {
 			Errors.inst.printError(EK_SCL_INVARG, num.type.toString());
@@ -397,7 +247,7 @@ public class StreamControlEngine {
 
 	/* Handle toggling the executable flag on an array. */
 	private boolean toggleExec(final boolean exec) {
-		final Token top = curStack.top();
+		final SCLToken top = curStack.top();
 
 		if (exec) {
 			if (top.type != ARRAY) {
@@ -420,26 +270,26 @@ public class StreamControlEngine {
 
 	/* Handle creating an array. */
 	private boolean makeArray() {
-		final Token num = curStack.pop();
+		final SCLToken num = curStack.pop();
 
 		if (num.type != ILIT) {
 			Errors.inst.printError(EK_SCL_INVARG, num.type.toString());
 		}
 
-		final IList<Token> arr = new FunctionalList<>();
+		final IList<SCLToken> arr = new FunctionalList<>();
 
 		for (int i = 0; i < num.intVal; i++) {
 			arr.add(curStack.pop());
 		}
 
-		curStack.push(new Token(ARRAY, arr));
+		curStack.push(new SCLToken(ARRAY, arr));
 
 		return true;
 	}
 
 	/* Handle a delimited series of tokens. */
 	private int handleDelim(final int i, final String[] tokens, final String delim) {
-		final IList<Token> toks = new FunctionalList<>();
+		final IList<SCLToken> toks = new FunctionalList<>();
 
 		int n = i + 1;
 
@@ -451,7 +301,7 @@ public class StreamControlEngine {
 		String tok = tokens[n];
 
 		while (!tok.equals(delim)) {
-			final Token ntok = Token.tokenizeString(tok);
+			final SCLToken ntok = SCLToken.tokenizeString(tok);
 
 			switch (ntok.type) {
 			case SQUOTE:
@@ -473,8 +323,8 @@ public class StreamControlEngine {
 				if (n == -1) {
 					return -1;
 				}
-				final Token brak = curStack.pop();
-				toks.add(new Token(ARRAY, brak.tokenVals));
+				final SCLToken brak = curStack.pop();
+				toks.add(new SCLToken(ARRAY, brak.tokenVals));
 				break;
 			default:
 				toks.add(ntok);
@@ -497,7 +347,7 @@ public class StreamControlEngine {
 		/* @NOTE
 		 * 	Instead of being hardcoded, this should be a parameter.
 		 */
-		curStack.push(new Token(WORDS, toks));
+		curStack.push(new SCLToken(WORDS, toks));
 
 		return n;
 	}
@@ -539,7 +389,7 @@ public class StreamControlEngine {
 		 */
 		n += 1;
 
-		curStack.push(new Token(SLIT, TokenUtils.descapeString(sb.toString())));
+		curStack.push(new SCLToken(SLIT, TokenUtils.descapeString(sb.toString())));
 
 		return n;
 	}
