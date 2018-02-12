@@ -147,7 +147,7 @@ public class Tokenizer {
 				return Token.NIL_TOKEN;
 			}
 		} else if (TokenUtils.isDouble(token)) {
-			tk = new Token(FLOAT_LIT, Double.parseDouble(token));
+			tk = new FloatToken(Double.parseDouble(token));
 		} else if (DiceBox.isValidExpression(token)) {
 			tk = new DiceToken(DiceBox.parseExpression(token));
 		} else {

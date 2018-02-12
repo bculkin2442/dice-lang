@@ -1,6 +1,5 @@
 package bjc.dicelang;
 
-import bjc.dicelang.dice.DiceExpression;
 import bjc.utils.funcdata.IList;
 
 /*
@@ -80,14 +79,6 @@ public class Token {
 
 	/*
 	 * This is used for the following token types
-	 * 
-	 * - FLOAT_LIT (float value)
-	 * 
-	 */
-	public double floatValue;
-
-	/*
-	 * This is used for the following token types
 	 *
 	 * - TOKGROUP (the tokens in the group)
 	 * 
@@ -104,12 +95,6 @@ public class Token {
 		this(typ);
 
 		intValue = val;
-	}
-
-	public Token(final Type typ, final double val) {
-		this(typ);
-
-		floatValue = val;
 	}
 
 	public Token(final Type typ, final IList<Token> tkVals) {
@@ -131,9 +116,6 @@ public class Token {
 		case OBRACE:
 		case CBRACE:
 			return type.toString() + "(" + intValue + ")";
-
-		case FLOAT_LIT:
-			return type.toString() + "(" + floatValue + ")";
 
 		case TAGOP:
 		case TAGOPR:

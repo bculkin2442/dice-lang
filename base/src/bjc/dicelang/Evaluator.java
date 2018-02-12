@@ -575,7 +575,7 @@ public class Evaluator {
 			res = new EvaluatorResult(INT, tk.intValue);
 			break;
 		case FLOAT_LIT:
-			res = new EvaluatorResult(FLOAT, tk.floatValue);
+			res = new EvaluatorResult(FLOAT, ((FloatToken)tk).floatValue);
 			break;
 		case DICE_LIT:
 			res = new EvaluatorResult(DICE, ((DiceToken) tk).diceValue);
