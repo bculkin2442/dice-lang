@@ -3,14 +3,13 @@ package bjc.dicelang.scl;
 import java.util.HashMap;
 import java.util.Map;
 
-import bjc.dicelang.Errors;
 import bjc.utils.esodata.SimpleStack;
 import bjc.utils.esodata.Stack;
 import bjc.utils.funcdata.FunctionalList;
 import bjc.utils.funcdata.IList;
 import bjc.utils.parserutils.TokenUtils;
 
-import static bjc.dicelang.Errors.ErrorKey.*;
+import static bjc.dicelang.scl.Errors.ErrorKey.*;
 import static bjc.dicelang.scl.SCLToken.Type.*;
 import static bjc.dicelang.scl.WordSCLToken.Word.*;
 

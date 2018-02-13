@@ -3,11 +3,9 @@ package bjc.dicelang.scl;
 import java.util.HashMap;
 import java.util.Map;
 
-import bjc.dicelang.Errors;
 import bjc.utils.parserutils.TokenUtils;
 
-import static bjc.dicelang.Errors.ErrorKey.EK_SCL_INVTOKEN;
-
+import static bjc.dicelang.scl.Errors.ErrorKey.*;
 import static bjc.dicelang.scl.SCLToken.Type.*;
 
 public class SCLToken {

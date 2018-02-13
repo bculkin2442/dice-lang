@@ -1,7 +1,5 @@
 package bjc.dicelang.scl;
 
-import bjc.dicelang.DiceLangEngine;
-import bjc.dicelang.Errors;
 import bjc.utils.esodata.SingleTape;
 import bjc.utils.esodata.Tape;
 import bjc.utils.esodata.TapeLibrary;
@@ -11,7 +9,7 @@ import bjc.utils.funcutils.ListUtils;
 
 import java.util.Arrays;
 
-import static bjc.dicelang.Errors.ErrorKey.*;
+import static bjc.dicelang.scl.Errors.ErrorKey.*;
 
 /**
  * Implements multiple interleaved parse streams, as well as a command language
@@ -26,9 +24,6 @@ public class StreamEngine {
 	/* Whether or not we're doing debugging. */
 	public final boolean debug = true;
 
-	/* The engine we're attached to. */
-	DiceLangEngine eng;
-
 	/* Our streams. */
 	Tape<IList<String>> streams;
 	IList<String> currStream;
@@ -42,12 +37,8 @@ public class StreamEngine {
 	/**
 	 * Create a new stream engine.
 	 *
-	 * @param engine
-	 *            The dice engine we're attached to.
 	 */
-	public StreamEngine(final DiceLangEngine engine) {
-		eng = engine;
-
+	public StreamEngine() {
 		savedStreams = new TapeLibrary<>();
 		scleng = new StreamControlEngine(this);
 	}

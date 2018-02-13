@@ -127,7 +127,7 @@ public class DiceLangEngine {
 		shunt = new Shunter();
 		parsr = new Parser();
 
-		streamEng = new StreamEngine(this);
+		streamEng = new StreamEngine();
 		tokenzer = new Tokenizer(this);
 		eval = new Evaluator(this);
 	}
