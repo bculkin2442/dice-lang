@@ -1,4 +1,4 @@
-package bjc.dicelang.scl;
+package bjc.dicelang.scl.tokens;
 
 public class IntSCLToken extends SCLToken {
 	/* Used for ILIT */

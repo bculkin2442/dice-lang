@@ -3,6 +3,14 @@ package bjc.dicelang.scl;
 import java.util.HashMap;
 import java.util.Map;
 
+import bjc.dicelang.scl.tokens.ArraySCLToken;
+import bjc.dicelang.scl.tokens.BooleanSCLToken;
+import bjc.dicelang.scl.tokens.IntSCLToken;
+import bjc.dicelang.scl.tokens.SCLToken;
+import bjc.dicelang.scl.tokens.StringLitSCLToken;
+import bjc.dicelang.scl.tokens.WordListSCLToken;
+import bjc.dicelang.scl.tokens.WordSCLToken;
+import bjc.dicelang.scl.tokens.WordsSCLToken;
 import bjc.utils.esodata.SimpleStack;
 import bjc.utils.esodata.Stack;
 import bjc.utils.funcdata.FunctionalList;
@@ -10,8 +18,8 @@ import bjc.utils.funcdata.IList;
 import bjc.utils.parserutils.TokenUtils;
 
 import static bjc.dicelang.scl.Errors.ErrorKey.*;
-import static bjc.dicelang.scl.SCLToken.Type.*;
-import static bjc.dicelang.scl.WordSCLToken.Word.*;
+import static bjc.dicelang.scl.tokens.SCLToken.Type.*;
+import static bjc.dicelang.scl.tokens.WordSCLToken.Word.*;
 
 /*
  * @TODO 10/08/17 Ben Culkin :SCLReorg
@@ -389,7 +397,7 @@ public class StreamControlEngine {
 
 		String strang = TokenUtils.descapeString(sb.toString());
 
-		curStack.push(new StringSCLToken(false, strang));
+		curStack.push(new StringLitSCLToken(strang));
 
 		return n;
 	}

@@ -1,9 +1,9 @@
-package bjc.dicelang.scl;
+package bjc.dicelang.scl.tokens;
+
+import static bjc.dicelang.scl.tokens.WordSCLToken.Word.*;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import static bjc.dicelang.scl.WordSCLToken.Word.*;
 
 public class WordSCLToken extends SCLToken {
 	public static enum Word {

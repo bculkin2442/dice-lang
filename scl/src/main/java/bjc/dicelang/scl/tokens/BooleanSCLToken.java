@@ -1,4 +1,4 @@
-package bjc.dicelang.scl;
+package bjc.dicelang.scl.tokens;
 
 public class BooleanSCLToken extends SCLToken {
 	/* Used for BLIT */

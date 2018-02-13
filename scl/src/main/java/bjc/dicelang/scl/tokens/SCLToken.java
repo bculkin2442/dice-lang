@@ -1,12 +1,13 @@
-package bjc.dicelang.scl;
+package bjc.dicelang.scl.tokens;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import bjc.dicelang.scl.Errors;
 import bjc.utils.parserutils.TokenUtils;
 
 import static bjc.dicelang.scl.Errors.ErrorKey.*;
-import static bjc.dicelang.scl.SCLToken.Type.*;
+import static bjc.dicelang.scl.tokens.SCLToken.Type.*;
 
 public class SCLToken {
 

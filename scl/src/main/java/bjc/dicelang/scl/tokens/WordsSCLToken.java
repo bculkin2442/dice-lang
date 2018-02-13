@@ -1,4 +1,4 @@
-package bjc.dicelang.scl;
+package bjc.dicelang.scl.tokens;
 
 import bjc.utils.funcdata.IList;
 
