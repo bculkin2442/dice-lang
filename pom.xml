@@ -52,5 +52,6 @@
 	<modules>
 		<module>base</module>
 		<module>dice</module>
-	</modules>
+    <module>scl</module>
+  </modules>
 </project>
