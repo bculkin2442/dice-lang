@@ -85,6 +85,7 @@ public class StreamControlEngine {
 					return false;
 				}
 				break;
+				
 			case OBRACKET:
 				/* Handle delimited brackets. */
 				i = handleDelim(i, tokens, "]");
@@ -92,6 +93,7 @@ public class StreamControlEngine {
 					return false;
 				}
 				break;
+
 			case OBRACE:
 				/* Handle delimited braces. */
 				i = handleDelim(i, tokens, "}");
@@ -108,6 +110,7 @@ public class StreamControlEngine {
 					System.out.printf("WARNING: Execution of word '%s' failed\n", tok);
 				}
 				break;
+
 			default:
 				/* Put it onto the stack. */
 				curStack.push(tok);
