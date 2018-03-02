@@ -5,13 +5,13 @@ public class FloatEvaluatorResult extends EvaluatorResult {
 	 * The float value of the result.
 	 */
 	public double floatVal;
-	
+
 	public FloatEvaluatorResult(double val) {
 		super(Type.FLOAT);
-		
+
 		floatVal = val;
 	}
-	
+
 	@Override
 	public String toString() {
 		return super.toString() + "(" + floatVal + ")";
@@ -29,15 +29,11 @@ public class FloatEvaluatorResult extends EvaluatorResult {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
+		if(this == obj) return true;
+		if(obj == null) return false;
+		if(getClass() != obj.getClass()) return false;
 		FloatEvaluatorResult other = (FloatEvaluatorResult) obj;
-		if (Double.doubleToLongBits(floatVal) != Double.doubleToLongBits(other.floatVal))
-			return false;
+		if(Double.doubleToLongBits(floatVal) != Double.doubleToLongBits(other.floatVal)) return false;
 		return true;
 	}
 }

@@ -25,7 +25,7 @@ public class DiceEvaluatorResult extends EvaluatorResult {
 	public DiceEvaluatorResult(DieList list) {
 		this(new ListDiceExpression(list));
 	}
-	
+
 	public boolean isList() {
 		return diceVal.isList();
 	}

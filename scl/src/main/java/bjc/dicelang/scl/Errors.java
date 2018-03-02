@@ -3,12 +3,15 @@ package bjc.dicelang.scl;
 /**
  * Repository for error messages.
  *
- * @TODO 10/08/17 Ben Culkin :ErrorRefactor
- * 
- *       This way of handling error messages is not easy to deal with. Something
- *       else needs to be done, but I'm not sure what at the moment.
  *
  * @author EVE
+ */
+/*
+ * @TODO 10/08/17 Ben Culkin :ErrorRefactor
+ * 
+ * This way of handling error messages is not easy to deal with. Something else
+ * needs to be done, but I'm not sure what at the moment.
+ *
  *
  */
 public class Errors {
@@ -78,13 +81,13 @@ public class Errors {
 	 * Print an error.
 	 *
 	 * @param key
-	 *            The key of the error.
+	 *        The key of the error.
 	 *
 	 * @param args
-	 *            The arguments for the error.
+	 *        The arguments for the error.
 	 */
 	public void printError(final ErrorKey key, final String... args) {
-		switch (mode) {
+		switch(mode) {
 		case WIZARD:
 			System.out.println("\t? " + key.ordinal());
 			break;
@@ -99,7 +102,7 @@ public class Errors {
 	}
 
 	private static void devError(final ErrorKey key, final String[] args) {
-		switch (key) {
+		switch(key) {
 		case EK_STRM_NONEX:
 			System.out.printf("\tERROR: Attempted to switch to non-existent stream\n");
 			break;
@@ -111,7 +114,7 @@ public class Errors {
 		case EK_STRM_INVCOM:
 			System.out.printf("\tERROR: Unknown stream control command %s\n", args[0]);
 			break;
-			
+
 		case EK_SCL_INVTOKEN:
 			System.out.printf("\tERROR: Unknown SCL token %s\n", args[0]);
 			break;

@@ -1,5 +1,7 @@
 package bjc.dicelang.dice;
 
+import bjc.utils.funcutils.StringUtils;
+
 import java.util.Random;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
@@ -16,20 +18,21 @@ public class DiceBox {
 	 * Parse a die expression from a string.
 	 *
 	 * @param expString
-	 *            The string to parse.
+	 *        The string to parse.
 	 *
 	 * @return The die expression from the string, or null if it wasn't one
 	 */
 	public static DiceExpression parseExpression(final String expString) {
 		try {
 			return doParseExpression(expString);
-		} catch (Exception ex) {
+		} catch(Exception ex) {
 			/*
 			 * @TODO 10/08/17 Ben Culkin :DieErrors
 			 * 
 			 * :ErrorRefactor
 			 * 
-			 * Use different types of exceptions to provide better error messages.
+			 * Use different types of exceptions to provide better
+			 * error messages.
 			 */
 			String exMessage = ex.getMessage();
 
@@ -42,34 +45,27 @@ public class DiceBox {
 
 	private static DiceExpression doParseExpression(final String expString) {
 		/* Only bother with valid expressions. */
-		if (!isValidExpression(expString)) {
+		if(!isValidExpression(expString)) {
 			return null;
 		}
 
-		if (scalarDiePattern.matcher(expString).matches()) {
+		if(scalarDiePattern.matcher(expString).matches()) {
 			/* Parse scalar die. */
-			/*
-			 * @TODO 10/08/17 Ben Culkin :SubstringIndexOf
-			 * 
-			 * This substring/index of call should be abstracted into its own method so as
-			 * to make the code more explanatory and ensure that things like the return code
-			 * of indexOf are correctly checked.
-			 */
-			final String dieString = expString.substring(0, expString.indexOf('s'));
+			final String dieString = StringUtils.substringTo(expString, "s");
 
 			final long lar = Long.parseLong(dieString);
 
 			final Die scal = new ScalarDie(lar);
 
 			return new ScalarDiceExpression(scal);
-		} else if (simpleDiePattern.matcher(expString).matches()) {
+		} else if(simpleDiePattern.matcher(expString).matches()) {
 			/* Parse simple die groups. */
 			final String[] dieParts = expString.split("d");
 
 			final long right = Long.parseLong(dieParts[1]);
 			final long left;
 
-			if (dieParts[0].equals("")) {
+			if(dieParts[0].equals("")) {
 				/* Handle short-form expressions. */
 				left = 1;
 			} else {
@@ -79,33 +75,33 @@ public class DiceBox {
 			final Die scal = new SimpleDie(left, right);
 
 			return new ScalarDiceExpression(scal);
-		} else if (fudgeDiePattern.matcher(expString).matches()) {
+		} else if(fudgeDiePattern.matcher(expString).matches()) {
 			/* Parse fudge dice. */
-			/* :SubstringIndexOf */
-			final String nDice = expString.substring(0, expString.indexOf('d'));
+			final String nDice = StringUtils.substringTo(expString, "d");
 			final Die fudge = new FudgeDie(Long.parseLong(nDice));
 
 			return new ScalarDiceExpression(fudge);
-		} else if (compoundDiePattern.matcher(expString).matches()) {
+		} else if(compoundDiePattern.matcher(expString).matches()) {
 			/* Parse compound die expressions. */
 			final String[] dieParts = expString.split("c");
 
 			/*
 			 * @TODO 10/08/17 :SplitParse
 			 * 
-			 * Should this split string/parse split parts be abstracted into something else
-			 * that handles doing the splitting correctly, as well as making sure that the
+			 * Should this split string/parse split parts be
+			 * abstracted into something else that handles doing the
+			 * splitting correctly, as well as making sure that the
 			 * resulting DieExpressions are of the right type?
 			 */
 			final DiceExpression left = parseExpression(dieParts[0]);
 			final DiceExpression right = parseExpression(dieParts[1]);
 
 			/* :ErrorRefactor */
-			if (left.isList()) {
+			if(left.isList()) {
 				System.out.printf(
 						"ERROR: Expected a scalar dice expression for lhs of compound die, got a list expression instead (%s)\n",
 						left);
-			} else if (right.isList()) {
+			} else if(right.isList()) {
 				System.out.printf(
 						"ERROR: Expected a scalar dice expression for rhs of compound die, got a list expression instead (%s)\n",
 						right);
@@ -117,7 +113,7 @@ public class DiceBox {
 			final Die compound = new CompoundDie(lhs, rhs);
 
 			return new ScalarDiceExpression(compound);
-		} else if (compoundingDiePattern.matcher(expString).matches()) {
+		} else if(compoundingDiePattern.matcher(expString).matches()) {
 			/* Parse compounding die expressions. */
 			final String[] dieParts = expString.split("!!");
 
@@ -129,7 +125,7 @@ public class DiceBox {
 			final Die scal = new CompoundingDie(die, right, dieParts[1]);
 
 			return new ScalarDiceExpression(scal);
-		} else if (explodingDiePattern.matcher(expString).matches()) {
+		} else if(explodingDiePattern.matcher(expString).matches()) {
 			/* Parse exploding die expressions. */
 			final String[] dieParts = expString.split("!");
 
@@ -141,7 +137,7 @@ public class DiceBox {
 			final DieList lst = new ExplodingDice(lhs, right, dieParts[1], false);
 
 			return new ListDiceExpression(lst);
-		} else if (penetratingDiePattern.matcher(expString).matches()) {
+		} else if(penetratingDiePattern.matcher(expString).matches()) {
 			/* Parse penetrating die expressions. */
 			final String[] dieParts = expString.split("p!");
 
@@ -153,7 +149,7 @@ public class DiceBox {
 			final DieList lst = new ExplodingDice(lhs, right, dieParts[1], true);
 
 			return new ListDiceExpression(lst);
-		} else if (diceListPattern.matcher(expString).matches()) {
+		} else if(diceListPattern.matcher(expString).matches()) {
 			/* Parse simple die lists. */
 			final String[] dieParts = expString.split("dl");
 
@@ -177,8 +173,9 @@ public class DiceBox {
 	/*
 	 * @TODO 10/08/17 Ben Culkin :RegexResource
 	 * 
-	 * These regexes and patterns should be moved to something external, probably
-	 * using the SimpleProperties-based system that BJC-Utils2 uses.
+	 * These regexes and patterns should be moved to something external,
+	 * probably using the SimpleProperties-based system that BJC-Utils2
+	 * uses.
 	 */
 	/* Defines a comparison predicate. */
 	private static final String comparePoint = "[<>=]\\d+";
@@ -202,7 +199,8 @@ public class DiceBox {
 	/*
 	 * Defines a fudge die.
 	 *
-	 * This is like a simple die, but all the die give -1, 0, or 1 as results.
+	 * This is like a simple die, but all the die give -1, 0, or 1 as
+	 * results.
 	 */
 	private static final String fudgeDie = "(?:\\d+)?dF";
 	private static final Pattern fudgeDiePattern = Pattern.compile("\\A" + fudgeDie + "\\Z");
@@ -226,7 +224,8 @@ public class DiceBox {
 	/*
 	 * Defines a compounding die.
 	 *
-	 * This is like an exploding die, but is a single die, not a group of them.
+	 * This is like an exploding die, but is a single die, not a group of
+	 * them.
 	 */
 	private static final String compoundingDie = compoundGroup + "!!" + comparePoint;
 	private static final Pattern compoundingDiePattern = Pattern.compile("\\A" + compoundingDie + "\\Z");
@@ -243,7 +242,8 @@ public class DiceBox {
 	/*
 	 * Defines a penetrating die.
 	 *
-	 * This is like an exploding die, but the exploded result gets a -1 penalty.
+	 * This is like an exploding die, but the exploded result gets a -1
+	 * penalty.
 	 */
 	private static final String penetratingDie = compoundGroup + "!" + comparePoint;
 	private static final Pattern penetratingDiePattern = Pattern.compile("\\A" + penetratingDie + "\\Z");
@@ -260,29 +260,30 @@ public class DiceBox {
 	 * Check if a given string is a valid die expression.
 	 *
 	 * @param exp
-	 *            The string to check validity of.
+	 *        The string to check validity of.
 	 *
 	 * @return Whether or not the string is a valid command.
 	 */
 	public static boolean isValidExpression(final String exp) {
 		/*
-		 * @NOTE Should this matcher/matches expression be abstracted in some way?
+		 * @NOTE Should this matcher/matches expression be abstracted in
+		 * some way?
 		 */
-		if (scalarDiePattern.matcher(exp).matches()) {
+		if(scalarDiePattern.matcher(exp).matches()) {
 			return true;
-		} else if (simpleDiePattern.matcher(exp).matches()) {
+		} else if(simpleDiePattern.matcher(exp).matches()) {
 			return true;
-		} else if (fudgeDiePattern.matcher(exp).matches()) {
+		} else if(fudgeDiePattern.matcher(exp).matches()) {
 			return true;
-		} else if (compoundDiePattern.matcher(exp).matches()) {
+		} else if(compoundDiePattern.matcher(exp).matches()) {
 			return true;
-		} else if (compoundingDiePattern.matcher(exp).matches()) {
+		} else if(compoundingDiePattern.matcher(exp).matches()) {
 			return true;
-		} else if (explodingDiePattern.matcher(exp).matches()) {
+		} else if(explodingDiePattern.matcher(exp).matches()) {
 			return true;
-		} else if (penetratingDiePattern.matcher(exp).matches()) {
+		} else if(penetratingDiePattern.matcher(exp).matches()) {
 			return true;
-		} else if (diceListPattern.matcher(exp).matches()) {
+		} else if(diceListPattern.matcher(exp).matches()) {
 			return true;
 		} else {
 			return false;
@@ -294,9 +295,10 @@ public class DiceBox {
 		final long num = Long.parseLong(patt.substring(1));
 
 		/*
-		 * @NOTE Should this be extended in some way, to provide other operators?
+		 * @NOTE Should this be extended in some way, to provide other
+		 * operators?
 		 */
-		switch (patt.charAt(0)) {
+		switch(patt.charAt(0)) {
 		case '<':
 			return (roll) -> (roll < num);
 		case '=':

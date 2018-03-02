@@ -58,14 +58,14 @@ public class Tokens {
 	 * Convert the string representation of a token into a token.
 	 *
 	 * @param tok
-	 *            The string representation of the token.
+	 *        The string representation of the token.
 	 * @param raw
-	 *            The original string the token came from.
+	 *        The original string the token came from.
 	 *
 	 * @return The token the string represents.
 	 */
 	public Token lexToken(final String tok, final String raw) {
-		if (litTokens.containsKey(tok)) {
+		if(litTokens.containsKey(tok)) {
 			/* Return matching literal token. */
 			return new Token(litTokens.get(tok), raw, this);
 		}
@@ -78,7 +78,7 @@ public class Tokens {
 	private Token parseVRef(final String tok, final String raw) {
 		final Token tk = new Token(TokenType.VREF, raw, this);
 
-		if (revSymTab.containsKey(tok)) {
+		if(revSymTab.containsKey(tok)) {
 			/* Reuse the entry if it exists. */
 			tk.intValue = revSymTab.get(tok);
 		} else {

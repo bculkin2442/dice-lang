@@ -25,18 +25,13 @@ public class ScalarDiceExpression implements DiceExpression {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
+		if(this == obj) return true;
+		if(obj == null) return false;
+		if(getClass() != obj.getClass()) return false;
 		ScalarDiceExpression other = (ScalarDiceExpression) obj;
-		if (scalar == null) {
-			if (other.scalar != null)
-				return false;
-		} else if (!scalar.equals(other.scalar))
-			return false;
+		if(scalar == null) {
+			if(other.scalar != null) return false;
+		} else if(!scalar.equals(other.scalar)) return false;
 		return true;
 	}
 

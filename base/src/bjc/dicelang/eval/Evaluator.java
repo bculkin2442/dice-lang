@@ -6,11 +6,8 @@ import java.util.LinkedList;
 import java.util.function.Consumer;
 
 import bjc.dicelang.DiceLangEngine;
-import bjc.dicelang.DiceToken;
 import bjc.dicelang.Errors;
-import bjc.dicelang.FloatToken;
 import bjc.dicelang.Node;
-import bjc.dicelang.Token;
 import bjc.dicelang.dice.CompoundDie;
 import bjc.dicelang.dice.Die;
 import bjc.dicelang.dice.MathDie;
@@ -18,7 +15,9 @@ import bjc.dicelang.dice.ScalarDiceExpression;
 import bjc.dicelang.dice.ScalarDie;
 import bjc.dicelang.dice.SimpleDie;
 import bjc.dicelang.dice.SimpleDieList;
-
+import bjc.dicelang.tokens.DiceToken;
+import bjc.dicelang.tokens.FloatToken;
+import bjc.dicelang.tokens.Token;
 import bjc.utils.data.ITree;
 import bjc.utils.data.SingleIterator;
 import bjc.utils.data.TopDownTransformIterator;
@@ -64,7 +63,7 @@ public class Evaluator {
 	 * Create a new evaluator.
 	 *
 	 * @param en
-	 *            The engine.
+	 *        The engine.
 	 */
 	public Evaluator(final DiceLangEngine en) {
 		eng = en;
@@ -74,7 +73,7 @@ public class Evaluator {
 	 * Evaluate a AST.
 	 *
 	 * @param comm
-	 *            The AST to evaluate.
+	 *        The AST to evaluate.
 	 *
 	 * @return The result of the tree.
 	 */
@@ -84,16 +83,18 @@ public class Evaluator {
 		ctx.isDebug = false;
 		ctx.thunk = itr -> {
 			/*
-			 * Deliberately finish the iterator, but ignore results. It's only for stepwise
-			 * evaluation, but we don't know if stepping the iterator has side effects.
+			 * Deliberately finish the iterator, but ignore results.
+			 * It's only for stepwise evaluation, but we don't know
+			 * if stepping the iterator has side effects.
 			 */
-			while (itr.hasNext()) {
+			while(itr.hasNext()) {
 				itr.next();
 			}
 		};
 
 		/* The result. */
-		final ITree<Node> res = comm.topDownTransform(this::pickEvaluationType, node -> this.evaluateNode(node, ctx));
+		final ITree<Node> res = comm.topDownTransform(this::pickEvaluationType,
+				node -> this.evaluateNode(node, ctx));
 
 		return res.getHead().resultVal;
 	}
@@ -117,9 +118,9 @@ public class Evaluator {
 
 	/* Pick the way to evaluate a node. */
 	private TopDownTransformResult pickEvaluationType(final Node nd) {
-		switch (nd.type) {
+		switch(nd.type) {
 		case UNARYOP:
-			switch (nd.operatorType) {
+			switch(nd.operatorType) {
 			case COERCE:
 				/* Coerce does special things to the tree. */
 				return TopDownTransformResult.RTRANSFORM;
@@ -134,7 +135,7 @@ public class Evaluator {
 
 	/* Evaluate a node. */
 	private ITree<Node> evaluateNode(final ITree<Node> ast, final Context ctx) {
-		switch (ast.getHead().type) {
+		switch(ast.getHead().type) {
 		case UNARYOP:
 			return evaluateUnaryOp(ast, ctx);
 		case BINOP:
@@ -154,23 +155,23 @@ public class Evaluator {
 	/* Evaluate a unary operator. */
 	private ITree<Node> evaluateUnaryOp(final ITree<Node> ast, final Context ctx) {
 		/* Unary operators only take one operand. */
-		if (ast.getChildrenCount() != 1) {
+		if(ast.getChildrenCount() != 1) {
 			Errors.inst.printError(EK_EVAL_UNUNARY, Integer.toString(ast.getChildrenCount()));
 			return new Tree<>(Node.FAIL(ast));
 		}
 
-		switch (ast.getHead().operatorType) {
+		switch(ast.getHead().operatorType) {
 		/*
 		 * @TODO 10/09/17 Ben Culkin :CoerceRefactor
 		 * 
 		 * :EvaluatorSplit
 		 * 
-		 * Coercing should be moved to its own class, or at the very least its own
-		 * method. When the evaluator splits, this node type'll be handled exclusively
-		 * by the type-checker.
+		 * Coercing should be moved to its own class, or at the very
+		 * least its own method. When the evaluator splits, this node
+		 * type'll be handled exclusively by the type-checker.
 		 *
-		 * Coerce also needs to be able to coerce things to dice and ratios (whenever
-		 * they get added).
+		 * Coerce also needs to be able to coerce things to dice and
+		 * ratios (whenever they get added).
 		 */
 		case COERCE:
 			final ITree<Node> toCoerce = ast.getChild(0);
@@ -180,16 +181,16 @@ public class Evaluator {
 			/* The current type we are coercing to. */
 			CoerceSteps curLevel = CoerceSteps.INTEGER;
 
-			for (int i = 0; i < toCoerce.getChildrenCount(); i++) {
+			for(int i = 0; i < toCoerce.getChildrenCount(); i++) {
 				final ITree<Node> child = toCoerce.getChild(i);
 				ITree<Node> nChild = null;
 
 				/* Tell our thunk we processed a node. */
-				if (ctx.isDebug) {
+				if(ctx.isDebug) {
 					/* Evaluate each step of the child. */
 					final Iterator<ITree<Node>> nd = stepDebug(child);
 
-					for (; nd.hasNext(); nChild = nd.next()) {
+					for(; nd.hasNext(); nChild = nd.next()) {
 						ctx.thunk.accept(new SingleIterator<>(child));
 					}
 				} else {
@@ -199,7 +200,7 @@ public class Evaluator {
 					ctx.thunk.accept(new SingleIterator<>(nChild));
 				}
 
-				if (nChild == null) {
+				if(nChild == null) {
 					Errors.inst.printError(EK_EVAL_INVNODE);
 					return new Tree<>(Node.FAIL(ast));
 				}
@@ -208,21 +209,23 @@ public class Evaluator {
 				final EvaluatorResult res = childNode.resultVal;
 
 				/* Move up to coercing to a float. */
-				if (res.type == FLOAT) {
+				if(res.type == FLOAT) {
 					curLevel = CoerceSteps.DOUBLE;
 				}
 
 				children.add(nChild);
 			}
 
-			for (final ITree<Node> child : children) {
+			for(final ITree<Node> child : children) {
 				final Node nd = child.getHead();
 				final EvaluatorResult res = nd.resultVal;
 
-				switch (res.type) {
+				switch(res.type) {
 				case INT:
-					/* Coerce ints to doubles if we need to. */
-					if (curLevel == CoerceSteps.DOUBLE) {
+					/*
+					 * Coerce ints to doubles if we need to.
+					 */
+					if(curLevel == CoerceSteps.DOUBLE) {
 						nd.resultVal = new FloatEvaluatorResult((double) res.intVal);
 					}
 				default:
@@ -237,7 +240,7 @@ public class Evaluator {
 		case DICESCALAR:
 			final EvaluatorResult opr = ast.getChild(0).getHead().resultVal;
 
-			if (opr.type != INT) {
+			if(opr.type != INT) {
 				Errors.inst.printError(EK_EVAL_INVDCREATE, opr.type.toString());
 			}
 
@@ -246,7 +249,7 @@ public class Evaluator {
 		case DICEFUDGE:
 			final EvaluatorResult oprn = ast.getChild(0).getHead().resultVal;
 
-			if (oprn.type != INT) {
+			if(oprn.type != INT) {
 				Errors.inst.printError(EK_EVAL_INVDCREATE, oprn.type.toString());
 			}
 
@@ -263,8 +266,9 @@ public class Evaluator {
 		final Token.Type binOp = ast.getHead().operatorType;
 
 		/* Binary operators always have two children. */
-		if (ast.getChildrenCount() != 2) {
-			Errors.inst.printError(EK_EVAL_INVBIN, Integer.toString(ast.getChildrenCount()), ast.toString());
+		if(ast.getChildrenCount() != 2) {
+			Errors.inst.printError(EK_EVAL_INVBIN, Integer.toString(ast.getChildrenCount()),
+					ast.toString());
 
 			return new Tree<>(Node.FAIL(ast));
 		}
@@ -275,7 +279,7 @@ public class Evaluator {
 		final EvaluatorResult leftRes = left.getHead().resultVal;
 		final EvaluatorResult rightRes = right.getHead().resultVal;
 
-		switch (binOp) {
+		switch(binOp) {
 		case ADD:
 		case SUBTRACT:
 		case MULTIPLY:
@@ -298,16 +302,16 @@ public class Evaluator {
 	/* Evaluate a binary operator on strings. */
 	private static ITree<Node> evaluateStringBinary(final Token.Type op, final EvaluatorResult left,
 			final EvaluatorResult right, final Context ctx) {
-		if (left.type != STRING) {
+		if(left.type != STRING) {
 			Errors.inst.printError(EK_EVAL_INVSTRING, left.type.toString());
 			return new Tree<>(Node.FAIL(left));
 		}
 
 		final String strang = ((StringEvaluatorResult) left).stringVal;
 
-		switch (op) {
+		switch(op) {
 		case STRCAT:
-			if (right.type != STRING) {
+			if(right.type != STRING) {
 				Errors.inst.printError(EK_EVAL_UNSTRING, right.type.toString());
 				return new Tree<>(Node.FAIL(right));
 			}
@@ -317,7 +321,7 @@ public class Evaluator {
 
 			return new Tree<>(new Node(Node.Type.RESULT, cres));
 		case STRREP:
-			if (right.type != INT) {
+			if(right.type != INT) {
 				Errors.inst.printError(EK_EVAL_INVSTRING, right.type.toString());
 				return new Tree<>(Node.FAIL(right));
 			}
@@ -325,7 +329,7 @@ public class Evaluator {
 			String res = strang;
 			final long count = right.intVal;
 
-			for (long i = 1; i < count; i++) {
+			for(long i = 1; i < count; i++) {
 				res += strang;
 			}
 
@@ -341,7 +345,7 @@ public class Evaluator {
 			final EvaluatorResult right, final Context ctx) {
 		EvaluatorResult res = null;
 
-		switch (op) {
+		switch(op) {
 		/*
 		 * @TODO 10/09/17 Ben Culkin :DiceSimplify
 		 * 
@@ -350,27 +354,27 @@ public class Evaluator {
 		 * ADDENDA: Replace the .diceVal.isList() with .isList()
 		 */
 		case DICEGROUP:
-			if (left.type == DICE && !((DiceEvaluatorResult) left).diceVal.isList()) {
+			if(left.type == DICE && !((DiceEvaluatorResult) left).diceVal.isList()) {
 				Die lhs = ((ScalarDiceExpression) ((DiceEvaluatorResult) left).diceVal).scalar;
 
-				if (right.type == DICE && !((DiceEvaluatorResult) right).diceVal.isList()) {
+				if(right.type == DICE && !((DiceEvaluatorResult) right).diceVal.isList()) {
 					Die rhs = ((ScalarDiceExpression) ((DiceEvaluatorResult) right).diceVal).scalar;
 
 					Die simple = new SimpleDie(lhs, rhs);
 
 					res = new DiceEvaluatorResult(simple);
-				} else if (right.type == INT) {
+				} else if(right.type == INT) {
 					res = new DiceEvaluatorResult(new SimpleDie(lhs, right.intVal));
 				} else {
 					Errors.inst.printError(EK_EVAL_INVDGROUP, right.type.toString());
 					return new Tree<>(Node.FAIL(right));
 				}
-			} else if (left.type == INT) {
-				if (right.type == DICE && !((DiceEvaluatorResult) right).diceVal.isList()) {
+			} else if(left.type == INT) {
+				if(right.type == DICE && !((DiceEvaluatorResult) right).diceVal.isList()) {
 					Die rhs = ((ScalarDiceExpression) ((DiceEvaluatorResult) right).diceVal).scalar;
 
 					res = new DiceEvaluatorResult(new SimpleDie(left.intVal, rhs));
-				} else if (right.type == INT) {
+				} else if(right.type == INT) {
 					res = new DiceEvaluatorResult(new SimpleDie(left.intVal, right.intVal));
 				} else {
 					Errors.inst.printError(EK_EVAL_INVDGROUP, right.type.toString());
@@ -382,10 +386,10 @@ public class Evaluator {
 			}
 
 		case DICECONCAT:
-			if (left.type != DICE || ((DiceEvaluatorResult) left).diceVal.isList()) {
+			if(left.type != DICE || ((DiceEvaluatorResult) left).diceVal.isList()) {
 				Errors.inst.printError(EK_EVAL_INVDICE, left.type.toString());
 				return new Tree<>(Node.FAIL(left));
-			} else if (right.type != DICE || ((DiceEvaluatorResult) right).diceVal.isList()) {
+			} else if(right.type != DICE || ((DiceEvaluatorResult) right).diceVal.isList()) {
 				Errors.inst.printError(EK_EVAL_INVDICE, right.type.toString());
 				return new Tree<>(Node.FAIL(right));
 			} else {
@@ -398,10 +402,10 @@ public class Evaluator {
 			break;
 
 		case DICELIST:
-			if (left.type != DICE || ((DiceEvaluatorResult) left).diceVal.isList()) {
+			if(left.type != DICE || ((DiceEvaluatorResult) left).diceVal.isList()) {
 				Errors.inst.printError(EK_EVAL_INVDICE, left.type.toString());
 				return new Tree<>(Node.FAIL(left));
-			} else if (right.type != DICE || ((DiceEvaluatorResult) right).diceVal.isList()) {
+			} else if(right.type != DICE || ((DiceEvaluatorResult) right).diceVal.isList()) {
 				Errors.inst.printError(EK_EVAL_INVDICE, right.type.toString());
 				return new Tree<>(Node.FAIL(right));
 			} else {
@@ -424,42 +428,42 @@ public class Evaluator {
 	/* Evaluate a binary math operator. */
 	private static ITree<Node> evaluateMathBinary(final Token.Type op, final EvaluatorResult left,
 			final EvaluatorResult right, final Context ctx) {
-		if (left.type == STRING || right.type == STRING) {
+		if(left.type == STRING || right.type == STRING) {
 			Errors.inst.printError(EK_EVAL_STRINGMATH);
 			return new Tree<>(Node.FAIL());
-		} else if (left.type == FAILURE || right.type == FAILURE) {
+		} else if(left.type == FAILURE || right.type == FAILURE) {
 			return new Tree<>(Node.FAIL());
-		} else if (left.type == INT && right.type != INT) {
+		} else if(left.type == INT && right.type != INT) {
 			Errors.inst.printError(EK_EVAL_MISMATH);
 			return new Tree<>(Node.FAIL(right));
-		} else if (left.type == FLOAT && right.type != FLOAT) {
+		} else if(left.type == FLOAT && right.type != FLOAT) {
 			Errors.inst.printError(EK_EVAL_MISMATH);
 			return new Tree<>(Node.FAIL(right));
-		} else if (left.type == DICE && right.type != DICE) {
+		} else if(left.type == DICE && right.type != DICE) {
 			Errors.inst.printError(EK_EVAL_MISMATH);
 			return new Tree<>(Node.FAIL(right));
-		} else if (right.type == INT && left.type != INT) {
+		} else if(right.type == INT && left.type != INT) {
 			Errors.inst.printError(EK_EVAL_MISMATH);
 			return new Tree<>(Node.FAIL(left));
-		} else if (right.type == FLOAT && left.type != FLOAT) {
+		} else if(right.type == FLOAT && left.type != FLOAT) {
 			Errors.inst.printError(EK_EVAL_MISMATH);
 			return new Tree<>(Node.FAIL(left));
-		} else if (right.type == DICE && left.type != DICE) {
+		} else if(right.type == DICE && left.type != DICE) {
 			Errors.inst.printError(EK_EVAL_MISMATH);
 			return new Tree<>(Node.FAIL(left));
 		}
 
 		EvaluatorResult res = null;
 
-		switch (op) {
+		switch(op) {
 		case ADD:
-			if (left.type == INT) {
+			if(left.type == INT) {
 				res = new EvaluatorResult(INT, left.intVal + right.intVal);
-			} else if (left.type == DICE) {
-				if (((DiceEvaluatorResult) left).diceVal.isList()) {
+			} else if(left.type == DICE) {
+				if(((DiceEvaluatorResult) left).diceVal.isList()) {
 					Errors.inst.printError(EK_EVAL_INVDICE, left.toString());
 					return new Tree<>(Node.FAIL(left));
-				} else if (((DiceEvaluatorResult) right).diceVal.isList()) {
+				} else if(((DiceEvaluatorResult) right).diceVal.isList()) {
 					Errors.inst.printError(EK_EVAL_INVDICE, right.toString());
 					return new Tree<>(Node.FAIL(right));
 				}
@@ -469,20 +473,20 @@ public class Evaluator {
 
 				res = new DiceEvaluatorResult(new MathDie(MathDie.MathOp.ADD, lhs, rhs));
 			} else {
-				res = new FloatEvaluatorResult(
-						((FloatEvaluatorResult) left).floatVal + ((FloatEvaluatorResult) right).floatVal);
+				res = new FloatEvaluatorResult(((FloatEvaluatorResult) left).floatVal
+						+ ((FloatEvaluatorResult) right).floatVal);
 			}
 
 			break;
 
 		case SUBTRACT:
-			if (left.type == INT) {
+			if(left.type == INT) {
 				res = new EvaluatorResult(INT, left.intVal - right.intVal);
-			} else if (left.type == DICE) {
-				if (((DiceEvaluatorResult) left).diceVal.isList()) {
+			} else if(left.type == DICE) {
+				if(((DiceEvaluatorResult) left).diceVal.isList()) {
 					Errors.inst.printError(EK_EVAL_INVDICE, left.toString());
 					return new Tree<>(Node.FAIL(left));
-				} else if (((DiceEvaluatorResult) right).diceVal.isList()) {
+				} else if(((DiceEvaluatorResult) right).diceVal.isList()) {
 					Errors.inst.printError(EK_EVAL_INVDICE, right.toString());
 					return new Tree<>(Node.FAIL(right));
 				}
@@ -492,20 +496,20 @@ public class Evaluator {
 
 				res = new DiceEvaluatorResult(new MathDie(MathDie.MathOp.SUBTRACT, lhs, rhs));
 			} else {
-				res = new FloatEvaluatorResult(
-						((FloatEvaluatorResult) left).floatVal - ((FloatEvaluatorResult) right).floatVal);
+				res = new FloatEvaluatorResult(((FloatEvaluatorResult) left).floatVal
+						- ((FloatEvaluatorResult) right).floatVal);
 			}
 
 			break;
 
 		case MULTIPLY:
-			if (left.type == INT) {
+			if(left.type == INT) {
 				res = new EvaluatorResult(INT, left.intVal * right.intVal);
-			} else if (left.type == DICE) {
-				if (((DiceEvaluatorResult) left).diceVal.isList()) {
+			} else if(left.type == DICE) {
+				if(((DiceEvaluatorResult) left).diceVal.isList()) {
 					Errors.inst.printError(EK_EVAL_INVDICE, left.toString());
 					return new Tree<>(Node.FAIL(left));
-				} else if (((DiceEvaluatorResult) right).diceVal.isList()) {
+				} else if(((DiceEvaluatorResult) right).diceVal.isList()) {
 					Errors.inst.printError(EK_EVAL_INVDICE, right.toString());
 					return new Tree<>(Node.FAIL(right));
 				}
@@ -515,27 +519,27 @@ public class Evaluator {
 
 				res = new DiceEvaluatorResult(new MathDie(MathDie.MathOp.MULTIPLY, lhs, rhs));
 			} else {
-				res = new FloatEvaluatorResult(
-						((FloatEvaluatorResult) left).floatVal * ((FloatEvaluatorResult) right).floatVal);
+				res = new FloatEvaluatorResult(((FloatEvaluatorResult) left).floatVal
+						* ((FloatEvaluatorResult) right).floatVal);
 			}
 
 			break;
 
 		case DIVIDE:
-			if (left.type == INT) {
-				if (right.intVal == 0) {
+			if(left.type == INT) {
+				if(right.intVal == 0) {
 					Errors.inst.printError(EK_EVAL_DIVZERO);
 					res = new FailureEvaluatorResult(right);
 				} else {
 					res = new EvaluatorResult(FLOAT, left.intVal / right.intVal);
 				}
-			} else if (left.type == FLOAT) {
-				if (((FloatEvaluatorResult) right).floatVal == 0) {
+			} else if(left.type == FLOAT) {
+				if(((FloatEvaluatorResult) right).floatVal == 0) {
 					Errors.inst.printError(EK_EVAL_DIVZERO);
 					res = new FailureEvaluatorResult(right);
 				} else {
-					res = new FloatEvaluatorResult(
-							((FloatEvaluatorResult) left).floatVal / ((FloatEvaluatorResult) right).floatVal);
+					res = new FloatEvaluatorResult(((FloatEvaluatorResult) left).floatVal
+							/ ((FloatEvaluatorResult) right).floatVal);
 				}
 			} else {
 				Errors.inst.printError(EK_EVAL_DIVDICE);
@@ -545,20 +549,20 @@ public class Evaluator {
 			break;
 
 		case IDIVIDE:
-			if (left.type == INT) {
-				if (right.intVal == 0) {
+			if(left.type == INT) {
+				if(right.intVal == 0) {
 					Errors.inst.printError(EK_EVAL_DIVZERO);
 					res = new FailureEvaluatorResult(right);
 				} else {
 					res = new EvaluatorResult(INT, (int) (left.intVal / right.intVal));
 				}
-			} else if (left.type == FLOAT) {
-				if (((FloatEvaluatorResult) right).floatVal == 0) {
+			} else if(left.type == FLOAT) {
+				if(((FloatEvaluatorResult) right).floatVal == 0) {
 					Errors.inst.printError(EK_EVAL_DIVZERO);
 					res = new FailureEvaluatorResult(right);
 				} else {
-					res = new EvaluatorResult(INT,
-							(int) (((FloatEvaluatorResult) left).floatVal / ((FloatEvaluatorResult) right).floatVal));
+					res = new EvaluatorResult(INT, (int) (((FloatEvaluatorResult) left).floatVal
+							/ ((FloatEvaluatorResult) right).floatVal));
 				}
 			} else {
 				Errors.inst.printError(EK_EVAL_DIVDICE);
@@ -579,7 +583,7 @@ public class Evaluator {
 	private ITree<Node> evaluateTokenRef(final Token tk, final Context ctx) {
 		EvaluatorResult res = null;
 
-		switch (tk.type) {
+		switch(tk.type) {
 		case INT_LIT:
 			res = new EvaluatorResult(INT, tk.intValue);
 			break;

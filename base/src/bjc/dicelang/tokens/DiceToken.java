@@ -1,4 +1,4 @@
-package bjc.dicelang;
+package bjc.dicelang.tokens;
 
 import bjc.dicelang.dice.DiceExpression;
 
@@ -26,18 +26,13 @@ public class DiceToken extends Token {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (!super.equals(obj))
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
+		if(this == obj) return true;
+		if(!super.equals(obj)) return false;
+		if(getClass() != obj.getClass()) return false;
 		DiceToken other = (DiceToken) obj;
-		if (diceValue == null) {
-			if (other.diceValue != null)
-				return false;
-		} else if (!diceValue.equals(other.diceValue))
-			return false;
+		if(diceValue == null) {
+			if(other.diceValue != null) return false;
+		} else if(!diceValue.equals(other.diceValue)) return false;
 		return true;
 	}
 }

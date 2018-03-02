@@ -5,10 +5,13 @@ package bjc.dicelang.dice;
  *
  * @author EVE
  *
+ */
+
+/*
  * @TODO 10/08/17 Ben Culkin :DieListGeneralize
  * 
- *       DieList in general should be changed to be able to be constructed from
- *       an arbitrary die using rollSingle and things like that.
+ * DieList in general should be changed to be able to be constructed from an
+ * arbitrary die using rollSingle and things like that.
  */
 public class SimpleDieList implements DieList {
 	/* The number of dice to roll. */
@@ -24,10 +27,10 @@ public class SimpleDieList implements DieList {
 	 * Create a new list of dice.
 	 *
 	 * @param nDice
-	 *            The number of dice in the list.
+	 *        The number of dice in the list.
 	 *
 	 * @param sze
-	 *            The size of dice in the list.
+	 *        The size of dice in the list.
 	 */
 	public SimpleDieList(final Die nDice, final Die sze) {
 		numDice = nDice;
@@ -36,7 +39,7 @@ public class SimpleDieList implements DieList {
 
 	@Override
 	public boolean canOptimize() {
-		if (size.canOptimize() && size.optimize() <= 1) {
+		if(size.canOptimize() && size.optimize() <= 1) {
 			return numDice.canOptimize();
 		}
 
@@ -50,7 +53,7 @@ public class SimpleDieList implements DieList {
 
 		final long[] ret = new long[sze];
 
-		for (int i = 0; i < sze; i++) {
+		for(int i = 0; i < sze; i++) {
 			ret[i] = res;
 		}
 
@@ -63,7 +66,7 @@ public class SimpleDieList implements DieList {
 
 		final long[] ret = new long[num];
 
-		for (int i = 0; i < num; i++) {
+		for(int i = 0; i < num; i++) {
 			ret[i] = size.roll();
 		}
 
@@ -86,23 +89,16 @@ public class SimpleDieList implements DieList {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
+		if(this == obj) return true;
+		if(obj == null) return false;
+		if(getClass() != obj.getClass()) return false;
 		SimpleDieList other = (SimpleDieList) obj;
-		if (numDice == null) {
-			if (other.numDice != null)
-				return false;
-		} else if (!numDice.equals(other.numDice))
-			return false;
-		if (size == null) {
-			if (other.size != null)
-				return false;
-		} else if (!size.equals(other.size))
-			return false;
+		if(numDice == null) {
+			if(other.numDice != null) return false;
+		} else if(!numDice.equals(other.numDice)) return false;
+		if(size == null) {
+			if(other.size != null) return false;
+		} else if(!size.equals(other.size)) return false;
 		return true;
 	}
 }

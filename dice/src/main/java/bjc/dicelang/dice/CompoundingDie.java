@@ -23,9 +23,9 @@ public class CompoundingDie implements Die {
 	 * Create a new compounding die with no pattern.
 	 *
 	 * @param src
-	 *            The die to compound from
+	 *        The die to compound from
 	 * @param compound
-	 *            The conditions to compound on
+	 *        The conditions to compound on
 	 */
 	public CompoundingDie(final Die src, final Predicate<Long> compound) {
 		this(src, compound, null);
@@ -35,11 +35,11 @@ public class CompoundingDie implements Die {
 	 * Create a new compounding die with a specified pattern.
 	 *
 	 * @param src
-	 *            The die to compound from
+	 *        The die to compound from
 	 * @param compound
-	 *            The conditions to compound on
+	 *        The conditions to compound on
 	 * @param patt
-	 *            The string pattern the condition came from, for printing
+	 *        The string pattern the condition came from, for printing
 	 */
 	public CompoundingDie(final Die src, final Predicate<Long> compound, final String patt) {
 		source = src;
@@ -50,7 +50,7 @@ public class CompoundingDie implements Die {
 
 	@Override
 	public boolean canOptimize() {
-		if (source.canOptimize()) {
+		if(source.canOptimize()) {
 			/* We can only be optimized for a result of zero. */
 			return source.optimize() == 0;
 		}
@@ -71,7 +71,7 @@ public class CompoundingDie implements Die {
 		/* The last result. */
 		long oldRes = res;
 
-		while (compoundOn.test(oldRes)) {
+		while(compoundOn.test(oldRes)) {
 			/* Compound while the result should be compounded. */
 			oldRes = source.rollSingle();
 
@@ -89,7 +89,7 @@ public class CompoundingDie implements Die {
 		/* The last result. */
 		long oldRes = res;
 
-		while (compoundOn.test(oldRes)) {
+		while(compoundOn.test(oldRes)) {
 			/* Compound while the result should be compounded. */
 			oldRes = source.rollSingle();
 
@@ -105,7 +105,7 @@ public class CompoundingDie implements Die {
 		String sourceString = source.toString();
 
 		/* Can't print a parseable version. */
-		if (compoundPattern == null) {
+		if(compoundPattern == null) {
 			return String.format("%s!!<complex-pattern>", sourceString);
 		}
 
@@ -123,23 +123,16 @@ public class CompoundingDie implements Die {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
+		if(this == obj) return true;
+		if(obj == null) return false;
+		if(getClass() != obj.getClass()) return false;
 		CompoundingDie other = (CompoundingDie) obj;
-		if (compoundPattern == null) {
-			if (other.compoundPattern != null)
-				return false;
-		} else if (!compoundPattern.equals(other.compoundPattern))
-			return false;
-		if (source == null) {
-			if (other.source != null)
-				return false;
-		} else if (!source.equals(other.source))
-			return false;
+		if(compoundPattern == null) {
+			if(other.compoundPattern != null) return false;
+		} else if(!compoundPattern.equals(other.compoundPattern)) return false;
+		if(source == null) {
+			if(other.source != null) return false;
+		} else if(!source.equals(other.source)) return false;
 		return true;
 	}
 }

@@ -57,7 +57,7 @@ public class EvaluatorResult {
 	 * Create a new result.
 	 *
 	 * @param typ
-	 *            The type of the result.
+	 *        The type of the result.
 	 */
 	protected EvaluatorResult(final EvaluatorResult.Type typ) {
 		type = typ;

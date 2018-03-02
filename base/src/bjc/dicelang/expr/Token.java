@@ -33,13 +33,13 @@ public class Token {
 	 * Create a new token.
 	 *
 	 * @param type
-	 *            The type of this token.
+	 *        The type of this token.
 	 *
 	 * @param raw
-	 *            The string this token came from.
+	 *        The string this token came from.
 	 *
 	 * @param toks
-	 *            The state for this token
+	 *        The state for this token
 	 */
 	public Token(final TokenType type, final String raw, final Tokens toks) {
 		this.typ = type;
@@ -53,7 +53,7 @@ public class Token {
 		String typeStr = typ.toString();
 		typeStr = String.format("%s (%s)", typeStr, typ.name());
 
-		if (typ == TokenType.VREF) {
+		if(typ == TokenType.VREF) {
 			typeStr += " (ind. " + intValue;
 			typeStr += ", sym. \"" + tks.symbolTable.get(intValue) + "\")";
 		}
@@ -67,7 +67,7 @@ public class Token {
 	 * @return The string representation of it.
 	 */
 	public String toExpr() {
-		switch (typ) {
+		switch(typ) {
 		case ADD:
 			return "+";
 		case SUBTRACT:

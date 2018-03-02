@@ -8,9 +8,11 @@ package bjc.dicelang.dice;
  */
 public class MathDie implements Die {
 	/*
-	 * @TODO 10/08/17 Ben Culkin :MathGeneralize Why do we have the operator types
-	 * hardcoded, instead of just having a general thing for applying a binary
-	 * operator to dice? Fix this by changing it to the more general form.
+	 * @TODO 10/08/17 Ben Culkin :MathGeneralize
+	 * 
+	 * Why do we have the operator types hardcoded, instead of just having a
+	 * general thing for applying a binary operator to dice? Fix this by
+	 * changing it to the more general form.
 	 */
 	/**
 	 * The types of a math operator.
@@ -28,7 +30,7 @@ public class MathDie implements Die {
 
 		@Override
 		public String toString() {
-			switch (this) {
+			switch(this) {
 			case ADD:
 				return "+";
 
@@ -53,13 +55,13 @@ public class MathDie implements Die {
 	 * Create a new math die.
 	 *
 	 * @param op
-	 *            The operator to apply.
+	 *        The operator to apply.
 	 *
 	 * @param lft
-	 *            The left operand.
+	 *        The left operand.
 	 *
 	 * @param rght
-	 *            The right operand.
+	 *        The right operand.
 	 */
 	public MathDie(final MathDie.MathOp op, final Die lft, final Die rght) {
 		type = op;
@@ -74,7 +76,7 @@ public class MathDie implements Die {
 	}
 
 	private long performOp(final long lft, final long rght) {
-		switch (type) {
+		switch(type) {
 		case ADD:
 			return lft + rght;
 
@@ -130,25 +132,17 @@ public class MathDie implements Die {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
+		if(this == obj) return true;
+		if(obj == null) return false;
+		if(getClass() != obj.getClass()) return false;
 		MathDie other = (MathDie) obj;
-		if (left == null) {
-			if (other.left != null)
-				return false;
-		} else if (!left.equals(other.left))
-			return false;
-		if (right == null) {
-			if (other.right != null)
-				return false;
-		} else if (!right.equals(other.right))
-			return false;
-		if (type != other.type)
-			return false;
+		if(left == null) {
+			if(other.left != null) return false;
+		} else if(!left.equals(other.left)) return false;
+		if(right == null) {
+			if(other.right != null) return false;
+		} else if(!right.equals(other.right)) return false;
+		if(type != other.type) return false;
 		return true;
 	}
 }

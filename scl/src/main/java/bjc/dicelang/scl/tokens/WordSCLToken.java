@@ -42,15 +42,11 @@ public class WordSCLToken extends SCLToken {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (!super.equals(obj))
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
+		if(this == obj) return true;
+		if(!super.equals(obj)) return false;
+		if(getClass() != obj.getClass()) return false;
 		WordSCLToken other = (WordSCLToken) obj;
-		if (wordVal != other.wordVal)
-			return false;
+		if(wordVal != other.wordVal) return false;
 		return true;
 	}
 

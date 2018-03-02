@@ -16,8 +16,8 @@ public interface Die {
 	/**
 	 * Optimize this die to a single number.
 	 *
-	 * Calling optimize on dice that return false for canOptimize produces undefined
-	 * behavior
+	 * Calling optimize on dice that return false for canOptimize produces
+	 * undefined behavior
 	 *
 	 * @return The optimized form of this die
 	 */

@@ -9,14 +9,14 @@ public class FailureEvaluatorResult extends EvaluatorResult {
 	 * Original node data
 	 */
 	public ITree<Node> origVal;
-	
+
 	public FailureEvaluatorResult() {
 		super(Type.FAILURE);
 	}
-	
+
 	public FailureEvaluatorResult(final ITree<Node> orig) {
 		super(Type.FAILURE);
-		
+
 		origVal = orig;
 	}
 
@@ -38,18 +38,13 @@ public class FailureEvaluatorResult extends EvaluatorResult {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
+		if(this == obj) return true;
+		if(obj == null) return false;
+		if(getClass() != obj.getClass()) return false;
 		FailureEvaluatorResult other = (FailureEvaluatorResult) obj;
-		if (origVal == null) {
-			if (other.origVal != null)
-				return false;
-		} else if (!origVal.equals(other.origVal))
-			return false;
+		if(origVal == null) {
+			if(other.origVal != null) return false;
+		} else if(!origVal.equals(other.origVal)) return false;
 		return true;
 	}
 }

@@ -14,7 +14,7 @@ public class ScalarDie implements Die {
 	 * Create a new scalar die with a set value.
 	 *
 	 * @param vl
-	 *            The value to use.
+	 *        The value to use.
 	 */
 	public ScalarDie(final long vl) {
 		val = vl;
@@ -55,15 +55,11 @@ public class ScalarDie implements Die {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
+		if(this == obj) return true;
+		if(obj == null) return false;
+		if(getClass() != obj.getClass()) return false;
 		ScalarDie other = (ScalarDie) obj;
-		if (val != other.val)
-			return false;
+		if(val != other.val) return false;
 		return true;
 	}
 }

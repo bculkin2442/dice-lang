@@ -21,7 +21,7 @@ public class StreamControlConsole {
 	 * Main method
 	 *
 	 * @param args
-	 *            Unused CLI args.
+	 *        Unused CLI args.
 	 */
 	public static void main(String[] args) {
 		/*
@@ -36,10 +36,10 @@ public class StreamControlConsole {
 		System.out.print("Enter a SCL command string (blank to exit): ");
 
 		/* Process it. */
-		while (scn.hasNextLine()) {
+		while(scn.hasNextLine()) {
 			String ln = scn.nextLine().trim();
 
-			if (ln.equals("")) {
+			if(ln.equals("")) {
 				/* Ignore empty lines. */
 				break;
 			}
@@ -50,7 +50,7 @@ public class StreamControlConsole {
 
 			/* Run the stream engine on the tokens. */
 			boolean succ = sengine.doStreams(tokens, res);
-			if (!succ) {
+			if(!succ) {
 				System.out.printf("ERROR: Stream engine failed for line '%s'\n", ln);
 				continue;
 			}
@@ -58,7 +58,7 @@ public class StreamControlConsole {
 			/* Run the command through SCL. */
 			tokens = res.toArray(new String[res.getSize()]);
 			succ = sclengine.runProgram(tokens);
-			if (!succ) {
+			if(!succ) {
 				System.out.printf("ERROR: SCL engine failed for line '%s'\n", ln);
 				continue;
 			}

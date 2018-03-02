@@ -8,10 +8,10 @@ public class StringEvaluatorResult extends EvaluatorResult {
 
 	public StringEvaluatorResult(String strang) {
 		super(Type.STRING);
-		
+
 		stringVal = strang;
 	}
-	
+
 	@Override
 	public String toString() {
 		return super.toString() + "(" + stringVal + ")";
@@ -27,18 +27,13 @@ public class StringEvaluatorResult extends EvaluatorResult {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
+		if(this == obj) return true;
+		if(obj == null) return false;
+		if(getClass() != obj.getClass()) return false;
 		StringEvaluatorResult other = (StringEvaluatorResult) obj;
-		if (stringVal == null) {
-			if (other.stringVal != null)
-				return false;
-		} else if (!stringVal.equals(other.stringVal))
-			return false;
+		if(stringVal == null) {
+			if(other.stringVal != null) return false;
+		} else if(!stringVal.equals(other.stringVal)) return false;
 		return true;
 	}
 }

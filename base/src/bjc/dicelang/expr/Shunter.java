@@ -16,7 +16,7 @@ public class Shunter {
 	 * Convert a infix series of tokens to a postfix series of tokens.
 	 *
 	 * @param infixTokens
-	 *            The tokens in infix order.
+	 *        The tokens in infix order.
 	 *
 	 * @return The tokens in postfix order.
 	 */
@@ -28,20 +28,22 @@ public class Shunter {
 		final Deque<Token> opStack = new LinkedList<>();
 
 		/* Shunt each token. */
-		for (final Token tok : infixTokens) {
+		for(final Token tok : infixTokens) {
 			/* Handle operators. */
-			if (tok.typ.isOperator) {
+			if(tok.typ.isOperator) {
 				Token curOp = opStack.peek();
 
 				/*
-				 * Check if an operator is higher priority, respecting their left associativity.
+				 * Check if an operator is higher priority,
+				 * respecting their left associativity.
 				 *
-				 * @NOTE Should this be factored out into a method?
+				 * @NOTE Should this be factored out into a
+				 * method?
 				 */
 				int leftPriority = tok.typ.operatorPriority;
 				int rightPriority;
 
-				if (curOp == null) {
+				if(curOp == null) {
 					rightPriority = 0;
 				} else {
 					rightPriority = curOp.typ.operatorPriority;
@@ -50,14 +52,15 @@ public class Shunter {
 				boolean isHigherPrec = leftPriority >= rightPriority;
 
 				/*
-				 * Pop all operators that are lower precedence than us.
+				 * Pop all operators that are lower precedence
+				 * than us.
 				 */
-				while (!opStack.isEmpty() && isHigherPrec) {
+				while(!opStack.isEmpty() && isHigherPrec) {
 					postfixTokens.add(opStack.pop());
 					curOp = opStack.peek();
 
 					leftPriority = tok.typ.operatorPriority;
-					if (curOp == null) {
+					if(curOp == null) {
 						rightPriority = 0;
 					} else {
 						rightPriority = curOp.typ.operatorPriority;
@@ -67,21 +70,22 @@ public class Shunter {
 				}
 
 				opStack.push(tok);
-			} else if (tok.typ == TokenType.OPAREN) {
+			} else if(tok.typ == TokenType.OPAREN) {
 				opStack.push(tok);
-			} else if (tok.typ == TokenType.CPAREN) {
+			} else if(tok.typ == TokenType.CPAREN) {
 				Token curOp = opStack.peek();
 
 				/*
-				 * Pop things until we find the matching parenthesis.
+				 * Pop things until we find the matching
+				 * parenthesis.
 				 */
-				while (curOp.typ != TokenType.OPAREN) {
+				while(curOp.typ != TokenType.OPAREN) {
 					final Token tk = opStack.pop();
 					postfixTokens.add(tk);
 					curOp = opStack.peek();
 				}
 
-				if (!opStack.isEmpty()) {
+				if(!opStack.isEmpty()) {
 					opStack.pop();
 				}
 			} else {
@@ -92,7 +96,7 @@ public class Shunter {
 		/*
 		 * Flush remaining operators.
 		 */
-		while (!opStack.isEmpty()) {
+		while(!opStack.isEmpty()) {
 			postfixTokens.add(opStack.pop());
 		}
 

@@ -14,9 +14,9 @@ public class CompoundDie implements Die {
 	 * Create a new compound die.
 	 *
 	 * @param lft
-	 *            The left die
+	 *        The left die
 	 * @param rght
-	 *            The right die
+	 *        The right die
 	 */
 	public CompoundDie(final Die lft, final Die rght) {
 		left = lft;
@@ -69,23 +69,16 @@ public class CompoundDie implements Die {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
+		if(this == obj) return true;
+		if(obj == null) return false;
+		if(getClass() != obj.getClass()) return false;
 		CompoundDie other = (CompoundDie) obj;
-		if (left == null) {
-			if (other.left != null)
-				return false;
-		} else if (!left.equals(other.left))
-			return false;
-		if (right == null) {
-			if (other.right != null)
-				return false;
-		} else if (!right.equals(other.right))
-			return false;
+		if(left == null) {
+			if(other.left != null) return false;
+		} else if(!left.equals(other.left)) return false;
+		if(right == null) {
+			if(other.right != null) return false;
+		} else if(!right.equals(other.right)) return false;
 		return true;
 	}
 }

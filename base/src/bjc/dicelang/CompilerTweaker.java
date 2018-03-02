@@ -21,7 +21,7 @@ public class CompilerTweaker {
 	 * Create a new compiler tweaker.
 	 *
 	 * @param engine
-	 *            The engine to tweak.
+	 *        The engine to tweak.
 	 */
 	public CompilerTweaker(final DiceLangEngine engine) {
 		eng = engine;
@@ -33,7 +33,7 @@ public class CompilerTweaker {
 	 * Add a string literal to the compiler's internal banks.
 	 *
 	 * @param val
-	 *            The string literal to add.
+	 *        The string literal to add.
 	 *
 	 * @return The key into the string literal table for this string.
 	 */
@@ -48,7 +48,7 @@ public class CompilerTweaker {
 	 * Add a line defn to the compiler.
 	 *
 	 * @param dfn
-	 *            The defn to add.
+	 *        The defn to add.
 	 */
 	public void addLineDefine(final Define dfn) {
 		eng.addLineDefine(dfn);
@@ -58,7 +58,7 @@ public class CompilerTweaker {
 	 * Add a token defn to the compiler.
 	 *
 	 * @param dfn
-	 *            The defn to add.
+	 *        The defn to add.
 	 */
 	public void addTokenDefine(final Define dfn) {
 		eng.addTokenDefine(dfn);
@@ -68,7 +68,7 @@ public class CompilerTweaker {
 	 * Adds delimiters that are expanded from tokens.
 	 *
 	 * @param delims
-	 *            The delimiters to expand on.
+	 *        The delimiters to expand on.
 	 */
 	public void addDelimiter(final String... delims) {
 		opExpander.addSimpleDelimiters(delims);
@@ -78,7 +78,7 @@ public class CompilerTweaker {
 	 * Adds multi-character delimiters that are expanded from tokens.
 	 *
 	 * @param delims
-	 *            The multi-character delimiters to expand on.
+	 *        The multi-character delimiters to expand on.
 	 */
 	public void addMultiDelimiter(final String... delims) {
 		opExpander.addMultiDelimiters(delims);
@@ -95,7 +95,7 @@ public class CompilerTweaker {
 	 * Change the max no. of times defines are allowed to recur.
 	 *
 	 * @param times
-	 *            The number of times to allow defines to recur.
+	 *        The number of times to allow defines to recur.
 	 */
 	public static void setDefineRecurLimit(final int times) {
 		Define.MAX_RECURS = times;

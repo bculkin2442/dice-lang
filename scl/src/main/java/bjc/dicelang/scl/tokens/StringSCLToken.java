@@ -5,7 +5,7 @@ public class StringSCLToken extends SCLToken {
 	public String stringVal;
 
 	protected StringSCLToken(boolean isSymbol, String val) {
-		if (isSymbol) {
+		if(isSymbol) {
 			type = Type.SYMBOL;
 		} else {
 			type = Type.SLIT;
@@ -24,18 +24,13 @@ public class StringSCLToken extends SCLToken {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (!super.equals(obj))
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
+		if(this == obj) return true;
+		if(!super.equals(obj)) return false;
+		if(getClass() != obj.getClass()) return false;
 		StringSCLToken other = (StringSCLToken) obj;
-		if (stringVal == null) {
-			if (other.stringVal != null)
-				return false;
-		} else if (!stringVal.equals(other.stringVal))
-			return false;
+		if(stringVal == null) {
+			if(other.stringVal != null) return false;
+		} else if(!stringVal.equals(other.stringVal)) return false;
 		return true;
 	}
 

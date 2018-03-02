@@ -14,8 +14,8 @@ public class SimpleDie implements Die {
 	 *
 	 * Rolled once per role, not once for each dice rolled.
 	 *
-	 * @NOTE Would having some way to roll it once for each dice rolled be useful in
-	 * any sort of case?
+	 * @NOTE Would having some way to roll it once for each dice rolled be
+	 * useful in any sort of case?
 	 */
 	private final Die diceSize;
 
@@ -23,10 +23,10 @@ public class SimpleDie implements Die {
 	 * Create a new dice group.
 	 *
 	 * @param nDice
-	 *            The number of dice.
+	 *        The number of dice.
 	 *
 	 * @param size
-	 *            The size of the dice.
+	 *        The size of the dice.
 	 */
 	public SimpleDie(final long nDice, final long size) {
 		this(new ScalarDie(nDice), new ScalarDie(size));
@@ -36,10 +36,10 @@ public class SimpleDie implements Die {
 	 * Create a new dice group.
 	 *
 	 * @param nDice
-	 *            The number of dice.
+	 *        The number of dice.
 	 *
 	 * @param size
-	 *            The size of the dice.
+	 *        The size of the dice.
 	 */
 	public SimpleDie(final Die nDice, final long size) {
 		this(nDice, new ScalarDie(size));
@@ -49,10 +49,10 @@ public class SimpleDie implements Die {
 	 * Create a new dice group.
 	 *
 	 * @param nDice
-	 *            The number of dice.
+	 *        The number of dice.
 	 *
 	 * @param size
-	 *            The size of the dice.
+	 *        The size of the dice.
 	 */
 	public SimpleDie(final long nDice, final Die size) {
 		this(new ScalarDie(nDice), size);
@@ -62,10 +62,10 @@ public class SimpleDie implements Die {
 	 * Create a new dice group.
 	 *
 	 * @param nDice
-	 *            The number of dice.
+	 *        The number of dice.
 	 *
 	 * @param size
-	 *            The size of the dice.
+	 *        The size of the dice.
 	 */
 	public SimpleDie(final Die nDice, final Die size) {
 		numDice = nDice;
@@ -74,7 +74,7 @@ public class SimpleDie implements Die {
 
 	@Override
 	public boolean canOptimize() {
-		if (diceSize.canOptimize() && diceSize.optimize() <= 1) {
+		if(diceSize.canOptimize() && diceSize.optimize() <= 1) {
 			return numDice.canOptimize();
 		}
 
@@ -85,7 +85,7 @@ public class SimpleDie implements Die {
 	public long optimize() {
 		final long optSize = diceSize.optimize();
 
-		if (optSize == 0) {
+		if(optSize == 0) {
 			return 0;
 		}
 
@@ -99,7 +99,7 @@ public class SimpleDie implements Die {
 		final long nDice = numDice.roll();
 		final long dSize = diceSize.roll();
 
-		for (int i = 0; i < nDice; i++) {
+		for(int i = 0; i < nDice; i++) {
 			total += Math.abs(DiceBox.rng.nextLong()) % dSize + 1;
 		}
 
@@ -127,23 +127,16 @@ public class SimpleDie implements Die {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
+		if(this == obj) return true;
+		if(obj == null) return false;
+		if(getClass() != obj.getClass()) return false;
 		SimpleDie other = (SimpleDie) obj;
-		if (diceSize == null) {
-			if (other.diceSize != null)
-				return false;
-		} else if (!diceSize.equals(other.diceSize))
-			return false;
-		if (numDice == null) {
-			if (other.numDice != null)
-				return false;
-		} else if (!numDice.equals(other.numDice))
-			return false;
+		if(diceSize == null) {
+			if(other.diceSize != null) return false;
+		} else if(!diceSize.equals(other.diceSize)) return false;
+		if(numDice == null) {
+			if(other.numDice != null) return false;
+		} else if(!numDice.equals(other.numDice)) return false;
 		return true;
 	}
 }

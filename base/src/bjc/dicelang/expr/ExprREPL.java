@@ -17,7 +17,7 @@ public class ExprREPL {
 	 * Main method.
 	 *
 	 * @param args
-	 *            Unused CLI args.
+	 *        Unused CLI args.
 	 */
 	public static void main(final String[] args) {
 		/* Create our objects. */
@@ -32,7 +32,7 @@ public class ExprREPL {
 		String ln = scan.nextLine().trim();
 
 		/* Enter REPL loop. */
-		while (!ln.equals("")) {
+		while(!ln.equals("")) {
 			/* Print raw command. */
 			System.out.println("Raw command: " + ln);
 			System.out.println();
@@ -40,13 +40,13 @@ public class ExprREPL {
 			/* Lex command to infix tokens. */
 			final Token[] infixTokens = lex.lexString(ln, toks);
 			System.out.println("Lexed tokens: ");
-			for (final Token tok : infixTokens) {
+			for(final Token tok : infixTokens) {
 				System.out.println("\t" + tok);
 			}
 
 			/* Print out infix expression. */
 			System.out.print("Lexed expression: ");
-			for (final Token tok : infixTokens) {
+			for(final Token tok : infixTokens) {
 				System.out.print(tok.toExpr() + " ");
 			}
 
@@ -57,13 +57,13 @@ public class ExprREPL {
 			/* Shunt infix tokens to postfix tokens. */
 			final IList<Token> postfixTokens = Shunter.shuntTokens(infixTokens);
 			System.out.println("Lexed tokens: ");
-			for (final Token tok : postfixTokens) {
+			for(final Token tok : postfixTokens) {
 				System.out.println("\t" + tok);
 			}
 
 			/* Print out postfix tokens. */
 			System.out.print("Shunted expression: ");
-			for (final Token tok : postfixTokens) {
+			for(final Token tok : postfixTokens) {
 				System.out.print(tok.toExpr() + " ");
 			}
 
@@ -71,10 +71,15 @@ public class ExprREPL {
 			System.out.println();
 			System.out.println();
 
-			/* Construct a tree from the list of postfixed tokens. */
-			final ITree<Token> ast = TreeConstructor.constructTree(postfixTokens, tok -> tok.typ.isOperator);
+			/*
+			 * Construct a tree from the list of postfixed tokens.
+			 */
+			final ITree<Token> ast = TreeConstructor.constructTree(postfixTokens,
+					tok -> tok.typ.isOperator);
 
-			/* Print the tree, then the canonical expression for it. */
+			/*
+			 * Print the tree, then the canonical expression for it.
+			 */
 			System.out.println("Parsed tree");
 			System.out.println(ast.toString());
 			System.out.println("\nCanonical expr: " + Parser.toCanonicalExpr(ast));

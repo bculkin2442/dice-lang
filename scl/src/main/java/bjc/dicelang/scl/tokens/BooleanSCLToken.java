@@ -20,15 +20,11 @@ public class BooleanSCLToken extends SCLToken {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (!super.equals(obj))
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
+		if(this == obj) return true;
+		if(!super.equals(obj)) return false;
+		if(getClass() != obj.getClass()) return false;
 		BooleanSCLToken other = (BooleanSCLToken) obj;
-		if (boolVal != other.boolVal)
-			return false;
+		if(boolVal != other.boolVal) return false;
 		return true;
 	}
 

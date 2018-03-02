@@ -14,7 +14,7 @@ public class FudgeDie implements Die {
 	 * Create a new fudge die.
 	 *
 	 * @param nDice
-	 *            The number of dice to roll.
+	 *        The number of dice to roll.
 	 */
 	public FudgeDie(final long nDice) {
 		numDice = new ScalarDie(nDice);
@@ -24,7 +24,7 @@ public class FudgeDie implements Die {
 	 * Create a new fudge die.
 	 *
 	 * @param nDice
-	 *            The number of dice to roll.
+	 *        The number of dice to roll.
 	 */
 	public FudgeDie(final Die nDice) {
 		numDice = nDice;
@@ -46,7 +46,7 @@ public class FudgeDie implements Die {
 
 		final long nDice = numDice.roll();
 
-		for (int i = 0; i < nDice; i++) {
+		for(int i = 0; i < nDice; i++) {
 			res += rollSingle();
 		}
 
@@ -75,18 +75,13 @@ public class FudgeDie implements Die {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
+		if(this == obj) return true;
+		if(obj == null) return false;
+		if(getClass() != obj.getClass()) return false;
 		FudgeDie other = (FudgeDie) obj;
-		if (numDice == null) {
-			if (other.numDice != null)
-				return false;
-		} else if (!numDice.equals(other.numDice))
-			return false;
+		if(numDice == null) {
+			if(other.numDice != null) return false;
+		} else if(!numDice.equals(other.numDice)) return false;
 		return true;
 	}
 }

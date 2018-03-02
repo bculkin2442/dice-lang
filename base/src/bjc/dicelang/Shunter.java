@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
 
+import bjc.dicelang.tokens.Token;
 import bjc.utils.funcdata.FunctionalList;
 import bjc.utils.funcdata.FunctionalMap;
 import bjc.utils.funcdata.IList;
@@ -15,7 +16,7 @@ import static bjc.dicelang.Errors.ErrorKey.EK_SHUNT_NOGROUP;
 import static bjc.dicelang.Errors.ErrorKey.EK_SHUNT_NOTADJ;
 import static bjc.dicelang.Errors.ErrorKey.EK_SHUNT_NOTADV;
 import static bjc.dicelang.Errors.ErrorKey.EK_SHUNT_NOTASSOC;
-import static bjc.dicelang.Token.Type.*;
+import static bjc.dicelang.tokens.Token.Type.*;
 
 /**
  * Shunt a set of infix tokens to postfix tokens.
@@ -34,8 +35,8 @@ public class Shunter {
 	Set<Token.Type> notAssoc;
 
 	/*
-	 * Unary operators that can only be applied to non-operator tokens and yield
-	 * operator tokens.
+	 * Unary operators that can only be applied to non-operator tokens and
+	 * yield operator tokens.
 	 */
 	Set<Token.Type> unaryAdjectives;
 
@@ -46,8 +47,8 @@ public class Shunter {
 	Set<Token.Type> unaryAdverbs;
 
 	/*
-	 * Unary operators that can only be applied to operator tokens and yield data
-	 * tokens
+	 * Unary operators that can only be applied to operator tokens and yield
+	 * data tokens
 	 */
 	Set<Token.Type> unaryGerunds;
 
@@ -108,10 +109,10 @@ public class Shunter {
 	 * Shunt a set of tokens from infix to postfix.
 	 *
 	 * @param tks
-	 *            The tokens to input.
+	 *        The tokens to input.
 	 *
 	 * @param returned
-	 *            The postfix tokens.
+	 *        The postfix tokens.
 	 *
 	 * @return Whether or not the shunt succeeded.
 	 */
@@ -126,32 +127,32 @@ public class Shunter {
 		/* Tokens to feed ahead of the current one. */
 		final Deque<Token> feed = new LinkedList<>();
 
-		for (final Token tk : tks.toIterable()) {
+		for(final Token tk : tks.toIterable()) {
 			boolean succ;
 
 			/* Drain the feed queue. */
-			while (feed.size() != 0) {
+			while(feed.size() != 0) {
 				succ = shuntToken(feed.poll(), opStack, unaryOps, currReturned, feed);
 
-				if (!succ) {
+				if(!succ) {
 					return false;
 				}
 			}
 
 			succ = shuntToken(tk, opStack, unaryOps, currReturned, feed);
 
-			if (!succ) {
+			if(!succ) {
 				return false;
 			}
 		}
 
 		/* Flush leftover operators. */
-		while (!opStack.isEmpty()) {
+		while(!opStack.isEmpty()) {
 			currReturned.addLast(opStack.pop());
 		}
 
 		/* Add the tokens to the returned list. */
-		for (final Token tk : currReturned) {
+		for(final Token tk : currReturned) {
 			returned.add(tk);
 		}
 
@@ -162,8 +163,8 @@ public class Shunter {
 	private boolean shuntToken(final Token tk, final Deque<Token> opStack, final Deque<Token> unaryStack,
 			final Deque<Token> currReturned, final Deque<Token> feed) {
 		/* Handle unary operators. */
-		if (unaryStack.size() != 0) {
-			if (isUnary(tk)) {
+		if(unaryStack.size() != 0) {
+			if(isUnary(tk)) {
 				unaryStack.add(tk);
 				return true;
 			}
@@ -172,18 +173,19 @@ public class Shunter {
 
 			final Token.Type unaryType = unaryOp.type;
 
-			if (unaryAdjectives.contains(unaryType)) {
+			if(unaryAdjectives.contains(unaryType)) {
 				/*
-				 * Handle unary adjectives that take a non-operator.
+				 * Handle unary adjectives that take a
+				 * non-operator.
 				 */
-				if (isOp(tk)) {
+				if(isOp(tk)) {
 					Errors.inst.printError(EK_SHUNT_NOTADV, unaryOp.toString(), tk.toString());
 					return false;
 				}
 
 				final Token newTok = new Token(TAGOPR);
 
-				if (tk.type == TAGOP) {
+				if(tk.type == TAGOP) {
 					newTok.tokenValues = tk.tokenValues;
 				} else {
 					newTok.tokenValues = new FunctionalList<>(tk);
@@ -193,16 +195,18 @@ public class Shunter {
 				opStack.push(newTok);
 
 				return true;
-			} else if (unaryAdverbs.contains(unaryType)) {
-				/* Handle unary adverbs that take an operator. */
-				if (!isOp(tk)) {
+			} else if(unaryAdverbs.contains(unaryType)) {
+				/*
+				 * Handle unary adverbs that take an operator.
+				 */
+				if(!isOp(tk)) {
 					Errors.inst.printError(EK_SHUNT_NOTADJ, unaryOp.toString(), tk.toString());
 					return false;
 				}
 
 				final Token newTok = new Token(TAGOPR);
 
-				if (tk.type == TAGOP) {
+				if(tk.type == TAGOP) {
 					newTok.tokenValues = tk.tokenValues;
 				} else {
 					newTok.tokenValues = new FunctionalList<>(tk);
@@ -215,15 +219,15 @@ public class Shunter {
 			}
 		}
 
-		if (isUnary(tk)) {
+		if(isUnary(tk)) {
 			unaryStack.add(tk);
 			return true;
-		} else if (isOp(tk)) {
+		} else if(isOp(tk)) {
 			/* Drain higher precedence operators. */
-			while (!opStack.isEmpty() && isHigherPrec(tk, opStack.peek())) {
+			while(!opStack.isEmpty() && isHigherPrec(tk, opStack.peek())) {
 				final Token newOp = opStack.pop();
 
-				if (tk.type == newOp.type && notAssoc.contains(tk.type)) {
+				if(tk.type == newOp.type && notAssoc.contains(tk.type)) {
 					Errors.inst.printError(EK_SHUNT_NOTASSOC, tk.type.toString());
 				}
 
@@ -231,17 +235,17 @@ public class Shunter {
 			}
 
 			opStack.push(tk);
-		} else if (tk.type == OPAREN || tk.type == OBRACE) {
+		} else if(tk.type == OPAREN || tk.type == OBRACE) {
 			opStack.push(tk);
 
-			if (tk.type == OBRACE) {
+			if(tk.type == OBRACE) {
 				currReturned.addLast(tk);
 			}
-		} else if (tk.type == CPAREN || tk.type == CBRACE) {
+		} else if(tk.type == CPAREN || tk.type == CBRACE) {
 			/* Handle closing delimiter. */
 			Token matching = null;
 
-			switch (tk.type) {
+			switch(tk.type) {
 			case CPAREN:
 				matching = new Token(OPAREN, tk.intValue);
 				break;
@@ -253,33 +257,33 @@ public class Shunter {
 				return false;
 			}
 
-			if (!opStack.contains(matching)) {
+			if(!opStack.contains(matching)) {
 				Errors.inst.printError(EK_SHUNT_NOGROUP, tk.toString(), matching.toString());
 				return false;
 			}
 
-			while (!opStack.peek().equals(matching)) {
+			while(!opStack.peek().equals(matching)) {
 				currReturned.addLast(opStack.pop());
 			}
 
-			if (tk.type == CBRACE) {
+			if(tk.type == CBRACE) {
 				currReturned.addLast(tk);
 			}
 
 			opStack.pop();
-		} else if (tk.type == GROUPSEP) {
+		} else if(tk.type == GROUPSEP) {
 			/* Add a grouped token. */
 			final IList<Token> group = new FunctionalList<>();
 
-			while (currReturned.size() != 0 && !currReturned.peek().isGrouper()) {
+			while(currReturned.size() != 0 && !currReturned.peek().isGrouper()) {
 				group.add(currReturned.pop());
 			}
 
-			while (opStack.size() != 0 && !opStack.peek().isGrouper()) {
+			while(opStack.size() != 0 && !opStack.peek().isGrouper()) {
 				group.add(opStack.pop());
 			}
 
-			if (currReturned.size() == 0) {
+			if(currReturned.size() == 0) {
 				Errors.inst.printError(EK_SHUNT_INVSEP);
 				return false;
 			}
@@ -299,31 +303,31 @@ public class Shunter {
 
 		boolean exists = ops.containsKey(right);
 
-		if (rght.type == TAGOPR) {
+		if(rght.type == TAGOPR) {
 			exists = true;
 		}
 
 		/* If it doesn't, the left is higher precedence. */
-		if (!exists) {
+		if(!exists) {
 			return false;
 		}
 
 		int rightPrecedence;
 		int leftPrecedence;
 
-		if (rght.type == TAGOPR) {
+		if(rght.type == TAGOPR) {
 			rightPrecedence = (int) rght.intValue;
 		} else {
 			rightPrecedence = ops.get(right);
 		}
 
-		if (lft.type == TAGOPR) {
+		if(lft.type == TAGOPR) {
 			leftPrecedence = (int) lft.intValue;
 		} else {
 			leftPrecedence = ops.get(left);
 		}
 
-		if (rightAssoc.contains(left)) {
+		if(rightAssoc.contains(left)) {
 			return rightPrecedence > leftPrecedence;
 		}
 
@@ -334,23 +338,23 @@ public class Shunter {
 	private boolean isOp(final Token tk) {
 		final Token.Type ty = tk.type;
 
-		if (ops.containsKey(ty)) {
+		if(ops.containsKey(ty)) {
 			return true;
 		}
 
-		if (unaryAdjectives.contains(ty)) {
+		if(unaryAdjectives.contains(ty)) {
 			return true;
 		}
 
-		if (unaryAdverbs.contains(ty)) {
+		if(unaryAdverbs.contains(ty)) {
 			return true;
 		}
 
-		if (unaryGerunds.contains(ty)) {
+		if(unaryGerunds.contains(ty)) {
 			return true;
 		}
 
-		if (ty == TAGOPR) {
+		if(ty == TAGOPR) {
 			return true;
 		}
 
@@ -361,15 +365,15 @@ public class Shunter {
 	private boolean isUnary(final Token tk) {
 		final Token.Type ty = tk.type;
 
-		if (unaryAdjectives.contains(ty)) {
+		if(unaryAdjectives.contains(ty)) {
 			return true;
 		}
 
-		if (unaryAdverbs.contains(ty)) {
+		if(unaryAdverbs.contains(ty)) {
 			return true;
 		}
 
-		if (unaryGerunds.contains(ty)) {
+		if(unaryGerunds.contains(ty)) {
 			return true;
 		}
 

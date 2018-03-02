@@ -22,19 +22,19 @@ public class SCLToken {
 	public SCLToken.Type type;
 
 	public static SCLToken tokenizeString(final String token) {
-		if (litTokens.containsKey(token)) {
+		if(litTokens.containsKey(token)) {
 			return new IntSCLToken(litTokens.get(token));
-		} else if (token.startsWith("\\")) {
+		} else if(token.startsWith("\\")) {
 			return new SymbolSCLToken(token.substring(1));
-		} else if (WordSCLToken.isBuiltinWord(token)) {
+		} else if(WordSCLToken.isBuiltinWord(token)) {
 			return new WordSCLToken(token);
-		} else if (token.equals("true")) {
+		} else if(token.equals("true")) {
 			return new BooleanSCLToken(true);
-		} else if (token.equals("false")) {
+		} else if(token.equals("false")) {
 			return new BooleanSCLToken(false);
-		} else if (TokenUtils.isInt(token)) {
+		} else if(TokenUtils.isInt(token)) {
 			return new IntSCLToken(Long.parseLong(token));
-		} else if (TokenUtils.isDouble(token)) {
+		} else if(TokenUtils.isDouble(token)) {
 			return new FloatSCLToken(Double.parseDouble(token));
 		} else {
 			Errors.inst.printError(EK_SCL_INVTOKEN, token);
@@ -72,15 +72,11 @@ public class SCLToken {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
+		if(this == obj) return true;
+		if(obj == null) return false;
+		if(getClass() != obj.getClass()) return false;
 		SCLToken other = (SCLToken) obj;
-		if (type != other.type)
-			return false;
+		if(type != other.type) return false;
 		return true;
 	}
 

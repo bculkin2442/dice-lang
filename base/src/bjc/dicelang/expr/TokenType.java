@@ -10,8 +10,8 @@ public enum TokenType {
 	 * @NOTE
 	 * 
 	 * Do we want to switch to auto-numbering the tokens? They were manually
-	 * numbered because this was an assignment for PoPL and that was what Dr. Naz
-	 * wanted.
+	 * numbered because this was an assignment for PoPL and that was what
+	 * Dr. Naz wanted.
 	 */
 
 	/** Represents + */

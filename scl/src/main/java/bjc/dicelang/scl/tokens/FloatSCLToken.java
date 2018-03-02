@@ -22,15 +22,11 @@ public class FloatSCLToken extends SCLToken {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (!super.equals(obj))
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
+		if(this == obj) return true;
+		if(!super.equals(obj)) return false;
+		if(getClass() != obj.getClass()) return false;
 		FloatSCLToken other = (FloatSCLToken) obj;
-		if (Double.doubleToLongBits(floatVal) != Double.doubleToLongBits(other.floatVal))
-			return false;
+		if(Double.doubleToLongBits(floatVal) != Double.doubleToLongBits(other.floatVal)) return false;
 		return true;
 	}
 

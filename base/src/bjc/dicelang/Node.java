@@ -2,6 +2,7 @@ package bjc.dicelang;
 
 import bjc.dicelang.eval.EvaluatorResult;
 import bjc.dicelang.eval.FailureEvaluatorResult;
+import bjc.dicelang.tokens.Token;
 import bjc.utils.data.ITree;
 
 /*
@@ -62,7 +63,7 @@ public class Node {
 
 	@Override
 	public String toString() {
-		switch (type) {
+		switch(type) {
 		case UNARYOP:
 		case BINOP:
 			return "(" + type.name() + " : " + operatorType + ")";
@@ -84,17 +85,17 @@ public class Node {
 
 	@Override
 	public boolean equals(final Object other) {
-		if (!(other instanceof Node)) {
+		if(!(other instanceof Node)) {
 			return false;
 		}
 
 		final Node otk = (Node) other;
 
-		if (otk.type != type) {
+		if(otk.type != type) {
 			return false;
 		}
 
-		switch (type) {
+		switch(type) {
 		case OGROUP:
 			return tokenVal.equals(otk.tokenVal);
 

@@ -63,25 +63,25 @@ public class Define implements UnaryOperator<String>, Comparable<Define> {
 	 * Create a new define.
 	 *
 	 * @param priorty
-	 *            The priority of the define.
+	 *        The priority of the define.
 	 *
 	 * @param isSub
-	 *            Whether or not this is a 'sub-define'
+	 *        Whether or not this is a 'sub-define'
 	 *
 	 * @param recur
-	 *            Whether this define is recursive or not.
+	 *        Whether this define is recursive or not.
 	 *
 	 * @param isCircular
-	 *            Whether this define is circular or not.
+	 *        Whether this define is circular or not.
 	 *
 	 * @param predicte
-	 *            The string to use as a predicate.
+	 *        The string to use as a predicate.
 	 *
 	 * @param searchr
-	 *            The string to use as a search.
+	 *        The string to use as a search.
 	 *
 	 * @param replacrs
-	 *            The source for replacement strings.
+	 *        The source for replacement strings.
 	 */
 	public Define(final int priorty, final boolean isSub, final boolean recur, final boolean isCircular,
 			final String predicte, final String searchr, final Iterable<String> replacrs) {
@@ -90,10 +90,10 @@ public class Define implements UnaryOperator<String>, Comparable<Define> {
 		subType = isSub;
 
 		/* Only try to compile non-null predicates */
-		if (predicte != null) {
+		if(predicte != null) {
 			try {
 				predicate = Pattern.compile(predicte);
-			} catch (final PatternSyntaxException psex) {
+			} catch(final PatternSyntaxException psex) {
 				Errors.inst.printError(EK_DFN_PREDSYN, psex.getMessage());
 				inError = true;
 				return;
@@ -103,7 +103,7 @@ public class Define implements UnaryOperator<String>, Comparable<Define> {
 		/* Compile the search pattern */
 		try {
 			searcher = Pattern.compile(searchr);
-		} catch (final PatternSyntaxException psex) {
+		} catch(final PatternSyntaxException psex) {
 			Errors.inst.printError(EK_DFN_SRCSYN, psex.getMessage());
 			inError = true;
 			return;
@@ -112,8 +112,8 @@ public class Define implements UnaryOperator<String>, Comparable<Define> {
 		inError = false;
 
 		/* Check whether or not we do sub-replacements */
-		if (subType) {
-			if (replacrs.iterator().hasNext()) {
+		if(subType) {
+			if(replacrs.iterator().hasNext()) {
 				replacers = new CircularIterator<>(replacrs, isCircular);
 			} else {
 				replacers = null;
@@ -121,7 +121,7 @@ public class Define implements UnaryOperator<String>, Comparable<Define> {
 		} else {
 			final Iterator<String> itr = replacrs.iterator();
 
-			if (itr.hasNext()) {
+			if(itr.hasNext()) {
 				replacer = itr.next();
 			} else {
 				replacer = "";
@@ -131,22 +131,22 @@ public class Define implements UnaryOperator<String>, Comparable<Define> {
 
 	@Override
 	public String apply(final String tok) {
-		if (inError) {
+		if(inError) {
 			return tok;
 		}
 
-		if (predicate != null) {
-			if (!predicate.matcher(tok).matches()) {
+		if(predicate != null) {
+			if(!predicate.matcher(tok).matches()) {
 				return tok;
 			}
 		}
 
 		String strang = doPass(tok);
 
-		if (doRecur) {
+		if(doRecur) {
 			int recurCount = 0;
 
-			if (strang.equals(tok)) {
+			if(strang.equals(tok)) {
 				return strang;
 			}
 
@@ -155,9 +155,9 @@ public class Define implements UnaryOperator<String>, Comparable<Define> {
 			do {
 				strang = doPass(tok);
 				recurCount += 1;
-			} while (!strang.equals(oldStrang) && recurCount < MAX_RECURS);
+			} while(!strang.equals(oldStrang) && recurCount < MAX_RECURS);
 
-			if (recurCount >= MAX_RECURS) {
+			if(recurCount >= MAX_RECURS) {
 				Errors.inst.printError(EK_DFN_RECUR, Integer.toString(MAX_RECURS), tok, strang);
 				return strang;
 			}
@@ -170,11 +170,11 @@ public class Define implements UnaryOperator<String>, Comparable<Define> {
 	private String doPass(final String tok) {
 		final Matcher searcherMatcher = searcher.matcher(tok);
 
-		if (subType) {
+		if(subType) {
 			final StringBuffer sb = new StringBuffer();
 
-			while (searcherMatcher.find()) {
-				if (replacers == null) {
+			while(searcherMatcher.find()) {
+				if(replacers == null) {
 					searcherMatcher.appendReplacement(sb, "");
 				} else {
 					final String replac = replacers.next();

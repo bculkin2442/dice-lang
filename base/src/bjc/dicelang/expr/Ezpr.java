@@ -42,7 +42,7 @@ public class Ezpr {
 
 		@Override
 		public String toString() {
-			if (typ == TOKEN) {
+			if(typ == TOKEN) {
 				return tok.toString();
 			}
 			return ezp.toString();
@@ -65,26 +65,28 @@ public class Ezpr {
 		HashMultiset<EzprNode> newPositive = HashMultiset.create();
 		HashMultiset<EzprNode> newNegative = HashMultiset.create();
 
-		for (EzprNode nd : positive) {
+		for(EzprNode nd : positive) {
 			/* Flatten enclosed ezprs of the same type. */
-			if (nd.typ == EZPR && (nd.ezp.typ == typ)) {
+			if(nd.typ == EZPR && (nd.ezp.typ == typ)) {
 				/* Recursively flatten kids. */
 				Ezpr kid = nd.ezp.flatten();
 
-				if (typ == SUM) {
-					/* Add sum parts to corresponding bags. */
-					for (EzprNode knd : kid.positive) {
+				if(typ == SUM) {
+					/*
+					 * Add sum parts to corresponding bags.
+					 */
+					for(EzprNode knd : kid.positive) {
 						newPositive.add(knd);
 					}
-					for (EzprNode knd : kid.negative) {
+					for(EzprNode knd : kid.negative) {
 						newNegative.add(knd);
 					}
 				} else {
 					/* @TODO ensure that this is correct. */
-					for (EzprNode knd : kid.positive) {
+					for(EzprNode knd : kid.positive) {
 						newPositive.add(knd);
 					}
-					for (EzprNode knd : kid.negative) {
+					for(EzprNode knd : kid.negative) {
 						newNegative.add(knd);
 					}
 				}
@@ -93,25 +95,25 @@ public class Ezpr {
 			}
 		}
 
-		for (EzprNode nd : negative) {
+		for(EzprNode nd : negative) {
 			/* Flatten enclosed ezprs of the same type. */
-			if (nd.typ == EZPR && (nd.ezp.typ == typ)) {
+			if(nd.typ == EZPR && (nd.ezp.typ == typ)) {
 				/* Recursively flatten kids. */
 				Ezpr kid = nd.ezp.flatten();
 
 				/* @TODO ensure that this is correct. */
-				if (typ == SUM) {
-					for (EzprNode knd : kid.positive) {
+				if(typ == SUM) {
+					for(EzprNode knd : kid.positive) {
 						newNegative.add(knd);
 					}
-					for (EzprNode knd : kid.negative) {
+					for(EzprNode knd : kid.negative) {
 						newPositive.add(knd);
 					}
 				} else {
-					for (EzprNode knd : kid.positive) {
+					for(EzprNode knd : kid.positive) {
 						newNegative.add(knd);
 					}
-					for (EzprNode knd : kid.negative) {
+					for(EzprNode knd : kid.negative) {
 						newPositive.add(knd);
 					}
 				}
@@ -128,13 +130,13 @@ public class Ezpr {
 		StringBuilder sb = new StringBuilder(typ.toString());
 
 		sb.append(" [ ");
-		for (EzprNode nd : positive) {
+		for(EzprNode nd : positive) {
 			sb.append(nd.toString());
 			sb.append(" ");
 		}
 
 		sb.append("# ");
-		for (EzprNode nd : negative) {
+		for(EzprNode nd : negative) {
 			sb.append(nd.toString());
 			sb.append(" ");
 		}

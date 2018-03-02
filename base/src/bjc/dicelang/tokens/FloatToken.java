@@ -1,4 +1,4 @@
-package bjc.dicelang;
+package bjc.dicelang.tokens;
 
 public class FloatToken extends Token {
 	public double floatValue;
@@ -26,15 +26,11 @@ public class FloatToken extends Token {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (!super.equals(obj))
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
+		if(this == obj) return true;
+		if(!super.equals(obj)) return false;
+		if(getClass() != obj.getClass()) return false;
 		FloatToken other = (FloatToken) obj;
-		if (Double.doubleToLongBits(floatValue) != Double.doubleToLongBits(other.floatValue))
-			return false;
+		if(Double.doubleToLongBits(floatValue) != Double.doubleToLongBits(other.floatValue)) return false;
 		return true;
 	}
 }

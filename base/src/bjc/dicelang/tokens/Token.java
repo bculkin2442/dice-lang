@@ -1,4 +1,4 @@
-package bjc.dicelang;
+package bjc.dicelang.tokens;
 
 import bjc.utils.funcdata.IList;
 
@@ -105,7 +105,7 @@ public class Token {
 
 	@Override
 	public String toString() {
-		switch (type) {
+		switch(type) {
 		case INT_LIT:
 		case STRING_LIT:
 		case VREF:
@@ -129,17 +129,17 @@ public class Token {
 
 	@Override
 	public boolean equals(final Object other) {
-		if (!(other instanceof Token)) {
+		if(!(other instanceof Token)) {
 			return false;
 		}
 
 		final Token otk = (Token) other;
 
-		if (otk.type != type) {
+		if(otk.type != type) {
 			return false;
 		}
 
-		switch (type) {
+		switch(type) {
 		case OBRACE:
 		case OBRACKET:
 			return intValue == otk.intValue;
@@ -149,7 +149,7 @@ public class Token {
 	}
 
 	public boolean isGrouper() {
-		switch (type) {
+		switch(type) {
 		case OPAREN:
 		case OBRACE:
 		case OBRACKET:
@@ -158,5 +158,11 @@ public class Token {
 		default:
 			return false;
 		}
+	}
+
+	@Override
+	public int hashCode() {
+		// TODO Auto-generated method stub
+		return super.hashCode();
 	}
 }
