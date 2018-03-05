@@ -2,6 +2,12 @@ package bjc.dicelang.dice;
 
 import java.util.Arrays;
 
+/**
+ * Represents a list dice expression.
+ * 
+ * @author student
+ *
+ */
 public class ListDiceExpression implements DiceExpression {
 
 	/** The list value in this expression, if there is one. */
@@ -11,7 +17,7 @@ public class ListDiceExpression implements DiceExpression {
 	 * Create a list die expression.
 	 *
 	 * @param lst
-	 *        The list value of this expression.
+	 *            The list value of this expression.
 	 */
 	public ListDiceExpression(final DieList lst) {
 		list = lst;
@@ -42,13 +48,18 @@ public class ListDiceExpression implements DiceExpression {
 
 	@Override
 	public boolean equals(Object obj) {
-		if(this == obj) return true;
-		if(obj == null) return false;
-		if(getClass() != obj.getClass()) return false;
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
 		ListDiceExpression other = (ListDiceExpression) obj;
-		if(list == null) {
-			if(other.list != null) return false;
-		} else if(!list.equals(other.list)) return false;
+		if (list == null) {
+			if (other.list != null)
+				return false;
+		} else if (!list.equals(other.list))
+			return false;
 		return true;
 	}
 }

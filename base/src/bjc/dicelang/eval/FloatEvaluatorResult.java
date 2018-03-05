@@ -1,11 +1,23 @@
 package bjc.dicelang.eval;
 
+/**
+ * Represents a floating-point result.
+ * 
+ * @author student
+ *
+ */
 public class FloatEvaluatorResult extends EvaluatorResult {
 	/**
 	 * The float value of the result.
 	 */
 	public double floatVal;
 
+	/**
+	 * Create a new floating-point result.
+	 * 
+	 * @param val
+	 *            The value of the result.
+	 */
 	public FloatEvaluatorResult(double val) {
 		super(Type.FLOAT);
 
@@ -29,11 +41,15 @@ public class FloatEvaluatorResult extends EvaluatorResult {
 
 	@Override
 	public boolean equals(Object obj) {
-		if(this == obj) return true;
-		if(obj == null) return false;
-		if(getClass() != obj.getClass()) return false;
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
 		FloatEvaluatorResult other = (FloatEvaluatorResult) obj;
-		if(Double.doubleToLongBits(floatVal) != Double.doubleToLongBits(other.floatVal)) return false;
+		if (Double.doubleToLongBits(floatVal) != Double.doubleToLongBits(other.floatVal))
+			return false;
 		return true;
 	}
 }

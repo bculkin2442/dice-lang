@@ -1,11 +1,23 @@
 package bjc.dicelang.eval;
 
+/**
+ * String evaluation result.
+ * 
+ * @author student
+ *
+ */
 public class StringEvaluatorResult extends EvaluatorResult {
 	/**
 	 * The string value of the result.
 	 */
 	public String stringVal;
 
+	/**
+	 * Create a new string evaluation result.
+	 * 
+	 * @param strang
+	 *            The value of the result.
+	 */
 	public StringEvaluatorResult(String strang) {
 		super(Type.STRING);
 
@@ -27,13 +39,18 @@ public class StringEvaluatorResult extends EvaluatorResult {
 
 	@Override
 	public boolean equals(Object obj) {
-		if(this == obj) return true;
-		if(obj == null) return false;
-		if(getClass() != obj.getClass()) return false;
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
 		StringEvaluatorResult other = (StringEvaluatorResult) obj;
-		if(stringVal == null) {
-			if(other.stringVal != null) return false;
-		} else if(!stringVal.equals(other.stringVal)) return false;
+		if (stringVal == null) {
+			if (other.stringVal != null)
+				return false;
+		} else if (!stringVal.equals(other.stringVal))
+			return false;
 		return true;
 	}
 }

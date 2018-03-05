@@ -1,11 +1,23 @@
 package bjc.dicelang.dice;
 
+/**
+ * Represents a scalar dice expression.
+ * 
+ * @author student
+ *
+ */
 public class ScalarDiceExpression implements DiceExpression {
 	/**
 	 * The scalar value in this expression, if there is one.
 	 */
 	public Die scalar;
 
+	/**
+	 * Create a new scalar dice expression.
+	 * 
+	 * @param scal
+	 *            The value of the expression.
+	 */
 	public ScalarDiceExpression(Die scal) {
 		scalar = scal;
 	}
@@ -25,13 +37,18 @@ public class ScalarDiceExpression implements DiceExpression {
 
 	@Override
 	public boolean equals(Object obj) {
-		if(this == obj) return true;
-		if(obj == null) return false;
-		if(getClass() != obj.getClass()) return false;
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
 		ScalarDiceExpression other = (ScalarDiceExpression) obj;
-		if(scalar == null) {
-			if(other.scalar != null) return false;
-		} else if(!scalar.equals(other.scalar)) return false;
+		if (scalar == null) {
+			if (other.scalar != null)
+				return false;
+		} else if (!scalar.equals(other.scalar))
+			return false;
 		return true;
 	}
 

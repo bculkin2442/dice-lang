@@ -13,5 +13,10 @@ public interface DiceExpression {
 	 */
 	public String value();
 
+	/**
+	 * Check if the expression is a list or not.
+	 * 
+	 * @return Whether or not the expression is a list.
+	 */
 	public boolean isList();
 }

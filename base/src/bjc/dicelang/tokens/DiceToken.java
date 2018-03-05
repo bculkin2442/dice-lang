@@ -2,9 +2,24 @@ package bjc.dicelang.tokens;
 
 import bjc.dicelang.dice.DiceExpression;
 
+/**
+ * A token that contains a dice value.
+ * 
+ * @author student
+ *
+ */
 public class DiceToken extends Token {
+	/**
+	 * The value of th token.
+	 */
 	public DiceExpression diceValue;
 
+	/**
+	 * Create a new dice token.
+	 * 
+	 * @param val
+	 *            The value of the token.
+	 */
 	public DiceToken(DiceExpression val) {
 		super(Type.DICE_LIT);
 
@@ -26,13 +41,20 @@ public class DiceToken extends Token {
 
 	@Override
 	public boolean equals(Object obj) {
-		if(this == obj) return true;
-		if(!super.equals(obj)) return false;
-		if(getClass() != obj.getClass()) return false;
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		
 		DiceToken other = (DiceToken) obj;
-		if(diceValue == null) {
-			if(other.diceValue != null) return false;
-		} else if(!diceValue.equals(other.diceValue)) return false;
+		
+		if (diceValue == null) {
+			if (other.diceValue != null)
+				return false;
+		} else if (!diceValue.equals(other.diceValue))
+			return false;
 		return true;
 	}
 }

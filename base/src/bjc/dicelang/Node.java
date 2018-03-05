@@ -16,6 +16,7 @@ import bjc.utils.data.ITree;
  *
  * @author Ben Culkin
  */
+@SuppressWarnings("javadoc")
 public class Node {
 	public static enum Type {
 		ROOT, TOKREF, UNARYOP, BINOP, GROUP, OGROUP, RESULT

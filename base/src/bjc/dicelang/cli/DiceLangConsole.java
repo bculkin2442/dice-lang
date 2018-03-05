@@ -3,15 +3,12 @@ package bjc.dicelang.cli;
 import bjc.dicelang.Define;
 import bjc.dicelang.DiceLangEngine;
 import bjc.dicelang.Errors;
-import bjc.dicelang.Define.Type;
 import bjc.utils.funcdata.FunctionalMap;
 import bjc.utils.funcdata.IMap;
 
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.function.BiPredicate;
-import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

@@ -6,13 +6,12 @@ import bjc.utils.data.ITree;
 import bjc.utils.funcdata.IList;
 import bjc.utils.parserutils.TreeConstructor;
 
+/**
+ * REPL for expressions.
+ * @author student
+ *
+ */
 public class ExprREPL {
-
-	/*
-	 * @TODO 10/08/17 Ben Culkin :MainSeperation
-	 * 
-	 * This main method should be moved to its own class.
-	 */
 	/**
 	 * Main method.
 	 *

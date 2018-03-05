@@ -246,7 +246,9 @@ public class Errors {
 		EK_MISC_NOFILE,
 
 		/* Dice errors. */
-		/* Recieved the wrong sort of expression to a die. */
+		/**
+		 *  Recieved the wrong sort of expression to a die.
+		 */
 		EK_DICE_INVTYPE,
 	}
 

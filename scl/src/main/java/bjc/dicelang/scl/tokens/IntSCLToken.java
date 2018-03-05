@@ -1,15 +1,23 @@
 package bjc.dicelang.scl.tokens;
 
+/**
+ * Represents an integer token.
+ * 
+ * @author student
+ *
+ */
 public class IntSCLToken extends SCLToken {
-	/* Used for ILIT */
+	/**
+	 * The integer value of the token.
+	 */
 	public long intVal;
 
-	/* Create a new token. */
-	public IntSCLToken(final Type typ) {
-		super(typ);
-	}
-
-	/* Create a new token. */
+	/**
+	 * Create a new integer token.
+	 * 
+	 * @param iVal
+	 *            The value of the token.
+	 */
 	public IntSCLToken(final long iVal) {
 		super(Type.ILIT);
 

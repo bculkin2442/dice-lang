@@ -1,8 +1,23 @@
 package bjc.dicelang.tokens;
 
+/**
+ * Represents a floating point token.
+ * 
+ * @author student
+ *
+ */
 public class FloatToken extends Token {
+	/**
+	 * The value of the token.
+	 */
 	public double floatValue;
 
+	/**
+	 * Create a new floating-point token.
+	 * 
+	 * @param val
+	 *            The value of the token.
+	 */
 	public FloatToken(double val) {
 		super(Type.FLOAT_LIT);
 
@@ -26,11 +41,15 @@ public class FloatToken extends Token {
 
 	@Override
 	public boolean equals(Object obj) {
-		if(this == obj) return true;
-		if(!super.equals(obj)) return false;
-		if(getClass() != obj.getClass()) return false;
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
 		FloatToken other = (FloatToken) obj;
-		if(Double.doubleToLongBits(floatValue) != Double.doubleToLongBits(other.floatValue)) return false;
+		if (Double.doubleToLongBits(floatValue) != Double.doubleToLongBits(other.floatValue))
+			return false;
 		return true;
 	}
 }
