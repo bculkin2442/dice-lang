@@ -7,7 +7,7 @@ import bjc.dicelang.scl.Errors;
 import bjc.utils.parserutils.TokenUtils;
 
 import static bjc.dicelang.scl.Errors.ErrorKey.*;
-import static bjc.dicelang.scl.tokens.SCLToken.Type.*;
+import static bjc.dicelang.scl.tokens.TokenType.*;
 
 /**
  * Base class for SCL tokens.
@@ -18,69 +18,9 @@ import static bjc.dicelang.scl.tokens.SCLToken.Type.*;
 public class SCLToken {
 
 	/**
-	 * Represent all the types of a token.
-	 * 
-	 * @author student
-	 *
-	 */
-	public static enum Type {
-		/* Natural tokens. These come directly from strings */
-		/**
-		 * Integer literal.
-		 */
-		ILIT,
-		/**
-		 * Floating-point literal.
-		 */
-		FLIT,
-		/**
-		 * Boolean literal.
-		 */
-		BLIT,
-		/**
-		 * Single-quote.
-		 */
-		SQUOTE,
-		/**
-		 * Double-quote.
-		 */
-		DQUOTE,
-		/**
-		 * Open-bracket.
-		 */
-		OBRACKET,
-		/**
-		 * Open-brace.
-		 */
-		OBRACE,
-		/**
-		 * Symbol.
-		 */
-		SYMBOL,
-		/**
-		 * Word.
-		 */
-		WORD,
-
-		/* Synthetic tokens. These are produced from special tokens. */
-		/**
-		 * String literal.
-		 */
-		SLIT,
-		/**
-		 * List of words.
-		 */
-		WORDS,
-		/**
-		 * List of data.
-		 */
-		ARRAY,
-	}
-
-	/**
 	 * The type of the token.
 	 */
-	public SCLToken.Type type;
+	public TokenType type;
 
 	/**
 	 * Convert a string into a token.
@@ -110,13 +50,13 @@ public class SCLToken {
 		}
 	}
 
-	protected static final Map<String, Type> litTokens;
+	protected static final Map<String, TokenType> litTokens;
 
 	protected SCLToken() {
 
 	}
 
-	protected SCLToken(Type typ) {
+	protected SCLToken(TokenType typ) {
 		type = typ;
 	}
 

@@ -19,7 +19,7 @@ public class IntSCLToken extends SCLToken {
 	 *            The value of the token.
 	 */
 	public IntSCLToken(final long iVal) {
-		super(Type.ILIT);
+		super(TokenType.ILIT);
 
 		intVal = iVal;
 	}

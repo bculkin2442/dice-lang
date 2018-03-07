@@ -19,7 +19,7 @@ public class FloatSCLToken extends SCLToken {
 	 *            The value of the token.
 	 */
 	public FloatSCLToken(double val) {
-		super(Type.FLIT);
+		super(TokenType.FLIT);
 
 		floatVal = val;
 	}

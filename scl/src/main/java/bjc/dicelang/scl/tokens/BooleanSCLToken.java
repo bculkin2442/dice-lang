@@ -19,7 +19,7 @@ public class BooleanSCLToken extends SCLToken {
 	 *            The value of the token.
 	 */
 	public BooleanSCLToken(boolean val) {
-		super(Type.BLIT);
+		super(TokenType.BLIT);
 
 		boolVal = val;
 	}

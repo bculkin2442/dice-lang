@@ -14,9 +14,9 @@ public abstract class StringSCLToken extends SCLToken {
 
 	protected StringSCLToken(boolean isSymbol, String val) {
 		if (isSymbol) {
-			type = Type.SYMBOL;
+			type = TokenType.SYMBOL;
 		} else {
-			type = Type.SLIT;
+			type = TokenType.SLIT;
 		}
 
 		stringVal = val;

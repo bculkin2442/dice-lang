@@ -1,6 +1,6 @@
 package bjc.dicelang.scl.tokens;
 
-import static bjc.dicelang.scl.tokens.WordSCLToken.Word.*;
+import static bjc.dicelang.scl.tokens.WordType.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,79 +13,9 @@ import java.util.Map;
  */
 public class WordSCLToken extends SCLToken {
 	/**
-	 * Represents the word type.
-	 * 
-	 * @author student
-	 *
-	 */
-	public static enum Word {
-		/* Array manipulation */
-		/**
-		 * Create an array
-		 */
-		MAKEARRAY,
-		/**
-		 * Make a token executable.
-		 */
-		MAKEEXEC,
-		/**
-		 * Make a token unexecutable.
-		 */
-		MAKEUNEXEC,
-
-		/* Stream manipulation */
-		/**
-		 * Create a new stream.
-		 */
-		NEWSTREAM,
-		/**
-		 * Swap to the left stream.
-		 */
-		LEFTSTREAM,
-		/**
-		 * Swap to the right stream.
-		 */
-		RIGHTSTREAM,
-		/**
-		 * Delete the current stream.
-		 */
-		DELETESTREAM,
-		/**
-		 * Merge the streams.
-		 */
-		MERGESTREAM,
-
-		/* Stack manipulation */
-		/**
-		 * Get the count of items on the stack.
-		 */
-		STACKCOUNT,
-		/**
-		 * Check if the stack is empty.
-		 */
-		STACKEMPTY,
-		/**
-		 * Drop an item from the top of the stack.
-		 */
-		DROP,
-		/**
-		 * Drop a number of items from the top of the stack.
-		 */
-		NDROP,
-		/**
-		 * Drop an item, leaving the top of the stack alone.
-		 */
-		NIP,
-		/**
-		 * Drop a number of items, leaving the top of the stack alone.
-		 */
-		NNIP,
-	}
-
-	/**
 	 * The value of the word.
 	 */
-	public Word wordVal;
+	public WordType wordVal;
 
 	/**
 	 * Create a new word token.
@@ -103,8 +33,8 @@ public class WordSCLToken extends SCLToken {
 	 * @param wrd
 	 *            The value of the word.
 	 */
-	public WordSCLToken(Word wrd) {
-		super(Type.WORD);
+	public WordSCLToken(WordType wrd) {
+		super(TokenType.WORD);
 
 		wordVal = wrd;
 	}
@@ -148,7 +78,7 @@ public class WordSCLToken extends SCLToken {
 		return builtinWords.containsKey(wrd);
 	}
 
-	private static final Map<String, WordSCLToken.Word> builtinWords;
+	private static final Map<String, WordType> builtinWords;
 
 	static {
 		/* Init builtin words. */

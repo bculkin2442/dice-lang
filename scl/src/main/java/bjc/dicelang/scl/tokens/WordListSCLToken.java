@@ -16,9 +16,9 @@ public abstract class WordListSCLToken extends SCLToken {
 
 	protected WordListSCLToken(boolean isArray, IList<SCLToken> tokens) {
 		if (isArray) {
-			type = Type.ARRAY;
+			type = TokenType.ARRAY;
 		} else {
-			type = Type.WORDS;
+			type = TokenType.WORDS;
 		}
 
 		tokenVals = tokens;

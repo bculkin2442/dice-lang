@@ -18,8 +18,8 @@ import bjc.utils.funcdata.IList;
 import bjc.utils.parserutils.TokenUtils;
 
 import static bjc.dicelang.scl.Errors.ErrorKey.*;
-import static bjc.dicelang.scl.tokens.SCLToken.Type.*;
-import static bjc.dicelang.scl.tokens.WordSCLToken.Word.*;
+import static bjc.dicelang.scl.tokens.TokenType.*;
+import static bjc.dicelang.scl.tokens.WordType.*;
 
 /*
  * @TODO 10/08/17 Ben Culkin :SCLReorg
