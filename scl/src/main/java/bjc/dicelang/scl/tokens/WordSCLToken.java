@@ -100,5 +100,7 @@ public class WordSCLToken extends SCLToken {
 		builtinWords.put("ndrop", NDROP);
 		builtinWords.put("nip", NIP);
 		builtinWords.put("nnip", NNIP);
+		
+		builtinWords.put("def", DEFINE);
 	}
 }

@@ -68,4 +68,10 @@ public enum WordType {
 	 * Drop a number of items, leaving the top of the stack alone.
 	 */
 	NNIP,
+	
+	/* Definition manipulation. */
+	/**
+	 * Define a word.
+	 */
+	DEFINE,
 }
