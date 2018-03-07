@@ -5,22 +5,104 @@ import static bjc.dicelang.scl.tokens.WordSCLToken.Word.*;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Represents a single word.
+ * 
+ * @author student
+ *
+ */
 public class WordSCLToken extends SCLToken {
+	/**
+	 * Represents the word type.
+	 * 
+	 * @author student
+	 *
+	 */
 	public static enum Word {
 		/* Array manipulation */
-		MAKEARRAY, MAKEEXEC, MAKEUNEXEC,
+		/**
+		 * Create an array
+		 */
+		MAKEARRAY,
+		/**
+		 * Make a token executable.
+		 */
+		MAKEEXEC,
+		/**
+		 * Make a token unexecutable.
+		 */
+		MAKEUNEXEC,
+
 		/* Stream manipulation */
-		NEWSTREAM, LEFTSTREAM, RIGHTSTREAM, DELETESTREAM, MERGESTREAM,
+		/**
+		 * Create a new stream.
+		 */
+		NEWSTREAM,
+		/**
+		 * Swap to the left stream.
+		 */
+		LEFTSTREAM,
+		/**
+		 * Swap to the right stream.
+		 */
+		RIGHTSTREAM,
+		/**
+		 * Delete the current stream.
+		 */
+		DELETESTREAM,
+		/**
+		 * Merge the streams.
+		 */
+		MERGESTREAM,
+
 		/* Stack manipulation */
-		STACKCOUNT, STACKEMPTY, DROP, NDROP, NIP, NNIP,
+		/**
+		 * Get the count of items on the stack.
+		 */
+		STACKCOUNT,
+		/**
+		 * Check if the stack is empty.
+		 */
+		STACKEMPTY,
+		/**
+		 * Drop an item from the top of the stack.
+		 */
+		DROP,
+		/**
+		 * Drop a number of items from the top of the stack.
+		 */
+		NDROP,
+		/**
+		 * Drop an item, leaving the top of the stack alone.
+		 */
+		NIP,
+		/**
+		 * Drop a number of items, leaving the top of the stack alone.
+		 */
+		NNIP,
 	}
 
+	/**
+	 * The value of the word.
+	 */
 	public Word wordVal;
 
+	/**
+	 * Create a new word token.
+	 * 
+	 * @param wrd
+	 *            The value of the word.
+	 */
 	public WordSCLToken(String wrd) {
 		this(builtinWords.get(wrd));
 	}
 
+	/**
+	 * Create a new word token.
+	 * 
+	 * @param wrd
+	 *            The value of the word.
+	 */
 	public WordSCLToken(Word wrd) {
 		super(Type.WORD);
 
@@ -42,14 +124,26 @@ public class WordSCLToken extends SCLToken {
 
 	@Override
 	public boolean equals(Object obj) {
-		if(this == obj) return true;
-		if(!super.equals(obj)) return false;
-		if(getClass() != obj.getClass()) return false;
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
 		WordSCLToken other = (WordSCLToken) obj;
-		if(wordVal != other.wordVal) return false;
+		if (wordVal != other.wordVal)
+			return false;
 		return true;
 	}
 
+	/**
+	 * Check if a word is built-in.
+	 * 
+	 * @param wrd
+	 *            The word to check.
+	 * 
+	 * @return Whether or not the word is builtin.
+	 */
 	public static boolean isBuiltinWord(String wrd) {
 		return builtinWords.containsKey(wrd);
 	}
@@ -61,13 +155,15 @@ public class WordSCLToken extends SCLToken {
 		builtinWords = new HashMap<>();
 
 		builtinWords.put("makearray", MAKEARRAY);
+		builtinWords.put("cvx", MAKEEXEC);
+		builtinWords.put("cvux", MAKEUNEXEC);
+
 		builtinWords.put("+stream", NEWSTREAM);
 		builtinWords.put(">stream", LEFTSTREAM);
 		builtinWords.put("<stream", RIGHTSTREAM);
 		builtinWords.put("-stream", DELETESTREAM);
 		builtinWords.put("<-stream", MERGESTREAM);
-		builtinWords.put("cvx", MAKEEXEC);
-		builtinWords.put("cvux", MAKEUNEXEC);
+
 		builtinWords.put("#", STACKCOUNT);
 		builtinWords.put("empty?", STACKEMPTY);
 		builtinWords.put("drop", DROP);

@@ -47,21 +47,37 @@ public class Tokenizer {
 		litTokens.put("crc", COERCE);
 	}
 
+	/**
+	 * Create a new tokenizer.
+	 * 
+	 * @param engine
+	 *            The engine to use.
+	 */
 	public Tokenizer(final DiceLangEngine engine) {
 		eng = engine;
 	}
 
+	/**
+	 * Lex a token.
+	 * 
+	 * @param token
+	 *            The string to lex.
+	 * @param stringLts
+	 *            The set of string literals.
+	 * 
+	 * @return A lexed token.
+	 */
 	public Token lexToken(final String token, final IMap<String, String> stringLts) {
-		if(token.equals("")) {
+		if (token.equals("")) {
 			return null;
 		}
 
 		Token tk = Token.NIL_TOKEN;
 
-		if(litTokens.containsKey(token)) {
+		if (litTokens.containsKey(token)) {
 			tk = new Token(litTokens.get(token));
 		} else {
-			switch(token.charAt(0)) {
+			switch (token.charAt(0)) {
 			case '(':
 			case ')':
 			case '[':
@@ -81,9 +97,9 @@ public class Tokenizer {
 	private static Token tokenizeGrouping(final String token) {
 		Token tk = Token.NIL_TOKEN;
 
-		if(StringUtils.containsOnly(token, "\\" + token.charAt(0))) {
+		if (StringUtils.containsOnly(token, "\\" + token.charAt(0))) {
 			/* Handle multiple-grouped delimiters. */
-			switch(token.charAt(0)) {
+			switch (token.charAt(0)) {
 			case '(':
 				tk = new Token(OPAREN, token.length());
 				break;
@@ -128,15 +144,15 @@ public class Tokenizer {
 
 		String token = rtoken.trim();
 
-		if(TokenUtils.isInt(token)) {
+		if (TokenUtils.isInt(token)) {
 			tk = new Token(INT_LIT, Long.parseLong(token));
-		} else if(hexadecimalMatcher.matcher(token).matches()) {
+		} else if (hexadecimalMatcher.matcher(token).matches()) {
 			final String newToken = token.substring(0, 1) + token.substring(token.indexOf('x'));
 			tk = new Token(INT_LIT, Long.parseLong(newToken.substring(2).toUpperCase(), 16));
-		} else if(flexadecimalMatcher.matcher(token).matches()) {
+		} else if (flexadecimalMatcher.matcher(token).matches()) {
 			final int parseBase = Integer.parseInt(token.substring(token.lastIndexOf('B') + 1));
 
-			if(parseBase < Character.MIN_RADIX || parseBase > Character.MAX_RADIX) {
+			if (parseBase < Character.MIN_RADIX || parseBase > Character.MAX_RADIX) {
 				Errors.inst.printError(EK_TOK_INVBASE, Integer.toString(parseBase));
 				return Token.NIL_TOKEN;
 			}
@@ -145,18 +161,18 @@ public class Tokenizer {
 
 			try {
 				tk = new Token(INT_LIT, Long.parseLong(flexNum, parseBase));
-			} catch(final NumberFormatException nfex) {
+			} catch (final NumberFormatException nfex) {
 				Errors.inst.printError(EK_TOK_INVFLEX, flexNum, Integer.toString(parseBase));
 				return Token.NIL_TOKEN;
 			}
-		} else if(TokenUtils.isDouble(token)) {
+		} else if (TokenUtils.isDouble(token)) {
 			tk = new FloatToken(Double.parseDouble(token));
-		} else if(DiceBox.isValidExpression(token)) {
+		} else if (DiceBox.isValidExpression(token)) {
 			tk = new DiceToken(DiceBox.parseExpression(token));
 		} else {
 			final Matcher stringLit = stringLitMatcher.matcher(token);
 
-			if(stringLit.matches()) {
+			if (stringLit.matches()) {
 				final int litNum = Integer.parseInt(stringLit.group(1));
 
 				eng.addStringLiteral(litNum, stringLts.get(token));

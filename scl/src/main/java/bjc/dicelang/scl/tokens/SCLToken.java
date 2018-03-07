@@ -17,16 +17,78 @@ import static bjc.dicelang.scl.tokens.SCLToken.Type.*;
  */
 public class SCLToken {
 
+	/**
+	 * Represent all the types of a token.
+	 * 
+	 * @author student
+	 *
+	 */
 	public static enum Type {
 		/* Natural tokens. These come directly from strings */
-		ILIT, FLIT, BLIT, SQUOTE, DQUOTE, OBRACKET, OBRACE, SYMBOL, WORD,
+		/**
+		 * Integer literal.
+		 */
+		ILIT,
+		/**
+		 * Floating-point literal.
+		 */
+		FLIT,
+		/**
+		 * Boolean literal.
+		 */
+		BLIT,
+		/**
+		 * Single-quote.
+		 */
+		SQUOTE,
+		/**
+		 * Double-quote.
+		 */
+		DQUOTE,
+		/**
+		 * Open-bracket.
+		 */
+		OBRACKET,
+		/**
+		 * Open-brace.
+		 */
+		OBRACE,
+		/**
+		 * Symbol.
+		 */
+		SYMBOL,
+		/**
+		 * Word.
+		 */
+		WORD,
 
 		/* Synthetic tokens. These are produced from special tokens. */
-		SLIT, WORDS, ARRAY,
+		/**
+		 * String literal.
+		 */
+		SLIT,
+		/**
+		 * List of words.
+		 */
+		WORDS,
+		/**
+		 * List of data.
+		 */
+		ARRAY,
 	}
 
+	/**
+	 * The type of the token.
+	 */
 	public SCLToken.Type type;
 
+	/**
+	 * Convert a string into a token.
+	 * 
+	 * @param token
+	 *            The string to convert into a token.
+	 * @return The token.
+	 */
 	public static SCLToken tokenizeString(final String token) {
 		if (litTokens.containsKey(token)) {
 			return new SCLToken(litTokens.get(token));
