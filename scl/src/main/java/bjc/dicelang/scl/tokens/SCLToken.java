@@ -16,7 +16,6 @@ import static bjc.dicelang.scl.tokens.TokenType.*;
  *
  */
 public class SCLToken {
-
 	/**
 	 * The type of the token.
 	 */
