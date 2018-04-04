@@ -46,37 +46,40 @@ public class EvaluatorResult {
 	 */
 	public final EvaluatorResult.Type type;
 
-	// These may or may not have values based
-	// off of the result type
-	/**
-	 * The integer value of the result.
-	 */
-	public long intVal;
-
 	/**
 	 * Create a new result.
 	 *
 	 * @param typ
-	 *        The type of the result.
+	 *            The type of the result.
 	 */
 	protected EvaluatorResult(final EvaluatorResult.Type typ) {
 		type = typ;
 	}
 
-	/**
-	 * Create a new result.
-	 *
-	 * @param typ
-	 * @param iVal
-	 */
-	public EvaluatorResult(final EvaluatorResult.Type typ, final long iVal) {
-		this(typ);
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
+		return result;
+	}
 
-		intVal = iVal;
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		EvaluatorResult other = (EvaluatorResult) obj;
+		if (type != other.type)
+			return false;
+		return true;
 	}
 
 	@Override
 	public String toString() {
-		return type.toString();
+		return "EvaluatorResult [type=" + type + "]";
 	}
 }
