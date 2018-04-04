@@ -393,12 +393,14 @@ public class Evaluator {
 					return new Tree<>(Node.FAIL(right));
 				}
 			} else if (left.type == INT) {
+				IntegerEvaluatorResult irs = (IntegerEvaluatorResult) left;
+
 				if (right.type == DICE && !((DiceEvaluatorResult) right).diceVal.isList()) {
 					Die rhs = ((ScalarDiceExpression) ((DiceEvaluatorResult) right).diceVal).scalar;
 
-					res = new DiceEvaluatorResult(new SimpleDie(left.intVal, rhs));
+					res = new DiceEvaluatorResult(new SimpleDie(irs.value, rhs));
 				} else if (right.type == INT) {
-					res = new DiceEvaluatorResult(new SimpleDie(left.intVal, right.intVal));
+					res = new DiceEvaluatorResult(new SimpleDie(irs.value, ((IntegerEvaluatorResult) right).value));
 				} else {
 					Errors.inst.printError(EK_EVAL_INVDGROUP, right.type.toString());
 					return new Tree<>(Node.FAIL(right));
@@ -481,7 +483,10 @@ public class Evaluator {
 		switch (op) {
 		case ADD: {
 			if (left.type == INT) {
-				res = new EvaluatorResult(INT, left.intVal + right.intVal);
+				long lval = ((IntegerEvaluatorResult) left).value;
+				long rval = ((IntegerEvaluatorResult) right).value;
+
+				res = new IntegerEvaluatorResult(lval + rval);
 			} else if (left.type == DICE) {
 				if (((DiceEvaluatorResult) left).diceVal.isList()) {
 					Errors.inst.printError(EK_EVAL_INVDICE, left.toString());
@@ -504,7 +509,10 @@ public class Evaluator {
 		}
 		case SUBTRACT: {
 			if (left.type == INT) {
-				res = new EvaluatorResult(INT, left.intVal - right.intVal);
+				long lval = ((IntegerEvaluatorResult) left).value;
+				long rval = ((IntegerEvaluatorResult) right).value;
+
+				res = new IntegerEvaluatorResult(lval - rval);
 			} else if (left.type == DICE) {
 				if (((DiceEvaluatorResult) left).diceVal.isList()) {
 					Errors.inst.printError(EK_EVAL_INVDICE, left.toString());
@@ -527,7 +535,10 @@ public class Evaluator {
 		}
 		case MULTIPLY: {
 			if (left.type == INT) {
-				res = new EvaluatorResult(INT, left.intVal * right.intVal);
+				long lval = ((IntegerEvaluatorResult) left).value;
+				long rval = ((IntegerEvaluatorResult) right).value;
+
+				res = new IntegerEvaluatorResult(lval * rval);
 			} else if (left.type == DICE) {
 				if (((DiceEvaluatorResult) left).diceVal.isList()) {
 					Errors.inst.printError(EK_EVAL_INVDICE, left.toString());
@@ -550,11 +561,14 @@ public class Evaluator {
 		}
 		case DIVIDE: {
 			if (left.type == INT) {
-				if (right.intVal == 0) {
+				long lval = ((IntegerEvaluatorResult) left).value;
+				long rval = ((IntegerEvaluatorResult) right).value;
+
+				if (rval == 0) {
 					Errors.inst.printError(EK_EVAL_DIVZERO);
 					res = new FailureEvaluatorResult(right);
 				} else {
-					res = new EvaluatorResult(FLOAT, left.intVal / right.intVal);
+					res = new FloatEvaluatorResult(lval / rval);
 				}
 			} else if (left.type == FLOAT) {
 				if (((FloatEvaluatorResult) right).floatVal == 0) {
@@ -573,18 +587,21 @@ public class Evaluator {
 		}
 		case IDIVIDE: {
 			if (left.type == INT) {
-				if (right.intVal == 0) {
+				long lval = ((IntegerEvaluatorResult) left).value;
+				long rval = ((IntegerEvaluatorResult) right).value;
+
+				if (rval == 0) {
 					Errors.inst.printError(EK_EVAL_DIVZERO);
 					res = new FailureEvaluatorResult(right);
 				} else {
-					res = new EvaluatorResult(INT, (int) (left.intVal / right.intVal));
+					res = new IntegerEvaluatorResult((int) (lval / rval));
 				}
 			} else if (left.type == FLOAT) {
 				if (((FloatEvaluatorResult) right).floatVal == 0) {
 					Errors.inst.printError(EK_EVAL_DIVZERO);
 					res = new FailureEvaluatorResult(right);
 				} else {
-					res = new EvaluatorResult(INT,
+					res = new IntegerEvaluatorResult(
 							(int) (((FloatEvaluatorResult) left).floatVal / ((FloatEvaluatorResult) right).floatVal));
 				}
 			} else {
@@ -621,7 +638,7 @@ public class Evaluator {
 			break;
 		default:
 			Errors.inst.printError(EK_EVAL_UNTOK, tk.type.toString());
-			
+
 			res = new EvaluatorResult(FAILURE);
 		}
 
