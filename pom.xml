@@ -25,9 +25,8 @@
 				<version>1.5.0</version>
 
 				<executions>
-				<!-- 
 					<execution>
-						< Run ctags >
+						<!-- Run ctags -->
 						<id>source tagging</id>
 						<phase>generate-sources</phase>
 
@@ -43,7 +42,6 @@
 							</arguments>
 						</configuration>
 					</execution>
-					-->
 				</executions>
 			</plugin>
 		</plugins>
@@ -52,6 +50,5 @@
 	<modules>
 		<module>base</module>
 		<module>dice</module>
-    <module>scl</module>
-  </modules>
+	</modules>
 </project>
