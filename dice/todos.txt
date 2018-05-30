@@ -1,0 +1,3 @@
+@TODO 12/22/17 Ben Culkin :DiceTagging
+	Add an ability to attach string tags to dice. These are mainly used for
+	stringifying dice, but may also have some other uses.
