@@ -103,9 +103,12 @@ public class DiceLangEngine {
 
 		/* Initialize operator expander. */
 		opExpander = new ConfigurableTokenSplitter(true);
+		/* Add grouping operators */
 		opExpander.addMultiDelimiters("(", ")");
 		opExpander.addMultiDelimiters("[", "]");
 		opExpander.addMultiDelimiters("{", "}");
+
+		/* Add simple operators */
 		opExpander.addSimpleDelimiters(":=");
 		opExpander.addSimpleDelimiters("=>");
 		opExpander.addSimpleDelimiters("//");
@@ -115,24 +118,25 @@ public class DiceLangEngine {
 		opExpander.addSimpleDelimiters("-");
 		opExpander.addSimpleDelimiters("*");
 		opExpander.addSimpleDelimiters("/");
+
 		opExpander.compile();
 
 		/* Initialize literal IDs */
 		nextLiteral = 1;
 
 		/* Initial mode settings. */
-		debugMode = true;
+		debugMode   = true;
 		postfixMode = false;
-		prefixMode = false;
-		stepEval = false;
+		prefixMode  = false;
+		stepEval    = false;
 
 		/* Create components. */
 		shunt = new Shunter();
 		parsr = new Parser();
 
 		streamEng = new StreamEngine();
-		tokenzer = new Tokenizer(this);
-		eval = new Evaluator(this);
+		tokenzer  = new Tokenizer(this);
+		eval      = new Evaluator(this);
 	}
 
 	/** Sort defns by priority. */
@@ -211,7 +215,11 @@ public class DiceLangEngine {
 		return stepEval;
 	}
 
-	/* Matches double-angle bracketed strings. */
+	/*
+	 * Matches double-angle bracketed strings.
+	 *
+	 * These are used for tokens that aren't expanded.
+	 */
 	private final Pattern nonExpandPattern = Pattern.compile("<<([^\\>]*(?:\\>(?:[^\\>])*)*)>>");
 
 	/**
@@ -265,8 +273,12 @@ public class DiceLangEngine {
 			/* Apply token defns */
 			for (final Define dfn : tokenDefns.toIterable()) {
 				/*
-				 * @NOTE What happens with a define that produces multiple tokens from one
+				 * @NOTE 
+				 *
+				 * What happens with a define that produces multiple tokens from one
 				 * token?
+				 *
+				 * 	At the moment, nothing.
 				 */
 				newTok = dfn.apply(newTok);
 			}
@@ -338,7 +350,12 @@ public class DiceLangEngine {
 		/* Expand token groups */
 		final IList<Token> readyTokens = shuntedTokens.flatMap(tk -> {
 			if (tk.type == Token.Type.TOKGROUP || tk.type == Token.Type.TAGOP || tk.type == Token.Type.TAGOPR) {
-				LOG.finer(String.format("Expanding token group to: %s\n", tk.tokenValues.toString()));
+				String msg = String.format("Expanding token group to: %s\n", tk.tokenValues.toString());
+				LOG.finer(msg);
+
+				if(debugMode)
+					System.out.print(msg);
+
 				return tk.tokenValues;
 			} else {
 				return new FunctionalList<>(tk);
@@ -387,7 +404,7 @@ public class DiceLangEngine {
 
 		/* Run the tokens through the stream engine */
 		final IList<String> streamToks = new FunctionalList<>();
-		final boolean succ = streamEng.doStreams(command.split(" "), streamToks);
+		final boolean succ             = streamEng.doStreams(command.split(" "), streamToks);
 
 		if (!succ) {
 			return null;
@@ -397,7 +414,9 @@ public class DiceLangEngine {
 
 		if (debugMode) {
 			String msg = String.format("\tCommand after stream commands: %s\n", newComm);
+
 			LOG.fine(msg);
+
 			System.out.print(msg);
 		}
 
@@ -408,7 +427,9 @@ public class DiceLangEngine {
 
 		if (debugMode) {
 			String msg = String.format("\tCommand after line defines: %s\n", newComm);
+
 			LOG.fine(msg);
+
 			System.out.print(msg);
 		}
 
@@ -429,8 +450,13 @@ public class DiceLangEngine {
 				final String descVal = TokenUtils.descapeString(litVal);
 				stringLiterals.put(litName, descVal);
 
-				if (debugMode)
-					LOG.finer(String.format("Replaced string literal '%s' with literal no. %d", descVal, nextLiteral));
+				if (debugMode) {
+					String msg = String.format("Replaced string literal '%s' with literal no. %d", descVal, nextLiteral);
+
+					System.out.printf("\t\tDEBUG(1): %s\n", msg);
+
+					LOG.finer(msg);
+				}
 
 				nextLiteral += 1;
 
@@ -443,7 +469,9 @@ public class DiceLangEngine {
 
 		if (debugMode) {
 			String msg = String.format("\tCommand after destringing: %s\n", destringedCommand);
+
 			LOG.fine(msg);
+
 			System.out.print(msg);
 
 			/* Print the string table if it exists. */
@@ -457,7 +485,7 @@ public class DiceLangEngine {
 		}
 
 		/* Split the command into tokens */
-		final String strang = destringedCommand.toString();
+		final String strang  = destringedCommand.toString();
 		IList<String> tokens = FunctionalStringTokenizer.fromString(strang).toList();
 
 		/* Temporarily remove non-expanding tokens */
@@ -468,8 +496,13 @@ public class DiceLangEngine {
 			if (nonExpandMatcher.matches()) {
 				final String tkName = "nonExpandToken" + nextLiteral++;
 				nonExpandedTokens.put(tkName, nonExpandMatcher.group(1));
+				String msg = String.format("Pulled non-expander '%s' to '%s'", nonExpandMatcher.group(1), tkName);
 
-				LOG.finer(String.format("Pulled non-expander '%s' to '%s'", nonExpandMatcher.group(1), tkName));
+				if(debugMode)
+					System.out.printf("\t\tDEBUG(1): %s\n", msg);
+
+				LOG.finer(msg);
+
 				return tkName;
 			}
 
@@ -478,7 +511,9 @@ public class DiceLangEngine {
 
 		if (debugMode) {
 			String msg = String.format("\tCommand after removal of non-expanders: %s\n", tokens.toString());
+
 			LOG.fine(msg);
+
 			System.out.print(msg);
 		}
 
@@ -487,7 +522,9 @@ public class DiceLangEngine {
 
 		if (debugMode) {
 			String msg = String.format("\tCommand after token expansion: %s\n", fullyExpandedTokens.toString());
+
 			LOG.fine(msg);
+
 			System.out.print(msg);
 		}
 
@@ -502,7 +539,9 @@ public class DiceLangEngine {
 		if (debugMode) {
 			String msg = String.format("\tCommand after non-expander reinsertion: %s\n",
 					fullyExpandedTokens.toString());
+
 			LOG.fine(msg);
+
 			System.out.print(msg);
 		}
 
@@ -570,7 +609,10 @@ public class DiceLangEngine {
 				if (debugMode) {
 					System.out.printf("\t\tEvaluates to %s", res);
 
-					if (res.type == EvaluatorResult.Type.DICE) {
+					if(res == null) {
+						// This means we got a null
+						// These shouldn't happen
+					} else if (res.type == EvaluatorResult.Type.DICE) {
 						String value = ((DiceEvaluatorResult) res).diceVal.value();
 
 						System.out.println("\t\t (sample roll " + value + ")");

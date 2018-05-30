@@ -13,7 +13,7 @@
 
 	<properties>
 		<main.class1>bjc.dicelang.scl.StreamControlConsole</main.class1>
-		<main.class>bjc.dicelang.DiceLangConsole</main.class>
+		<main.class>bjc.dicelang.cli.DiceLangConsole</main.class>
 	</properties>
 
 	<build>

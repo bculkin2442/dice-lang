@@ -80,12 +80,12 @@ public class Shunter {
 
 		/* Setup operators. */
 		/* Math operators. */
-		ops.put(ADD, 0 + MATH_PREC);
+		ops.put(ADD,      0 + MATH_PREC);
 		ops.put(SUBTRACT, 0 + MATH_PREC);
 
 		ops.put(MULTIPLY, 1 + MATH_PREC);
-		ops.put(IDIVIDE, 1 + MATH_PREC);
-		ops.put(DIVIDE, 1 + MATH_PREC);
+		ops.put(IDIVIDE,  1 + MATH_PREC);
+		ops.put(DIVIDE,   1 + MATH_PREC);
 
 		/* Dice operators. */
 		ops.put(DICEGROUP, 0 + DICE_PREC);
@@ -166,6 +166,7 @@ public class Shunter {
 		if(unaryStack.size() != 0) {
 			if(isUnary(tk)) {
 				unaryStack.add(tk);
+
 				return true;
 			}
 

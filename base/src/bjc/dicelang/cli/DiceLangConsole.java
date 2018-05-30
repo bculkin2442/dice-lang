@@ -40,7 +40,6 @@ public class DiceLangConsole {
 		pragmas = new FunctionalMap<>();
 
 		pragmas.put("debug", new DiceLangPragma() {
-
 			@Override
 			public String getDescription() {
 				return "Toggle debug mode, which includes a bunch more output during various stages of compilation and interpretation";
@@ -94,7 +93,7 @@ public class DiceLangConsole {
 
 			/* Read initial command. */
 			try {
-				comm = read.readLine(String.format("(%d) dice-lang> ", commandNumber));
+				comm = read.readLine(String.format("(%d-%s) dice-lang> ", commandNumber, multiLine ? "M" : "S"));
 			} catch(final IOException ioex) {
 				System.out.println("ERROR: I/O failed");
 				return;
@@ -109,9 +108,9 @@ public class DiceLangConsole {
 				final boolean success = handlePragma(comm.substring(7));
 
 				if(success) {
-					System.out.println("Pragma completed succesfully");
+					System.out.println("\tPragma completed succesfully");
 				} else {
-					System.out.println("Pragma execution failed");
+					System.out.println("\tPragma execution failed");
 				}
 			} else {
 				if(multiLine) {
@@ -124,42 +123,37 @@ public class DiceLangConsole {
 
 							comm = String.format("%s %s", comm, nLine);
 						} while(true);
+
+						if(eng.debugMode)
+							System.out.printf("\tDEBUG: Read multiline command:\n%s\n", comm);
+
 					} catch(IOException ioex) {
-						System.out.println("ERROR: I/O failed");
+						System.out.println("\tERROR: I/O failed");
 						return;
 					}
 				}
 				/* Run commands. */
 				if(eng.debugMode) {
-					System.out.printf("\tRaw command: %s\n", comm);
+					System.out.printf("\tDEBUG: Raw command: %s\n", comm);
 				}
 
 				final boolean success = eng.runCommand(comm);
 
 				if(success) {
-					System.out.println("Command completed succesfully");
+					System.out.println("\tCommand completed succesfully");
 				} else {
-					System.out.println("Command execution failed");
+					System.out.println("\tCommand execution failed");
 				}
 
 				commandNumber += 1;
 			}
-
-			/* Read the next command. */
-			try {
-				comm = read.readLine(String.format("(%d) dice-lang> ", commandNumber));
-			} catch(final IOException ioex) {
-				System.out.println("ERROR: I/O failed");
-				return;
-			}
 		} while(true);
-
 	}
 
 	/* Handle running pragmas. */
 	private boolean handlePragma(final String pragma) {
 		if(eng.debugMode) {
-			System.out.println("\tRaw pragma: " + pragma);
+			System.out.println("\tDEBUG: Raw pragma: " + pragma);
 		}
 
 		/* Grab the name from the arguments. */
@@ -178,6 +172,10 @@ public class DiceLangConsole {
 		 * @TODO 10/09/17 Ben Culkin :PragmaRefactor
 		 * 
 		 * Swap to using something that makes it easier to add pragmas.
+		 *
+		 * @NOTE 5/30/18
+		 * 	We have part of this, see the implementation of
+		 * 	DiceLangPragma above, we just need to use it.
 		 */
 		switch(pragmaName) {
 		case "debug":
@@ -190,13 +188,14 @@ public class DiceLangConsole {
 			System.out.println("\tPrefix mode is now " + eng.togglePrefix());
 			break;
 		case "stepeval":
-			System.out.println("\tStepeval mode is now" + eng.toggleStepEval());
+			System.out.println("\tStepeval mode is now " + eng.toggleStepEval());
 			break;
 		case "define":
 			return defineMode(pragma.substring(7));
 		case "help":
 			return helpMode(pragma.substring(5));
 		case "multi-line":
+			System.out.println("\tMulti-line mode is now " + !multiLine);
 			multiLine = !multiLine;
 			break;
 		default:
@@ -244,6 +243,10 @@ public class DiceLangConsole {
 	private final Pattern slashPattern = Pattern.compile("/((?:\\\\.|[^/\\\\])*)/");
 
 	/* Parse a define macro. */
+	/*
+	 * @TODO 5/30/18 :DefineRefactor
+	 * 	Adjust this to use a better set-up.
+	 */
 	private boolean defineMode(final String defineText) {
 		/* Grab all of the separator spaces. */
 		final int firstIndex = defineText.indexOf(' ');
@@ -278,7 +281,7 @@ public class DiceLangConsole {
 		}
 
 		/* Get the priority and define type. */
-		final int priority = Integer.parseInt(defineText.substring(0, firstIndex));
+		final int priority      = Integer.parseInt(defineText.substring(0, firstIndex));
 		final String defineType = defineText.substring(firstIndex + 1, secondIndex);
 
 		Define.Type type;
@@ -293,11 +296,11 @@ public class DiceLangConsole {
 			type = Define.Type.TOKEN;
 			break;
 		case "subline":
-			type = Define.Type.LINE;
+			type    = Define.Type.LINE;
 			subMode = true;
 			break;
 		case "subtoken":
-			type = Define.Type.TOKEN;
+			type    = Define.Type.TOKEN;
 			subMode = true;
 			break;
 		default:
@@ -307,15 +310,17 @@ public class DiceLangConsole {
 
 		/* Do we want this to be a recursive pattern? */
 		final boolean doRecur = defineText.substring(secondIndex + 1, thirdIndex).equalsIgnoreCase("true");
+
 		/* Do we want this pattern to have a guard? */
 		final boolean hasGuard = defineText.substring(thirdIndex + 1, fourthIndex).equalsIgnoreCase("true");
+
 		/* Do we want this pattern to use circular replacements. */
 		final boolean isCircular = defineText.substring(thirdIndex + 1, fourthIndex).equalsIgnoreCase("true");
 
 		/* The part of the string that contains patterns. */
-		final String pats = defineText.substring(fifthIndex + 1).trim();
+		final String pats        = defineText.substring(fifthIndex + 1).trim();
 		final Matcher patMatcher = slashPattern.matcher(pats);
-		String guardPattern = null;
+		String guardPattern      = null;
 
 		if(hasGuard) {
 			/* Grab the guard pattern. */
@@ -333,7 +338,7 @@ public class DiceLangConsole {
 			return false;
 		}
 
-		final String searchPattern = patMatcher.group(1);
+		final String searchPattern         = patMatcher.group(1);
 		final List<String> replacePatterns = new LinkedList<>();
 
 		while(patMatcher.find()) {
@@ -366,6 +371,7 @@ public class DiceLangConsole {
 	 */
 	public static void main(final String[] args) {
 		final DiceLangConsole console = new DiceLangConsole(args);
+
 		console.run();
 	}
 }

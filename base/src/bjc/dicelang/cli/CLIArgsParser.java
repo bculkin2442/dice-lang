@@ -161,6 +161,7 @@ public class CLIArgsParser {
 
 	/* Load a series of defines from a file. */
 	private static int defineFile(final int i, final String[] args, final DiceLangEngine eng) {
+		/* :DefineRefactor */
 		if(i >= args.length - 1) {
 			Errors.inst.printError(EK_CLI_MISARG, "define-file");
 			return -1;
