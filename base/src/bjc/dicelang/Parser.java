@@ -136,7 +136,21 @@ public class Parser {
 		 * AST forest.
 		 */
 		for(final ITree<Node> ast : working) {
-			results.add(ast);
+			/* Make sure that the tree are well-formed */
+			if(ast.containsMatching((val) -> {
+				switch(val.type) {
+				case OGROUP:
+					return true;
+				default:
+					return false;
+				}
+			})) {
+				System.out.printf("\tERROR: Malformed tree:\n%s\n", ast);
+
+				return false;
+			} else {
+				results.add(ast);
+			}
 		}
 
 		return true;

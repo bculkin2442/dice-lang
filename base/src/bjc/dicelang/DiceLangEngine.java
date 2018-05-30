@@ -610,8 +610,6 @@ public class DiceLangEngine {
 					System.out.printf("\t\tEvaluates to %s", res);
 
 					if(res == null) {
-						// This means we got a null
-						// These shouldn't happen
 					} else if (res.type == EvaluatorResult.Type.DICE) {
 						String value = ((DiceEvaluatorResult) res).diceVal.value();
 

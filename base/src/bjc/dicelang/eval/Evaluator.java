@@ -128,7 +128,8 @@ public class Evaluator {
 			default:
 				return TopDownTransformResult.PUSHDOWN;
 			}
-
+		case GROUP:
+			return TopDownTransformResult.PASSTHROUGH;
 		default:
 			return TopDownTransformResult.PUSHDOWN;
 		}
