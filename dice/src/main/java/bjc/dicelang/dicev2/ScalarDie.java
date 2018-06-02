@@ -11,14 +11,8 @@ public class ScalarDie extends Die {
 		this.val = val;
 	}
 
-	public ScalarDie(Random rnd, long val) {
-		super(rnd);
-
-		this.val = val;
-	}
-
 	public long[] roll() {
-		return new long[] { val };
+		return new long[] { rollSingle() };
 	}
 
 	public long rollSingle() {

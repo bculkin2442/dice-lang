@@ -1,12 +1,20 @@
 package bjc.dicelang.dicev2;
 
-public class SumDieMod extends Die {
+import java.util.function.LongBinaryOperator;
+
+public class ReduceDieMod extends Die {
 	public final Die[] dice;
 
-	public SumDieMod(Die... dice) {
+	public final LongBinaryOperator fold;
+	public final long initial;
+
+	public ReduceDieMod(LongBinaryOperator fold, long initial, Die... dice) {
 		super();
 
 		this.dice = dice;
+
+		this.fold    = fold;
+		this.initial = initial;
 	}
 
 	public long[] roll() {
@@ -14,11 +22,11 @@ public class SumDieMod extends Die {
 	}
 
 	public long rollSingle() {
-		long res = 0;
+		long res = initial;
 
 		for(Die die : dice) {
 			for(long val : die.roll()) {
-				res += val;
+				res = fold.applyAsLong(res, val);
 			}
 		}
 
@@ -37,7 +45,7 @@ public class SumDieMod extends Die {
 		long res = 0;
 
 		for(Die die : dice) {
-			res += die.optimize();
+			res = fold.applyAsLong(res, die.optimize());
 		}
 
 		return res;
