@@ -19,14 +19,14 @@
 				</configuration>
 			</plugin>
 
-			<plugin>
+			<!-- plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>exec-maven-plugin</artifactId>
 				<version>1.5.0</version>
 
 				<executions>
 					<execution>
-						<!-- Run ctags -->
+						<!- Run ctags ->
 						<id>source tagging</id>
 						<phase>generate-sources</phase>
 
@@ -43,7 +43,7 @@
 						</configuration>
 					</execution>
 				</executions>
-			</plugin>
+			</plugin> -->
 		</plugins>
 	</build>
 
