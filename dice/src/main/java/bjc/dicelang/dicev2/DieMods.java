@@ -95,9 +95,9 @@ public class DieMods {
 
 	/* :SyntheticMod */
 	public Die descending(Die die) {
-		Comparator<Long> cmp = (Comparator<Long>)Comparator.naturalOrder().reversed();
-
-		return new SortDieMod(cmp, die);
+		return new SortDieMod((v1, v2) -> {
+			return Long.compare(v1, v2);
+		}, die);
 	}
 
 	/* :SyntheticMod */
