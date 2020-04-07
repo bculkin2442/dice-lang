@@ -1,7 +1,5 @@
 package bjc.dicelang.dicev2;
 
-import java.util.Random;
-
 public class ScalarDie extends Die {
 	public final long val;
 

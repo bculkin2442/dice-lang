@@ -6,6 +6,8 @@ package bjc.dicelang.dice;
  * @author Ben Culkin
  */
 public class DieException extends RuntimeException {
+	private static final long serialVersionUID = 4235650970793087717L;
+
 	/**
 	 * Create a new die exception with a given message.
 	 *

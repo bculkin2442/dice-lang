@@ -3,8 +3,6 @@ package bjc.dicelang.dicev2;
 import bjc.utils.data.GeneratingIterator;
 
 import java.util.Comparator;
-import java.util.Iterator;
-
 import java.util.function.LongPredicate;
 import java.util.function.LongBinaryOperator;
 import java.util.function.LongUnaryOperator;
