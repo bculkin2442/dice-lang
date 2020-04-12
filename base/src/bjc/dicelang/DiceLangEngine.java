@@ -14,12 +14,12 @@ import bjc.dicelang.eval.EvaluatorResult;
 import bjc.dicelang.eval.FailureEvaluatorResult;
 import bjc.dicelang.scl.StreamEngine;
 import bjc.dicelang.tokens.Token;
-import bjc.utils.data.ITree;
-import bjc.utils.funcdata.FunctionalList;
-import bjc.utils.funcdata.FunctionalMap;
-import bjc.utils.funcdata.FunctionalStringTokenizer;
-import bjc.utils.funcdata.IList;
-import bjc.utils.funcdata.IMap;
+import bjc.data.ITree;
+import bjc.funcdata.FunctionalList;
+import bjc.funcdata.FunctionalMap;
+import bjc.funcdata.FunctionalStringTokenizer;
+import bjc.funcdata.IList;
+import bjc.funcdata.IMap;
 import bjc.utils.funcutils.ListUtils;
 import bjc.utils.parserutils.TokenUtils;
 import bjc.utils.parserutils.splitter.ConfigurableTokenSplitter;
@@ -610,6 +610,7 @@ public class DiceLangEngine {
 					System.out.printf("\t\tEvaluates to %s", res);
 
 					if(res == null) {
+						// Don't need to do anything in this case
 					} else if (res.type == EvaluatorResult.Type.DICE) {
 						String value = ((DiceEvaluatorResult) res).diceVal.value();
 

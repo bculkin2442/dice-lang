@@ -7,8 +7,8 @@ import bjc.dicelang.dice.DiceBox;
 import bjc.dicelang.tokens.DiceToken;
 import bjc.dicelang.tokens.FloatToken;
 import bjc.dicelang.tokens.Token;
-import bjc.utils.funcdata.FunctionalMap;
-import bjc.utils.funcdata.IMap;
+import bjc.funcdata.FunctionalMap;
+import bjc.funcdata.IMap;
 import bjc.utils.funcutils.StringUtils;
 import bjc.utils.parserutils.TokenUtils;
 

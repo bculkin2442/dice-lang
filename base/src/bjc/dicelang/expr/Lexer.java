@@ -3,7 +3,7 @@ package bjc.dicelang.expr;
 import java.util.LinkedList;
 import java.util.List;
 
-import bjc.utils.funcdata.IList;
+import bjc.funcdata.IList;
 import bjc.utils.parserutils.splitter.ConfigurableTokenSplitter;
 
 /*

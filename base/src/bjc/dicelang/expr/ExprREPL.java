@@ -2,8 +2,8 @@ package bjc.dicelang.expr;
 
 import java.util.Scanner;
 
-import bjc.utils.data.ITree;
-import bjc.utils.funcdata.IList;
+import bjc.data.ITree;
+import bjc.funcdata.IList;
 import bjc.utils.parserutils.TreeConstructor;
 
 /**

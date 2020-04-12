@@ -1,6 +1,6 @@
 package bjc.dicelang.dicev2;
 
-import bjc.utils.data.GeneratingIterator;
+import bjc.data.GeneratingIterator;
 
 import java.util.Comparator;
 import java.util.function.LongPredicate;

@@ -1,6 +1,6 @@
 package bjc.dicelang.expr;
 
-import bjc.utils.data.ITree;
+import bjc.data.ITree;
 
 /**
  * Parser for simple math expressions.

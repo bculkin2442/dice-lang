@@ -3,8 +3,8 @@ package bjc.dicelang.cli;
 import bjc.dicelang.Define;
 import bjc.dicelang.DiceLangEngine;
 import bjc.dicelang.Errors;
-import bjc.utils.funcdata.FunctionalMap;
-import bjc.utils.funcdata.IMap;
+import bjc.funcdata.FunctionalMap;
+import bjc.funcdata.IMap;
 
 import java.io.IOException;
 import java.util.LinkedList;

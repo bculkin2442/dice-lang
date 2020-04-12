@@ -6,7 +6,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
-import bjc.utils.data.CircularIterator;
+import bjc.data.CircularIterator;
 
 import static bjc.dicelang.Errors.ErrorKey.*;
 

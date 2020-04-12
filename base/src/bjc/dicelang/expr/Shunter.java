@@ -3,8 +3,8 @@ package bjc.dicelang.expr;
 import java.util.Deque;
 import java.util.LinkedList;
 
-import bjc.utils.funcdata.FunctionalList;
-import bjc.utils.funcdata.IList;
+import bjc.funcdata.FunctionalList;
+import bjc.funcdata.IList;
 
 /**
  * Converts a infix series of tokens into a prefix series of tokens.

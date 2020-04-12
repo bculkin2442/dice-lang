@@ -18,11 +18,11 @@ import bjc.dicelang.dice.SimpleDieList;
 import bjc.dicelang.tokens.DiceToken;
 import bjc.dicelang.tokens.FloatToken;
 import bjc.dicelang.tokens.Token;
-import bjc.utils.data.ITree;
-import bjc.utils.data.SingleIterator;
-import bjc.utils.data.TopDownTransformIterator;
-import bjc.utils.data.TopDownTransformResult;
-import bjc.utils.data.Tree;
+import bjc.data.ITree;
+import bjc.data.SingleIterator;
+import bjc.data.TopDownTransformIterator;
+import bjc.data.TopDownTransformResult;
+import bjc.data.Tree;
 
 import static bjc.dicelang.Errors.ErrorKey.*;
 import static bjc.dicelang.eval.EvaluatorResult.Type.*;

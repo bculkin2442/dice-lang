@@ -1,6 +1,6 @@
 package bjc.dicelang.tokens;
 
-import bjc.utils.funcdata.IList;
+import bjc.funcdata.IList;
 
 /*
  * @TODO 10/09/17 Ben Culkin :TokenReorg

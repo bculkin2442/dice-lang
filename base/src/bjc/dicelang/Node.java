@@ -3,7 +3,7 @@ package bjc.dicelang;
 import bjc.dicelang.eval.EvaluatorResult;
 import bjc.dicelang.eval.FailureEvaluatorResult;
 import bjc.dicelang.tokens.Token;
-import bjc.utils.data.ITree;
+import bjc.data.ITree;
 
 /*
  * @TODO 10/09/17 Ben Culkin :NodeReorg

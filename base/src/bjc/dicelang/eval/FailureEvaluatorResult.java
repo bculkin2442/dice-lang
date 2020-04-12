@@ -1,8 +1,8 @@
 package bjc.dicelang.eval;
 
 import bjc.dicelang.Node;
-import bjc.utils.data.ITree;
-import bjc.utils.data.Tree;
+import bjc.data.ITree;
+import bjc.data.Tree;
 
 /**
  * Represents an evaluation ending in failure.
