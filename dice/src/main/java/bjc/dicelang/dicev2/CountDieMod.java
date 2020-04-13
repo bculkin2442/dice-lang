@@ -2,17 +2,44 @@ package bjc.dicelang.dicev2;
 
 import java.util.function.LongPredicate;
 
+/**
+ * Create a die pool that will count successes/failures.
+ * @author Ben Culkin
+ *
+ */
 public class CountDieMod extends Die {
+	/**
+	 * The pool of dice that will be rolled.
+	 */
 	public final Die[] dice;
 
+	/**
+	 * The predicate for counting successes.
+	 */
 	public final LongPredicate success;
 
+	/**
+	 * The predicate for counting failures.
+	 */
 	public LongPredicate failure;
 
+	/**
+	 * Create a new counted die mod with a specified success criteria.
+	 * 
+	 * @param success The predicate for determining a success.
+	 * @param dice The pool of dice to roll.
+	 */
 	public CountDieMod(LongPredicate success, Die... dice) {
 		this(success, null, dice);
 	}
 
+	/**
+	 * Create a new counted die mod with a specified success criteria.
+	 * 
+	 * @param success The predicate for determining a success.
+	 * @param failure The predicate for determining a failure.
+	 * @param dice The pool of dice to roll.
+	 */
 	public CountDieMod(LongPredicate success, LongPredicate failure, Die... dice) {
 		super();
 
@@ -22,10 +49,12 @@ public class CountDieMod extends Die {
 		this.dice    = dice;
 	}
 
+	@Override
 	public long[] roll() {
 		return new long[] { rollSingle() };
 	}
 
+	@Override
 	public long rollSingle() {
 		long count = 0;
 
@@ -42,10 +71,12 @@ public class CountDieMod extends Die {
 
 	/* :UnoptimizableDice */
 
+	@Override
 	public boolean canOptimize() {
 		return false;
 	}
 
+	@Override
 	public long optimize() {
 		throw new UnsupportedOperationException("Counted dice can't be optimized");
 	}

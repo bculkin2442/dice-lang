@@ -7,6 +7,11 @@ import java.util.List;
 
 import java.util.function.LongPredicate;
 
+/**
+ * A filtered die pool. 
+ * @author Ben Culkin
+ *
+ */
 public class FilterDieMod extends Die {
 	public final Die[] dice;
 
