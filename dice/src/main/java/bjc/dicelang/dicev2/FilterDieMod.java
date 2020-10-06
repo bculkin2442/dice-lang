@@ -13,10 +13,22 @@ import java.util.function.LongPredicate;
  *
  */
 public class FilterDieMod extends Die {
+	/**
+	 * The dice for this die pool.
+	 */
 	public final Die[] dice;
 
+	/**
+	 * The filter for the die pool.
+	 */
 	public final LongPredicate filter;
 
+	/**
+	 * Create a new filtered die pool.
+	 * 
+	 * @param filter The filter for the die pool.
+	 * @param dice The die pool.
+	 */
 	public FilterDieMod(LongPredicate filter, Die[] dice) {
 		super();
 
@@ -25,6 +37,7 @@ public class FilterDieMod extends Die {
 		this.dice = dice;
 	}
 
+	@Override
 	public long[] roll() {
 		List<Long> lst = new ArrayList<>(dice.length);
 
@@ -37,16 +50,19 @@ public class FilterDieMod extends Die {
 		return ListUtils.toPrimitive(lst);
 	}
 
+	@Override
 	public long rollSingle() {
 		throw new UnsupportedOperationException("Filtered dice can't be rolled singly");
 	}
 
 	/* :UnoptimizableDice */
 
+	@Override
 	public boolean canOptimize() {
 		return false;
 	}
 
+	@Override
 	public long optimize() {
 		throw new UnsupportedOperationException("Filtered dice can't be optimized");
 	}

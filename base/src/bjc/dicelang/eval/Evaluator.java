@@ -271,7 +271,7 @@ public class Evaluator {
 				if (curLevel == CoerceSteps.DOUBLE) {
 					IntegerEvaluatorResult rs = (IntegerEvaluatorResult) res;
 
-					nd.resultVal = new FloatEvaluatorResult((double) rs.value);
+					nd.resultVal = new FloatEvaluatorResult(rs.value);
 				}
 			default:
 				/* Do nothing */

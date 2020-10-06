@@ -1,8 +1,22 @@
 package bjc.dicelang.eval;
 
+/**
+ * Evaluator result for an integer.
+ * 
+ * @author Ben Culkin
+ *
+ */
 public class IntegerEvaluatorResult extends EvaluatorResult {
+	/**
+	 * The value for the result.
+	 */
 	public final long value;
 	
+	/**
+	 * Create a new evaluator result.
+	 * 
+	 * @param val The value for the result.
+	 */
 	public IntegerEvaluatorResult(long val) {
 		super(Type.INT);
 		
