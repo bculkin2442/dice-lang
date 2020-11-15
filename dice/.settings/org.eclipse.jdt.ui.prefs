@@ -1,0 +1,5 @@
+eclipse.preferences.version=1
+org.eclipse.jdt.ui.ignorelowercasenames=true
+org.eclipse.jdt.ui.importorder=java;javax;org;com;\#bjc.dicelang.neodice.DiePoolFactory;\#bjc.dicelang.neodice.DieFactory;
+org.eclipse.jdt.ui.ondemandthreshold=1
+org.eclipse.jdt.ui.staticondemandthreshold=1
