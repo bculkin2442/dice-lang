@@ -1,7 +1,10 @@
 package bjc.dicelang.neodice;
 
 import java.util.*;
+import java.util.function.*;
 import java.util.stream.*;
+
+import bjc.esodata.*;
 
 /**
  * Represents a single polyhedral die.
@@ -29,6 +32,30 @@ public interface Die {
 	default DiePool times(int numTimes) {
 		return new TimesDiePool(this, numTimes);
 	};
+	
+	/**
+	 * Returns a die which will reroll this die as long as the provided condition is true.
+	 * 
+	 * @param condition The condition to reroll the die on.
+	 * 
+	 * @return A die that rerolls when the given condition is met.
+	 */
+	default Die reroll(IntPredicate condition) {
+		return new RerollDie(this, condition, (lst) -> lst.get(lst.size()));
+	}
+	
+	/**
+	 * Returns a die which will reroll this die up to a specified number of times,
+	 * as long as the provided condition is true.
+	 * 
+	 * @param condition The condition to reroll the die on.
+	 * @param limit The maximum number of times to reroll the die.
+	 * 
+	 * @return A die that rerolls when the given condition is met.
+	 */
+	default Die reroll(IntPredicate condition, int limit) {
+		return new RerollDie(this, condition, (lst) -> lst.get(lst.size()), limit);
+	}
 	
 	/**
 	 * Create an iterator which gives rolls of this dice.
@@ -93,4 +120,52 @@ final class TimesDiePool implements DiePool {
 	
 		return Objects.equals(contained, other.contained) && numDice == other.numDice;
 	}
+}
+
+final class RerollDie implements Die {
+	private final Die          contained;
+	
+	private final IntPredicate                           condition;
+	private final Function<MinMaxList<Integer>, Integer> chooser;
+	
+	private int limit = Integer.MAX_VALUE;
+	
+	
+	public RerollDie(Die contained, IntPredicate condition,
+			Function<MinMaxList<Integer>, Integer> chooser) {
+		this.contained = contained;
+		
+		this.condition = condition;
+		this.chooser   = chooser;
+	}
+	
+	public RerollDie(Die contained, IntPredicate condition,
+			Function<MinMaxList<Integer>, Integer> chooser, int limit) {
+		this.contained = contained;
+		
+		this.condition = condition;
+		this.chooser   = chooser;
+		
+		this.limit = limit;
+	}
+	
+	@Override
+	public int roll(Random rng) {
+		int roll = contained.roll(rng);
+		
+		MinMaxList<Integer> newRolls = new MinMaxList<Integer>(
+				Comparator.naturalOrder(), roll);
+		
+		int rerollCount = 0;
+		while (condition.test(roll) && rerollCount < limit) {
+			roll = contained.roll(rng);
+			newRolls.add(roll);
+			
+			rerollCount += 1;
+		}
+		
+		return chooser.apply(newRolls);
+	}
+
+	// No toString, because IntPredicate can't be converted to a string
 }
