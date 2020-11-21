@@ -20,7 +20,7 @@ public class PolyhedralDieCommand implements Command {
 				
 				if (numSides < 0) throw new DieBoxException("Number of sides to polyhedral-die was not valid (must be less than 0, was %d)", numSides);
 				
-				return new DieStatementValue(DieFactory.polyhedral(numSides));
+				return new DieStatementValue(Die.polyhedral(numSides));
 			} else {
 				throw new DieBoxException("Number of sides to polyhedral-die wasn't an integer (was %s, of type %s)",
 						sideValue, sideValue.type);

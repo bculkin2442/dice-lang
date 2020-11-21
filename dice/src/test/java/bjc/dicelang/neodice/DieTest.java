@@ -12,7 +12,7 @@ public class DieTest {
 
 	@Test
 	public void onesidedDiceReturnOne() {
-		Die die = DieFactory.polyhedral(1);
+		Die die = Die.polyhedral(1);
 		
 		for (int i = 0; i < 10; i++) {
 			assertEquals("One-sided dice always return 1", 1, die.roll(rng));
@@ -21,7 +21,7 @@ public class DieTest {
 	
 	@Test
 	public void polyhedralDiceStayInRange() {
-		Die die = DieFactory.polyhedral(6);
+		Die die = Die.polyhedral(6);
 		
 		for (int i = 0; i < 50; i++) {
 			int result = die.roll(rng);
@@ -34,9 +34,9 @@ public class DieTest {
 	
 	@Test
 	public void polyhedralDiceEqualityFunctionsProperly() {
-		Die dieA1 = DieFactory.polyhedral(1);
-		Die dieA2 = DieFactory.polyhedral(1);
-		Die dieB1 = DieFactory.polyhedral(2);
+		Die dieA1 = Die.polyhedral(1);
+		Die dieA2 = Die.polyhedral(1);
+		Die dieB1 = Die.polyhedral(2);
 		
 		assertEquals("Polyhedral dice with the same number of sides are equal",
 				dieA1, dieA2);

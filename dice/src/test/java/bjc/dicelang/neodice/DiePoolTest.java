@@ -12,8 +12,8 @@ public class DiePoolTest {
 	
 	@Test
 	public void containedOneDieYieldsOneDie() {
-		Die     oneSidedDie = DieFactory.polyhedral(1);
-		DiePool pool        = DiePoolFactory.containing(oneSidedDie);
+		Die     oneSidedDie = Die.polyhedral(1);
+		DiePool pool        = DiePool.containing(oneSidedDie);
 		
 		assertArrayEquals(
 				"A contained pool created with one die, yields that die",
@@ -22,8 +22,8 @@ public class DiePoolTest {
 	
 	@Test
 	public void containedOneDieRollsOneDie() {
-		Die     oneSidedDie = DieFactory.polyhedral(1);
-		DiePool pool        = DiePoolFactory.containing(oneSidedDie);
+		Die     oneSidedDie = Die.polyhedral(1);
+		DiePool pool        = DiePool.containing(oneSidedDie);
 		
 		for (int i = 0; i < 10; i++) {
 			assertArrayEquals("One-die pools roll one die",

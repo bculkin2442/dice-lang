@@ -1,27 +1,10 @@
-package bjc.dicelang.neodice;
+package bjc.dicelang.neodice.diepool;
 
 import java.util.*;
 
-/**
- * Various static functions which create instances of DiePool.
- * 
- * @author Ben Culkin
- *
- */
-public class DiePoolFactory {
-	/**
-	 * Create a die pool containing the provided dice.
-	 * 
-	 * @param dice The dice to put into the pool.
-	 * 
-	 * @return A pool which contains the provided dice.
-	 */
-	public static DiePool containing(Die... dice) {
-		return new FixedDiePool(dice);
-	}
-}
+import bjc.dicelang.neodice.*;
 
-final class FixedDiePool implements DiePool {
+public class FixedDiePool implements DiePool {
 	private final Die[] dice;
 
 	public FixedDiePool(Die[] dice) {

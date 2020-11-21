@@ -4,7 +4,8 @@ import java.util.*;
 import java.util.function.*;
 import java.util.stream.*;
 
-import bjc.esodata.*;
+import bjc.dicelang.neodice.die.*;
+import bjc.dicelang.neodice.diepool.*;
 
 /**
  * Represents a single polyhedral die.
@@ -67,105 +68,15 @@ public interface Die {
 	default Iterator<Integer> iterator(Random rng) {
 		return IntStream.generate(() -> this.roll(rng)).iterator();
 	}
-}
 
-final class TimesDiePool implements DiePool {
-	private final Die contained;
-	private final int numDice;
-
-	public TimesDiePool(Die contained, int numDice) {
-		this.contained = contained;
-		this.numDice = numDice;
+	/**
+	 * Create a simple polyhedral die with a fixed number of sides.
+	 * 
+	 * @param sides The number of sides for the die.
+	 * 
+	 * @return A die which returns a result from 1 to sides.
+	 */
+	static Die polyhedral(int sides) {
+		return new PolyhedralDie(sides);
 	}
-
-	@Override
-	public int[] roll(Random rng) {
-		int[] results = new int[numDice];
-		
-		for (int index = 0; index < numDice; index++) {
-			results[index] = contained.roll(rng);
-		}
-		
-		return results;
-	}
-	
-	@Override
-	public Die[] contained() {
-		Die[] results = new Die[numDice];
-		
-		for (int index = 0; index < numDice; index++) {
-			results[index] = contained;
-		}
-		
-		return results;
-	}
-
-	@Override
-	public String toString() {
-		return String.format("%d%s", numDice, contained);
-	}
-	
-	@Override
-	public int hashCode() {
-		return Objects.hash(contained, numDice);
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)                  return true;
-		if (obj == null)                  return false;
-		if (getClass() != obj.getClass()) return false;
-		
-		TimesDiePool other = (TimesDiePool) obj;
-	
-		return Objects.equals(contained, other.contained) && numDice == other.numDice;
-	}
-}
-
-final class RerollDie implements Die {
-	private final Die          contained;
-	
-	private final IntPredicate                           condition;
-	private final Function<MinMaxList<Integer>, Integer> chooser;
-	
-	private int limit = Integer.MAX_VALUE;
-	
-	
-	public RerollDie(Die contained, IntPredicate condition,
-			Function<MinMaxList<Integer>, Integer> chooser) {
-		this.contained = contained;
-		
-		this.condition = condition;
-		this.chooser   = chooser;
-	}
-	
-	public RerollDie(Die contained, IntPredicate condition,
-			Function<MinMaxList<Integer>, Integer> chooser, int limit) {
-		this.contained = contained;
-		
-		this.condition = condition;
-		this.chooser   = chooser;
-		
-		this.limit = limit;
-	}
-	
-	@Override
-	public int roll(Random rng) {
-		int roll = contained.roll(rng);
-		
-		MinMaxList<Integer> newRolls = new MinMaxList<Integer>(
-				Comparator.naturalOrder(), roll);
-		
-		int rerollCount = 0;
-		while (condition.test(roll) && rerollCount < limit) {
-			roll = contained.roll(rng);
-			newRolls.add(roll);
-			
-			rerollCount += 1;
-		}
-		
-		return chooser.apply(newRolls);
-	}
-
-	// No toString, because IntPredicate can't be converted to a string
 }

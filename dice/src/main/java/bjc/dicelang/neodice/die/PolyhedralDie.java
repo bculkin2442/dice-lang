@@ -1,27 +1,10 @@
-package bjc.dicelang.neodice;
+package bjc.dicelang.neodice.die;
 
 import java.util.*;
 
-/**
- * Various static functions which create instances of Die.
- * 
- * @author Ben Culkin
- *
- */
-public class DieFactory {
-	/**
-	 * Create a simple polyhedral die with a fixed number of sides.
-	 * 
-	 * @param sides The number of sides for the die.
-	 * 
-	 * @return A die which returns a result from 1 to sides.
-	 */
-	public static Die polyhedral(int sides) {
-		return new PolyhedralDie(sides);
-	}
-}
+import bjc.dicelang.neodice.*;
 
-final class PolyhedralDie implements Die {
+public class PolyhedralDie implements Die {
 	private final int sides;
 
 	public PolyhedralDie(int sides) {
