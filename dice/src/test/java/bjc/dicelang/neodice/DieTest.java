@@ -32,6 +32,7 @@ public class DieTest {
 		}
 	}
 	
+	@Test
 	public void polyhedralDiceEqualityFunctionsProperly() {
 		Die dieA1 = DieFactory.polyhedral(1);
 		Die dieA2 = DieFactory.polyhedral(1);
