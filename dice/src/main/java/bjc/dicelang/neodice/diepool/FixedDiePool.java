@@ -1,55 +1,46 @@
 package bjc.dicelang.neodice.diepool;
 
 import java.util.*;
+import java.util.stream.*;
 
 import bjc.dicelang.neodice.*;
 
-public class FixedDiePool implements DiePool {
-	private final Die[] dice;
+public class FixedDiePool<SideType> implements IDiePool<SideType> {
+	private final List<IDie<SideType>> dice;
 
-	public FixedDiePool(Die[] dice) {
+	public FixedDiePool(List<IDie<SideType>> dice) {
 		this.dice = dice;
 	}
-
-	@Override
-	public int[] roll(Random rng) {
-		int[] results = new int[dice.length];
-		
-		for (int index = 0; index < dice.length; index++) {
-			results[index] = dice[index].roll(rng);
+	
+	@SafeVarargs
+	public FixedDiePool(IDie<SideType>...dice) {
+		this.dice = new ArrayList<>(dice.length);
+		for (IDie<SideType> die : dice) {
+			this.dice.add(die);
 		}
-		
-		return results;
 	}
 
 	@Override
-	public Die[] contained() {
+	public Stream<SideType> roll(Random rng) {
+		return dice.stream().map((die) -> die.roll(rng));
+	}
+
+	@Override
+	public List<IDie<SideType>> contained() {
 		return dice;
 	}
 
 	
 	@Override
 	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		
-		for (int i = 0; i < dice.length; i++) {
-			Die die = dice[i];
-			
-			builder.append(die);
-			
-			// Don't add an extra trailing comma
-			if (i < dice.length - 1) builder.append(", ");
-		}
-		
-		return builder.toString();
+		return dice.stream()
+			.map(IDie<SideType>::toString)
+			.collect(Collectors.joining(", "));
 	}
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + Arrays.hashCode(dice);
-		return result;
+		return Objects.hash(dice);
 	}
 
 	@Override
@@ -57,9 +48,9 @@ public class FixedDiePool implements DiePool {
 		if (this == obj)                  return true;
 		if (obj == null)                  return false;
 		if (getClass() != obj.getClass()) return false;
+	
+		FixedDiePool<?> other = (FixedDiePool<?>) obj;
 		
-		FixedDiePool other = (FixedDiePool) obj;
-		
-		return Arrays.equals(dice, other.dice);
+		return Objects.equals(dice, other.dice);
 	}
 }

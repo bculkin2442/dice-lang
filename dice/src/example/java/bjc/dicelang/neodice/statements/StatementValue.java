@@ -8,8 +8,6 @@ public abstract class StatementValue {
 		BOOLEAN,
 		INTEGER,
 		
-		INT_ARRAY,
-		
 		DIE,
 		DIEPOOL,
 		

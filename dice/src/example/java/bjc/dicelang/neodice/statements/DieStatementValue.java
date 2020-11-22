@@ -7,11 +7,13 @@ import java.util.*;
 import bjc.dicelang.neodice.*;
 
 public class DieStatementValue extends StatementValue {
-	public final Die value;
+	public final Type sideType;
+	public final IDie<StatementValue> value;
 	
-	public DieStatementValue(Die value) {
+	public DieStatementValue(Type sideType, IDie<StatementValue> value) {
 		super(DIE);
 		
+		this.sideType = sideType;
 		this.value = value;
 	}
 	

@@ -4,7 +4,7 @@ import java.util.*;
 
 import bjc.dicelang.neodice.*;
 
-public class PolyhedralDie implements Die {
+public class PolyhedralDie implements IDie<Integer> {
 	private final int sides;
 
 	public PolyhedralDie(int sides) {
@@ -12,7 +12,7 @@ public class PolyhedralDie implements Die {
 	}
 
 	@Override
-	public int roll(Random rng) {
+	public Integer roll(Random rng) {
 		// Dice are one-based, not zero-based.
 		return rng.nextInt(sides) + 1;
 	}

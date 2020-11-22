@@ -18,11 +18,16 @@ public class RollCommand implements Command {
 			if (toRoll.type == DIE) {
 				DieStatementValue die = (DieStatementValue) toRoll;
 				
-				return new IntegerStatementValue(die.value.roll(state.rng));
+				return die.value.roll(state.rng);
 			} else if (toRoll.type == DIEPOOL) {
 				DiePoolStatementValue pool = (DiePoolStatementValue) toRoll;
 				
-				return new IntArrayStatementValue(pool.value.roll(state.rng));
+				StatementValue[] values = pool.value
+						.roll(state.rng)
+						.toArray((sz) -> new StatementValue[sz]);
+				
+				return new ArrayStatementValue<>(pool.elementType,
+						values);
 			} else {
 				throw new DieBoxException("Roll was provided something that wasn't rollable (only DIE and DIEPOOL objects are rollable) (was %s, of type %s)",
 						toRoll, toRoll.type);

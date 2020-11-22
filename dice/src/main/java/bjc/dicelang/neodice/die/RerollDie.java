@@ -6,39 +6,45 @@ import java.util.function.*;
 import bjc.dicelang.neodice.*;
 import bjc.esodata.*;
 
-public class RerollDie implements Die {
-	private final Die          contained;
+public class RerollDie<SideType> implements IDie<SideType> {
+	private final IDie<SideType> contained;
 	
-	private final IntPredicate                           condition;
-	private final Function<MinMaxList<Integer>, Integer> chooser;
+	private final Predicate<SideType>                    condition;
+	private final Function<MinMaxList<SideType>, SideType> chooser;
+	
+	private final Comparator<SideType> comparer;
 	
 	private int limit = Integer.MAX_VALUE;
 	
-	
-	public RerollDie(Die contained, IntPredicate condition,
-			Function<MinMaxList<Integer>, Integer> chooser) {
+	private RerollDie(
+			Comparator<SideType> comparer,
+			IDie<SideType> contained,
+			Predicate<SideType> condition,
+			Function<MinMaxList<SideType>, SideType> chooser) {
+		this.comparer = comparer;
+		
 		this.contained = contained;
 		
 		this.condition = condition;
 		this.chooser   = chooser;
 	}
 	
-	public RerollDie(Die contained, IntPredicate condition,
-			Function<MinMaxList<Integer>, Integer> chooser, int limit) {
-		this.contained = contained;
-		
-		this.condition = condition;
-		this.chooser   = chooser;
+	private RerollDie(
+			Comparator<SideType> comparer,
+			IDie<SideType> contained,
+			Predicate<SideType> condition,
+			Function<MinMaxList<SideType>, SideType> chooser,
+			int limit) {
+		this(comparer, contained, condition, chooser);
 		
 		this.limit = limit;
 	}
 	
 	@Override
-	public int roll(Random rng) {
-		int roll = contained.roll(rng);
-		
-		MinMaxList<Integer> newRolls = new MinMaxList<Integer>(
-				Comparator.naturalOrder(), roll);
+	public SideType roll(Random rng) {
+		SideType roll = contained.roll(rng);
+
+		MinMaxList<SideType> newRolls = new MinMaxList<>(comparer, roll);
 		
 		int rerollCount = 0;
 		while (condition.test(roll) && rerollCount < limit) {
@@ -51,5 +57,36 @@ public class RerollDie implements Die {
 		return chooser.apply(newRolls);
 	}
 
-	// No toString, because IntPredicate can't be converted to a string
+	public static <Side extends Comparable<Side>> IDie<Side> create(
+			IDie<Side> contained,
+			Predicate<Side> condition,
+			Function<MinMaxList<Side>, Side> chooser) {
+		return new RerollDie<>(Comparator.naturalOrder(), contained, condition, chooser);
+	}
+	
+	public static <Side extends Comparable<Side>> IDie<Side> create(
+			IDie<Side> contained,
+			Predicate<Side> condition,
+			Function<MinMaxList<Side>, Side> chooser,
+			int limit) {
+		return new RerollDie<>(Comparator.naturalOrder(), contained, condition, chooser, limit);
+	}
+	
+
+	public static <Side> IDie<Side> create(
+			Comparator<Side> comparer,
+			IDie<Side> contained,
+			Predicate<Side> condition,
+			Function<MinMaxList<Side>, Side> chooser) {
+		return new RerollDie<Side>(comparer, contained, condition, chooser);
+	}
+	
+	public static <Side> IDie<Side> create(
+			Comparator<Side> comparer,
+			IDie<Side> contained,
+			Predicate<Side> condition,
+			Function<MinMaxList<Side>, Side> chooser,
+			int limit) {
+		return new RerollDie<Side>(comparer, contained, condition, chooser, limit);
+	}
 }

@@ -13,7 +13,7 @@ import bjc.dicelang.neodice.diepool.*;
  *
  */
 @FunctionalInterface
-public interface Die {
+public interface IDie<SideType> {
 	/**
 	 * Rolls this die.
 	 * 
@@ -21,7 +21,7 @@ public interface Die {
 	 * 
 	 * @return The result of rolling the die.
 	 */
-	public int roll(Random rng);
+	public SideType roll(Random rng);
 	
 	/**
 	 * Returns a die pool which rolls this die the specified number of times.
@@ -30,8 +30,11 @@ public interface Die {
 	 * 
 	 * @return A die pool that rolls this die the specified number of times.
 	 */
-	default DiePool times(int numTimes) {
-		return new TimesDiePool(this, numTimes);
+	default IDiePool<SideType> times(int numTimes) {
+		return new ExpandDiePool<>(this, (die, rng) -> {
+			return Stream.generate(() -> die.roll(rng))
+					.limit(numTimes);
+		});
 	};
 	
 	/**
@@ -41,8 +44,11 @@ public interface Die {
 	 * 
 	 * @return A die that rerolls when the given condition is met.
 	 */
-	default Die reroll(IntPredicate condition) {
-		return new RerollDie(this, condition, (lst) -> lst.get(lst.size()));
+	default IDie<SideType> reroll(
+			Comparator<SideType> comparer,
+			Predicate<SideType> condition) {
+		return RerollDie.create(comparer, this, condition,
+				(list) -> list.get(list.size()));
 	}
 	
 	/**
@@ -54,21 +60,29 @@ public interface Die {
 	 * 
 	 * @return A die that rerolls when the given condition is met.
 	 */
-	default Die reroll(IntPredicate condition, int limit) {
-		return new RerollDie(this, condition, (lst) -> lst.get(lst.size()), limit);
+	default IDie<SideType> reroll(
+			Comparator<SideType> comparer,
+			Predicate<SideType> condition,
+			int limit) {
+		return RerollDie.create(comparer, this, condition,
+				(list) -> list.get(list.size()), limit);
 	}
 	
 	/**
-	 * Create an iterator which gives rolls of this dice.
+	 * Create an stream which gives rolls of this dice.
 	 * 
 	 * @param rng The source for random numbers.
 	 * 
 	 * @return An iterator which gives rolls of this dice.
 	 */
-	default Iterator<Integer> iterator(Random rng) {
-		return IntStream.generate(() -> this.roll(rng)).iterator();
+	default Stream<SideType> stream(Random rng) {
+		return Stream.generate(() -> this.roll(rng));
 	}
-
+	
+	default <NewType> IDie<NewType> transform(Function<SideType, NewType> mapper) {
+		return (rng) -> mapper.apply(this.roll(rng));
+	}
+	
 	/**
 	 * Create a simple polyhedral die with a fixed number of sides.
 	 * 
@@ -76,7 +90,7 @@ public interface Die {
 	 * 
 	 * @return A die which returns a result from 1 to sides.
 	 */
-	static Die polyhedral(int sides) {
+	static IDie<Integer> polyhedral(int sides) {
 		return new PolyhedralDie(sides);
 	}
 }

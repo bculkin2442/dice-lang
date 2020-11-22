@@ -1,35 +1,31 @@
 package bjc.dicelang.neodice.diepool;
 
 import java.util.*;
+import java.util.stream.*;
 
 import bjc.dicelang.neodice.*;
 
-public class TimesDiePool implements DiePool {
-	private final Die contained;
+public class TimesDiePool<SideType> implements IDiePool<SideType> {
+	private final IDie<SideType> contained;
 	private final int numDice;
 
-	public TimesDiePool(Die contained, int numDice) {
+	public TimesDiePool(IDie<SideType> contained, int numDice) {
 		this.contained = contained;
 		this.numDice = numDice;
 	}
 
 	@Override
-	public int[] roll(Random rng) {
-		int[] results = new int[numDice];
-		
-		for (int index = 0; index < numDice; index++) {
-			results[index] = contained.roll(rng);
-		}
-		
-		return results;
+	public Stream<SideType> roll(Random rng) {
+		return Stream.generate(() -> contained.roll(rng))
+			.limit(numDice);
 	}
 	
 	@Override
-	public Die[] contained() {
-		Die[] results = new Die[numDice];
+	public List<IDie<SideType>> contained() {
+		List<IDie<SideType>> results = new ArrayList<>(numDice);
 		
 		for (int index = 0; index < numDice; index++) {
-			results[index] = contained;
+			results.add(contained);
 		}
 		
 		return results;
@@ -51,7 +47,7 @@ public class TimesDiePool implements DiePool {
 		if (obj == null)                  return false;
 		if (getClass() != obj.getClass()) return false;
 		
-		TimesDiePool other = (TimesDiePool) obj;
+		TimesDiePool<?> other = (TimesDiePool<?>) obj;
 	
 		return Objects.equals(contained, other.contained) && numDice == other.numDice;
 	}

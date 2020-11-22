@@ -7,11 +7,13 @@ import java.util.*;
 import bjc.dicelang.neodice.*;
 
 public class DiePoolStatementValue extends StatementValue {
-	public final DiePool value;
+	public final Type elementType;
+	public final IDiePool<StatementValue> value;
 	
-	public DiePoolStatementValue(DiePool value) {
+	public DiePoolStatementValue(Type elementType, IDiePool<StatementValue> value) {
 		super(DIEPOOL);
 		
+		this.elementType = elementType;
 		this.value = value;
 	}
 	
