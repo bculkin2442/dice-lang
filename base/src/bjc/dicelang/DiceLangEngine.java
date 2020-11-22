@@ -531,7 +531,7 @@ public class DiceLangEngine {
 		/* Reinsert non-expanded tokens */
 		fullyExpandedTokens = fullyExpandedTokens.map(tk -> {
 			if (tk.startsWith("nonExpandToken"))
-				return nonExpandedTokens.get(tk);
+				return nonExpandedTokens.get(tk).get();
 
 			return tk;
 		});
@@ -715,7 +715,7 @@ public class DiceLangEngine {
 	 * 
 	 */
 	public String getStringLiteral(final int key) {
-		return stringLits.get(key);
+		return stringLits.get(key).get();
 	}
 
 	/* Add a string literal to the string literal table. */

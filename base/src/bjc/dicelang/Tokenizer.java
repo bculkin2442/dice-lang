@@ -75,7 +75,7 @@ public class Tokenizer {
 		Token tk = Token.NIL_TOKEN;
 
 		if (litTokens.containsKey(token)) {
-			tk = new Token(litTokens.get(token));
+			tk = new Token(litTokens.get(token).get());
 		} else {
 			switch (token.charAt(0)) {
 			case '(':
@@ -175,7 +175,7 @@ public class Tokenizer {
 			if (stringLit.matches()) {
 				final int litNum = Integer.parseInt(stringLit.group(1));
 
-				eng.addStringLiteral(litNum, stringLts.get(token));
+				eng.addStringLiteral(litNum, stringLts.get(token).get());
 				tk = new Token(STRING_LIT, litNum);
 			} else {
 				/* Everything else is a symbol */

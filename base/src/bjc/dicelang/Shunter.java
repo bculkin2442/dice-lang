@@ -319,13 +319,13 @@ public class Shunter {
 		if(rght.type == TAGOPR) {
 			rightPrecedence = (int) rght.intValue;
 		} else {
-			rightPrecedence = ops.get(right);
+			rightPrecedence = ops.get(right).get();
 		}
 
 		if(lft.type == TAGOPR) {
 			leftPrecedence = (int) lft.intValue;
 		} else {
-			leftPrecedence = ops.get(left);
+			leftPrecedence = ops.get(left).get();
 		}
 
 		if(rightAssoc.contains(left)) {
