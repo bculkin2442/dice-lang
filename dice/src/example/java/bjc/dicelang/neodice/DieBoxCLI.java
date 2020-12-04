@@ -20,18 +20,42 @@ import bjc.funcdata.*;
  */
 public class DieBoxCLI {
 	private static final Pattern INT_PATTERN = Pattern.compile("(?:\\+|-)?\\d+");
-	Scanner input;
+	/**
+	 * The scanner we read input from.
+	 */
+	public Scanner input;
+	/**
+	 * The place we write output to.
+	 */
 	public PrintStream output;
 
+	/**
+	 * The current set of variable bindings
+	 */
 	public IMap<String, StatementValue> bindings = new FunctionalMap<>();
 
+	/**
+	 * The current source of random numbers.
+	 */
 	public Random rng = new Random();
 
-	static final IMap<String, Command> builtInCommands;
-	static final IMap<String, Command> builtInliterals;
+	/**
+	 * The built-in diebox commands.
+	 */
+	public static final IMap<String, Command> builtInCommands;
+	/**
+	 * The built-in diebox literal formers.
+	 */
+	public static final IMap<String, Command> builtInliterals;
 
-	final IMap<String, Command> commands;
-	final IMap<String, Command> literals;
+	/**
+	 * The current set of diebox commands.
+	 */
+	public final IMap<String, Command> commands;
+	/**
+	 * The current set of diebox literal-formers.
+	 */
+	public final IMap<String, Command> literals;
 
 	private int numStatements = 0;
 
@@ -169,6 +193,13 @@ public class DieBoxCLI {
 		output.close();
 	}
 
+	/**
+	 * Extract an instance of {@link StatementValue} from a source of strings.
+	 * 
+	 * @param words The strings to use.
+	 * 
+	 * @return A statement value, parsed from the strings.
+	 */
 	public StatementValue runStatement(Iterator<String> words) {
 		if (!words.hasNext()) {
 			return VOID_INST;
@@ -204,10 +235,23 @@ public class DieBoxCLI {
 			// Attempt to use a mapped command first
 			StatementValue val = commands.get(command)
 					.map((com) -> com.execute(words, state))
-					.orElseThrow(() -> new DieBoxException(
-							"Unknown command %s", command));
+					.orElseThrow(() -> handleUnknownCommand(command));
 			return val;
 		}
+	}
+
+	private DieBoxException handleUnknownCommand(String command) {
+		StringBuilder msg = new StringBuilder("Unknown command ");
+		msg.append(command);
+		msg.append(".");
+		
+		if (INT_PATTERN.matcher(command).matches()) {
+			msg.append("\n...Int literals must start with #, so try #");
+			msg.append(command);
+			msg.append(" instead.");
+		}
+		
+		return new DieBoxException(msg.toString());
 	}
 
 	private StatementValue parseActualLiteral(String litText) {
