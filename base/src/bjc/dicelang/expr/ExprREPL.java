@@ -2,8 +2,8 @@ package bjc.dicelang.expr;
 
 import java.util.Scanner;
 
-import bjc.data.ITree;
-import bjc.funcdata.IList;
+import bjc.data.Tree;
+import bjc.funcdata.ListEx;
 import bjc.utils.parserutils.TreeConstructor;
 
 /**
@@ -54,7 +54,7 @@ public class ExprREPL {
 			System.out.println();
 
 			/* Shunt infix tokens to postfix tokens. */
-			final IList<Token> postfixTokens = Shunter.shuntTokens(infixTokens);
+			final ListEx<Token> postfixTokens = Shunter.shuntTokens(infixTokens);
 			System.out.println("Lexed tokens: ");
 			for(final Token tok : postfixTokens) {
 				System.out.println("\t" + tok);
@@ -73,7 +73,7 @@ public class ExprREPL {
 			/*
 			 * Construct a tree from the list of postfixed tokens.
 			 */
-			final ITree<Token> ast = TreeConstructor.constructTree(postfixTokens,
+			final Tree<Token> ast = TreeConstructor.constructTree(postfixTokens,
 					tok -> tok.typ.isOperator);
 
 			/*

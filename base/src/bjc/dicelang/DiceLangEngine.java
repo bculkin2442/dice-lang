@@ -14,12 +14,12 @@ import bjc.dicelang.eval.EvaluatorResult;
 import bjc.dicelang.eval.FailureEvaluatorResult;
 import bjc.dicelang.scl.StreamEngine;
 import bjc.dicelang.tokens.Token;
-import bjc.data.ITree;
+import bjc.data.Tree;
 import bjc.funcdata.FunctionalList;
 import bjc.funcdata.FunctionalMap;
 import bjc.funcdata.FunctionalStringTokenizer;
-import bjc.funcdata.IList;
-import bjc.funcdata.IMap;
+import bjc.funcdata.ListEx;
+import bjc.funcdata.MapEx;
 import bjc.utils.funcutils.ListUtils;
 import bjc.utils.parserutils.TokenUtils;
 import bjc.utils.parserutils.splitter.ConfigurableTokenSplitter;
@@ -71,15 +71,15 @@ public class DiceLangEngine {
 	/**
 	 * The symbol table.
 	 */
-	public final IMap<Integer, String> symTable;
+	public final MapEx<Integer, String> symTable;
 
 	/* String literal tables */
-	private final IMap<Integer, String> stringLits;
-	private final IMap<String, String> stringLiterals;
+	private final MapEx<Integer, String> stringLits;
+	private final MapEx<String, String> stringLiterals;
 
 	/* Lists of defns. */
-	private final IList<Define> lineDefns;
-	private final IList<Define> tokenDefns;
+	private final ListEx<Define> lineDefns;
+	private final ListEx<Define> tokenDefns;
 
 	/* Are defns currently sorted by priority? */
 	private boolean defnsSorted;
@@ -237,21 +237,21 @@ public class DiceLangEngine {
 		 * 
 		 * Instead of strings, this should maybe use a RawToken class or something.
 		 */
-		final IList<String> preprocessedTokens = preprocessCommand(command);
+		final ListEx<String> preprocessedTokens = preprocessCommand(command);
 
 		if (preprocessedTokens == null) {
 			return false;
 		}
 
 		/* Lex the string tokens into token-tokens */
-		final IList<Token> lexedTokens = lexTokens(preprocessedTokens);
+		final ListEx<Token> lexedTokens = lexTokens(preprocessedTokens);
 
 		if (lexedTokens == null) {
 			return false;
 		}
 
 		/* Parse the tokens into an AST forest */
-		final IList<ITree<Node>> astForest = new FunctionalList<>();
+		final ListEx<Tree<Node>> astForest = new FunctionalList<>();
 		final boolean succ = Parser.parseTokens(lexedTokens, astForest);
 
 		if (!succ) {
@@ -264,8 +264,8 @@ public class DiceLangEngine {
 	}
 
 	/* Lex string tokens into token-tokens */
-	private IList<Token> lexTokens(final IList<String> preprocessedTokens) {
-		final IList<Token> lexedTokens = new FunctionalList<>();
+	private ListEx<Token> lexTokens(final ListEx<String> preprocessedTokens) {
+		final ListEx<Token> lexedTokens = new FunctionalList<>();
 
 		for (final String token : preprocessedTokens) {
 			String newTok = token;
@@ -308,8 +308,8 @@ public class DiceLangEngine {
 		}
 
 		/* Preshunt preshunt-marked groups of tokens */
-		IList<Token> shuntedTokens = lexedTokens;
-		final IList<Token> preparedTokens = new FunctionalList<>();
+		ListEx<Token> shuntedTokens = lexedTokens;
+		final ListEx<Token> preparedTokens = new FunctionalList<>();
 
 		boolean succ = removePreshuntTokens(lexedTokens, preparedTokens);
 
@@ -348,7 +348,7 @@ public class DiceLangEngine {
 		}
 
 		/* Expand token groups */
-		final IList<Token> readyTokens = shuntedTokens.flatMap(tk -> {
+		final ListEx<Token> readyTokens = shuntedTokens.flatMap(tk -> {
 			if (tk.type == Token.Type.TOKGROUP || tk.type == Token.Type.TAGOP || tk.type == Token.Type.TAGOPR) {
 				String msg = String.format("Expanding token group to: %s\n", tk.tokenValues.toString());
 				LOG.finer(msg);
@@ -396,14 +396,14 @@ public class DiceLangEngine {
 	}
 
 	/* Preprocess a command into a list of string tokens. */
-	private IList<String> preprocessCommand(final String command) {
+	private ListEx<String> preprocessCommand(final String command) {
 		/* Sort the defines if they aren't sorted */
 		if (!defnsSorted) {
 			sortDefns();
 		}
 
 		/* Run the tokens through the stream engine */
-		final IList<String> streamToks = new FunctionalList<>();
+		final ListEx<String> streamToks = new FunctionalList<>();
 		final boolean succ             = streamEng.doStreams(command.split(" "), streamToks);
 
 		if (!succ) {
@@ -486,10 +486,10 @@ public class DiceLangEngine {
 
 		/* Split the command into tokens */
 		final String strang  = destringedCommand.toString();
-		IList<String> tokens = FunctionalStringTokenizer.fromString(strang).toList();
+		ListEx<String> tokens = FunctionalStringTokenizer.fromString(strang).toList();
 
 		/* Temporarily remove non-expanding tokens */
-		final IMap<String, String> nonExpandedTokens = new FunctionalMap<>();
+		final MapEx<String, String> nonExpandedTokens = new FunctionalMap<>();
 		tokens = tokens.map(tk -> {
 			final Matcher nonExpandMatcher = nonExpandPattern.matcher(tk);
 
@@ -518,7 +518,7 @@ public class DiceLangEngine {
 		}
 
 		/* Expand tokens */
-		IList<String> fullyExpandedTokens = tokens.flatMap(opExpander::split);
+		ListEx<String> fullyExpandedTokens = tokens.flatMap(opExpander::split);
 
 		if (debugMode) {
 			String msg = String.format("\tCommand after token expansion: %s\n", fullyExpandedTokens.toString());
@@ -549,10 +549,10 @@ public class DiceLangEngine {
 	}
 
 	/* Evaluate a forest of AST nodes. */
-	private void evaluateForest(final IList<ITree<Node>> astForest) {
+	private void evaluateForest(final ListEx<Tree<Node>> astForest) {
 		int treeNo = 1;
 
-		for (final ITree<Node> ast : astForest) {
+		for (final Tree<Node> ast : astForest) {
 			if (debugMode) {
 				System.out.printf("\t\tTree %d in forest:\n%s\n", treeNo, ast.toString());
 			}
@@ -564,8 +564,8 @@ public class DiceLangEngine {
 				int step = 1;
 
 				/* Evaluate it step by step */
-				for (final Iterator<ITree<Node>> itr = eval.stepDebug(ast); itr.hasNext();) {
-					final ITree<Node> nodeStep = itr.next();
+				for (final Iterator<Tree<Node>> itr = eval.stepDebug(ast); itr.hasNext();) {
+					final Tree<Node> nodeStep = itr.next();
 
 					System.out.printf("\t\tStep %d: Node is %s", step, nodeStep);
 
@@ -590,7 +590,7 @@ public class DiceLangEngine {
 						}
 
 						if (res.type == EvaluatorResult.Type.FAILURE) {
-							ITree<Node> otree = ((FailureEvaluatorResult) res).origVal;
+							Tree<Node> otree = ((FailureEvaluatorResult) res).origVal;
 
 							System.out.printf(" (original tree is %s)", otree);
 						}
@@ -626,13 +626,13 @@ public class DiceLangEngine {
 	}
 
 	/* Preshunt preshunt-marked groups of tokens. */
-	private boolean removePreshuntTokens(final IList<Token> lexedTokens, final IList<Token> preparedTokens) {
+	private boolean removePreshuntTokens(final ListEx<Token> lexedTokens, final ListEx<Token> preparedTokens) {
 		/* Current nesting level of tokens. */
 		int curBraceCount = 0;
 
 		/* Data storage. */
-		final Deque<IList<Token>> bracedTokens = new LinkedList<>();
-		IList<Token> curBracedTokens = new FunctionalList<>();
+		final Deque<ListEx<Token>> bracedTokens = new LinkedList<>();
+		ListEx<Token> curBracedTokens = new FunctionalList<>();
 
 		for (final Token tk : lexedTokens) {
 			if (tk.type == Token.Type.OBRACE && tk.intValue == 2) {
@@ -659,7 +659,7 @@ public class DiceLangEngine {
 
 				curBraceCount -= 1;
 
-				final IList<Token> preshuntTokens = new FunctionalList<>();
+				final ListEx<Token> preshuntTokens = new FunctionalList<>();
 
 				/* Shunt preshunt group. */
 				final boolean success = shunt.shuntTokens(curBracedTokens, preshuntTokens);

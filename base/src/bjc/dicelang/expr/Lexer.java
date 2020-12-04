@@ -3,7 +3,7 @@ package bjc.dicelang.expr;
 import java.util.LinkedList;
 import java.util.List;
 
-import bjc.funcdata.IList;
+import bjc.funcdata.ListEx;
 import bjc.utils.parserutils.splitter.ConfigurableTokenSplitter;
 
 /*
@@ -50,10 +50,10 @@ public class Lexer {
 		/* Process each token. */
 		for(final String spacedToken : spacedTokens) {
 			/* Split on operators. */
-			final IList<String> splitTokens = split.split(spacedToken);
+			final ListEx<String> splitTokens = split.split(spacedToken);
 
 			/* Convert strings to tokens. */
-			final IList<Token> rawTokens = splitTokens.map(tok -> {
+			final ListEx<Token> rawTokens = splitTokens.map(tok -> {
 				return tks.lexToken(tok, spacedToken);
 			});
 

@@ -4,7 +4,7 @@ import bjc.dicelang.Define;
 import bjc.dicelang.DiceLangEngine;
 import bjc.dicelang.Errors;
 import bjc.funcdata.FunctionalMap;
-import bjc.funcdata.IMap;
+import bjc.funcdata.MapEx;
 
 import java.io.IOException;
 import java.util.LinkedList;
@@ -34,7 +34,7 @@ public class DiceLangConsole {
 	/* Are we in multi-line mode? */
 	private boolean multiLine;
 
-	private static IMap<String, DiceLangPragma> pragmas;
+	private static MapEx<String, DiceLangPragma> pragmas;
 
 	static {
 		pragmas = new FunctionalMap<>();

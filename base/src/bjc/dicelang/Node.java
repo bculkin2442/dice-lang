@@ -3,7 +3,7 @@ package bjc.dicelang;
 import bjc.dicelang.eval.EvaluatorResult;
 import bjc.dicelang.eval.FailureEvaluatorResult;
 import bjc.dicelang.tokens.Token;
-import bjc.data.ITree;
+import bjc.data.Tree;
 
 /*
  * @TODO 10/09/17 Ben Culkin :NodeReorg
@@ -124,7 +124,7 @@ public class Node {
 		return new Node(Type.RESULT, res);
 	}
 
-	public static Node FAIL(final ITree<Node> orig) {
+	public static Node FAIL(final Tree<Node> orig) {
 		FailureEvaluatorResult res = new FailureEvaluatorResult(orig);
 
 		return new Node(Type.RESULT, res);

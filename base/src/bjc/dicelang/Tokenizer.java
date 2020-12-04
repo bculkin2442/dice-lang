@@ -8,7 +8,7 @@ import bjc.dicelang.tokens.DiceToken;
 import bjc.dicelang.tokens.FloatToken;
 import bjc.dicelang.tokens.Token;
 import bjc.funcdata.FunctionalMap;
-import bjc.funcdata.IMap;
+import bjc.funcdata.MapEx;
 import bjc.utils.funcutils.StringUtils;
 import bjc.utils.parserutils.TokenUtils;
 
@@ -20,7 +20,7 @@ import static bjc.dicelang.tokens.Token.Type.*;
  */
 public class Tokenizer {
 	/* Literal tokens for tokenization */
-	private static final IMap<String, Token.Type> litTokens;
+	private static final MapEx<String, Token.Type> litTokens;
 
 	private final DiceLangEngine eng;
 
@@ -67,7 +67,7 @@ public class Tokenizer {
 	 * 
 	 * @return A lexed token.
 	 */
-	public Token lexToken(final String token, final IMap<String, String> stringLts) {
+	public Token lexToken(final String token, final MapEx<String, String> stringLts) {
 		if (token.equals("")) {
 			return null;
 		}
@@ -139,7 +139,7 @@ public class Tokenizer {
 	private final Pattern stringLitMatcher = Pattern.compile("\\AstringLiteral(\\d+)\\Z");
 
 	/* Tokenize a literal value. */
-	private Token tokenizeLiteral(final String rtoken, final IMap<String, String> stringLts) {
+	private Token tokenizeLiteral(final String rtoken, final MapEx<String, String> stringLts) {
 		Token tk = Token.NIL_TOKEN;
 
 		String token = rtoken.trim();

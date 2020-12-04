@@ -17,9 +17,9 @@ import java.util.Deque;
 import java.util.LinkedList;
 
 import bjc.dicelang.tokens.Token;
-import bjc.data.ITree;
 import bjc.data.Tree;
-import bjc.funcdata.IList;
+import bjc.data.SimpleTree;
+import bjc.funcdata.ListEx;
 
 /**
  * Parse a series of tree into tokens.
@@ -44,15 +44,15 @@ public class Parser {
 	 *
 	 * @return Whether or not the parse was successful.
 	 */
-	public static boolean parseTokens(final IList<Token> tokens, final IList<ITree<Node>> results) {
-		final Deque<ITree<Node>> working = new LinkedList<>();
+	public static boolean parseTokens(final ListEx<Token> tokens, final ListEx<Tree<Node>> results) {
+		final Deque<Tree<Node>> working = new LinkedList<>();
 
 		for(final Token tk : tokens) {
 			switch(tk.type) {
 			case OBRACKET:
 			case OBRACE:
 				/* Parse opening delims. */
-				working.push(new Tree<>(new Node(OGROUP, tk)));
+				working.push(new SimpleTree<>(new Node(OGROUP, tk)));
 
 				break;
 			case CBRACKET:
@@ -90,8 +90,8 @@ public class Parser {
 					Errors.inst.printError(EK_PARSE_UNOPERAND, tk.toString());
 					return false;
 				} else if(working.size() == 1) {
-					final ITree<Node> operand = working.pop();
-					final ITree<Node> opNode = new Tree<>(new Node(UNARYOP, tk.type));
+					final Tree<Node> operand = working.pop();
+					final Tree<Node> opNode = new SimpleTree<>(new Node(UNARYOP, tk.type));
 
 					opNode.addChild(operand);
 
@@ -108,8 +108,8 @@ public class Parser {
 				if(working.size() == 0) {
 					Errors.inst.printError(EK_PARSE_UNOPERAND, tk.toString());
 				} else {
-					final ITree<Node> operand = working.pop();
-					final ITree<Node> opNode = new Tree<>(new Node(UNARYOP, tk.type));
+					final Tree<Node> operand = working.pop();
+					final Tree<Node> opNode = new SimpleTree<>(new Node(UNARYOP, tk.type));
 
 					opNode.addChild(operand);
 
@@ -123,7 +123,7 @@ public class Parser {
 			case VREF:
 			case DICE_LIT:
 				/* Handle literals. */
-				working.push(new Tree<>(new Node(TOKREF, tk)));
+				working.push(new SimpleTree<>(new Node(TOKREF, tk)));
 				break;
 			default:
 				Errors.inst.printError(EK_PARSE_INVTOKEN, tk.type.toString());
@@ -135,7 +135,7 @@ public class Parser {
 		 * Collect the remaining nodes as the roots of the trees in the
 		 * AST forest.
 		 */
-		for(final ITree<Node> ast : working) {
+		for(final Tree<Node> ast : working) {
 			/* Make sure that the tree are well-formed */
 			if(ast.containsMatching((val) -> {
 				switch(val.type) {
@@ -157,11 +157,11 @@ public class Parser {
 	}
 
 	/* Handle a binary operator. */
-	private static void handleBinaryNode(final Deque<ITree<Node>> working, final Token tk) {
-		final ITree<Node> right = working.pop();
-		final ITree<Node> left = working.pop();
+	private static void handleBinaryNode(final Deque<Tree<Node>> working, final Token tk) {
+		final Tree<Node> right = working.pop();
+		final Tree<Node> left = working.pop();
 
-		final ITree<Node> opNode = new Tree<>(new Node(BINOP, tk.type));
+		final Tree<Node> opNode = new SimpleTree<>(new Node(BINOP, tk.type));
 
 		opNode.addChild(left);
 		opNode.addChild(right);
@@ -170,20 +170,20 @@ public class Parser {
 	}
 
 	/* Parse a closing delimiter. */
-	private static boolean parseClosingGrouper(final Deque<ITree<Node>> working, final Token tk) {
+	private static boolean parseClosingGrouper(final Deque<Tree<Node>> working, final Token tk) {
 		if(working.size() == 0) {
 			Errors.inst.printError(EK_PARSE_NOCLOSE);
 			return false;
 		}
 
-		ITree<Node> groupNode = null;
+		Tree<Node> groupNode = null;
 
 		switch(tk.type) {
 		case CBRACE:
-			groupNode = new Tree<>(new Node(GROUP, Node.GroupType.CODE));
+			groupNode = new SimpleTree<>(new Node(GROUP, Node.GroupType.CODE));
 			break;
 		case CBRACKET:
-			groupNode = new Tree<>(new Node(GROUP, Node.GroupType.ARRAY));
+			groupNode = new SimpleTree<>(new Node(GROUP, Node.GroupType.ARRAY));
 			break;
 		default:
 			Errors.inst.printError(EK_PARSE_UNCLOSE, tk.type.toString());
@@ -198,7 +198,7 @@ public class Parser {
 			matching = new Token(Token.Type.OBRACE, tk.intValue);
 		}
 
-		final ITree<Node> matchNode = new Tree<>(new Node(OGROUP, matching));
+		final Tree<Node> matchNode = new SimpleTree<>(new Node(OGROUP, matching));
 
 		if(!working.contains(matchNode)) {
 			Errors.inst.printError(EK_PARSE_UNCLOSE, tk.toString(), matchNode.toString());
@@ -207,14 +207,14 @@ public class Parser {
 
 			int treeNo = 1;
 
-			for(final ITree<Node> ast : working) {
+			for(final Tree<Node> ast : working) {
 				System.out.println("Tree " + treeNo++ + ": " + ast.toString());
 			}
 
 			return false;
 		}
 
-		final Deque<ITree<Node>> childs = new LinkedList<>();
+		final Deque<Tree<Node>> childs = new LinkedList<>();
 
 		while(!working.peek().equals(matchNode)) {
 			childs.push(working.pop());
@@ -223,7 +223,7 @@ public class Parser {
 		/* Discard opener */
 		working.pop();
 
-		for(final ITree<Node> child : childs) {
+		for(final Tree<Node> child : childs) {
 			groupNode.addChild(child);
 		}
 

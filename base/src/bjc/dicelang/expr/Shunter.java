@@ -4,7 +4,7 @@ import java.util.Deque;
 import java.util.LinkedList;
 
 import bjc.funcdata.FunctionalList;
-import bjc.funcdata.IList;
+import bjc.funcdata.ListEx;
 
 /**
  * Converts a infix series of tokens into a prefix series of tokens.
@@ -20,9 +20,9 @@ public class Shunter {
 	 *
 	 * @return The tokens in postfix order.
 	 */
-	public static IList<Token> shuntTokens(final Token[] infixTokens) {
+	public static ListEx<Token> shuntTokens(final Token[] infixTokens) {
 		/* The returned tokens. */
-		final IList<Token> postfixTokens = new FunctionalList<>();
+		final ListEx<Token> postfixTokens = new FunctionalList<>();
 
 		/* The current stack of operators. */
 		final Deque<Token> opStack = new LinkedList<>();

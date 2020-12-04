@@ -8,8 +8,8 @@ import java.util.Set;
 import bjc.dicelang.tokens.Token;
 import bjc.funcdata.FunctionalList;
 import bjc.funcdata.FunctionalMap;
-import bjc.funcdata.IList;
-import bjc.funcdata.IMap;
+import bjc.funcdata.ListEx;
+import bjc.funcdata.MapEx;
 
 import static bjc.dicelang.Errors.ErrorKey.EK_SHUNT_INVSEP;
 import static bjc.dicelang.Errors.ErrorKey.EK_SHUNT_NOGROUP;
@@ -26,7 +26,7 @@ import static bjc.dicelang.tokens.Token.Type.*;
  */
 public class Shunter {
 	/* The binary operators and their priorities. */
-	IMap<Token.Type, Integer> ops;
+	MapEx<Token.Type, Integer> ops;
 
 	/* Operators that are right-associative */
 	Set<Token.Type> rightAssoc;
@@ -116,7 +116,7 @@ public class Shunter {
 	 *
 	 * @return Whether or not the shunt succeeded.
 	 */
-	public boolean shuntTokens(final IList<Token> tks, final IList<Token> returned) {
+	public boolean shuntTokens(final ListEx<Token> tks, final ListEx<Token> returned) {
 		/* Operator stack for normal and unary operators. */
 		final Deque<Token> opStack = new LinkedList<>();
 		final Deque<Token> unaryOps = new LinkedList<>();
@@ -274,7 +274,7 @@ public class Shunter {
 			opStack.pop();
 		} else if(tk.type == GROUPSEP) {
 			/* Add a grouped token. */
-			final IList<Token> group = new FunctionalList<>();
+			final ListEx<Token> group = new FunctionalList<>();
 
 			while(currReturned.size() != 0 && !currReturned.peek().isGrouper()) {
 				group.add(currReturned.pop());

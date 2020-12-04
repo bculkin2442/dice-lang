@@ -32,7 +32,7 @@ public class DieBoxCLI {
 	/**
 	 * The current set of variable bindings
 	 */
-	public IMap<String, StatementValue> bindings = new FunctionalMap<>();
+	public MapEx<String, StatementValue> bindings = new FunctionalMap<>();
 
 	/**
 	 * The current source of random numbers.
@@ -42,20 +42,20 @@ public class DieBoxCLI {
 	/**
 	 * The built-in diebox commands.
 	 */
-	public static final IMap<String, Command> builtInCommands;
+	public static final MapEx<String, Command> builtInCommands;
 	/**
 	 * The built-in diebox literal formers.
 	 */
-	public static final IMap<String, Command> builtInliterals;
+	public static final MapEx<String, Command> builtInliterals;
 
 	/**
 	 * The current set of diebox commands.
 	 */
-	public final IMap<String, Command> commands;
+	public final MapEx<String, Command> commands;
 	/**
 	 * The current set of diebox literal-formers.
 	 */
-	public final IMap<String, Command> literals;
+	public final MapEx<String, Command> literals;
 
 	private int numStatements = 0;
 

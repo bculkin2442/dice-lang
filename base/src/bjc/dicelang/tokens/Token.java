@@ -1,6 +1,6 @@
 package bjc.dicelang.tokens;
 
-import bjc.funcdata.IList;
+import bjc.funcdata.ListEx;
 
 /*
  * @TODO 10/09/17 Ben Culkin :TokenReorg
@@ -85,7 +85,7 @@ public class Token {
 	 * - TAG* (the tagged construct)
 	 * 
 	 */
-	public IList<Token> tokenValues;
+	public ListEx<Token> tokenValues;
 
 	public Token(final Type typ) {
 		type = typ;
@@ -97,7 +97,7 @@ public class Token {
 		intValue = val;
 	}
 
-	public Token(final Type typ, final IList<Token> tkVals) {
+	public Token(final Type typ, final ListEx<Token> tkVals) {
 		this(typ);
 
 		tokenValues = tkVals;

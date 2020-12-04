@@ -1,6 +1,6 @@
 package bjc.dicelang.expr;
 
-import bjc.data.ITree;
+import bjc.data.Tree;
 
 /**
  * Parser for simple math expressions.
@@ -16,7 +16,7 @@ public class Parser {
 	 *            The AST to canonicalize.
 	 * @return The canonicalized AST.
 	 */
-	public static String toCanonicalExpr(final ITree<Token> ast) {
+	public static String toCanonicalExpr(final Tree<Token> ast) {
 		final Token data = ast.getHead();
 
 		if (ast.getChildrenCount() == 0) {
@@ -25,8 +25,8 @@ public class Parser {
 		}
 
 		/* The left/right children. */
-		final ITree<Token> left = ast.getChild(0);
-		final ITree<Token> right = ast.getChild(1);
+		final Tree<Token> left = ast.getChild(0);
+		final Tree<Token> right = ast.getChild(1);
 
 		/* Recursively canonicalize them. */
 		String leftExpr = toCanonicalExpr(left);

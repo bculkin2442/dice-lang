@@ -1,8 +1,8 @@
 package bjc.dicelang.eval;
 
 import bjc.dicelang.Node;
-import bjc.data.ITree;
 import bjc.data.Tree;
+import bjc.data.SimpleTree;
 
 /**
  * Represents an evaluation ending in failure.
@@ -14,7 +14,7 @@ public class FailureEvaluatorResult extends EvaluatorResult {
 	/**
 	 * Original node data
 	 */
-	public ITree<Node> origVal;
+	public Tree<Node> origVal;
 
 	/**
 	 * Create a new generic failure.
@@ -29,7 +29,7 @@ public class FailureEvaluatorResult extends EvaluatorResult {
 	 * @param orig
 	 *            The tree that caused the failure.
 	 */
-	public FailureEvaluatorResult(final ITree<Node> orig) {
+	public FailureEvaluatorResult(final Tree<Node> orig) {
 		super(Type.FAILURE);
 
 		origVal = orig;
@@ -42,7 +42,7 @@ public class FailureEvaluatorResult extends EvaluatorResult {
 	 *            The node that caused the failure.
 	 */
 	public FailureEvaluatorResult(final Node orig) {
-		this(new Tree<>(orig));
+		this(new SimpleTree<>(orig));
 	}
 	
 	/**
