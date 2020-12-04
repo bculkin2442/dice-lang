@@ -8,9 +8,9 @@ import bjc.dicelang.neodice.*;
 
 public class DiePoolStatementValue extends StatementValue {
 	public final Type elementType;
-	public final IDiePool<StatementValue> value;
+	public final DiePool<StatementValue> value;
 	
-	public DiePoolStatementValue(Type elementType, IDiePool<StatementValue> value) {
+	public DiePoolStatementValue(Type elementType, DiePool<StatementValue> value) {
 		super(DIEPOOL);
 		
 		this.elementType = elementType;

@@ -13,7 +13,7 @@ import bjc.dicelang.neodice.diepool.*;
  *
  */
 @FunctionalInterface
-public interface IDiePool<SideType> {
+public interface DiePool<SideType> {
 	/**
 	 * Roll each die in the pool, and return the results.
 	 * 
@@ -45,7 +45,7 @@ public interface IDiePool<SideType> {
 	 * 
 	 * @throws UnsupportedOperationException If the composite dice can't be retrieved.
 	 */
-	default List<IDie<SideType>> contained() {
+	default List<Die<SideType>> contained() {
 		throw new UnsupportedOperationException("Can't get composite dice");
 	}
 	
@@ -61,7 +61,7 @@ public interface IDiePool<SideType> {
 	 * 
 	 * @return The die pool, which returns its results in sorted order.
 	 */
-	default IDiePool<SideType> sorted(
+	default DiePool<SideType> sorted(
 			Comparator<SideType> comparer,
 			boolean isDescending) {
 		return new TransformDiePool<>(this,
@@ -79,7 +79,7 @@ public interface IDiePool<SideType> {
 	 * 
 	 * @return A die pool which contains only entries that pass the predicate.
 	 */
-	default IDiePool<SideType> filtered(Predicate<SideType> matcher) {
+	default DiePool<SideType> filtered(Predicate<SideType> matcher) {
 		return new TransformDiePool<>(this,
 				(pool) -> pool.filter(matcher));
 	}
@@ -91,7 +91,7 @@ public interface IDiePool<SideType> {
 	 * 
 	 * @return A die pool which has the first entries dropped.
 	 */
-	default IDiePool<SideType> dropFirst(int number) {
+	default DiePool<SideType> dropFirst(int number) {
 		return new TransformDiePool<>(this,
 				(pool) -> pool.skip(number));
 	}
@@ -103,7 +103,7 @@ public interface IDiePool<SideType> {
 	 * 
 	 * @return A die pool which has the last entries dropped.
 	 */
-	default IDiePool<SideType> dropLast(int number) {
+	default DiePool<SideType> dropLast(int number) {
 		return new TransformDiePool<>(this, (pool) -> {
 			Deque<SideType> temp = new ArrayDeque<>();
 			
@@ -122,7 +122,7 @@ public interface IDiePool<SideType> {
 	 * 
 	 * @return A die pool which has the first entries kept.
 	 */
-	default IDiePool<SideType> keepFirst(int number) {
+	default DiePool<SideType> keepFirst(int number) {
 		return new TransformDiePool<>(this,
 				(pool) -> pool.limit(number));
 	}
@@ -134,7 +134,7 @@ public interface IDiePool<SideType> {
 	 * 
 	 * @return A die pool which has the last entries kept.
 	 */
-	default IDiePool<SideType> keepLast(int number) {
+	default DiePool<SideType> keepLast(int number) {
 		return new TransformDiePool<>(this, (pool) -> {
 			Deque<SideType> temp = new ArrayDeque<>();
 			
@@ -158,7 +158,7 @@ public interface IDiePool<SideType> {
 	 * 
 	 * @return A die pool which has the lowest entries dropped.
 	 */
-	default IDiePool<SideType> dropLowest(Comparator<SideType> comparer, int number) {
+	default DiePool<SideType> dropLowest(Comparator<SideType> comparer, int number) {
 		return this.sorted(comparer, false).dropFirst(number);
 	}
 	
@@ -169,7 +169,7 @@ public interface IDiePool<SideType> {
 	 * 
 	 * @return A die pool which has the lowest entries dropped.
 	 */
-	default IDiePool<SideType> dropHighest(Comparator<SideType> comparer,int number) {
+	default DiePool<SideType> dropHighest(Comparator<SideType> comparer,int number) {
 		return this.sorted(comparer, false).dropLast(number);
 	}
 	
@@ -180,7 +180,7 @@ public interface IDiePool<SideType> {
 	 * 
 	 * @return A die pool which has the lowest entries kept.
 	 */
-	default IDiePool<SideType> keepLowest(Comparator<SideType> comparer,int number) {
+	default DiePool<SideType> keepLowest(Comparator<SideType> comparer,int number) {
 		return this.sorted(comparer, false).keepFirst(number);
 	}
 	
@@ -191,7 +191,7 @@ public interface IDiePool<SideType> {
 	 * 
 	 * @return A die pool which has the highest entries kept.
 	 */
-	default IDiePool<SideType> keepHighest(Comparator<SideType> comparer,int number) {
+	default DiePool<SideType> keepHighest(Comparator<SideType> comparer,int number) {
 		return this.sorted(comparer, false).keepLast(number);
 	}
 	
@@ -216,7 +216,7 @@ public interface IDiePool<SideType> {
 	 * @return A pool which contains the provided dice.
 	 */
 	@SafeVarargs
-	static <Side> IDiePool<Side> containing(IDie<Side>... dice) {
+	static <Side> DiePool<Side> containing(Die<Side>... dice) {
 		return new FixedDiePool<>(dice);
 	}
 }

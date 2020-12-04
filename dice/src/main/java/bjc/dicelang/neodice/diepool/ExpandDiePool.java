@@ -6,13 +6,13 @@ import java.util.stream.*;
 
 import bjc.dicelang.neodice.*;
 
-public class ExpandDiePool<SideType> implements IDiePool<SideType> {
-	private final IDie<SideType> contained;
+public class ExpandDiePool<SideType> implements DiePool<SideType> {
+	private final Die<SideType> contained;
 	
-	private final BiFunction<IDie<SideType>, Random, Stream<SideType>> expander;
+	private final BiFunction<Die<SideType>, Random, Stream<SideType>> expander;
 
-	public ExpandDiePool(IDie<SideType> contained,
-			BiFunction<IDie<SideType>, Random, Stream<SideType>> expander) {
+	public ExpandDiePool(Die<SideType> contained,
+			BiFunction<Die<SideType>, Random, Stream<SideType>> expander) {
 		this.contained = contained;
 		this.expander = expander;
 	}

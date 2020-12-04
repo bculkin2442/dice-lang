@@ -4,7 +4,7 @@ import java.util.*;
 
 import bjc.dicelang.neodice.*;
 
-public class PolyhedralDie implements IDie<Integer> {
+public class PolyhedralDie implements Die<Integer> {
 	private final int sides;
 
 	public PolyhedralDie(int sides) {

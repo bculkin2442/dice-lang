@@ -6,8 +6,8 @@ import java.util.function.*;
 import bjc.dicelang.neodice.*;
 import bjc.esodata.*;
 
-public class RerollDie<SideType> implements IDie<SideType> {
-	private final IDie<SideType> contained;
+public class RerollDie<SideType> implements Die<SideType> {
+	private final Die<SideType> contained;
 	
 	private final Predicate<SideType>                    condition;
 	private final Function<MinMaxList<SideType>, SideType> chooser;
@@ -18,7 +18,7 @@ public class RerollDie<SideType> implements IDie<SideType> {
 	
 	private RerollDie(
 			Comparator<SideType> comparer,
-			IDie<SideType> contained,
+			Die<SideType> contained,
 			Predicate<SideType> condition,
 			Function<MinMaxList<SideType>, SideType> chooser) {
 		this.comparer = comparer;
@@ -31,7 +31,7 @@ public class RerollDie<SideType> implements IDie<SideType> {
 	
 	private RerollDie(
 			Comparator<SideType> comparer,
-			IDie<SideType> contained,
+			Die<SideType> contained,
 			Predicate<SideType> condition,
 			Function<MinMaxList<SideType>, SideType> chooser,
 			int limit) {
@@ -57,15 +57,15 @@ public class RerollDie<SideType> implements IDie<SideType> {
 		return chooser.apply(newRolls);
 	}
 
-	public static <Side extends Comparable<Side>> IDie<Side> create(
-			IDie<Side> contained,
+	public static <Side extends Comparable<Side>> Die<Side> create(
+			Die<Side> contained,
 			Predicate<Side> condition,
 			Function<MinMaxList<Side>, Side> chooser) {
 		return new RerollDie<>(Comparator.naturalOrder(), contained, condition, chooser);
 	}
 	
-	public static <Side extends Comparable<Side>> IDie<Side> create(
-			IDie<Side> contained,
+	public static <Side extends Comparable<Side>> Die<Side> create(
+			Die<Side> contained,
 			Predicate<Side> condition,
 			Function<MinMaxList<Side>, Side> chooser,
 			int limit) {
@@ -73,17 +73,17 @@ public class RerollDie<SideType> implements IDie<SideType> {
 	}
 	
 
-	public static <Side> IDie<Side> create(
+	public static <Side> Die<Side> create(
 			Comparator<Side> comparer,
-			IDie<Side> contained,
+			Die<Side> contained,
 			Predicate<Side> condition,
 			Function<MinMaxList<Side>, Side> chooser) {
 		return new RerollDie<Side>(comparer, contained, condition, chooser);
 	}
 	
-	public static <Side> IDie<Side> create(
+	public static <Side> Die<Side> create(
 			Comparator<Side> comparer,
-			IDie<Side> contained,
+			Die<Side> contained,
 			Predicate<Side> condition,
 			Function<MinMaxList<Side>, Side> chooser,
 			int limit) {

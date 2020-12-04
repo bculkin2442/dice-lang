@@ -5,11 +5,11 @@ import java.util.stream.*;
 
 import bjc.dicelang.neodice.*;
 
-public class TimesDiePool<SideType> implements IDiePool<SideType> {
-	private final IDie<SideType> contained;
+public class TimesDiePool<SideType> implements DiePool<SideType> {
+	private final Die<SideType> contained;
 	private final int numDice;
 
-	public TimesDiePool(IDie<SideType> contained, int numDice) {
+	public TimesDiePool(Die<SideType> contained, int numDice) {
 		this.contained = contained;
 		this.numDice = numDice;
 	}
@@ -21,8 +21,8 @@ public class TimesDiePool<SideType> implements IDiePool<SideType> {
 	}
 	
 	@Override
-	public List<IDie<SideType>> contained() {
-		List<IDie<SideType>> results = new ArrayList<>(numDice);
+	public List<Die<SideType>> contained() {
+		List<Die<SideType>> results = new ArrayList<>(numDice);
 		
 		for (int index = 0; index < numDice; index++) {
 			results.add(contained);

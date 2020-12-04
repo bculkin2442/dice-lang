@@ -8,9 +8,9 @@ import bjc.dicelang.neodice.*;
 
 public class DieStatementValue extends StatementValue {
 	public final Type sideType;
-	public final IDie<StatementValue> value;
+	public final Die<StatementValue> value;
 	
-	public DieStatementValue(Type sideType, IDie<StatementValue> value) {
+	public DieStatementValue(Type sideType, Die<StatementValue> value) {
 		super(DIE);
 		
 		this.sideType = sideType;

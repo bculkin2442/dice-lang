@@ -13,7 +13,7 @@ import bjc.dicelang.neodice.diepool.*;
  *
  */
 @FunctionalInterface
-public interface IDie<SideType> {
+public interface Die<SideType> {
 	/**
 	 * Rolls this die.
 	 * 
@@ -30,7 +30,7 @@ public interface IDie<SideType> {
 	 * 
 	 * @return A die pool that rolls this die the specified number of times.
 	 */
-	default IDiePool<SideType> times(int numTimes) {
+	default DiePool<SideType> times(int numTimes) {
 		return new ExpandDiePool<>(this, (die, rng) -> {
 			return Stream.generate(() -> die.roll(rng))
 					.limit(numTimes);
@@ -44,7 +44,7 @@ public interface IDie<SideType> {
 	 * 
 	 * @return A die that rerolls when the given condition is met.
 	 */
-	default IDie<SideType> reroll(
+	default Die<SideType> reroll(
 			Comparator<SideType> comparer,
 			Predicate<SideType> condition) {
 		return RerollDie.create(comparer, this, condition,
@@ -60,7 +60,7 @@ public interface IDie<SideType> {
 	 * 
 	 * @return A die that rerolls when the given condition is met.
 	 */
-	default IDie<SideType> reroll(
+	default Die<SideType> reroll(
 			Comparator<SideType> comparer,
 			Predicate<SideType> condition,
 			int limit) {
@@ -79,7 +79,7 @@ public interface IDie<SideType> {
 		return Stream.generate(() -> this.roll(rng));
 	}
 	
-	default <NewType> IDie<NewType> transform(Function<SideType, NewType> mapper) {
+	default <NewType> Die<NewType> transform(Function<SideType, NewType> mapper) {
 		return (rng) -> mapper.apply(this.roll(rng));
 	}
 	
@@ -90,7 +90,7 @@ public interface IDie<SideType> {
 	 * 
 	 * @return A die which returns a result from 1 to sides.
 	 */
-	static IDie<Integer> polyhedral(int sides) {
+	static Die<Integer> polyhedral(int sides) {
 		return new PolyhedralDie(sides);
 	}
 }

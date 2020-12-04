@@ -6,12 +6,12 @@ import java.util.stream.*;
 
 import bjc.dicelang.neodice.*;
 
-public class TransformDiePool<SideType> implements IDiePool<SideType> {
-	private final IDiePool<SideType> contained;
+public class TransformDiePool<SideType> implements DiePool<SideType> {
+	private final DiePool<SideType> contained;
 	
 	private UnaryOperator<Stream<SideType>> transform;
 
-	public TransformDiePool(IDiePool<SideType> contained,
+	public TransformDiePool(DiePool<SideType> contained,
 			UnaryOperator<Stream<SideType>> transform) {
 		super();
 		this.contained = contained;
@@ -24,7 +24,7 @@ public class TransformDiePool<SideType> implements IDiePool<SideType> {
 	}
 	
 	@Override
-	public List<IDie<SideType>> contained() {
+	public List<Die<SideType>> contained() {
 		return contained.contained();
 	}
 

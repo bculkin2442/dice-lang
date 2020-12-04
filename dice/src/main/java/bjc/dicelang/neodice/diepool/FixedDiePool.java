@@ -5,17 +5,17 @@ import java.util.stream.*;
 
 import bjc.dicelang.neodice.*;
 
-public class FixedDiePool<SideType> implements IDiePool<SideType> {
-	private final List<IDie<SideType>> dice;
+public class FixedDiePool<SideType> implements DiePool<SideType> {
+	private final List<Die<SideType>> dice;
 
-	public FixedDiePool(List<IDie<SideType>> dice) {
+	public FixedDiePool(List<Die<SideType>> dice) {
 		this.dice = dice;
 	}
 	
 	@SafeVarargs
-	public FixedDiePool(IDie<SideType>...dice) {
+	public FixedDiePool(Die<SideType>...dice) {
 		this.dice = new ArrayList<>(dice.length);
-		for (IDie<SideType> die : dice) {
+		for (Die<SideType> die : dice) {
 			this.dice.add(die);
 		}
 	}
@@ -26,7 +26,7 @@ public class FixedDiePool<SideType> implements IDiePool<SideType> {
 	}
 
 	@Override
-	public List<IDie<SideType>> contained() {
+	public List<Die<SideType>> contained() {
 		return dice;
 	}
 
@@ -34,7 +34,7 @@ public class FixedDiePool<SideType> implements IDiePool<SideType> {
 	@Override
 	public String toString() {
 		return dice.stream()
-			.map(IDie<SideType>::toString)
+			.map(Die<SideType>::toString)
 			.collect(Collectors.joining(", "));
 	}
 
