@@ -98,6 +98,7 @@ public class DieBoxCLI {
 		builtInCommands.put("polyhedral-die", new PolyhedralDieCommand());
 		builtInCommands.put("roll", new RollCommand());
 		builtInCommands.put("help", new HelpCommand());
+		
 		builtInCommands.deepFreeze();
 	}
 
