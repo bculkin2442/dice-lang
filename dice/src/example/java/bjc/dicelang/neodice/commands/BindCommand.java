@@ -7,6 +7,11 @@ import java.util.*;
 import bjc.dicelang.neodice.*;
 import bjc.dicelang.neodice.statements.*;
 
+/**
+ * This command binds a name to a variable slot.
+ * @author Ben Culkin
+ *
+ */
 public class BindCommand implements Command {
   @Override
   public StatementValue execute(Iterator<String> words, DieBoxCLI state) {

@@ -4,10 +4,17 @@ import static bjc.dicelang.neodice.statements.StatementValue.Type.*;
 
 import java.util.*;
 
+/**
+ * Represents the boolean type for diebox.
+ * @author Ben Culkin
+ *
+ */
 public class BooleanStatementValue extends StatementValue {
 	private boolean value;
 	
+	/** The true boolean instance. */
 	public static final BooleanStatementValue TRUE_INST  = new BooleanStatementValue(true);
+	/** The false boolean instance. */
 	public static final BooleanStatementValue FALSE_INST = new BooleanStatementValue(false);
 	
 	private BooleanStatementValue(boolean value) {

@@ -5,11 +5,12 @@ import java.util.function.*;
 import java.util.stream.*;
 
 import bjc.dicelang.neodice.die.*;
-import bjc.dicelang.neodice.diepool.*;
 
 /**
  * Represents a single polyhedral die.
  * @author Ben Culkin
+ * 
+ * @param <SideType> The type of value represented by this die.
  *
  */
 @FunctionalInterface
@@ -40,6 +41,7 @@ public interface Die<SideType> {
 	/**
 	 * Returns a die which will reroll this die as long as the provided condition is true.
 	 * 
+     * @param comparer The thing to use to compare die values.
 	 * @param condition The condition to reroll the die on.
 	 * 
 	 * @return A die that rerolls when the given condition is met.
@@ -55,6 +57,7 @@ public interface Die<SideType> {
 	 * Returns a die which will reroll this die up to a specified number of times,
 	 * as long as the provided condition is true.
 	 * 
+	 * @param comparer The thing to use to compare die values.
 	 * @param condition The condition to reroll the die on.
 	 * @param limit The maximum number of times to reroll the die.
 	 * 
@@ -79,6 +82,15 @@ public interface Die<SideType> {
 		return Stream.generate(() -> this.roll(rng));
 	}
 	
+	/**
+	 * Create a new transforming die.
+	 * 
+	 * @param <NewType> The new type of the die.
+	 * 
+	 * @param mapper The function to use for mapping.
+	 * 
+	 * @return A die that transforms with the given mapping.
+	 */
 	default <NewType> Die<NewType> transform(Function<SideType, NewType> mapper) {
 		return (rng) -> mapper.apply(this.roll(rng));
 	}

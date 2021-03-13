@@ -4,8 +4,6 @@ import java.util.*;
 import java.util.function.*;
 import java.util.stream.*;
 
-import bjc.dicelang.neodice.diepool.*;
-
 /**
  * Represents a pool of dice.
  * 
@@ -211,6 +209,8 @@ public interface DiePool<SideType> {
 	/**
 	 * Create a die pool containing the provided dice.
 	 * 
+	 * @param <Side> The type of the sides.
+	 * 
 	 * @param dice The dice to put into the pool.
 	 * 
 	 * @return A pool which contains the provided dice.
@@ -219,4 +219,213 @@ public interface DiePool<SideType> {
 	static <Side> DiePool<Side> containing(Die<Side>... dice) {
 		return new FixedDiePool<>(dice);
 	}
+	
+	/**
+	 * Create an expanding die pool
+	 * 
+	 * @param <Side> The type of the sides.
+	 * 
+	 * @param contained The contained die.
+	 * @param expander The expanding function.
+	 * 
+	 * @return A die pool that expands the result given the provided function.
+	 */
+	static <Side> DiePool<Side> expanding(Die<Side> contained,
+	        BiFunction<Die<Side>, Random, Stream<Side>> expander)
+	{
+	    return new ExpandDiePool<>(contained, expander);
+	}
+}
+
+/**
+ * A die pool that can expand dice.
+ * @author Ben Culkin
+ *
+ * @param <SideType> The type the die uses.
+ */
+class ExpandDiePool<SideType> implements DiePool<SideType> {
+    private final Die<SideType> contained;
+    
+    private final BiFunction<Die<SideType>, Random, Stream<SideType>> expander;
+
+    /**
+     * Create a new expanding die pool.
+     * 
+     * @param contained The die to expand.
+     * @param expander The function to use for expanding.
+     */
+    public ExpandDiePool(Die<SideType> contained,
+            BiFunction<Die<SideType>, Random, Stream<SideType>> expander) {
+        this.contained = contained;
+        this.expander = expander;
+    }
+
+    @Override
+    public Stream<SideType> roll(Random rng) {
+        return expander.apply(contained, rng);
+    }
+    
+    @Override
+    public List<Die<SideType>> contained()
+    {
+        return Arrays.asList(contained);
+    }
+}
+
+/**
+ * A die pool that has a fixed size.
+ * 
+ * @author Ben Culkin
+ *
+ * @param <SideType> The type of the sides of the dice.
+ */
+class FixedDiePool<SideType> implements DiePool<SideType> {
+    private final List<Die<SideType>> dice;
+
+    /**
+     * Create a new fixed dice pool.
+     * @param dice The dice to put into the pool.
+     */
+    public FixedDiePool(List<Die<SideType>> dice) {
+        this.dice = dice;
+    }
+    
+    /**
+     * Create a new fixed dice pool from an array of dice.
+     * @param dice The dice to put into the pool.
+     */
+    @SafeVarargs
+    public FixedDiePool(Die<SideType>...dice) {
+        this.dice = new ArrayList<>(dice.length);
+        for (Die<SideType> die : dice) {
+            this.dice.add(die);
+        }
+    }
+
+    @Override
+    public Stream<SideType> roll(Random rng) {
+        return dice.stream().map((die) -> die.roll(rng));
+    }
+
+    @Override
+    public List<Die<SideType>> contained() {
+        return dice;
+    }
+
+    
+    @Override
+    public String toString() {
+        return dice.stream()
+            .map(Die<SideType>::toString)
+            .collect(Collectors.joining(", "));
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(dice);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)                  return true;
+        if (obj == null)                  return false;
+        if (getClass() != obj.getClass()) return false;
+    
+        FixedDiePool<?> other = (FixedDiePool<?>) obj;
+        
+        return Objects.equals(dice, other.dice);
+    }
+}
+
+class TimesDiePool<SideType> implements DiePool<SideType> {
+    private final Die<SideType> contained;
+    private final int numDice;
+
+    public TimesDiePool(Die<SideType> contained, int numDice) {
+        this.contained = contained;
+        this.numDice = numDice;
+    }
+
+    @Override
+    public Stream<SideType> roll(Random rng) {
+        return Stream.generate(() -> contained.roll(rng))
+            .limit(numDice);
+    }
+    
+    @Override
+    public List<Die<SideType>> contained() {
+        List<Die<SideType>> results = new ArrayList<>(numDice);
+        
+        for (int index = 0; index < numDice; index++) {
+            results.add(contained);
+        }
+        
+        return results;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%d%s", numDice, contained);
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(contained, numDice);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)                  return true;
+        if (obj == null)                  return false;
+        if (getClass() != obj.getClass()) return false;
+        
+        TimesDiePool<?> other = (TimesDiePool<?>) obj;
+    
+        return Objects.equals(contained, other.contained) && numDice == other.numDice;
+    }
+}
+
+class TransformDiePool<SideType> implements DiePool<SideType> {
+    private final DiePool<SideType> contained;
+    
+    private UnaryOperator<Stream<SideType>> transform;
+
+    public TransformDiePool(DiePool<SideType> contained,
+            UnaryOperator<Stream<SideType>> transform) {
+        super();
+        this.contained = contained;
+        this.transform = transform;
+    }
+
+    @Override
+    public Stream<SideType> roll(Random rng) {
+        return transform.apply(contained.roll(rng));
+    }
+    
+    @Override
+    public List<Die<SideType>> contained() {
+        return contained.contained();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(contained, transform);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)                  return true;
+        if (obj == null)                  return false;
+        if (getClass() != obj.getClass()) return false;
+    
+        TransformDiePool<?> other = (TransformDiePool<?>) obj;
+        
+        return Objects.equals(contained, other.contained)
+                && Objects.equals(transform, other.transform);
+    }
+    
+    @Override
+    public String toString() {
+        return contained.toString() + "(transformed)";
+    }
 }

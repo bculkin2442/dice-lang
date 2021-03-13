@@ -6,10 +6,23 @@ import java.util.*;
 
 import bjc.dicelang.neodice.*;
 
+/**
+ * A StatementValue that represesnts a die pool
+ * @author Ben Culkin
+ *
+ */
 public class DiePoolStatementValue extends StatementValue {
+    /** The type of the contained value. */
 	public final Type elementType;
+	/** The die pool itself. */
 	public final DiePool<StatementValue> value;
 	
+	/**
+	 * Create a new diepool value.
+	 * 
+	 * @param elementType The contained type.
+	 * @param value The die pool itself.
+	 */
 	public DiePoolStatementValue(Type elementType, DiePool<StatementValue> value) {
 		super(DIEPOOL);
 		

@@ -4,10 +4,24 @@ import static bjc.dicelang.neodice.statements.StatementValue.Type.*;
 
 import java.util.*;
 
+/**
+ * A statement value which represents an array of statement values.
+ * @author Ben Culkin
+ *
+ * @param <ElementType> The contained type of value.
+ */
 public class ArrayStatementValue<ElementType extends StatementValue> extends StatementValue {
-	public final Type          elementType;
+    /** The type of the contained values. */
+    public final Type          elementType;
+    /** The contained values. */
 	public final ElementType[] values;
 	
+	/**
+	 * Create a new array statement value.
+	 * 
+	 * @param elementType The type of the contained values.
+	 * @param values The contained values.
+	 */
 	@SafeVarargs
 	public ArrayStatementValue(Type elementType, ElementType... values) {
 		super(ARRAY);
