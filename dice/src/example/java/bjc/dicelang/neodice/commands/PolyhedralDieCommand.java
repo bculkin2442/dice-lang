@@ -7,6 +7,12 @@ import java.util.*;
 import bjc.dicelang.neodice.*;
 import bjc.dicelang.neodice.statements.*;
 
+/**
+ * A command that produces a polyhedral die.
+ * 
+ * @author Ben Culkin
+ *
+ */
 public class PolyhedralDieCommand implements Command {
 	@Override
 	public StatementValue execute(Iterator<String> words, DieBoxCLI state) {

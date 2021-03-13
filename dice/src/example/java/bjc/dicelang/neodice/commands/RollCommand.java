@@ -7,6 +7,12 @@ import java.util.*;
 import bjc.dicelang.neodice.*;
 import bjc.dicelang.neodice.statements.*;
 
+/**
+ * A command that rolls a die or die-pool.
+ * 
+ * @author Ben Culkin
+ *
+ */
 public class RollCommand implements Command {
 	@Override
 	public StatementValue execute(Iterator<String> words, DieBoxCLI state) {

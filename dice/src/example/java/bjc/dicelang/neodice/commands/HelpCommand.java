@@ -7,6 +7,11 @@ import java.util.*;
 import bjc.dicelang.neodice.*;
 import bjc.dicelang.neodice.statements.*;
 
+/**
+ * Diebox help command. Unimplemented as of yet.
+ * @author Ben Culkin
+ *
+ */
 public class HelpCommand implements Command {
 	@Override
 	public StatementValue execute(Iterator<String> words, DieBoxCLI state) {

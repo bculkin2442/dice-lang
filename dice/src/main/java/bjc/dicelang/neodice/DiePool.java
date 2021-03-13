@@ -8,7 +8,8 @@ import java.util.stream.*;
  * Represents a pool of dice.
  * 
  * @author Ben Culkin
- *
+ * 
+ * @param <SideType> The type of the sides of the contained dice.
  */
 @FunctionalInterface
 public interface DiePool<SideType> {
@@ -55,6 +56,7 @@ public interface DiePool<SideType> {
 	 * Returns a version of this die pool which returns its results in sorted
 	 * order.
 	 * 
+	 * @param comparer The comparator to use for the dice.
 	 * @param isDescending True to sort in descending order, false to sort in ascending order.
 	 * 
 	 * @return The die pool, which returns its results in sorted order.
@@ -152,6 +154,7 @@ public interface DiePool<SideType> {
 	/**
 	 * Return a die pool which rolls this one, then drops a number of the lowest values.
 	 * 
+	 * @param comparer The comparer to use for the sides.
 	 * @param number The number of lowest values to drop.
 	 * 
 	 * @return A die pool which has the lowest entries dropped.
@@ -163,6 +166,7 @@ public interface DiePool<SideType> {
 	/**
 	 * Return a die pool which rolls this one, then drops a number of the lowest values.
 	 * 
+	 * @param comparer The comparer to use for the sides.
 	 * @param number The number of lowest values to drop.
 	 * 
 	 * @return A die pool which has the lowest entries dropped.
@@ -174,6 +178,7 @@ public interface DiePool<SideType> {
 	/**
 	 * Return a die pool which rolls this one, then keeps a number of the lowest values.
 	 * 
+	 * @param comparer The comparer to use for the sides.
 	 * @param number The number of lowest values to keep.
 	 * 
 	 * @return A die pool which has the lowest entries kept.
@@ -185,6 +190,7 @@ public interface DiePool<SideType> {
 	/**
 	 * Return a die pool which rolls this one, then keeps a number of the highest values.
 	 * 
+	 * @param comparer The comparer to use for the sides.
 	 * @param number The number of highest values to keep.
 	 * 
 	 * @return A die pool which has the highest entries kept.

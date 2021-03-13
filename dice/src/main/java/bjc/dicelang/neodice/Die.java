@@ -4,7 +4,7 @@ import java.util.*;
 import java.util.function.*;
 import java.util.stream.*;
 
-import bjc.dicelang.neodice.die.*;
+import bjc.esodata.*;
 
 /**
  * Represents a single polyhedral die.
@@ -105,4 +105,128 @@ public interface Die<SideType> {
 	static Die<Integer> polyhedral(int sides) {
 		return new PolyhedralDie(sides);
 	}
+}
+
+class PolyhedralDie implements Die<Integer> {
+    private final int sides;
+
+    public PolyhedralDie(int sides) {
+        this.sides = sides;
+    }
+
+    @Override
+    public Integer roll(Random rng) {
+        // Dice are one-based, not zero-based.
+        return rng.nextInt(sides) + 1;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("d%d", sides);
+    }
+    
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + sides;        
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)                  return true;
+        if (obj == null)                  return false;
+        if (getClass() != obj.getClass()) return false;
+        
+        PolyhedralDie other = (PolyhedralDie) obj;
+        
+        if (sides != other.sides) return false;
+        else                      return true;
+    }
+}
+
+class RerollDie<SideType> implements Die<SideType> {
+    private final Die<SideType> contained;
+    
+    private final Predicate<SideType>                    condition;
+    private final Function<MinMaxList<SideType>, SideType> chooser;
+    
+    private final Comparator<SideType> comparer;
+    
+    private int limit = Integer.MAX_VALUE;
+    
+    private RerollDie(
+            Comparator<SideType> comparer,
+            Die<SideType> contained,
+            Predicate<SideType> condition,
+            Function<MinMaxList<SideType>, SideType> chooser) {
+        this.comparer = comparer;
+        
+        this.contained = contained;
+        
+        this.condition = condition;
+        this.chooser   = chooser;
+    }
+    
+    private RerollDie(
+            Comparator<SideType> comparer,
+            Die<SideType> contained,
+            Predicate<SideType> condition,
+            Function<MinMaxList<SideType>, SideType> chooser,
+            int limit) {
+        this(comparer, contained, condition, chooser);
+        
+        this.limit = limit;
+    }
+    
+    @Override
+    public SideType roll(Random rng) {
+        SideType roll = contained.roll(rng);
+
+        MinMaxList<SideType> newRolls = new MinMaxList<>(comparer, roll);
+        
+        int rerollCount = 0;
+        while (condition.test(roll) && rerollCount < limit) {
+            roll = contained.roll(rng);
+            newRolls.add(roll);
+            
+            rerollCount += 1;
+        }
+        
+        return chooser.apply(newRolls);
+    }
+
+    public static <Side extends Comparable<Side>> Die<Side> create(
+            Die<Side> contained,
+            Predicate<Side> condition,
+            Function<MinMaxList<Side>, Side> chooser) {
+        return new RerollDie<>(Comparator.naturalOrder(), contained, condition, chooser);
+    }
+    
+    public static <Side extends Comparable<Side>> Die<Side> create(
+            Die<Side> contained,
+            Predicate<Side> condition,
+            Function<MinMaxList<Side>, Side> chooser,
+            int limit) {
+        return new RerollDie<>(Comparator.naturalOrder(), contained, condition, chooser, limit);
+    }
+    
+
+    public static <Side> Die<Side> create(
+            Comparator<Side> comparer,
+            Die<Side> contained,
+            Predicate<Side> condition,
+            Function<MinMaxList<Side>, Side> chooser) {
+        return new RerollDie<>(comparer, contained, condition, chooser);
+    }
+    
+    public static <Side> Die<Side> create(
+            Comparator<Side> comparer,
+            Die<Side> contained,
+            Predicate<Side> condition,
+            Function<MinMaxList<Side>, Side> chooser,
+            int limit) {
+        return new RerollDie<>(comparer, contained, condition, chooser, limit);
+    }
 }

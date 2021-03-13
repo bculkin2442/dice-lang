@@ -7,6 +7,12 @@ import java.util.*;
 import bjc.dicelang.neodice.*;
 import bjc.dicelang.neodice.statements.*;
 
+/**
+ * A command that shows all of the currently bound variables.
+ * 
+ * @author Ben Culkin
+ *
+ */
 public class ShowBindingsCommand implements Command {
   @Override
   public StatementValue execute(Iterator<String> words, DieBoxCLI state) {
