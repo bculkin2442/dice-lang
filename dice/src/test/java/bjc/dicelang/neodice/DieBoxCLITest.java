@@ -1,14 +1,12 @@
 package bjc.dicelang.neodice;
 
-import static org.junit.Assert.*;
-
 import java.io.*;
 
 import org.junit.*;
 
 @SuppressWarnings("javadoc")
 public class DieBoxCLITest {
-	private DieBoxCLI diebox;
+	//private DieBoxCLI diebox;
 	
 	private OutputStream dieBoxInput;
 	private InputStream  dieBoxOutput;
@@ -21,7 +19,7 @@ public class DieBoxCLITest {
 		PipedOutputStream pipeOutput = new PipedOutputStream();
 		dieBoxOutput = new PipedInputStream(pipeOutput);
 		
-		diebox = new DieBoxCLI(pipeInput, pipeOutput);
+		//diebox = new DieBoxCLI(pipeInput, pipeOutput);
 	}
 
 	@After
