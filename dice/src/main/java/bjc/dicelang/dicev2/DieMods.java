@@ -35,7 +35,7 @@ public class DieMods {
 	 *                The die pool.
 	 * @return A die that performs a reduction over the pool.
 	 */
-	public Die reduce(LongBinaryOperator fold, long initial, Die... dice) {
+	public static Die reduce(LongBinaryOperator fold, long initial, Die... dice) {
 		return new ReduceDieMod(fold, initial, dice);
 	}
 
@@ -46,7 +46,7 @@ public class DieMods {
 	 *             The input die pool.
 	 * @return A die that concatenates the provided pool.
 	 */
-	public Die concat(Die... dice) {
+	public static Die concat(Die... dice) {
 		return new ConcatDieMod(dice);
 	}
 
@@ -59,7 +59,7 @@ public class DieMods {
 	 *                The input die pool.
 	 * @return A die that counts the successes.
 	 */
-	public Die counted(LongPredicate success, Die... dice) {
+	public static Die counted(LongPredicate success, Die... dice) {
 		return new CountDieMod(success, dice);
 	}
 
@@ -74,7 +74,7 @@ public class DieMods {
 	 *                The input die pool.
 	 * @return A die that counts the successes.
 	 */
-	public Die counted(LongPredicate success, LongPredicate failure, Die... dice) {
+	public static Die counted(LongPredicate success, LongPredicate failure, Die... dice) {
 		return new CountDieMod(success, failure, dice);
 	}
 
@@ -87,7 +87,7 @@ public class DieMods {
 	 *                The input die pool.
 	 * @return An exploding variant of the die pool.
 	 */
-	public Die explode(LongPredicate explode, Die... dice) {
+	public static Die explode(LongPredicate explode, Die... dice) {
 		return new ExplodingDieMod(explode, dice);
 	}
 
@@ -102,7 +102,7 @@ public class DieMods {
 	 *                  The input die pool.
 	 * @return An exploding variant of the die pool.
 	 */
-	public Die explode(LongPredicate explode, boolean penetrate, Die... dice) {
+	public static Die explode(LongPredicate explode, boolean penetrate, Die... dice) {
 		return new ExplodingDieMod(explode, penetrate, dice);
 	}
 
@@ -115,7 +115,7 @@ public class DieMods {
 	 *                 The input die pool.
 	 * @return An compounding variant of the die pool.
 	 */
-	public Die compound(LongPredicate compound, Die... dice) {
+	public static Die compound(LongPredicate compound, Die... dice) {
 		return new CompoundDieMod(compound, dice);
 	}
 
@@ -130,7 +130,7 @@ public class DieMods {
 	 *                  The input die pool.
 	 * @return An compounding variant of the die pool.
 	 */
-	public Die compound(LongPredicate compound, boolean penetrate, Die... dice) {
+	public static Die compound(LongPredicate compound, boolean penetrate, Die... dice) {
 		return new CompoundDieMod(compound, penetrate, dice);
 	}
 
@@ -141,7 +141,7 @@ public class DieMods {
 	 *             The die that will form the pool.
 	 * @return A pooled variant of the dice.
 	 */
-	public Die pool(Die... dice) {
+	public static Die pool(Die... dice) {
 		return new PoolDiceMod(dice);
 	}
 
@@ -154,7 +154,7 @@ public class DieMods {
 	 *               The input die pool.
 	 * @return The die pool with certain dice filtered out.
 	 */
-	public Die filter(LongPredicate filter, Die... dice) {
+	public static Die filter(LongPredicate filter, Die... dice) {
 		return new FilterDieMod(filter, dice);
 	}
 
@@ -167,7 +167,7 @@ public class DieMods {
 	 *               The input die pool.
 	 * @return A sorted die pool.
 	 */
-	public Die sort(Comparator<Long> sorter, Die die) {
+	public static Die sort(Comparator<Long> sorter, Die die) {
 		return new SortDieMod(sorter, die);
 	}
 
@@ -180,7 +180,7 @@ public class DieMods {
 	 *            The input die pool.
 	 * @return The die pool with the transform applied.
 	 */
-	public Die map(LongUnaryOperator map, Die die) {
+	public static Die map(LongUnaryOperator map, Die die) {
 		return new MapDieMod(map, die);
 	}
 
@@ -192,7 +192,7 @@ public class DieMods {
 	 *             The input die pool.
 	 * @return A die that sums the input dice.
 	 */
-	public Die sum(Die... dice) {
+	public static Die sum(Die... dice) {
 		return reduce((l, r) -> l + r, 0, dice);
 	}
 
@@ -204,7 +204,7 @@ public class DieMods {
 	 *             The input die pool.
 	 * @return A die that subtracts the input dice.
 	 */
-	public Die subtract(Die... dice) {
+	public static Die subtract(Die... dice) {
 		return reduce((l, r) -> l - r, 0, dice);
 	}
 
@@ -216,7 +216,7 @@ public class DieMods {
 	 *             The input die pool.
 	 * @return A die that multiplies the input dice.
 	 */
-	public Die multiply(Die... dice) {
+	public static Die multiply(Die... dice) {
 		return reduce((l, r) -> l * r, 1, dice);
 	}
 
@@ -228,7 +228,7 @@ public class DieMods {
 	 *             The input die pool.
 	 * @return A die that divides the input dice.
 	 */
-	public Die divide(Die... dice) {
+	public static Die divide(Die... dice) {
 		return reduce((l, r) -> l / r, 1, dice);
 	}
 
@@ -238,7 +238,7 @@ public class DieMods {
 	 * @param die The input die pool. 
 	 * @return A die pool that sorts in ascending order.
 	 */
-	public Die ascending(Die die) {
+	public static Die ascending(Die die) {
 		return new SortDieMod(Comparator.naturalOrder(), die);
 	}
 
@@ -248,10 +248,8 @@ public class DieMods {
 	 * @param die The input die pool. 
 	 * @return A die pool that sorts in descending order.
 	 */
-	public Die descending(Die die) {
-		return new SortDieMod((v1, v2) -> {
-			return Long.compare(v1, v2);
-		}, die);
+	public static Die descending(Die die) {
+		return new SortDieMod(Long::compare, die);
 	}
 
 	/* :SyntheticMod */
@@ -261,7 +259,7 @@ public class DieMods {
 	 * @param die The input die pool.
 	 * @return The die pool that takes the first n dice.
 	 */
-	public Die take(int num, Die die) {
+	public static Die take(int num, Die die) {
 		GeneratingIterator<Integer> itr = new GeneratingIterator<>(num, (val) -> {
 			return val - 1;
 		}, (val) -> val == 0);
@@ -283,7 +281,7 @@ public class DieMods {
 	 * @param die The input die pool.
 	 * @return The die pool that drops the first n dice.
 	 */
-	public Die drop(int num, Die die) {
+	public static Die drop(int num, Die die) {
 		GeneratingIterator<Integer> itr = new GeneratingIterator<>(num, (val) -> {
 			return val - 1;
 		}, (val) -> val == 0);
@@ -305,7 +303,7 @@ public class DieMods {
 	 * @param die The input die pool.
 	 * @return A die pool that rerolls certain dice once.
 	 */
-	public Die rerollOnce(LongPredicate reroll, Die die) {
+	public static Die rerollOnce(LongPredicate reroll, Die die) {
 		return map((val) -> {
 			if (reroll.test(val))
 				return die.rollSingle();
@@ -321,7 +319,7 @@ public class DieMods {
 	 * @param die The input die pool.
 	 * @return A die pool that rerolls certain dice.
 	 */
-	public Die reroll(LongPredicate reroll, Die die) {
+	public static Die reroll(LongPredicate reroll, Die die) {
 		return map((val) -> {
 			long nVal = val;
 
