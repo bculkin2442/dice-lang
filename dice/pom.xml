@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>bjc</groupId>
 		<artifactId>dicelang-parent</artifactId>
-		<version>1.0.0</version>
+		<version>2.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>dicelang-dice</artifactId>
@@ -25,17 +25,16 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.13.1</version>
-			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>bjc</groupId>
 			<artifactId>BJC-Utils2</artifactId>
-			<version>1.0.0</version>
+			<version>2.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>io.github.bculkin2442</groupId>
 			<artifactId>esodata</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>2.0-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 </project>
