@@ -18,24 +18,24 @@ public class PolyhedralDieCommand implements Command {
 	public StatementValue execute(Iterator<String> words, DieBoxCLI state) {
 		if (!words.hasNext()) {
 			throw new DieBoxException("Number of sides to polyhedral-die must be provided");
-		} else {
-			StatementValue sideValue = state.runStatement(words);
-			
-			if (sideValue.type == INTEGER) {
-				int numSides = ((IntegerStatementValue)sideValue).value;
-				
-				if (numSides < 0) throw new DieBoxException("Number of sides to polyhedral-die was not valid (must be less than 0, was %d)", numSides);
-				
-				Die<StatementValue> die = Die
-						.polyhedral(numSides)
-						.transform(IntegerStatementValue::new);
-				
-				return new DieStatementValue(INTEGER, die);
-			} else {
-				throw new DieBoxException("Number of sides to polyhedral-die wasn't an integer (was %s, of type %s)",
-						sideValue, sideValue.type);
-			}
 		}
+		
+		StatementValue sideValue = state.runStatement(words);
+		
+		if (sideValue.type == INTEGER) {
+			int numSides = ((IntegerStatementValue)sideValue).value;
+			
+			if (numSides < 0) throw new DieBoxException("Number of sides to polyhedral-die was not valid (must be less than 0, was %d)", numSides);
+			
+			Die<StatementValue> die = Die
+					.polyhedral(numSides)
+					.transform(IntegerStatementValue::new);
+			
+			return new DieStatementValue(INTEGER, die);
+		}
+		
+		throw new DieBoxException("Number of sides to polyhedral-die wasn't an integer (was %s, of type %s)",
+				sideValue, sideValue.type);
 	}
 	
 	@Override

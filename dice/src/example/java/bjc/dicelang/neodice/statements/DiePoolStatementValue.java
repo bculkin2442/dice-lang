@@ -7,7 +7,7 @@ import java.util.*;
 import bjc.dicelang.neodice.*;
 
 /**
- * A StatementValue that represesnts a die pool
+ * A StatementValue that represents a die pool
  * @author Ben Culkin
  *
  */

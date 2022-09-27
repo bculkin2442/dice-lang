@@ -241,7 +241,7 @@ public class DieBoxCLI {
 		}
 	}
 
-	private DieBoxException handleUnknownCommand(String command) {
+	private static DieBoxException handleUnknownCommand(String command) {
 		StringBuilder msg = new StringBuilder("Unknown command ");
 		msg.append(command);
 		msg.append(".");
@@ -255,7 +255,7 @@ public class DieBoxCLI {
 		return new DieBoxException(msg.toString());
 	}
 
-	private StatementValue parseActualLiteral(String litText) {
+	private static StatementValue parseActualLiteral(String litText) {
 		if (INT_PATTERN.matcher(litText).matches()) {
 			try {
 				int val = Integer.parseInt(litText);
@@ -266,9 +266,9 @@ public class DieBoxCLI {
 						"Improper integer literal (%s)",
 						litText);
 			}
-		} else {
-			throw new DieBoxException("Unknown literal format (%s)",
-					litText);
 		}
+		
+		throw new DieBoxException("Unknown literal format (%s)",
+				litText);
 	}
 }

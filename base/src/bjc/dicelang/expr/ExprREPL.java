@@ -24,6 +24,7 @@ public class ExprREPL {
 		final Lexer lex = new Lexer();
 
 		/* Prepare our input source. */
+		@SuppressWarnings("resource")
 		final Scanner scan = new Scanner(System.in);
 
 		/* Read initial command. */

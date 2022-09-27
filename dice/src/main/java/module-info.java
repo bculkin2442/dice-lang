@@ -1,3 +1,9 @@
+/**
+ * An implementation for various sorts of dice rolling.
+ * 
+ * @author bjculkin
+ *
+ */
 module dicelang.dice {
 	exports bjc.dicelang.neodice;
 	exports bjc.dicelang.neodice.statements;
